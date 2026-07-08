@@ -11,9 +11,10 @@
 # 1. Vivado / FPGA 工程
 # -----------------------------------------------------------
 # Vivado 会话/日志
-vivado.jou
-vivado.log
+vivado*.jou
+vivado*.log
 vivado_pid*.str
+
 
 # 自动生成的工程目录
 .Xil/
