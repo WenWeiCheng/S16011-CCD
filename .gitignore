@@ -1,0 +1,201 @@
+# =============================================================
+# 仓库根 .gitignore
+# 适用：PCB + FPGA(Vivado/Vitis) + 上位机(Qt/CMake) 综合项目
+# 设计原则：保留源码，忽略构建产物与 IDE/编辑器临时文件
+# =============================================================
+
+# 参考项目（外部历史资料，不纳入本仓库版本控制）
+/nir-proj-reference/
+
+# -----------------------------------------------------------
+# 1. Vivado / FPGA 工程
+# -----------------------------------------------------------
+# Vivado 会话/日志
+vivado.jou
+vivado.log
+vivado_pid*.str
+
+# 自动生成的工程目录
+.Xil/
+*.cache/
+*.hw/
+*.ip_user_files/
+*.sim/
+*.runs/
+*.gen/
+*.data/
+*.xpr.bak
+*.runs.bak
+
+# 备份工程
+*.bak
+
+# 位流 / 烧录文件（由源码重建）
+*.bit
+*.bin
+*.mcs
+*.pdi
+*.ltx
+*.xsa
+*.svf
+
+# -----------------------------------------------------------
+# 2. Vitis / MicroBlaze SDK（提前预留）
+# -----------------------------------------------------------
+*.elf
+*.o
+*.d
+build/
+logs/
+.lock
+
+.metadata/
+.project
+.cproject
+.settings/
+.vitisWorkspace.json
+.repo.yaml
+.peers.ini
+.ide/
+
+# -----------------------------------------------------------
+# 3. 上位机（Qt + CMake 双栈兼容）
+# -----------------------------------------------------------
+# 3a. qmake 残留（若历史使用）
+*.pro.user*
+*.qbs.user*
+CMakeLists.txt.user*
+.qmake.cache
+.qmake.stash
+*.moc
+
+# 3b. CMake 主流程
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+CMakeUserPresets.json
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+CMakeOutput.log
+CMakeError.log
+CMakeGraphVizOptions.cmake
+Testing/
+
+# 3c. 生成器产物
+build.ninja
+build.ninja.log
+.ninja_log
+.ninja_deps
+.ninja_*
+Makefile
+cmake_check_build_system
+
+# 3d. Qt6 CMake 自动生成（autogen/* 与 .moc/.rcc/.uic）
+autogen/
+autogen_*/
+moc_*.cpp
+moc_*.h
+ui_*.h
+qrc_*.cpp
+.moc/
+.obj/
+.rcc/
+.uic/
+.qtc_clangd/
+
+# 3e. 通用二进制
+*.o
+*.obj
+*.a
+*.so
+*.so.*
+*.dll
+*.exe
+*.lib
+*.exp
+*.pdb
+*.ilk
+*.idb
+*.res
+*.rc
+
+# 3f. MSVC / Xcode / VS
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.xcodeproj/
+*.xcworkspace/
+xcuserdata/
+.vs/
+out/
+
+# -----------------------------------------------------------
+# 4. USB 固件 (Keil C51)
+# -----------------------------------------------------------
+*.OBJ
+*.LST
+*.M51
+*.lnp
+*.plg
+*.Opt
+*.Bak
+*.uvguix.*
+Objects/
+Listings/
+
+# 保留源：*.c *.h *.a51 *.hex *.iic
+
+# -----------------------------------------------------------
+# 5. PCB / 数据手册 / Office
+# -----------------------------------------------------------
+# 芯片数据手册整目录不入库
+datasheets/
+
+# Office 锁文件
+~$*.xlsx
+~$*.docx
+~$*.pptx
+
+# 保留：BOM.xlsx（位于 01-pcb/ 根）
+
+# -----------------------------------------------------------
+# 6. 通用 / 编辑器 / 文档
+# -----------------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+*.autosave
+*.orig
+*.rej
+*.tmp
+
+# Obsidian 个人视图
+.obsidian/workspace.json
+.obsidian/appearance.json
+.obsidian/cache/
+.trash/
+
+# IDE（CMake 工程的 compile_commands.json 来自 build/，已自动忽略）
+.vscode/
+.idea/
+
+# -----------------------------------------------------------
+# 7. Python（辅助脚本）
+# -----------------------------------------------------------
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# -----------------------------------------------------------
+# 8. 日志
+# -----------------------------------------------------------
+*.log
+logs/
