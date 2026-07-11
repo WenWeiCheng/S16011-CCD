@@ -22,3 +22,4 @@ Do not create files in the empty subprojects without first checking with the use
 
 ## Workflow expectations
 - commit git in Chinese
+- 如需修改 FPGA 子项目的 RTL / TB / 目录结构,请优先参考该子 AGENTS.md
