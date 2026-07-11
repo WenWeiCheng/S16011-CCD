@@ -42,7 +42,10 @@ module ccd_driver (
     output wire o_p2h,         // P2H     落后 270°  50% (复位 0)
     output wire o_p3h,         // P3H     同相       50% (复位 0)
     output wire o_p4h_sg,      // P4H(SG) 落后 90°   50% (复位 0)
-    output wire o_rg           // RG      落后 90°   25% (复位 1)
+    output wire o_rg,           // RG      落后 90°   25% (复位 1)
+    // --- 像素数据类型指示 (s_clk 下降沿同步) ---
+    output wire o_data_valid,    // 高电平表示当前像素有效
+    output wire [1:0] o_pixel_type  // 00=bevel, 01=blank, 10=active
 );
 
 // 内部线网:phase_gen 的相位输出 (作为后续 CCD 驱动信号的来源)
@@ -314,5 +317,41 @@ end
 
 assign o_p4h_sg = p4h_sg_enable ? sclk_p90_w  : 1'b0;    // 落后 90°
 assign o_rg     = rg_enable     ? rg_p90_w    : 1'b1;     // 落后 90°, 25%
+
+// ==================================================================
+// 像素类型指示 (s_clk 下降沿同步)
+// 一行内像素顺序:
+//   1..blank_left         : blank  (01)
+//   blank_left+1..+bevel   : bevel  (00)
+//   +bevel+1..+width       : active (10)
+//   +width+1..+bevel_r     : bevel  (00)
+//   +bevel_r+1..+blank_r   : blank  (01)
+// ==================================================================
+reg        data_valid_reg;
+reg [1:0]  pixel_type_reg;
+assign o_data_valid = data_valid_reg;
+assign o_pixel_type = pixel_type_reg;
+
+always @(negedge sclk_p0_w or negedge i_rst_n) begin
+    if (!i_rst_n) begin
+        data_valid_reg <= 1'b0;
+        pixel_type_reg <= 2'b00;
+    end else if (hstate && !outputs_idle && (h_counter > 3) && (h_counter <= h_shift_cnt + 3)) begin
+        data_valid_reg <= 1'b1;
+        if (h_counter <= i_blank_left + 3)
+            pixel_type_reg <= 2'b01;                                           // blank
+        else if (h_counter <= i_blank_left + i_bevel_left + 3)
+            pixel_type_reg <= 2'b00;                                           // bevel
+        else if (h_counter <= i_blank_left + i_bevel_left + i_image_width + 3)
+            pixel_type_reg <= 2'b10;                                           // active
+        else if (h_counter <= i_blank_left + i_bevel_left + i_image_width + i_bevel_right + 3)
+            pixel_type_reg <= 2'b00;                                           // bevel
+        else
+            pixel_type_reg <= 2'b01;                                           // blank
+    end else begin
+        data_valid_reg <= 1'b0;
+        pixel_type_reg <= 2'b00;
+    end
+end
 
 endmodule
