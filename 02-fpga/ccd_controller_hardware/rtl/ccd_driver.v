@@ -13,18 +13,19 @@
 //          状态转移条件:
 //            IDLE → VERTICAL_SHIFT         : exposure 下降沿 (已同步+展宽)
 //            VERTICAL_SHIFT → IDLE         : i_exposure = 1 (强制中止)
-//            VERTICAL_SHIFT → HORIZONTAL   : v_counter = v_shift_cnt - 1
+//            VERTICAL_SHIFT → HORIZONTAL   : v_counter 计满 (一行垂直移位完成)
 //            HORIZONTAL_SHIFT → IDLE       : i_exposure = 1 (强制中止)
-//            HORIZONTAL → VERTICAL_SHIFT   : h_counter = h_shift_cnt + 3
-//                                            且 l_counter ≠ line_cnt
-//            HORIZONTAL → IDLE             : h_counter = h_shift_cnt + 3
-//                                            且 l_counter = line_cnt
+//            HORIZONTAL → VERTICAL_SHIFT   : h_counter 计满 (一行水平移位完成)
+//                                            且未到最后一帧行
+//            HORIZONTAL → IDLE             : h_counter 计满 (一行水平移位完成)
+//                                            且已到最后一帧行
 //==============================================================================
 module ccd_driver (
     input  wire         i_clk,           // 系统时钟 (默认 100 MHz)
     input  wire         i_rst_n,         // 异步复位,低有效
     input  wire         i_exposure,      // 曝光信号
     input  wire         i_freq_sel,      // SCLK 频率选择: 0 -> 100kHz, 1 -> 500kHz
+    input  wire [6:0]   i_cdsclk_delay,  // CDSCLK 微调延时,单位系统时钟周期 (10ns)
     input  wire [15:0]  i_image_width,   // 图像宽度 (pixels)
     input  wire [15:0]  i_image_height,  // 图像高度 (pixels)
     input  wire [3:0]   i_bevel_left,    // 左侧消隐
@@ -45,6 +46,9 @@ module ccd_driver (
     output wire o_p3h,         // P3H     同相       50% (复位 0)
     output wire o_p4h_sg,      // P4H(SG) 落后 90°   50% (复位 0)
     output wire o_rg,           // RG      落后 90°   25% (复位 1)
+    // --- CDS 采样时钟 ---
+    output wire o_cdsclk1,       // CDSCLK1 落后 180°  12.5% (复位 0)
+    output wire o_cdsclk2,       // CDSCLK2 落后 270°  12.5% (复位 0)
     // --- 像素数据类型指示 (s_clk 下降沿同步) ---
     output wire o_data_valid,    // 高电平表示当前像素有效
     output wire [1:0] o_pixel_type,  // 00=bevel, 01=blank, 10=active
@@ -58,6 +62,8 @@ wire sclk_p180_w;
 wire sclk_p270_w;
 wire rg_p90_w;
 wire rg_p270_w;
+wire cdsclk1_w;
+wire cdsclk2_w;
 
 // ==================================================================
 // 读出参数计算 — 从图像尺寸/消隐/空白算出 v/h/l 计数目标
@@ -99,6 +105,20 @@ ccd_phase_gen #(
     .o_sclk_p270  (sclk_p270_w),
     .o_rg_p90     (rg_p90_w),
     .o_rg_p270    (rg_p270_w)
+);
+
+// ------------------------------------------------------------------
+// CDS 采样时钟生成 (自由运行,受使能门控)
+// ------------------------------------------------------------------
+cdsclk_gen #(
+    .SYS_CLK_FREQ_HZ(100_000_000)
+) u_cdsclk_gen (
+    .i_clk        (i_clk),
+    .i_rst_n      (i_rst_n),
+    .i_freq_sel   (i_freq_sel),
+    .i_delay      (i_cdsclk_delay),
+    .o_cdsclk1    (cdsclk1_w),
+    .o_cdsclk2    (cdsclk2_w)
 );
 
 // --- SCLK / RG 内部线网 (供状态机/输出级使用) ---
@@ -238,15 +258,15 @@ wire hstate = (state_reg == STATE_HORIZONTAL_SHIFT);
 //
 // 使能信号在指定同步边沿寄存,组合门控对应的相位时钟:
 //
-// 垂直组:
-//   P1V      : 1 < v_counter < v+1   , s_clk 下降沿寄存使能
-//   P2V,TG   : 0 < v_counter < v+1   , s_clk 上升沿寄存使能
-// 水平组:
-//   P1H      : 0 < h_counter < h+2       , s_clk 下降沿寄存使能
-//   P2H      : 0 < h_counter < h+2       , s_clk 下降沿寄存使能
-//   P3H      : 0 < h_counter < h+2       , s_clk 下降沿寄存使能
-//   P4H,SG   : 0 < h_counter < h+3       , s_clk 上升沿寄存使能
-//   RG       : 0 < h_counter < h+3       , s_clk 上升沿寄存使能
+// 垂直组 (v_counter 在有效范围内时使能):
+//   P1V      : v_counter 在有效范围内, s_clk 下降沿寄存使能
+//   P2V,TG   : v_counter 在有效范围内, s_clk 上升沿寄存使能
+// 水平组 (h_counter 在有效范围内时使能):
+//   P1H      : h_counter 在有效范围内, s_clk 下降沿寄存使能
+//   P2H      : h_counter 在有效范围内, s_clk 下降沿寄存使能
+//   P3H      : h_counter 在有效范围内, s_clk 下降沿寄存使能
+//   P4H,SG   : h_counter 在有效范围内, s_clk 上升沿寄存使能
+//   RG       : h_counter 在有效范围内, s_clk 上升沿寄存使能
 // ==================================================================
 assign o_adcclk  = sclk_p0_w;       // 同相, 50%, 不受任何门控
 
@@ -292,9 +312,9 @@ always @(negedge sclk_p0_w or negedge i_rst_n) begin
         p2h_enable <= 1'b0;
         p3h_enable <= 1'b0;
     end else begin
-        p1h_enable <= !outputs_idle && (h_counter > 0) && (h_counter < h_shift_cnt + 2);
-        p2h_enable <= !outputs_idle && (h_counter > 0) && (h_counter < h_shift_cnt + 2);
-        p3h_enable <= !outputs_idle && (h_counter > 0) && (h_counter < h_shift_cnt + 2);
+        p1h_enable <= !outputs_idle && (h_counter > 0) && (h_counter < h_shift_cnt + 1);
+        p2h_enable <= !outputs_idle && (h_counter > 0) && (h_counter < h_shift_cnt + 1);
+        p3h_enable <= !outputs_idle && (h_counter > 0) && (h_counter < h_shift_cnt + 1);
     end
 end
 
@@ -307,19 +327,25 @@ assign o_p3h = p3h_enable ? sclk_p0_w   : 1'b0;          // 同相
 // ------------------------------------------------------------------
 reg p4h_sg_enable;
 reg rg_enable;
+reg cdsclk_enable;
 
 always @(posedge sclk_p0_w or negedge i_rst_n) begin
     if (!i_rst_n) begin
-        p4h_sg_enable <= 1'b0;
-        rg_enable     <= 1'b0;
+        p4h_sg_enable  <= 1'b0;
+        rg_enable      <= 1'b0;
+        cdsclk_enable  <= 1'b0;
     end else begin
-        p4h_sg_enable <= !outputs_idle && (h_counter > 0) && (h_counter < h_shift_cnt + 3);
-        rg_enable     <= !outputs_idle && (h_counter > 0) && (h_counter < h_shift_cnt + 3);
+        p4h_sg_enable  <= !outputs_idle && (h_counter > 0) && (h_counter < h_shift_cnt + 1);
+        rg_enable      <= !outputs_idle && (h_counter > 0) && (h_counter < h_shift_cnt + 1);
+        cdsclk_enable  <= !outputs_idle && (h_counter > 0) && (h_counter < h_shift_cnt + 1);
     end
 end
 
 assign o_p4h_sg = p4h_sg_enable ? sclk_p90_w  : 1'b0;    // 落后 90°
 assign o_rg     = rg_enable     ? rg_p90_w    : 1'b1;     // 落后 90°, 25%
+
+assign o_cdsclk1 = cdsclk_enable ? cdsclk1_w   : 1'b0;     // 落后 180°, 12.5%
+assign o_cdsclk2 = cdsclk_enable ? cdsclk2_w   : 1'b0;     // 落后 270°, 12.5%
 
 // ==================================================================
 // 像素类型指示 (s_clk 下降沿同步)

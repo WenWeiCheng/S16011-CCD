@@ -9,6 +9,7 @@
 //   测试 4 : exposure 打断 — 运行中拉高 i_exposure,验证回到 IDLE
 //   测试 5 : freq_sel 打断 — 运行中切换 i_freq_sel,验证回到 IDLE
 //   测试 6 : i_rst_n 打断 — 运行中拉低 i_rst_n,验证回到 IDLE
+//   测试 7 : ADC 数据拼接 — 验证 ADCCLK 双沿采样拼合 16bit 像素数据
 //==============================================================================
 module test_ccd_driver;
 
@@ -27,6 +28,8 @@ module test_ccd_driver;
     reg  [3:0]  i_blank_left;
     reg  [3:0]  i_blank_right;
     reg  [1:0]  i_read_mode;
+    reg  [7:0]  i_adc_data;
+    reg  [6:0]  i_cdsclk_delay;
     wire        o_adcclk;
     wire        o_p1v;
     wire        o_p2v_tg;
@@ -35,6 +38,11 @@ module test_ccd_driver;
     wire        o_p3h;
     wire        o_p4h_sg;
     wire        o_rg;
+    wire        o_cdsclk1;
+    wire        o_cdsclk2;
+    wire        o_data_valid;
+    wire [1:0]  o_pixel_type;
+    wire [15:0] o_pixel_data;
 
     ccd_driver u_dut (
         .i_clk         (i_clk),
@@ -50,6 +58,7 @@ module test_ccd_driver;
         .i_blank_left  (i_blank_left),
         .i_blank_right (i_blank_right),
         .i_read_mode   (i_read_mode),
+        .i_adc_data    (i_adc_data),
         .o_adcclk     (o_adcclk),
         .o_p1v        (o_p1v),
         .o_p2v_tg     (o_p2v_tg),
@@ -57,7 +66,13 @@ module test_ccd_driver;
         .o_p2h        (o_p2h),
         .o_p3h        (o_p3h),
         .o_p4h_sg     (o_p4h_sg),
-        .o_rg         (o_rg)
+        .o_rg         (o_rg),
+        .o_cdsclk1    (o_cdsclk1),
+        .o_cdsclk2    (o_cdsclk2),
+        .i_cdsclk_delay(i_cdsclk_delay),
+        .o_data_valid (o_data_valid),
+        .o_pixel_type (o_pixel_type),
+        .o_pixel_data (o_pixel_data)
     );
 
     // 系统时钟
@@ -73,6 +88,26 @@ module test_ccd_driver;
     task wait_us(input integer us);
         #(us * 1000);
     endtask
+
+    // ------------------------------------------------------------------
+    // ADC 数据驱动
+    //   模拟 ADC 在 ADCCLK 上升/下降沿交替输出 8bit 数据。
+    //
+    //   adc_cnt 在每个 ADCCLK 周期递增一次,
+    //   高字节 = {adc_cnt, 4'hA}, 低字节 = {adc_cnt, 4'h5},
+    //   则 o_pixel_data 应 = {adc_cnt, 4'hA, adc_cnt, 4'h5}。
+    //   例如: cnt=0 → 0x0A05, cnt=1 → 0x1A15, cnt=2 → 0x2A25...
+    // ------------------------------------------------------------------
+    reg [3:0] adc_cnt;
+
+    always @(posedge o_adcclk) begin
+        adc_cnt     <= adc_cnt + 1'b1;
+        i_adc_data  <= {adc_cnt, 4'hA};
+    end
+
+    always @(negedge o_adcclk) begin
+        i_adc_data <= {adc_cnt, 4'h5};
+    end
 
     // ------------------------------------------------------------------
     // 主激励
@@ -97,6 +132,9 @@ module test_ccd_driver;
         i_blank_left   = 4'd1;
         i_blank_right  = 4'd1;
         i_read_mode    = 2'd0;       // 0=line binning
+        i_adc_data     = 8'd0;
+        i_cdsclk_delay = 7'd0;
+        adc_cnt        = 4'd0;
 
         // 保持复位 5 个系统时钟,让 phase_gen 稳定
         #(5 * SYS_CLK_PERIOD_NS);
@@ -112,6 +150,7 @@ module test_ccd_driver;
         // ================================================================
         // 测试 2: line binning 模式
         //   V(4) + H(12) = 16 SCLK ≈ 160 us @100kHz
+        //   同时驱动 ADC 数据,验证像素拼接
         // ================================================================
         i_read_mode    = 2'd0;       // line binning
 
