@@ -34,6 +34,8 @@ module ccd_driver (
     input  wire [3:0]   i_blank_left,    // 左侧空白
     input  wire [3:0]   i_blank_right,   // 右侧空白
     input  wire [1:0]   i_read_mode,     // 读出模式: 0=line binning, 1=image
+    // --- ADC 数据接口 ---
+    input  wire [7:0]   i_adc_data,      // ADC 采样数据 (8bit, 在 ADCCLK 上升/下降沿变化)
     // --- CCD 驱动信号 (受 exposure 门控,ADCCLK 除外) ---
     output wire o_adcclk,      // ADCCLK  同相       50% (复位 0)
     output wire o_p1v,         // P1V     落后 270°  50% (复位 0)
@@ -45,7 +47,8 @@ module ccd_driver (
     output wire o_rg,           // RG      落后 90°   25% (复位 1)
     // --- 像素数据类型指示 (s_clk 下降沿同步) ---
     output wire o_data_valid,    // 高电平表示当前像素有效
-    output wire [1:0] o_pixel_type  // 00=bevel, 01=blank, 10=active
+    output wire [1:0] o_pixel_type,  // 00=bevel, 01=blank, 10=active
+    output wire [15:0] o_pixel_data  // 16bit 像素数据 (与 o_data_valid/o_pixel_type 对齐)
 );
 
 // 内部线网:phase_gen 的相位输出 (作为后续 CCD 驱动信号的来源)
@@ -185,7 +188,7 @@ always @(posedge sclk_p0_w or negedge i_rst_n) begin
         // l_counter: h_counter == h_shift_cnt+2 时递增; IDLE 时复位
         if (state_reg == STATE_IDLE)
             l_counter <= 32'd0;
-        else if (h_counter == h_shift_cnt + 2)
+        else if (h_counter == h_shift_cnt + 4)
             l_counter <= l_counter + 1'b1;
     end
 end
@@ -214,7 +217,7 @@ always @(*) begin
             STATE_HORIZONTAL_SHIFT: begin
                 if (i_exposure)
                     state_next = STATE_IDLE;
-                else if (h_counter == h_shift_cnt + 3) begin
+                else if (h_counter == h_shift_cnt + 5) begin
                     if (l_counter == line_cnt)
                         state_next = STATE_IDLE;
                     else
@@ -336,15 +339,15 @@ always @(negedge sclk_p0_w or negedge i_rst_n) begin
     if (!i_rst_n) begin
         data_valid_reg <= 1'b0;
         pixel_type_reg <= 2'b00;
-    end else if (hstate && !outputs_idle && (h_counter > 3) && (h_counter <= h_shift_cnt + 3)) begin
+    end else if (hstate && !outputs_idle && (h_counter > 5) && (h_counter <= h_shift_cnt + 6)) begin
         data_valid_reg <= 1'b1;
-        if (h_counter <= i_blank_left + 3)
+        if (h_counter <= i_blank_left + 5)
             pixel_type_reg <= 2'b01;                                           // blank
-        else if (h_counter <= i_blank_left + i_bevel_left + 3)
+        else if (h_counter <= i_blank_left + i_bevel_left + 5)
             pixel_type_reg <= 2'b00;                                           // bevel
-        else if (h_counter <= i_blank_left + i_bevel_left + i_image_width + 3)
+        else if (h_counter <= i_blank_left + i_bevel_left + i_image_width + 5)
             pixel_type_reg <= 2'b10;                                           // active
-        else if (h_counter <= i_blank_left + i_bevel_left + i_image_width + i_bevel_right + 3)
+        else if (h_counter <= i_blank_left + i_bevel_left + i_image_width + i_bevel_right + 5)
             pixel_type_reg <= 2'b00;                                           // bevel
         else
             pixel_type_reg <= 2'b01;                                           // blank
@@ -353,5 +356,32 @@ always @(negedge sclk_p0_w or negedge i_rst_n) begin
         pixel_type_reg <= 2'b00;
     end
 end
+
+// ==================================================================
+// 像素数据输出 (sclk_p90_w 下降沿同步)
+//
+// ADC 输出 8bit 数据, 在 ADCCLK 上升沿和下降沿各变化一次。
+// 在上升沿采样得到高字节, 下降沿采样得到低字节, 拼成 16bit 输出。
+//  {ADCCLK 上升沿采到的字节, ADCCLK 下降沿采到的字节}
+// 采样用落后 adcclk 90 度的时钟即 sclk_p90_w 采样
+// ==================================================================
+reg [7:0]  adc_data_rise;     // ADCCLK 上升沿采样
+reg [15:0] pixel_data_reg;    // 拼合后的 16bit 数据
+
+always @(posedge sclk_p90_w or negedge i_rst_n) begin
+    if (!i_rst_n)
+        adc_data_rise <= 8'd0;
+    else
+        adc_data_rise <= i_adc_data;
+end
+
+always @(negedge sclk_p90_w or negedge i_rst_n) begin
+    if (!i_rst_n)
+        pixel_data_reg <= 16'd0;
+    else
+        pixel_data_reg <= {adc_data_rise, i_adc_data};
+end
+
+assign o_pixel_data = pixel_data_reg;
 
 endmodule
