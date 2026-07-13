@@ -135,7 +135,7 @@ module test_ccd_frame_buf;
             i_frame_end <= 1'b1;
             @(posedge i_adcclk);
             i_frame_end <= 1'b0;
-            wr_wait(2);
+            wr_wait(5);  // CDC 读→写 延迟余量 (wr_enable 需要 2-3 adcclk 周期生效)
         end
     endtask
 
@@ -171,7 +171,7 @@ module test_ccd_frame_buf;
             i_frame_end <= 1'b1;
             @(posedge i_adcclk);
             i_frame_end <= 1'b0;
-            wr_wait(2);
+            wr_wait(5);  // CDC 读→写 延迟余量
         end
     endtask
 

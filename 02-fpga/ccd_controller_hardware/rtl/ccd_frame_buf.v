@@ -4,7 +4,7 @@
 // Desc   : 乒乓帧缓存模块。
 //          实例化两个 async_fifo 作为子 FIFO, 以帧为单位乒乓切换,
 //          向上层呈现"深度为 2 的帧级 FIFO"。
-//          包含 S0-S3 读写状态机 (写域) + 每 FIFO 的帧状态机 (empty/ready/exception)。
+//          包含 S0-S3 读写状态机 (读域 i_rd_clk 下降沿) + 每 FIFO 的帧状态机 (写域 i_adcclk 上升沿)。
 //==============================================================================
 module ccd_frame_buf #(
     parameter MAX_FRAME_DEPTH = 131072  // 子 FIFO 物理深度 (默认 2048×64)
@@ -26,7 +26,7 @@ module ccd_frame_buf #(
     output wire         o_fifo_half_full,  // PP FIFO 半满 (1 帧)
     output wire         o_fifo_full,       // PP FIFO 满 (2 帧)
     input  wire         i_fifo_rd_en,      // PP FIFO 读使能
-    output wire         o_rd_fifo_sel,     // 当前读 FIFO 选择 (0=读fifo1, 1=读fifo0)
+    output wire         o_rd_fifo_sel,     // 当前读 FIFO 选择 (0=读fifo0, 1=读fifo1)
 
     // ---- 异常帧 ----
     output wire         o_frame_exception  // 帧异常, 读到有效像素数不等于 i_frame_depth 的帧
@@ -53,9 +53,11 @@ module ccd_frame_buf #(
     wire        fifo0_full,  fifo1_full;
     wire [15:0] fifo0_rd_data, fifo1_rd_data;
 
-    // 子 FIFO 独立复位 (写域自环时复位当前写 FIFO)
-    wire        fifo0_rst_n = i_rst_n && !fifo0_rst_req;
-    wire        fifo1_rst_n = i_rst_n && !fifo1_rst_req;
+    // 子 FIFO 独立复位 (来自读域 S0-S3 自环复位请求)
+    wire fifo0_rst_req;
+    wire fifo1_rst_req;
+    wire fifo0_rst_n = i_rst_n && !fifo0_rst_req;
+    wire fifo1_rst_n = i_rst_n && !fifo1_rst_req;
 
     // ==================================================================
     // 子 FIFO 实例化
@@ -125,7 +127,51 @@ module ccd_frame_buf #(
     assign frame_end_fall = !i_frame_end && frame_end_d;
 
     // ==================================================================
+    // CDC: 读域 → 写域 (wr_target, wr_enable, fifo_rst_req, exception)
+    //   S0-S3 状态机在写域运行, 通过 wr_target/wr_enable 控制写行为。
+    //   fifo_rst_req / rd_exception 为自环时的复位/异常脉冲。
+    // ==================================================================
+    wire wr_target;          // 读域 S0-S3: 0=写fifo0, 1=写fifo1
+    wire wr_enable;          // 读域 S0-S3: 1=正在写 (S0/S1)
+    wire fifo0_rst_req_rd;   // 读域 S0-S3: 自环时复位 fifo0
+    wire fifo1_rst_req_rd;   // 读域 S0-S3: 自环时复位 fifo1
+    wire rd_exception;       // 读域 S0-S3: 自环异常脉冲
+
+    reg [1:0] wr_target_sync;
+    reg [1:0] wr_enable_sync;
+    reg [1:0] fifo0_rst_req_sync;
+    reg [1:0] fifo1_rst_req_sync;
+    reg [1:0] rd_exception_sync;
+
+    always @(posedge i_adcclk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
+            wr_target_sync      <= 2'b00;
+            wr_enable_sync      <= 2'b00;
+            fifo0_rst_req_sync  <= 2'b00;
+            fifo1_rst_req_sync  <= 2'b00;
+            rd_exception_sync   <= 2'b00;
+        end else begin
+            wr_target_sync[0]     <= wr_target;
+            wr_target_sync[1]     <= wr_target_sync[0];
+            wr_enable_sync[0]     <= wr_enable;
+            wr_enable_sync[1]     <= wr_enable_sync[0];
+            fifo0_rst_req_sync[0] <= fifo0_rst_req_rd;
+            fifo0_rst_req_sync[1] <= fifo0_rst_req_sync[0];
+            fifo1_rst_req_sync[0] <= fifo1_rst_req_rd;
+            fifo1_rst_req_sync[1] <= fifo1_rst_req_sync[0];
+            rd_exception_sync[0]  <= rd_exception;
+            rd_exception_sync[1]  <= rd_exception_sync[0];
+        end
+    end
+
+    // 子 FIFO 独立复位 (来自读域 S0-S3 自环复位请求)
+    assign fifo0_rst_req = fifo0_rst_req_sync[1];
+    assign fifo1_rst_req = fifo1_rst_req_sync[1];
+
+    // ==================================================================
     // 写域 — 帧深度锁存 + 像素计数器
+    //   像素计数仅在 wr_enable_sync 有效时递增 (S0/S1 态),
+    //   避免 S2/S3 等待态时误计入被丢弃帧的像素。
     // ==================================================================
     reg [31:0] frame_depth_latched;
     reg [31:0] pixel_cnt;
@@ -140,20 +186,17 @@ module ccd_frame_buf #(
                 frame_depth_latched <= i_frame_depth;
                 pixel_cnt           <= 32'd0;
             end else if (i_wr_en && i_pixel_type == 2'b10
-                         && (state == S_WR0_RD1 || state == S_WR1_RD0)) begin
+                         && wr_enable_sync[1]) begin
                 pixel_cnt <= pixel_cnt + 1'b1;
             end
         end
     end
 
     // ==================================================================
-    // 写域 — 帧状态机 (每 FIFO 独立)
-    //   EMPTY / READY / EXCEPTION
+    // 写域 — fifo_empty CDC (读域 → 写域, 仅用于帧状态机)
+    //   S0-S3 已迁至写域, 不再需要此 CDC; 帧状态机 READY→EMPTY
+    //   过渡仍需读域 fifo_empty 上升沿检测。
     // ==================================================================
-    reg [1:0] fifo0_frame_state;
-    reg [1:0] fifo1_frame_state;
-
-    // 从读域同步来的 fifo_empty 标志
     reg [1:0] fifo0_empty_sync;
     reg [1:0] fifo1_empty_sync;
     reg       fifo0_empty_sync_prev;
@@ -181,6 +224,16 @@ module ccd_frame_buf #(
     assign fifo0_empty_rise = fifo0_empty_sync[1] && !fifo0_empty_sync_prev;
     assign fifo1_empty_rise = fifo1_empty_sync[1] && !fifo1_empty_sync_prev;
 
+    // ==================================================================
+    // 写域 — 帧状态机 (每 FIFO 独立)
+    //   EMPTY / READY / EXCEPTION
+    //   使用 wr_enable_sync + wr_target_sync 替代原 state 信号:
+    //     写 fifo0: wr_enable && !wr_target
+    //     写 fifo1: wr_enable &&  wr_target
+    // ==================================================================
+    reg [1:0] fifo0_frame_state;
+    reg [1:0] fifo1_frame_state;
+
     always @(posedge i_adcclk or negedge i_rst_n) begin
         if (!i_rst_n) begin
             fifo0_frame_state <= FRAME_EMPTY;
@@ -189,8 +242,7 @@ module ccd_frame_buf #(
             // ---- fifo0 帧状态 ----
             case (fifo0_frame_state)
                 FRAME_EMPTY: begin
-                    // 仅在 S0 (写fifo0) 时, frame_end↑ 评估帧完成
-                    if (frame_end_rise && state == S_WR0_RD1) begin
+                    if (frame_end_rise && wr_enable_sync[1] && !wr_target_sync[1]) begin
                         if (pixel_cnt == frame_depth_latched)
                             fifo0_frame_state <= FRAME_READY;
                         else
@@ -211,8 +263,7 @@ module ccd_frame_buf #(
             // ---- fifo1 帧状态 ----
             case (fifo1_frame_state)
                 FRAME_EMPTY: begin
-                    // 仅在 S1 (写fifo1) 时, frame_end↑ 评估帧完成
-                    if (frame_end_rise && state == S_WR1_RD0) begin
+                    if (frame_end_rise && wr_enable_sync[1] && wr_target_sync[1]) begin
                         if (pixel_cnt == frame_depth_latched)
                             fifo1_frame_state <= FRAME_READY;
                         else
@@ -236,46 +287,174 @@ module ccd_frame_buf #(
     wire fifo1_frame_ready = (fifo1_frame_state == FRAME_READY);
 
     // ==================================================================
-    // 写域 — S0-S3 读写状态机 (i_adcclk 上升沿)
-    //
-    //   自环条件在 frame_end_fall 时评估；跨状态转移
-    //   (S0→S2 / S1→S3) 不受 frame_end 限制, 任何时刻满足即触发。
+    // 写域 — 写使能路由
+    //   使用 CDC 同步后的 wr_enable_sync / wr_target_sync 控制。
     // ==================================================================
-    reg [1:0] state;
-    reg       frame_exception_reg;
-    reg       fifo0_rst_req, fifo1_rst_req;
+    wire wr_active = i_wr_en && (i_pixel_type == 2'b10);
+
+    assign fifo0_wr_en = (wr_target_sync[1] == 1'b0) && wr_enable_sync[1] && wr_active;
+    assign fifo1_wr_en = (wr_target_sync[1] == 1'b1) && wr_enable_sync[1] && wr_active;
+
+    // ==================================================================
+    // 写域 — o_frame_exception 输出
+    //   两个来源: (1) 帧状态机检测到帧长度异常 (写域原生)
+    //            (2) S0-S3 自环时的异常脉冲 (读域 CDC 过来)
+    // ==================================================================
+    reg [1:0] fifo0_frame_state_prev;
+    reg [1:0] fifo1_frame_state_prev;
+    wire       fifo0_exception_rise;
+    wire       fifo1_exception_rise;
 
     always @(posedge i_adcclk or negedge i_rst_n) begin
         if (!i_rst_n) begin
-            state                 <= S_WR0_RD1;
-            frame_exception_reg   <= 1'b0;
-            fifo0_rst_req         <= 1'b0;
-            fifo1_rst_req         <= 1'b0;
+            fifo0_frame_state_prev <= FRAME_EMPTY;
+            fifo1_frame_state_prev <= FRAME_EMPTY;
+        end else begin
+            fifo0_frame_state_prev <= fifo0_frame_state;
+            fifo1_frame_state_prev <= fifo1_frame_state;
+        end
+    end
+    assign fifo0_exception_rise = (fifo0_frame_state == FRAME_EXCEPTION) &&
+                                   (fifo0_frame_state_prev != FRAME_EXCEPTION);
+    assign fifo1_exception_rise = (fifo1_frame_state == FRAME_EXCEPTION) &&
+                                   (fifo1_frame_state_prev != FRAME_EXCEPTION);
+
+    assign o_frame_exception = fifo0_exception_rise || fifo1_exception_rise ||
+                                rd_exception_sync[1];
+
+    // ==================================================================
+    // CDC: 写域 → 读域
+    //   - frame_end, frame_start: 帧边界标记 (用于读域 S0-S3 状态机)
+    //   - fifo0_frame_ready, fifo1_frame_ready: 帧就绪标志 (用于读域状态机 + 输出标志)
+    // ==================================================================
+
+    // ---- frame_end CDC (写域 → 读域) ----
+    //   使用 3 级同步 + 寄存器边沿检测, 确保 frame_end_fall_rd
+    //   在 fifo_ready_sync[2] 稳定后才触发 (避免同沿竞争)。
+    reg [2:0] frame_end_rd_sync;
+    reg       frame_end_rd_sync_prev;
+    reg       frame_end_rise_rd;
+    reg       frame_end_fall_rd;
+
+    always @(posedge i_rd_clk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
+            frame_end_rd_sync       <= 3'b000;
+            frame_end_rd_sync_prev  <= 1'b0;
+            frame_end_rise_rd       <= 1'b0;
+            frame_end_fall_rd       <= 1'b0;
+        end else begin
+            frame_end_rd_sync[0] <= i_frame_end;
+            frame_end_rd_sync[1] <= frame_end_rd_sync[0];
+            frame_end_rd_sync[2] <= frame_end_rd_sync[1];
+            frame_end_rd_sync_prev <= frame_end_rd_sync[2];
+            // 寄存器边沿检测 (比 fifo_ready_sync[2] 晚 1 rd_clk, 消除竞争)
+            frame_end_rise_rd <= frame_end_rd_sync[2] && !frame_end_rd_sync_prev;
+            frame_end_fall_rd <= !frame_end_rd_sync[2] && frame_end_rd_sync_prev;
+        end
+    end
+
+    // ---- frame_start CDC (写域 → 读域) ----
+    reg [1:0] frame_start_rd_sync;
+    reg       frame_start_rd_d;
+    wire      frame_start_rise_rd;
+
+    always @(posedge i_rd_clk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
+            frame_start_rd_sync <= 2'b00;
+            frame_start_rd_d    <= 1'b0;
+        end else begin
+            frame_start_rd_sync[0] <= i_frame_start;
+            frame_start_rd_sync[1] <= frame_start_rd_sync[0];
+            frame_start_rd_d       <= frame_start_rd_sync[1];
+        end
+    end
+    assign frame_start_rise_rd = frame_start_rd_sync[1] && !frame_start_rd_d;
+
+    // ---- fifoX_frame_ready CDC (写域 → 读域) ----
+    //   使用 3 级同步器 + 边沿检测, 确保在 frame_end_fall_rd
+    //   触发时 fifo_ready_sync 已稳定 (避免同一个 rd_clk 沿的竞争)。
+    reg [2:0] fifo0_ready_sync;
+    reg [2:0] fifo1_ready_sync;
+    reg       fifo0_ready_sync_prev;
+    reg       fifo1_ready_sync_prev;
+    wire      fifo0_ready_rise;
+    wire      fifo1_ready_rise;
+
+    always @(posedge i_rd_clk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
+            fifo0_ready_sync       <= 3'b000;
+            fifo1_ready_sync       <= 3'b000;
+            fifo0_ready_sync_prev  <= 1'b0;
+            fifo1_ready_sync_prev  <= 1'b0;
+        end else begin
+            fifo0_ready_sync[0] <= fifo0_frame_ready;
+            fifo0_ready_sync[1] <= fifo0_ready_sync[0];
+            fifo0_ready_sync[2] <= fifo0_ready_sync[1];
+            fifo1_ready_sync[0] <= fifo1_frame_ready;
+            fifo1_ready_sync[1] <= fifo1_ready_sync[0];
+            fifo1_ready_sync[2] <= fifo1_ready_sync[1];
+
+            fifo0_ready_sync_prev <= fifo0_ready_sync[2];
+            fifo1_ready_sync_prev <= fifo1_ready_sync[2];
+        end
+    end
+    assign fifo0_ready_rise = fifo0_ready_sync[2] && !fifo0_ready_sync_prev;
+    assign fifo1_ready_rise = fifo1_ready_sync[2] && !fifo1_ready_sync_prev;
+
+    // ==================================================================
+    // 读域 — S0-S3 读写状态机 (i_rd_clk 下降沿)
+    //
+    //   使用下降沿以对齐 async_fifo 的 output update 时钟沿。
+    //   async_fifo 在 negedge 更新 o_empty / o_rd_data, 本状态机
+    //   同样在 negedge 采样 fifo_empty 和更新 rd_sel, 使 rd_sel
+    //   在下一个 posedge (async_fifo 采样 i_rd_en) 前充分稳定。
+    //   fifo_frame_ready 通过 3 级同步器从写域获取 (posedge 更新)。
+    //   自环条件在 frame_end_fall_rd 时评估；跨状态转移
+    //   (S0→S2 / S1→S3) 不受 frame_end 限制, 任何时刻满足即触发。
+    //
+    //   输出:
+    //     wr_target : 0=写fifo0, 1=写fifo1  → CDC 到写域
+    //     wr_enable : 1=正在写 (S0/S1)      → CDC 到写域
+    //     rd_sel    : 0=读fifo0, 1=读fifo1  → 读域本地使用
+    //     fifoX_rst_req_rd : 自环时复位子 FIFO → CDC 到写域
+    //     rd_exception     : 自环异常脉冲     → CDC 到写域
+    // ==================================================================
+    reg [1:0] rd_state;
+    reg       rd_exception_reg;
+    reg       fifo0_rst_req_rd_reg;
+    reg       fifo1_rst_req_rd_reg;
+
+    always @(negedge i_rd_clk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
+            rd_state              <= S_WR0_RD1;
+            rd_exception_reg      <= 1'b0;
+            fifo0_rst_req_rd_reg  <= 1'b0;
+            fifo1_rst_req_rd_reg  <= 1'b0;
         end else begin
             // 默认: 脉冲信号自动清零
-            frame_exception_reg <= 1'b0;
-            fifo0_rst_req       <= 1'b0;
-            fifo1_rst_req       <= 1'b0;
+            rd_exception_reg      <= 1'b0;
+            fifo0_rst_req_rd_reg  <= 1'b0;
+            fifo1_rst_req_rd_reg  <= 1'b0;
 
-            case (state)
+            case (rd_state)
                 // ----------------------------------------------------------
                 // S0: 写 fifo0, 读 fifo1
                 // ----------------------------------------------------------
                 S_WR0_RD1: begin
                     // 跨状态: fifo0 写完了但 fifo1 还没读空 → 暂停写入
-                    if (fifo0_frame_ready && !fifo1_empty_sync[1]) begin
-                        state <= S_NW_RD1;
+                    if (fifo0_ready_sync[2] && !fifo1_empty) begin
+                        rd_state <= S_NW_RD1;
                     end
                     // frame_end 下降沿: 评估自环 vs 正常切换
-                    else if (frame_end_fall) begin
-                        if (!fifo1_empty_sync[1] || !fifo0_frame_ready) begin
+                    else if (frame_end_fall_rd) begin
+                        if (!fifo1_empty || !fifo0_ready_sync[2]) begin
                             // 自环: 读侧忙 或 写侧帧异常 → 复位 fifo0
-                            state <= S_WR0_RD1;
-                            fifo0_rst_req <= 1'b1;
-                            frame_exception_reg <= 1'b1;
+                            rd_state <= S_WR0_RD1;
+                            fifo0_rst_req_rd_reg <= 1'b1;
+                            rd_exception_reg <= 1'b1;
                         end else begin
                             // → S1: 正常乒乓切换
-                            state <= S_WR1_RD0;
+                            rd_state <= S_WR1_RD0;
                         end
                     end
                 end
@@ -285,19 +464,19 @@ module ccd_frame_buf #(
                 // ----------------------------------------------------------
                 S_WR1_RD0: begin
                     // 跨状态: fifo1 写完了但 fifo0 还没读空 → 暂停写入
-                    if (fifo1_frame_ready && !fifo0_empty_sync[1]) begin
-                        state <= S_NW_RD0;
+                    if (fifo1_ready_sync[2] && !fifo0_empty) begin
+                        rd_state <= S_NW_RD0;
                     end
                     // frame_end 下降沿: 评估自环 vs 正常切换
-                    else if (frame_end_fall) begin
-                        if (!fifo0_empty_sync[1] || !fifo1_frame_ready) begin
+                    else if (frame_end_fall_rd) begin
+                        if (!fifo0_empty || !fifo1_ready_sync[2]) begin
                             // 自环: 读侧忙 或 写侧帧异常 → 复位 fifo1
-                            state <= S_WR1_RD0;
-                            fifo1_rst_req <= 1'b1;
-                            frame_exception_reg <= 1'b1;
+                            rd_state <= S_WR1_RD0;
+                            fifo1_rst_req_rd_reg <= 1'b1;
+                            rd_exception_reg <= 1'b1;
                         end else begin
                             // → S0: 正常乒乓切换
-                            state <= S_WR0_RD1;
+                            rd_state <= S_WR0_RD1;
                         end
                     end
                 end
@@ -306,83 +485,31 @@ module ccd_frame_buf #(
                 // S2: 不写, 读 fifo1 (等待 fifo1 被清空)
                 // ----------------------------------------------------------
                 S_NW_RD1: begin
-                    if (fifo1_empty_sync[1])
-                        state <= S_WR1_RD0;
+                    if (fifo1_empty)
+                        rd_state <= S_WR1_RD0;
                 end
 
                 // ----------------------------------------------------------
                 // S3: 不写, 读 fifo0 (等待 fifo0 被清空)
                 // ----------------------------------------------------------
                 S_NW_RD0: begin
-                    if (fifo0_empty_sync[1])
-                        state <= S_WR0_RD1;
+                    if (fifo0_empty)
+                        rd_state <= S_WR0_RD1;
                 end
 
-                default: state <= S_WR0_RD1;
+                default: rd_state <= S_WR0_RD1;
             endcase
         end
     end
 
-    // ==================================================================
-    // 写域 — 写使能路由
-    // ==================================================================
-    // 使用组合逻辑路由, 避免 NBA 时序问题
-    wire wr_active = i_wr_en && (i_pixel_type == 2'b10);
-
-    assign fifo0_wr_en = (state == S_WR0_RD1) && wr_active;
-    assign fifo1_wr_en = (state == S_WR1_RD0) && wr_active;
-
-    // ==================================================================
-    // 写域 — o_frame_exception 输出 (写域脉冲)
-    // ==================================================================
-    assign o_frame_exception = frame_exception_reg;
-
-    // ==================================================================
-    // CDC: 写域 → 读域
-    //   - wr_rd_sel: 读选择信号 (0=读fifo1, 1=读fifo0)
-    //   - fifo0_frame_ready, fifo1_frame_ready: 帧就绪标志
-    // ==================================================================
-
-    // 读选择: S0/S2 → 读 fifo1 (0), S1/S3 → 读 fifo0 (1)
-    wire wr_rd_sel = (state == S_WR1_RD0 || state == S_NW_RD0);
-
-    // 双级同步 wr_rd_sel → 读域
-    reg [1:0] rd_sel_sync;
-    always @(posedge i_rd_clk or negedge i_rst_n) begin
-        if (!i_rst_n)
-            rd_sel_sync <= 2'b00;
-        else begin
-            rd_sel_sync[0] <= wr_rd_sel;
-            rd_sel_sync[1] <= rd_sel_sync[0];
-        end
-    end
-
-    // 双级同步 fifoX_frame_ready → 读域 (用于输出标志)
-    reg [1:0] fifo0_ready_sync;
-    reg [1:0] fifo1_ready_sync;
-    reg       fifo0_ready_sync_prev;
-    reg       fifo1_ready_sync_prev;
-    wire      fifo0_ready_rise;
-    wire      fifo1_ready_rise;
-
-    always @(posedge i_rd_clk or negedge i_rst_n) begin
-        if (!i_rst_n) begin
-            fifo0_ready_sync       <= 2'b00;
-            fifo1_ready_sync       <= 2'b00;
-            fifo0_ready_sync_prev  <= 1'b0;
-            fifo1_ready_sync_prev  <= 1'b0;
-        end else begin
-            fifo0_ready_sync[0] <= fifo0_frame_ready;
-            fifo0_ready_sync[1] <= fifo0_ready_sync[0];
-            fifo1_ready_sync[0] <= fifo1_frame_ready;
-            fifo1_ready_sync[1] <= fifo1_ready_sync[0];
-
-            fifo0_ready_sync_prev <= fifo0_ready_sync[1];
-            fifo1_ready_sync_prev <= fifo1_ready_sync[1];
-        end
-    end
-    assign fifo0_ready_rise = fifo0_ready_sync[1] && !fifo0_ready_sync_prev;
-    assign fifo1_ready_rise = fifo1_ready_sync[1] && !fifo1_ready_sync_prev;
+    // ---- S0-S3 输出 ----
+    wire rd_sel;
+    assign wr_target         = (rd_state == S_WR1_RD0 || rd_state == S_NW_RD0);
+    assign wr_enable         = (rd_state == S_WR0_RD1 || rd_state == S_WR1_RD0);
+    assign rd_sel            = ~wr_target; // 0=读fifo0, 1=读fifo1
+    assign fifo0_rst_req_rd  = fifo0_rst_req_rd_reg;
+    assign fifo1_rst_req_rd  = fifo1_rst_req_rd_reg;
+    assign rd_exception      = rd_exception_reg;
 
     // ==================================================================
     // 读域 — 子 FIFO empty 边沿检测 (帧已被完全读出)
@@ -432,34 +559,42 @@ module ccd_frame_buf #(
 
     // ==================================================================
     // 读域 — 读使能路由 + 数据 MUX
+    //   rd_sel = ~wr_target, 由读域 S0-S3 状态机直接产生:
+    //   S1/S3 (wr_target=1) → rd_sel=0 → 读fifo0,
+    //   S0/S2 (wr_target=0) → rd_sel=1 → 读fifo1。
     // ==================================================================
-    wire rd_sel = rd_sel_sync[1];  // 0=读fifo1, 1=读fifo0
+    assign fifo0_rd_en = i_fifo_rd_en && (rd_sel == 1'b0);
+    assign fifo1_rd_en = i_fifo_rd_en && (rd_sel == 1'b1);
 
-    assign fifo0_rd_en = i_fifo_rd_en && (rd_sel == 1'b1);
-    assign fifo1_rd_en = i_fifo_rd_en && (rd_sel == 1'b0);
-
-    assign o_fifo_data = (rd_sel == 1'b1) ? fifo0_rd_data : fifo1_rd_data;
+    assign o_fifo_data = (rd_sel == 1'b0) ? fifo0_rd_data : fifo1_rd_data;
 
     // ==================================================================
     // 读域 — PP FIFO 标志输出 (下降沿更新)
+    //   o_rd_fifo_sel 在上升沿采样, 比 S0-S3 negedge 晚 0.5 周期,
+    //   确保 rd_sel 已稳定。
     // ==================================================================
     reg empty_reg;
     reg half_full_reg;
     reg full_reg;
-    reg rd_sel_reg;       // 当前读 FIFO 选择 (0=读fifo1, 1=读fifo0)
 
     always @(negedge i_rd_clk or negedge i_rst_n) begin
         if (!i_rst_n) begin
             empty_reg     <= 1'b1;
             half_full_reg <= 1'b0;
             full_reg      <= 1'b0;
-            rd_sel_reg    <= 1'b0;     // 复位默认读 fifo1 (S0 初始态)
         end else begin
             empty_reg     <= (frames_ready_cnt == 2'd0);
             half_full_reg <= (frames_ready_cnt == 2'd1);
             full_reg      <= (frames_ready_cnt == 2'd2);
-            rd_sel_reg    <= rd_sel;   // rd_sel 已由 rd_sel_sync[1] 同步到读域
         end
+    end
+
+    reg rd_sel_reg;
+    always @(posedge i_rd_clk or negedge i_rst_n) begin
+        if (!i_rst_n)
+            rd_sel_reg <= 1'b0;
+        else
+            rd_sel_reg <= rd_sel;
     end
 
     assign o_fifo_empty     = empty_reg;
