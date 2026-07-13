@@ -56,6 +56,7 @@ module test_ccd;
     wire [15:0] o_slave_fifo_data;
     wire        o_slave_fifo_data_valid_n;
     wire        o_frame_done_n;
+    wire [1:0]  o_frame_num;
     wire        o_frame_exception;
 
     // ==================================================================
@@ -96,6 +97,7 @@ module test_ccd;
         .o_slave_fifo_data       (o_slave_fifo_data),
         .o_slave_fifo_data_valid_n(o_slave_fifo_data_valid_n),
         .o_frame_done_n          (o_frame_done_n),
+        .o_frame_num             (o_frame_num),
         .o_frame_exception       (o_frame_exception)
     );
 

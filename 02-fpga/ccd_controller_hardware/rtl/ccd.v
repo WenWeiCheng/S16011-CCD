@@ -52,9 +52,10 @@ module ccd #(
     output wire [15:0]  o_slave_fifo_data,     // 输出到 Slave FIFO 的数据
     output wire         o_slave_fifo_data_valid_n, // 数据有效 (低有效)
     output wire         o_frame_done_n,        // 帧发送完成 (低有效)
-
+    // ---- 帧缓存状态 ----
+    output wire [1:0]   o_frame_num,           // 帧缓存中可读帧数: 0=空, 1=一帧, 2=两帧
     // ---- 异常 ----
-    output wire         o_frame_exception      // 帧异常标志
+    output wire         o_frame_exception      // 帧异常脉冲
 );
 
     // ==================================================================
@@ -126,6 +127,9 @@ module ccd #(
 
     // ADCCLK 对外输出
     assign o_adcclk = adcclk_w;
+
+    // 帧缓存帧数编码: 00=空, 01=一帧, 10=两帧
+    assign o_frame_num = {fifo_full_w, fifo_half_full_w};
 
     // ==================================================================
     // ccd_frame_buf 实例化
