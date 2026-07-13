@@ -21,6 +21,7 @@ module async_fifo #(
     output wire [DATA_WIDTH-1:0] o_rd_data,
     input  wire             i_rd_en,
     output wire             o_empty,
+    output wire             o_almost_empty,
     output wire             o_valid
 );
 
@@ -81,6 +82,23 @@ module async_fifo #(
             rd_gray <= bin2gray(rd_ptr + 1'b1);
         end
     end
+
+    // almost_empty: 在上升沿用读出前的 rd_ptr 预判,
+    //               在下降沿注册输出 (与 o_rd_data / o_empty 同步)
+    reg almost_empty_int;   // 上升沿预判值
+    reg almost_empty_reg;   // 下降沿输出寄存器
+
+    always @(posedge i_rd_clk) begin
+        almost_empty_int <= (bin2gray(rd_ptr + 1'b1) == wr_gray_synced);
+    end
+
+    always @(negedge i_rd_clk or negedge i_rst_n) begin
+        if (!i_rst_n)
+            almost_empty_reg <= 1'b0;
+        else
+            almost_empty_reg <= almost_empty_int;
+    end
+    assign o_almost_empty = almost_empty_reg;
 
     // 读数据 (上升沿从 BRAM 读取, 此时 rd_addr 仍为 NBA 前的旧值)
     reg [DATA_WIDTH-1:0] rd_data_int;

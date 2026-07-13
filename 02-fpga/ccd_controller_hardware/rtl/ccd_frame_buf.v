@@ -27,6 +27,7 @@ module ccd_frame_buf #(
     output wire         o_fifo_full,       // PP FIFO 满 (2 帧)
     input  wire         i_fifo_rd_en,      // PP FIFO 读使能
     output wire         o_rd_fifo_sel,     // 当前读 FIFO 选择 (0=读fifo0, 1=读fifo1)
+    output wire         o_fifo_last_word,  // 当前读出字是帧最后一字
 
     // ---- 异常帧 ----
     output wire         o_frame_exception  // 帧异常, 读到有效像素数不等于 i_frame_depth 的帧
@@ -51,6 +52,7 @@ module ccd_frame_buf #(
     wire        fifo0_rd_en, fifo1_rd_en;
     wire        fifo0_empty, fifo1_empty;
     wire        fifo0_full,  fifo1_full;
+    wire        fifo0_almost_empty, fifo1_almost_empty;
     wire [15:0] fifo0_rd_data, fifo1_rd_data;
 
     // 子 FIFO 独立复位 (来自读域 S0-S3 自环复位请求)
@@ -76,6 +78,7 @@ module ccd_frame_buf #(
         .o_rd_data     (fifo0_rd_data),
         .i_rd_en       (fifo0_rd_en),
         .o_empty       (fifo0_empty),
+        .o_almost_empty(fifo0_almost_empty),
         .o_valid       ()
     );
 
@@ -93,6 +96,7 @@ module ccd_frame_buf #(
         .o_rd_data     (fifo1_rd_data),
         .i_rd_en       (fifo1_rd_en),
         .o_empty       (fifo1_empty),
+        .o_almost_empty(fifo1_almost_empty),
         .o_valid       ()
     );
 
@@ -566,7 +570,10 @@ module ccd_frame_buf #(
     assign fifo0_rd_en = i_fifo_rd_en && (rd_sel == 1'b0);
     assign fifo1_rd_en = i_fifo_rd_en && (rd_sel == 1'b1);
 
-    assign o_fifo_data = (rd_sel == 1'b0) ? fifo0_rd_data : fifo1_rd_data;
+    // o_fifo_last_word — 组合 MUX 自 async_fifo 的下降沿寄存器输出
+    // (async_fifo 已在 negedge 更新 o_almost_empty, 此处无需再加一级)
+    assign o_fifo_data      = (rd_sel == 1'b0) ? fifo0_rd_data      : fifo1_rd_data;
+    assign o_fifo_last_word = (rd_sel == 1'b0) ? fifo0_almost_empty : fifo1_almost_empty;
 
     // ==================================================================
     // 读域 — PP FIFO 标志输出 (下降沿更新)

@@ -3,10 +3,12 @@
 // Module : test_async_fifo
 // Desc   : async_fifo 基础功能验证
 //
-//   测试 1 : 复位 — o_empty=1, o_full=0
+//   测试 1 : 复位 — o_empty=1, o_full=0, o_almost_empty=0
 //   测试 2 : 写入 8 个数据 — 填满 FIFO, 验证 o_full=1
 //   测试 3 : 读出 8 个数据 — 排空 FIFO, 验证 o_empty=1
 //   测试 4 : 绕回测试 — 写 5 → 读 3 → 写 6 → 读 8, 验证数据完整性
+//   测试 5 : almost_empty — 1 字时拉高, 读出后变 0
+//   测试 6 : almost_empty — 2 字时 0 → 读 1 字后变 1 → 再读变 0
 //==============================================================================
 module test_async_fifo;
 
@@ -27,6 +29,7 @@ module test_async_fifo;
     wire [15:0]             o_rd_data;
     reg                     i_rd_en;
     wire                    o_empty;
+    wire                    o_almost_empty;
     wire                    o_valid;
 
     // DUT
@@ -44,6 +47,7 @@ module test_async_fifo;
         .o_rd_data     (o_rd_data),
         .i_rd_en       (i_rd_en),
         .o_empty       (o_empty),
+        .o_almost_empty(o_almost_empty),
         .o_valid       (o_valid)
     );
 
@@ -162,7 +166,83 @@ module test_async_fifo;
             rd_data;
         end
 
+        // ================================================================
+        // 测试 5 : almost_empty — 1 字时拉高, 读出后变 0
+        // ================================================================
+        // 先确保 FIFO 空
+        rd_wait(5);
+
+        // 写 1 字
+        wr_data(16'd500);
+        // 等待写指针 CDC 到读域 (至少 2 rd_clk)
+        rd_wait(5);
+
+        // 此时 FIFO 中有 1 字, 下一拍读出会使 FIFO 变空
+        // almost_empty 在 posedge 更新, 采样检查
+        @(posedge i_rd_clk);
+        if (o_almost_empty !== 1'b1) begin
+            $display("[FAIL] Test5: after 1 write, almost_empty=%b (expected 1)",
+                     o_almost_empty);
+        end else begin
+            $display("[PASS] Test5: almost_empty=1 when 1 word in FIFO");
+        end
+
+        // 读出该字
+        rd_data;
+
+        // 读出后 FIFO 空, almost_empty 应变 0
+        @(posedge i_rd_clk);
+        #1;
+        if (o_almost_empty !== 1'b0) begin
+            $display("[FAIL] Test5: after read empty, almost_empty=%b (expected 0)",
+                     o_almost_empty);
+        end else begin
+            $display("[PASS] Test5: almost_empty=0 after FIFO emptied");
+        end
+
+        // ================================================================
+        // 测试 6 : almost_empty — 2 字时 0 → 读 1 字后变 1 → 再读变 0
+        // ================================================================
+        // 写 2 字
+        wr_data(16'd600);
+        wr_data(16'd601);
+        rd_wait(5);  // CDC
+
+        // 2 字在 FIFO 中, 读 1 字不会空 → almost_empty=0
+        @(posedge i_rd_clk);
+        if (o_almost_empty !== 1'b0) begin
+            $display("[FAIL] Test6a: with 2 words, almost_empty=%b (expected 0)",
+                     o_almost_empty);
+        end else begin
+            $display("[PASS] Test6a: almost_empty=0 when 2 words in FIFO");
+        end
+
+        // 读 1 字, 剩 1 字
+        rd_data;
+        @(posedge i_rd_clk);
+        #1;
+        if (o_almost_empty !== 1'b1) begin
+            $display("[FAIL] Test6b: after reading 1 of 2, almost_empty=%b (expected 1)",
+                     o_almost_empty);
+        end else begin
+            $display("[PASS] Test6b: almost_empty=1 when 1 word left");
+        end
+
+        // 读最后 1 字, FIFO 空
+        rd_data;
+        @(posedge i_rd_clk);
+        #1;
+        if (o_almost_empty !== 1'b0) begin
+            $display("[FAIL] Test6c: after emptying FIFO, almost_empty=%b (expected 0)",
+                     o_almost_empty);
+        end else begin
+            $display("[PASS] Test6c: almost_empty=0 after FIFO emptied");
+        end
+
         rd_wait(10);
+        $display("========================================");
+        $display(" All tests completed");
+        $display("========================================");
         // 结束
         $finish;
     end
