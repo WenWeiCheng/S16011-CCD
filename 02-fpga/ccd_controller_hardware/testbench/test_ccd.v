@@ -1,11 +1,11 @@
 `timescale 1ns / 1ps
 //==============================================================================
 // Module : test_ccd
-// Desc   : ccd 顶层模块联合测试 (ccd_driver + ccd_frame_buf)
+// Desc   : ccd 顶层模块联合测试 (ccd_driver + ccd_frame_buf + ccd_frame_tx)
 //
-//   测试 1 : line binning 模式 — 触发一帧 → 帧缓存接收 → 读出验证
-//   测试 2 : image 模式 — 触发一帧 → 帧缓存接收 → 读出验证
-//   测试 3 : 乒乓双帧 — 连续触发两帧 → full=1 → 读出两帧
+//   测试 1 : line binning 模式 — 触发一帧 → TX 发送 → Slave FIFO 读出验证
+//   测试 2 : image 模式 — 触发一帧 → TX 发送 → Slave FIFO 读出验证
+//   测试 3 : 乒乓双帧 — 连续触发两帧 → TX 发送两帧
 //   测试 4 : exposure 打断 — 运行中拉高 exposure → 回到 IDLE
 //==============================================================================
 module test_ccd;
@@ -48,14 +48,14 @@ module test_ccd;
     wire o_cdsclk1;
     wire o_cdsclk2;
 
-    // ---- 帧缓存读侧 ----
+    // ---- FX2 Slave FIFO 接口 ----
     reg         i_rd_clk;
-    wire [15:0] o_fifo_data;
-    wire        o_fifo_empty;
-    wire        o_fifo_half_full;
-    wire        o_fifo_full;
-    reg         i_fifo_rd_en;
-    wire        o_rd_fifo_sel;
+    reg         i_tx_frame_start;
+    reg         i_slave_fifo_empty_n;
+    reg         i_slave_fifo_full_n;
+    wire [15:0] o_slave_fifo_data;
+    wire        o_slave_fifo_data_valid_n;
+    wire        o_frame_done_n;
     wire        o_frame_exception;
 
     // ==================================================================
@@ -64,39 +64,39 @@ module test_ccd;
     ccd #(
         .MAX_FRAME_DEPTH(256)
     ) u_dut (
-        .i_clk           (i_clk),
-        .i_rst_n         (i_rst_n),
-        .i_exposure      (i_exposure),
-        .i_freq_sel      (i_freq_sel),
-        .i_cdsclk_delay  (i_cdsclk_delay),
-        .i_image_width   (i_image_width),
-        .i_image_height  (i_image_height),
-        .i_bevel_left    (i_bevel_left),
-        .i_bevel_top     (i_bevel_top),
-        .i_bevel_right   (i_bevel_right),
-        .i_bevel_bottom  (i_bevel_bottom),
-        .i_blank_left    (i_blank_left),
-        .i_blank_right   (i_blank_right),
-        .i_read_mode     (i_read_mode),
-        .i_adc_data      (i_adc_data),
-        .o_adcclk        (o_adcclk),
-        .o_p1v           (o_p1v),
-        .o_p2v_tg        (o_p2v_tg),
-        .o_p1h           (o_p1h),
-        .o_p2h           (o_p2h),
-        .o_p3h           (o_p3h),
-        .o_p4h_sg        (o_p4h_sg),
-        .o_rg            (o_rg),
-        .o_cdsclk1       (o_cdsclk1),
-        .o_cdsclk2       (o_cdsclk2),
-        .i_rd_clk        (i_rd_clk),
-        .o_fifo_data     (o_fifo_data),
-        .o_fifo_empty    (o_fifo_empty),
-        .o_fifo_half_full(o_fifo_half_full),
-        .o_fifo_full     (o_fifo_full),
-        .i_fifo_rd_en    (i_fifo_rd_en),
-        .o_rd_fifo_sel   (o_rd_fifo_sel),
-        .o_frame_exception(o_frame_exception)
+        .i_clk                   (i_clk),
+        .i_rst_n                 (i_rst_n),
+        .i_exposure              (i_exposure),
+        .i_freq_sel              (i_freq_sel),
+        .i_cdsclk_delay          (i_cdsclk_delay),
+        .i_image_width           (i_image_width),
+        .i_image_height          (i_image_height),
+        .i_bevel_left            (i_bevel_left),
+        .i_bevel_top             (i_bevel_top),
+        .i_bevel_right           (i_bevel_right),
+        .i_bevel_bottom          (i_bevel_bottom),
+        .i_blank_left            (i_blank_left),
+        .i_blank_right           (i_blank_right),
+        .i_read_mode             (i_read_mode),
+        .i_adc_data              (i_adc_data),
+        .o_adcclk                (o_adcclk),
+        .o_p1v                   (o_p1v),
+        .o_p2v_tg                (o_p2v_tg),
+        .o_p1h                   (o_p1h),
+        .o_p2h                   (o_p2h),
+        .o_p3h                   (o_p3h),
+        .o_p4h_sg                (o_p4h_sg),
+        .o_rg                    (o_rg),
+        .o_cdsclk1               (o_cdsclk1),
+        .o_cdsclk2               (o_cdsclk2),
+        .i_rd_clk                (i_rd_clk),
+        .i_tx_frame_start        (i_tx_frame_start),
+        .i_slave_fifo_empty_n    (i_slave_fifo_empty_n),
+        .i_slave_fifo_full_n     (i_slave_fifo_full_n),
+        .o_slave_fifo_data       (o_slave_fifo_data),
+        .o_slave_fifo_data_valid_n(o_slave_fifo_data_valid_n),
+        .o_frame_done_n          (o_frame_done_n),
+        .o_frame_exception       (o_frame_exception)
     );
 
     // ==================================================================
@@ -143,27 +143,47 @@ module test_ccd;
         end
     endtask
 
-    // ---- 从帧缓存读出一个像素 ----
-    reg [15:0] rd_result;
-    task rd_pixel;
+    // ---- 从 Slave FIFO 读取一字 (等待 valid_n=0 后采样) ----
+    reg [15:0] slave_rd_result;
+    task slave_read_word;
         begin
             @(negedge i_rd_clk);
-            i_fifo_rd_en <= 1'b1;
-            @(posedge i_rd_clk);
-            i_fifo_rd_en <= 1'b0;
-            @(negedge i_rd_clk);
-            @(posedge i_rd_clk);
-            rd_result = o_fifo_data;
+            while (o_slave_fifo_data_valid_n !== 1'b0)
+                @(negedge i_rd_clk);
+            slave_rd_result = o_slave_fifo_data;
         end
     endtask
 
-    // ---- 读出 N 个像素 ----
-    task rd_pixels(input integer num);
+    // ---- 从 Slave FIFO 读出 N 个字 ----
+    task slave_read_words(input integer num);
         integer k;
         begin
-            for (k = 0; k < num; k = k + 1) begin
-                rd_pixel;
+            for (k = 0; k < num; k = k + 1)
+                slave_read_word;
+        end
+    endtask
+
+    // ---- 触发帧发送 (下降沿) ----
+    task send_frame;
+        begin
+            @(posedge i_rd_clk);
+            i_tx_frame_start <= 1'b0;
+            @(posedge i_rd_clk);
+            i_tx_frame_start <= 1'b1;
+        end
+    endtask
+
+    // ---- 等待 frame_done (最多等 500 rd_clk) ----
+    reg [15:0] wait_timeout;
+    reg        frame_done_detected;
+    task wait_frame_done;
+        begin
+            wait_timeout = 0;
+            while (o_frame_done_n !== 1'b0 && wait_timeout < 500) begin
+                @(posedge i_rd_clk);
+                wait_timeout = wait_timeout + 1;
             end
+            frame_done_detected = (o_frame_done_n === 1'b0);
         end
     endtask
 
@@ -180,22 +200,24 @@ module test_ccd;
     initial begin : stimulus
 
         // ---- 初始化 ----
-        i_freq_sel     = 1'b0;        // 100kHz SCLK
-        i_rst_n        = 1'b0;
-        i_exposure     = 1'b1;
-        i_image_width  = 16'd4;
-        i_image_height = 16'd2;
-        i_bevel_left   = 4'd1;
-        i_bevel_top    = 4'd1;
-        i_bevel_right  = 4'd1;
-        i_bevel_bottom = 4'd1;
-        i_blank_left   = 4'd1;
-        i_blank_right  = 4'd1;
-        i_read_mode    = 2'd0;        // line binning
-        i_adc_data     = 8'd0;
-        i_cdsclk_delay = 7'd0;
-        i_fifo_rd_en   = 1'b0;
-        adc_cnt        = 4'd0;
+        i_freq_sel           = 1'b0;        // 100kHz SCLK
+        i_rst_n              = 1'b0;
+        i_exposure           = 1'b1;
+        i_image_width        = 16'd4;
+        i_image_height       = 16'd2;
+        i_bevel_left         = 4'd1;
+        i_bevel_top          = 4'd1;
+        i_bevel_right        = 4'd1;
+        i_bevel_bottom       = 4'd1;
+        i_blank_left         = 4'd1;
+        i_blank_right        = 4'd1;
+        i_read_mode          = 2'd0;        // line binning
+        i_adc_data           = 8'd0;
+        i_cdsclk_delay       = 7'd0;
+        i_tx_frame_start     = 1'b1;        // 默认高, 下降沿触发
+        i_slave_fifo_empty_n = 1'b1;        // Slave FIFO 非空 (可接收)
+        i_slave_fifo_full_n  = 1'b1;        // Slave FIFO 未满 (可写入)
+        adc_cnt              = 4'd0;
 
         // 保持复位
         #(5 * SYS_CLK_PERIOD_NS);
@@ -203,9 +225,12 @@ module test_ccd;
         wait_us(5);
 
         // ================================================================
-        // 测试 1: line binning 模式 — 单帧写入 + 读出
+        // 测试 1: line binning 模式 — 单帧写入 + TX 发送 + Slave FIFO 读出
         //   v=4, h=8, l=1, frame_depth = 4 active 像素
         // ================================================================
+        $display("========================================");
+        $display("[TEST 1] line binning: single frame");
+        $display("========================================");
         i_read_mode = 2'd0;
 
         // 触发 exposure 下降沿
@@ -219,15 +244,26 @@ module test_ccd;
         i_exposure = 1'b1;
         wait_cdc;
 
-        // 读出一帧 (4 个 active 像素)
-        rd_pixels(4);
+        // 触发帧发送, 同时读取数据 (tx 在后台流水输出)
+        $display("  Triggering TX...");
+        send_frame;
+        // 在 TX 传输过程中从 Slave FIFO 读取数据
+        slave_read_words(4);
+        wait_frame_done;
+        if (frame_done_detected)
+            $display("[PASS] frame_done received, last=0x%04h", slave_rd_result);
+        else
+            $display("[FAIL] frame_done timeout");
         wait_cdc;
 
         // ================================================================
-        // 测试 2: image 模式 — 单帧写入 + 读出
+        // 测试 2: image 模式 — 单帧写入 + TX 发送 + Slave FIFO 读出
         //   bevel_top/bottom=0, 使 frame_depth = image_width * image_height
         //   v=1, h=8, l=2, frame_depth = 4*2 = 8 active 像素
         // ================================================================
+        $display("========================================");
+        $display("[TEST 2] image mode: single frame");
+        $display("========================================");
         i_read_mode    = 2'd1;
         i_bevel_top    = 4'd0;
         i_bevel_bottom = 4'd0;
@@ -241,14 +277,24 @@ module test_ccd;
         i_exposure = 1'b1;
         wait_cdc;
 
-        // 读出 8 个 active 像素
-        rd_pixels(8);
+        // 触发帧发送, 同时读取数据
+        $display("  Triggering TX...");
+        send_frame;
+        slave_read_words(8);
+        wait_frame_done;
+        if (frame_done_detected)
+            $display("[PASS] frame_done received, last=0x%04h", slave_rd_result);
+        else
+            $display("[FAIL] frame_done timeout");
         wait_cdc;
 
         // ================================================================
-        // 测试 3: 乒乓双帧 — 连续两帧 → full=1 → 读出两帧
+        // 测试 3: 乒乓双帧 — 连续两帧 → TX 发送两帧
         //   用 line binning 模式 (帧短, 仿真快)
         // ================================================================
+        $display("========================================");
+        $display("[TEST 3] Ping-pong: 2 frames");
+        $display("========================================");
         i_read_mode = 2'd0;
 
         // 帧 1
@@ -265,17 +311,28 @@ module test_ccd;
         i_exposure = 1'b1;
         wait_cdc;
 
-        // 读出帧 1
-        rd_pixels(4);
-        wait_cdc;
+        // 发送并读出帧 1 (读数据与 TX 流水线同时进行)
+        $display("  Sending frame 1...");
+        send_frame;
+        slave_read_words(4);
+        wait_frame_done;
+        $display("  Frame 1 done");
 
-        // 读出帧 2
-        rd_pixels(4);
+        // 发送并读出帧 2
+        $display("  Sending frame 2...");
+        send_frame;
+        slave_read_words(4);
+        wait_frame_done;
+        $display("  Frame 2 done");
+
         wait_cdc;
 
         // ================================================================
         // 测试 4: exposure 打断 — 运行中拉高, 验证回到 IDLE
         // ================================================================
+        $display("========================================");
+        $display("[TEST 4] Exposure abort");
+        $display("========================================");
         @(negedge i_clk);
         i_exposure = 1'b0;
         wait_us(80);                 // 约 8 SCLK, 应在 HORIZONTAL 阶段内

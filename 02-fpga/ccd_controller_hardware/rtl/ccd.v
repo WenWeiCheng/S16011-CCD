@@ -2,8 +2,9 @@
 //==============================================================================
 // Module : ccd
 // Desc   : CCD 控制器顶层模块。
-//          实例化 ccd_driver（CCD 时序驱动）和 ccd_frame_buf（乒乓帧缓存），
-//          将 CCD 驱动输出的像素数据写入帧缓存，提供统一的对外接口。
+//          实例化 ccd_driver（CCD 时序驱动）、ccd_frame_buf（乒乓帧缓存）
+//          和 ccd_frame_tx（帧发送模块），将 CCD 驱动输出的像素数据写入
+//          帧缓存，并通过帧发送模块转发至 EZ-USB Slave FIFO。
 //==============================================================================
 module ccd #(
     parameter MAX_FRAME_DEPTH = 131072  // 子 FIFO 物理深度
@@ -43,17 +44,17 @@ module ccd #(
     output wire o_cdsclk1,      // CDSCLK1
     output wire o_cdsclk2,      // CDSCLK2
 
-    // ---- 帧缓存读侧 (FX2 域) ----
-    input  wire         i_rd_clk,          // 读时钟 (FX2 Slave FIFO)
-    output wire [15:0]  o_fifo_data,       // PP FIFO 读出数据
-    output wire         o_fifo_empty,      // PP FIFO 空
-    output wire         o_fifo_half_full,  // PP FIFO 半满
-    output wire         o_fifo_full,       // PP FIFO 满
-    input  wire         i_fifo_rd_en,      // PP FIFO 读使能
-    output wire         o_rd_fifo_sel,     // 当前读 FIFO 选择
+    // ---- FX2 Slave FIFO 接口 ----
+    input  wire         i_rd_clk,              // 读时钟 (FX2 Slave FIFO)
+    input  wire         i_tx_frame_start,      // 帧发送触发 (下降沿启动)
+    input  wire         i_slave_fifo_empty_n,  // FX2 Slave FIFO 空 (低有效)
+    input  wire         i_slave_fifo_full_n,   // FX2 Slave FIFO 满 (低有效)
+    output wire [15:0]  o_slave_fifo_data,     // 输出到 Slave FIFO 的数据
+    output wire         o_slave_fifo_data_valid_n, // 数据有效 (低有效)
+    output wire         o_frame_done_n,        // 帧发送完成 (低有效)
 
     // ---- 异常 ----
-    output wire         o_frame_exception  // 帧异常标志
+    output wire         o_frame_exception      // 帧异常标志
 );
 
     // ==================================================================
@@ -65,6 +66,16 @@ module ccd #(
     wire [15:0] pixel_data_w;
     wire        frame_start_w;
     wire        frame_end_w;
+
+    // ==================================================================
+    // 内部连线: ccd_frame_buf → ccd_frame_tx
+    // ==================================================================
+    wire [15:0] fifo_data_w;
+    wire        fifo_empty_w;
+    wire        fifo_half_full_w;
+    wire        fifo_full_w;
+    wire        fifo_last_word_w;
+    wire        fifo_rd_en_w;
 
     // ==================================================================
     // 帧深度计算 — 仅统计有效图像像素
@@ -118,6 +129,8 @@ module ccd #(
 
     // ==================================================================
     // ccd_frame_buf 实例化
+    //   输出 o_fifo_data / o_fifo_empty / o_fifo_last_word 等连接至
+    //   ccd_frame_tx 内部, 不再直接对外暴露。
     // ==================================================================
     ccd_frame_buf #(
         .MAX_FRAME_DEPTH(MAX_FRAME_DEPTH)
@@ -131,13 +144,35 @@ module ccd #(
         .i_frame_end       (frame_end_w),
         .i_frame_depth     (frame_depth_w),
         .i_rd_clk          (i_rd_clk),
-        .o_fifo_data       (o_fifo_data),
-        .o_fifo_empty      (o_fifo_empty),
-        .o_fifo_half_full  (o_fifo_half_full),
-        .o_fifo_full       (o_fifo_full),
-        .i_fifo_rd_en      (i_fifo_rd_en),
-        .o_rd_fifo_sel     (o_rd_fifo_sel),
+        .o_fifo_data       (fifo_data_w),
+        .o_fifo_empty      (fifo_empty_w),
+        .o_fifo_half_full  (fifo_half_full_w),
+        .o_fifo_full       (fifo_full_w),
+        .o_fifo_last_word  (fifo_last_word_w),
+        .i_fifo_rd_en      (fifo_rd_en_w),
+        .o_rd_fifo_sel     (),
         .o_frame_exception (o_frame_exception)
+    );
+
+    // ==================================================================
+    // ccd_frame_tx 实例化
+    //   从 ccd_frame_buf 读取帧数据, 转发至 FX2 Slave FIFO。
+    // ==================================================================
+    ccd_frame_tx u_ccd_frame_tx (
+        .i_ext_clk             (i_rd_clk),
+        .i_rst_n               (i_rst_n),
+        .i_frame_fifo_data     (fifo_data_w),
+        .i_frame_fifo_empty    (fifo_empty_w),
+        .i_frame_fifo_half_full(fifo_half_full_w),
+        .i_frame_fifo_full     (fifo_full_w),
+        .i_frame_fifo_last_word(fifo_last_word_w),
+        .o_frame_fifo_rd_en    (fifo_rd_en_w),
+        .o_slave_fifo_data     (o_slave_fifo_data),
+        .o_slave_fifo_data_valid_n(o_slave_fifo_data_valid_n),
+        .i_slave_fifo_empty_n  (i_slave_fifo_empty_n),
+        .i_slave_fifo_full_n   (i_slave_fifo_full_n),
+        .i_frame_start         (i_tx_frame_start),
+        .o_frame_done_n        (o_frame_done_n)
     );
 
 endmodule
