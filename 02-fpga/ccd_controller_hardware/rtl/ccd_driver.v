@@ -52,7 +52,10 @@ module ccd_driver (
     // --- 像素数据类型指示 (s_clk 下降沿同步) ---
     output wire o_data_valid,    // 高电平表示当前像素有效
     output wire [1:0] o_pixel_type,  // 00=bevel, 01=blank, 10=active
-    output wire [15:0] o_pixel_data  // 16bit 像素数据 (与 o_data_valid/o_pixel_type 对齐)
+    output wire [15:0] o_pixel_data,  // 16bit 像素数据 (与 o_data_valid/o_pixel_type 对齐)
+    // --- 帧边界标记 (ccd_frame_buf 接口) ---
+    output wire o_frame_start,   // 帧起始脉冲 (新一帧的第一个有效像素位置)
+    output wire o_frame_end      // 帧结束脉冲 (一帧中所有像素输出完毕)
 );
 
 // 内部线网:phase_gen 的相位输出 (作为后续 CCD 驱动信号的来源)
@@ -409,5 +412,37 @@ always @(negedge sclk_p90_w or negedge i_rst_n) begin
 end
 
 assign o_pixel_data = pixel_data_reg;
+
+// ==================================================================
+// 帧边界标记 (s_clk 上升沿同步, 与 o_adcclk 同域)
+//
+// o_frame_start : 帧起始单周期脉冲 (IDLE→VERTICAL_SHIFT 时置位)
+// o_frame_end   : 帧结束单周期脉冲 (最后一帧行 HORIZONTAL→IDLE 时置位)
+// ==================================================================
+reg frame_start_reg;
+reg frame_end_reg;
+
+always @(posedge sclk_p0_w or negedge i_rst_n) begin
+    if (!i_rst_n) begin
+        frame_start_reg <= 1'b0;
+        frame_end_reg   <= 1'b0;
+    end else begin
+        // frame_start: IDLE → VERTICAL_SHIFT 时产生单周期脉冲
+        if (state_reg == STATE_IDLE && state_next == STATE_VERTICAL_SHIFT)
+            frame_start_reg <= 1'b1;
+        else
+            frame_start_reg <= 1'b0;
+
+        // frame_end: 最后一帧行 HORIZONTAL→IDLE 时产生单周期脉冲
+        if (state_reg == STATE_HORIZONTAL_SHIFT && state_next == STATE_IDLE
+            && l_counter == line_cnt)
+            frame_end_reg <= 1'b1;
+        else
+            frame_end_reg <= 1'b0;
+    end
+end
+
+assign o_frame_start = frame_start_reg;
+assign o_frame_end   = frame_end_reg;
 
 endmodule

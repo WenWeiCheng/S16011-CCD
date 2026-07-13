@@ -1,0 +1,143 @@
+`timescale 1ns / 1ps
+//==============================================================================
+// Module : ccd
+// Desc   : CCD 控制器顶层模块。
+//          实例化 ccd_driver（CCD 时序驱动）和 ccd_frame_buf（乒乓帧缓存），
+//          将 CCD 驱动输出的像素数据写入帧缓存，提供统一的对外接口。
+//==============================================================================
+module ccd #(
+    parameter MAX_FRAME_DEPTH = 131072  // 子 FIFO 物理深度
+) (
+    // ---- 系统 ----
+    input  wire         i_clk,           // 系统时钟 (100 MHz)
+    input  wire         i_rst_n,         // 异步复位, 低有效
+
+    // ---- CCD 控制 ----
+    input  wire         i_exposure,      // 曝光信号
+    input  wire         i_freq_sel,      // SCLK 频率选择: 0 -> 100kHz, 1 -> 500kHz
+    input  wire [6:0]   i_cdsclk_delay,  // CDSCLK 微调延时, 单位系统时钟周期
+
+    // ---- 图像参数 ----
+    input  wire [15:0]  i_image_width,   // 图像宽度 (pixels)
+    input  wire [15:0]  i_image_height,  // 图像高度 (pixels)
+    input  wire [3:0]   i_bevel_left,    // 左侧消隐
+    input  wire [3:0]   i_bevel_top,     // 顶部消隐
+    input  wire [3:0]   i_bevel_right,   // 右侧消隐
+    input  wire [3:0]   i_bevel_bottom,  // 底部消隐
+    input  wire [3:0]   i_blank_left,    // 左侧空白
+    input  wire [3:0]   i_blank_right,   // 右侧空白
+    input  wire [1:0]   i_read_mode,     // 读出模式: 0=line binning, 1=image
+
+    // ---- ADC 数据 ----
+    input  wire [7:0]   i_adc_data,      // ADC 采样数据 (8bit)
+
+    // ---- CCD 驱动信号 (对外输出, 连接 CCD 传感器) ----
+    output wire o_adcclk,      // ADCCLK
+    output wire o_p1v,         // P1V
+    output wire o_p2v_tg,      // P2V / TG
+    output wire o_p1h,         // P1H
+    output wire o_p2h,         // P2H
+    output wire o_p3h,         // P3H
+    output wire o_p4h_sg,      // P4H / SG
+    output wire o_rg,           // RG
+    output wire o_cdsclk1,      // CDSCLK1
+    output wire o_cdsclk2,      // CDSCLK2
+
+    // ---- 帧缓存读侧 (FX2 域) ----
+    input  wire         i_rd_clk,          // 读时钟 (FX2 Slave FIFO)
+    output wire [15:0]  o_fifo_data,       // PP FIFO 读出数据
+    output wire         o_fifo_empty,      // PP FIFO 空
+    output wire         o_fifo_half_full,  // PP FIFO 半满
+    output wire         o_fifo_full,       // PP FIFO 满
+    input  wire         i_fifo_rd_en,      // PP FIFO 读使能
+    output wire         o_rd_fifo_sel,     // 当前读 FIFO 选择
+
+    // ---- 异常 ----
+    output wire         o_frame_exception  // 帧异常标志
+);
+
+    // ==================================================================
+    // 内部连线: ccd_driver → ccd_frame_buf
+    // ==================================================================
+    wire        adcclk_w;
+    wire        data_valid_w;
+    wire [1:0]  pixel_type_w;
+    wire [15:0] pixel_data_w;
+    wire        frame_start_w;
+    wire        frame_end_w;
+
+    // ==================================================================
+    // 帧深度计算 — 仅统计有效图像像素
+    //   line binning : frame_depth = image_width (一行合并)
+    //   image        : frame_depth = image_width * image_height
+    //   bevel 行属于传感器物理开销, 不计入有效帧深度
+    // ==================================================================
+    wire [31:0] frame_depth_w;
+    assign frame_depth_w = (i_read_mode == 2'd0) ?
+        {16'd0, i_image_width} :
+        (i_image_width * i_image_height);
+
+    // ==================================================================
+    // ccd_driver 实例化
+    // ==================================================================
+    ccd_driver u_ccd_driver (
+        .i_clk         (i_clk),
+        .i_rst_n       (i_rst_n),
+        .i_exposure    (i_exposure),
+        .i_freq_sel    (i_freq_sel),
+        .i_cdsclk_delay(i_cdsclk_delay),
+        .i_image_width (i_image_width),
+        .i_image_height(i_image_height),
+        .i_bevel_left  (i_bevel_left),
+        .i_bevel_top   (i_bevel_top),
+        .i_bevel_right (i_bevel_right),
+        .i_bevel_bottom(i_bevel_bottom),
+        .i_blank_left  (i_blank_left),
+        .i_blank_right (i_blank_right),
+        .i_read_mode   (i_read_mode),
+        .i_adc_data    (i_adc_data),
+        .o_adcclk      (adcclk_w),
+        .o_p1v         (o_p1v),
+        .o_p2v_tg      (o_p2v_tg),
+        .o_p1h         (o_p1h),
+        .o_p2h         (o_p2h),
+        .o_p3h         (o_p3h),
+        .o_p4h_sg      (o_p4h_sg),
+        .o_rg          (o_rg),
+        .o_cdsclk1     (o_cdsclk1),
+        .o_cdsclk2     (o_cdsclk2),
+        .o_data_valid  (data_valid_w),
+        .o_pixel_type  (pixel_type_w),
+        .o_pixel_data  (pixel_data_w),
+        .o_frame_start (frame_start_w),
+        .o_frame_end   (frame_end_w)
+    );
+
+    // ADCCLK 对外输出
+    assign o_adcclk = adcclk_w;
+
+    // ==================================================================
+    // ccd_frame_buf 实例化
+    // ==================================================================
+    ccd_frame_buf #(
+        .MAX_FRAME_DEPTH(MAX_FRAME_DEPTH)
+    ) u_ccd_frame_buf (
+        .i_adcclk          (adcclk_w),
+        .i_rst_n           (i_rst_n),
+        .i_wr_data         (pixel_data_w),
+        .i_wr_en           (data_valid_w),
+        .i_pixel_type      (pixel_type_w),
+        .i_frame_start     (frame_start_w),
+        .i_frame_end       (frame_end_w),
+        .i_frame_depth     (frame_depth_w),
+        .i_rd_clk          (i_rd_clk),
+        .o_fifo_data       (o_fifo_data),
+        .o_fifo_empty      (o_fifo_empty),
+        .o_fifo_half_full  (o_fifo_half_full),
+        .o_fifo_full       (o_fifo_full),
+        .i_fifo_rd_en      (i_fifo_rd_en),
+        .o_rd_fifo_sel     (o_rd_fifo_sel),
+        .o_frame_exception (o_frame_exception)
+    );
+
+endmodule

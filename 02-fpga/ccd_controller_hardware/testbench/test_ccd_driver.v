@@ -43,6 +43,8 @@ module test_ccd_driver;
     wire        o_data_valid;
     wire [1:0]  o_pixel_type;
     wire [15:0] o_pixel_data;
+    wire        o_frame_start;
+    wire        o_frame_end;
 
     ccd_driver u_dut (
         .i_clk         (i_clk),
@@ -72,7 +74,9 @@ module test_ccd_driver;
         .i_cdsclk_delay(i_cdsclk_delay),
         .o_data_valid (o_data_valid),
         .o_pixel_type (o_pixel_type),
-        .o_pixel_data (o_pixel_data)
+        .o_pixel_data (o_pixel_data),
+        .o_frame_start(o_frame_start),
+        .o_frame_end  (o_frame_end)
     );
 
     // 系统时钟
