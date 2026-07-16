@@ -21,8 +21,7 @@ module async_fifo #(
     output wire [DATA_WIDTH-1:0] o_rd_data,
     input  wire             i_rd_en,
     output wire             o_empty,
-    output wire             o_almost_empty,
-    output wire             o_valid
+    output wire             o_almost_empty
 );
 
     localparam ADDR_WIDTH = $clog2(FIFO_DEPTH);
@@ -84,15 +83,15 @@ module async_fifo #(
     end
 
     // almost_empty: 在上升沿用读出前的 rd_ptr 预判,
-    //               在下降沿注册输出 (与 o_rd_data / o_empty 同步)
+    //               在上升沿注册输出 (与 o_rd_data / o_empty 同步)
     reg almost_empty_int;   // 上升沿预判值
-    reg almost_empty_reg;   // 下降沿输出寄存器
+    reg almost_empty_reg;   // 上升沿输出寄存器
 
     always @(posedge i_rd_clk) begin
-        almost_empty_int <= (bin2gray(rd_ptr + 1'b1) == wr_gray_synced);
+        almost_empty_int <= (bin2gray(rd_ptr + 2'd2) == wr_gray_synced);
     end
 
-    always @(negedge i_rd_clk or negedge i_rst_n) begin
+    always @(posedge i_rd_clk or negedge i_rst_n) begin
         if (!i_rst_n)
             almost_empty_reg <= 1'b0;
         else
@@ -118,37 +117,11 @@ module async_fifo #(
         end
     end
 
-    // ====================================================================
-    // 读时钟域 — 下降沿: 更新输出, 为下游提供半周期建立时间
-    // ====================================================================
+    assign o_rd_data = rd_data_int;
 
-    // 读数据输出 (下降沿更新)
-    reg [DATA_WIDTH-1:0] rd_data_reg;
-    always @(negedge i_rd_clk) begin
-        rd_data_reg <= rd_data_int;
-    end
-    assign o_rd_data = rd_data_reg;
-
-    // 空标志 (下降沿更新)
-    reg empty_reg;
+    // 空标志 (上升沿更新)
     wire [ADDR_WIDTH:0] wr_gray_synced = wr_gray_sync[1];
-    always @(negedge i_rd_clk or negedge i_rst_n) begin
-        if (!i_rst_n)
-            empty_reg <= 1'b1;
-        else
-            empty_reg <= (rd_gray == wr_gray_synced);
-    end
-    assign o_empty = empty_reg;
-
-    // 读数据有效 (下降沿更新)
-    reg valid_reg;
-    always @(negedge i_rd_clk or negedge i_rst_n) begin
-        if (!i_rst_n)
-            valid_reg <= 1'b0;
-        else
-            valid_reg <= i_rd_en && !empty_reg;
-    end
-    assign o_valid = valid_reg;
+    assign o_empty = (rd_gray == wr_gray_synced);
 
     // 同步格雷码: 读格雷码 → 写时钟域
     always @(posedge i_wr_clk or negedge i_rst_n) begin

@@ -11,14 +11,15 @@
 //    transmit → idle   : fifo_last_pipe=1 (当前字是帧最后一字)
 //
 //  发送时序:
-//    - o_frame_fifo_rd_en 在 i_ext_clk 下降沿同步拉高, 从 PP FIFO 读一字
-//    - o_slave_fifo_data / o_slave_fifo_data_valid_n 在下降沿更新
-//    - o_frame_done_n 在下降沿拉低, 同时 o_slave_fifo_data_valid_n=0,
+//    - o_frame_fifo_rd_en 在 i_ext_clk 上升沿拉高, 从 PP FIFO 读一字
+//    - o_slave_fifo_data / o_slave_fifo_data_valid_n 在 i_ext_clk_n 上升沿更新
+//    - o_frame_done_n 在 i_ext_clk_n 上升沿拉低, 同时 o_slave_fifo_data_valid_n=0,
 //      EZ-USB Slave FIFO 在上升沿打包将数据发送给主机
 //==============================================================================
 module ccd_frame_tx (
     // 系统接口
     input  wire         i_ext_clk,            // 读时钟 (FX2 侧时钟)
+    input  wire         i_ext_clk_n,          // i_ext_clk 的反相
     input  wire         i_rst_n,              // 异步复位, 低有效
 
     // PP FIFO 读接口, 以帧为单位, 宽度为 16bit, 深度为 2
@@ -68,24 +69,22 @@ module ccd_frame_tx (
     assign frame_start_fall = !i_frame_start && frame_start_d;
 
     // ==================================================================
-    // 读使能 (下降沿寄存器输出)
+    //  读使能 (i_ext_clk 上升沿寄存器输出)
     //   在 transmit 状态且 Slave FIFO 未满时拉高。
     //   用 state_next != S_IDLE 额外门控, 确保最后一字读出后立即停止,
     //   避免过渡周期仍拉高 rd_en 导致提前读出下一帧的首字。
-    //   使用下降沿输出, 使 async_fifo 在随后的上升沿采样时有充足建立时间。
     // ==================================================================
     reg rd_en_reg;
 
-    always @(negedge i_ext_clk or negedge i_rst_n) begin
+    always @(posedge i_ext_clk or negedge i_rst_n) begin
         if (!i_rst_n)
             rd_en_reg <= 1'b0;
         else
             rd_en_reg <= (state == S_TRANSMIT) && i_slave_fifo_full_n
-                         && (state_next != S_IDLE);
+                         && (state_next != S_IDLE) && !i_frame_fifo_last_word;
     end
     assign o_frame_fifo_rd_en = rd_en_reg;
 
-    // rd_en 上升沿寄存器(锁存下降沿的值) — 供管道逻辑判断数据是否有效
     reg rd_en_was_active;
 
     always @(posedge i_ext_clk or negedge i_rst_n) begin
@@ -132,15 +131,16 @@ module ccd_frame_tx (
     end
 
     // ==================================================================
-    // 数据管道 (上升沿采样, 避免与 async_fifo 的 negedge 更新竞争)
+    // 数据管道 (i_ext_clk 上升沿采样)
     //
-    //   async_fifo 在 negedge 更新 o_rd_data, 上升沿时 i_frame_fifo_data
-    //   已稳定, 在此采样并寄存, 下一个 negedge 输出到 Slave FIFO。
+    //   async_fifo 在 i_ext_clk 上升沿更新 o_rd_data (与 rd_en_reg 同一时钟沿),
+    //   同时 i_frame_fifo_data 已稳定, 在此采样并寄存。
+    //   下一拍由 i_ext_clk_n 上升沿输出到 Slave FIFO。
     //
     //   管道有效标记:
     //     state→TRANSMIT 的下一拍 async_fifo 开始读出数据,
     //     数据在再下一拍的 posedge 稳定就绪。
-    //     rd_en_was_active 在 posedge 记录"上一拍是否已处于 transmit 状态",
+    //     rd_en_was_active 在 i_ext_clk 上升沿记录"上一拍是否已处于 transmit 状态",
     //     用其作为有效标记正好匹配数据就绪时刻。
     // ==================================================================
     reg [15:0] fifo_pipe_data;
@@ -153,7 +153,7 @@ module ccd_frame_tx (
             fifo_pipe_valid <= 1'b0;
             fifo_last_pipe  <= 1'b0;
         end else begin
-            // 采样 PP FIFO 数据 + last_word 标志 (async_fifo 已在前一 negedge 更新)
+            // 采样 PP FIFO 数据 + last_word 标志 (async_fifo 已于同一 i_ext_clk 上升沿更新)
             fifo_pipe_data  <= i_frame_fifo_data;
             fifo_last_pipe  <= i_frame_fifo_last_word;
 
@@ -167,17 +167,19 @@ module ccd_frame_tx (
     end
 
     // ==================================================================
-    // 下降沿输出 — Slave FIFO 数据 / 有效标志 / frame_done_n
+    // 反相时钟上升沿输出 — Slave FIFO 数据 / 有效标志 / frame_done_n
     //
     //   o_frame_done_n 与最后一字同步: fifo_pipe_valid=1 时,
     //   fifo_last_pipe=1 表示当前管道数据是帧最后一字,
     //   此时将 frame_done_n 拉低, EZ-USB 在上升沿打包上传。
+    //   使用 i_ext_clk_n 上升沿 (等效原下降沿), 使 Slave FIFO 输出
+    //   在主时钟上升沿前稳定, 满足 FX2 建立时间要求。
     // ==================================================================
     reg [15:0] slave_data_reg;
     reg        slave_valid_n_reg;
     reg        frame_done_n_reg;
 
-    always @(negedge i_ext_clk or negedge i_rst_n) begin
+    always @(posedge i_ext_clk_n or negedge i_rst_n) begin
         if (!i_rst_n) begin
             slave_data_reg    <= 16'd0;
             slave_valid_n_reg <= 1'b1;

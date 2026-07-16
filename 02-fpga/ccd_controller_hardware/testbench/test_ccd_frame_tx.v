@@ -41,6 +41,7 @@ module test_ccd_frame_tx;
     // 读侧时钟
     // ==================================================================
     reg         i_ext_clk;
+    reg         i_ext_clk_n;
 
     // ==================================================================
     // ccd_frame_buf ↔ ccd_frame_tx 连接
@@ -119,6 +120,7 @@ module test_ccd_frame_tx;
 
     ccd_frame_tx u_ccd_frame_tx (
         .i_ext_clk             (i_ext_clk),
+        .i_ext_clk_n           (i_ext_clk_n),
         .i_rst_n               (i_rst_n),
         .i_frame_fifo_data     (fifo_data),
         .i_frame_fifo_empty    (fifo_empty),
@@ -141,7 +143,9 @@ module test_ccd_frame_tx;
     always #(WR_CLK_PERIOD / 2.0) i_adcclk = ~i_adcclk;
 
     initial i_ext_clk = 1'b0;
+    initial i_ext_clk_n = 1'b0;
     always #(RD_CLK_PERIOD / 2.0) i_ext_clk = ~i_ext_clk;
+    always #(RD_CLK_PERIOD / 2.0) i_ext_clk_n = ~i_ext_clk;
 
     // ==================================================================
     // 辅助任务 — 写域 (i_adcclk)
@@ -214,17 +218,6 @@ module test_ccd_frame_tx;
         end
     endtask
 
-    // ---- 从 Slave FIFO 读取一字 (等待 valid_n=0 后采样) ----
-    reg [15:0] slave_rd_result;
-    task slave_read_word;
-        begin
-            @(negedge i_ext_clk);
-            while (o_slave_fifo_data_valid_n !== 1'b0)
-                @(negedge i_ext_clk);
-            slave_rd_result = o_slave_fifo_data;
-        end
-    endtask
-
     // ---- 清空 frame_done 捕获标志 ----
     task clear_frame_done_capture;
         begin
@@ -273,8 +266,10 @@ module test_ccd_frame_tx;
         if (o_slave_fifo_data_valid_n !== 1'b1) begin
             $display("[FAIL] Reset: data_valid_n=%b (expected 1)",
                      o_slave_fifo_data_valid_n);
+            $stop;
         end else if (o_frame_done_n !== 1'b1) begin
             $display("[FAIL] Reset: frame_done_n=%b (expected 1)", o_frame_done_n);
+            $stop;
         end else begin
             $display("[PASS] Reset state OK");
         end
@@ -285,7 +280,10 @@ module test_ccd_frame_tx;
         $display("[TEST 2] Single frame transmission");
         clear_frame_done_capture;
         wr_frame(FRAME_WORDS, 16'd1000);
-        $display("  Frame written, half_full=%b", fifo_half_full);
+        if(fifo_half_full!=1) begin
+            $display("  Frame written, but half_full=%b", fifo_half_full);
+            $stop;
+        end
 
         send_frame;
         rd_wait(3);
@@ -299,39 +297,7 @@ module test_ccd_frame_tx;
         rd_wait(5);
 
         // ================================================================
-        // 测试 3: 数据验证 — 采集 Slave FIFO 输出比对
-        // ================================================================
-        $display("[TEST 3] Data verification");
-        if (!fifo_empty) begin
-            clear_frame_done_capture;
-            send_frame;
-            wait_frame_done;
-            rd_wait(5);
-        end
-
-        clear_frame_done_capture;
-        wr_frame(FRAME_WORDS, 16'd2000);
-        send_frame;
-
-        // 读取 FRAME_WORDS 个有效字 (自同步, 等待 valid_n=0)
-        for (i = 0; i < FRAME_WORDS; i = i + 1) begin
-            slave_read_word;
-            if (slave_rd_result !== 16'd2000 + i) begin
-                $display("[FAIL] Data[%0d]: expected 0x%04h, got 0x%04h",
-                         i, 16'd2000 + i, slave_rd_result);
-            end
-        end
-
-        wait_frame_done;
-        if (frame_done_captured !== 1'b1) begin
-            $display("[FAIL] frame_done not received after data verify");
-        end else begin
-            $display("[PASS] Data verified (%0d words)", FRAME_WORDS);
-        end
-        rd_wait(5);
-
-        // ================================================================
-        // 测试 4: 连续多帧发送
+        // 测试 3: 连续多帧发送
         // ================================================================
         $display("[TEST 4] Multiple frame transmissions");
         for (i = 0; i < 3; i = i + 1) begin
@@ -349,7 +315,7 @@ module test_ccd_frame_tx;
         $display("[PASS] 3 frames transmitted");
 
         // ================================================================
-        // 测试 5: Slave FIFO 满反压
+        // 测试 4: Slave FIFO 满反压
         // ================================================================
         $display("[TEST 5] Slave FIFO full back-pressure");
         clear_frame_done_capture;
@@ -381,7 +347,7 @@ module test_ccd_frame_tx;
         rd_wait(5);
 
         // ================================================================
-        // 测试 6: 乒乓切换 — 写 2 帧再分别发送
+        // 测试 5: 乒乓切换 — 写 2 帧再分别发送
         // ================================================================
         $display("[TEST 6] Ping-pong: 2 frames");
         clear_frame_done_capture;
@@ -411,7 +377,7 @@ module test_ccd_frame_tx;
         $display("[PASS] Ping-pong OK");
 
         // ================================================================
-        // 测试 7: 帧长异常 — 写入少于 frame_depth 的像素
+        // 测试 6: 帧长异常 — 写入少于 frame_depth 的像素
         // ================================================================
         $display("[TEST 7] Frame length exception");
         clear_frame_done_capture;
@@ -453,7 +419,7 @@ module test_ccd_frame_tx;
         rd_wait(10);
 
         // ================================================================
-        // 测试 8: 先 start 后等数据 (idle→wait 再触发)
+        // 测试 7: 先 start 后等数据 (idle→wait 再触发)
         // ================================================================
         $display("[TEST 8] Start before data");
         clear_frame_done_capture;

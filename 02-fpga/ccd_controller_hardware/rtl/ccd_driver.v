@@ -49,13 +49,14 @@ module ccd_driver (
     // --- CDS 采样时钟 ---
     output wire o_cdsclk1,       // CDSCLK1 落后 180°  12.5% (复位 0)
     output wire o_cdsclk2,       // CDSCLK2 落后 270°  12.5% (复位 0)
-    // --- 像素数据类型指示 (s_clk 下降沿同步) ---
+    // --- 像素数据类型指示 (s_clk 上升沿同步) ---
     output wire o_data_valid,    // 高电平表示当前像素有效
     output wire [1:0] o_pixel_type,  // 00=bevel, 01=blank, 10=active
     output wire [15:0] o_pixel_data,  // 16bit 像素数据 (与 o_data_valid/o_pixel_type 对齐)
     // --- 帧边界标记 (ccd_frame_buf 接口) ---
     output wire o_frame_start,   // 帧起始脉冲 (新一帧的第一个有效像素位置)
-    output wire o_frame_end      // 帧结束脉冲 (一帧中所有像素输出完毕)
+    output wire o_frame_end ,    // 帧结束脉冲 (一帧中所有像素输出完毕)
+    output wire o_frame_idle     // 帧数据串出
 );
 
 // 内部线网:phase_gen 的相位输出 (作为后续 CCD 驱动信号的来源)
@@ -262,25 +263,26 @@ wire hstate = (state_reg == STATE_HORIZONTAL_SHIFT);
 // 使能信号在指定同步边沿寄存,组合门控对应的相位时钟:
 //
 // 垂直组 (v_counter 在有效范围内时使能):
-//   P1V      : v_counter 在有效范围内, s_clk 下降沿寄存使能
-//   P2V,TG   : v_counter 在有效范围内, s_clk 上升沿寄存使能
+//   P1V      : v_counter 在有效范围内, sclk_p180 上升沿寄存使能 (等效原 sclk_p0 下降沿)
+//   P2V,TG   : v_counter 在有效范围内, sclk_p0 上升沿寄存使能
 // 水平组 (h_counter 在有效范围内时使能):
-//   P1H      : h_counter 在有效范围内, s_clk 下降沿寄存使能
-//   P2H      : h_counter 在有效范围内, s_clk 下降沿寄存使能
-//   P3H      : h_counter 在有效范围内, s_clk 下降沿寄存使能
-//   P4H,SG   : h_counter 在有效范围内, s_clk 上升沿寄存使能
-//   RG       : h_counter 在有效范围内, s_clk 上升沿寄存使能
+//   P1H      : h_counter 在有效范围内, sclk_p180 上升沿寄存使能 (等效原 sclk_p0 下降沿)
+//   P2H      : h_counter 在有效范围内, sclk_p180 上升沿寄存使能 (等效原 sclk_p0 下降沿)
+//   P3H      : h_counter 在有效范围内, sclk_p180 上升沿寄存使能 (等效原 sclk_p0 下降沿)
+//   P4H,SG   : h_counter 在有效范围内, sclk_p0 上升沿寄存使能
+//   RG       : h_counter 在有效范围内, sclk_p0 上升沿寄存使能
 // ==================================================================
 assign o_adcclk  = sclk_p0_w;       // 同相, 50%, 不受任何门控
 
 // 输出复位条件: exposure 拉高 或 状态机处于 IDLE
 wire outputs_idle = i_exposure || (state_reg == STATE_IDLE);
+assign o_frame_idle = outputs_idle;
 
 // ------------------------------------------------------------------
-// 使能寄存器 — 垂直组 (s_clk 下降沿)
+// 使能寄存器 — 垂直组 (s_clk_p180 上升沿, 等效原 sclk_p0 下降沿)
 // ------------------------------------------------------------------
 reg p1v_enable;
-always @(negedge sclk_p0_w or negedge i_rst_n) begin
+always @(posedge sclk_p180_w or negedge i_rst_n) begin
     if (!i_rst_n)
         p1v_enable <= 1'b0;
     else
@@ -290,7 +292,7 @@ end
 assign o_p1v = p1v_enable ? sclk_p270_w : 1'b0;     // 落后 270°
 
 // ------------------------------------------------------------------
-// 使能寄存器 — 垂直组 (s_clk 上升沿)
+// 使能寄存器 — 垂直组 (s_clk_p0 上升沿)
 // ------------------------------------------------------------------
 reg p2v_tg_enable;
 always @(posedge sclk_p0_w or negedge i_rst_n) begin
@@ -303,13 +305,13 @@ end
 assign o_p2v_tg = p2v_tg_enable ? sclk_p90_w : 1'b0;     // 落后 90°
 
 // ------------------------------------------------------------------
-// 使能寄存器 — 水平组 (s_clk 下降沿)
+// 使能寄存器 — 水平组 (s_clk_p180 上升沿, 等效原 sclk_p0 下降沿)
 // ------------------------------------------------------------------
 reg p1h_enable;
 reg p2h_enable;
 reg p3h_enable;
 
-always @(negedge sclk_p0_w or negedge i_rst_n) begin
+always @(posedge sclk_p180_w or negedge i_rst_n) begin
     if (!i_rst_n) begin
         p1h_enable <= 1'b0;
         p2h_enable <= 1'b0;
@@ -351,7 +353,7 @@ assign o_cdsclk1 = cdsclk_enable ? cdsclk1_w   : 1'b0;     // 落后 180°, 12.5
 assign o_cdsclk2 = cdsclk_enable ? cdsclk2_w   : 1'b0;     // 落后 270°, 12.5%
 
 // ==================================================================
-// 像素类型指示 (s_clk 下降沿同步)
+// 像素类型指示 (sclk_p180 上升沿同步, 等效原 sclk_p0 下降沿)
 // 一行内像素顺序:
 //   1..blank_left         : blank  (01)
 //   blank_left+1..+bevel   : bevel  (00)
@@ -364,7 +366,7 @@ reg [1:0]  pixel_type_reg;
 assign o_data_valid = data_valid_reg;
 assign o_pixel_type = pixel_type_reg;
 
-always @(negedge sclk_p0_w or negedge i_rst_n) begin
+always @(posedge sclk_p180_w or negedge i_rst_n) begin
     if (!i_rst_n) begin
         data_valid_reg <= 1'b0;
         pixel_type_reg <= 2'b00;
@@ -387,12 +389,12 @@ always @(negedge sclk_p0_w or negedge i_rst_n) begin
 end
 
 // ==================================================================
-// 像素数据输出 (sclk_p90_w 下降沿同步)
+// 像素数据输出 (sclk_p270_w 上升沿同步, 等效原 sclk_p90_w 下降沿)
 //
 // ADC 输出 8bit 数据, 在 ADCCLK 上升沿和下降沿各变化一次。
-// 在上升沿采样得到高字节, 下降沿采样得到低字节, 拼成 16bit 输出。
-//  {ADCCLK 上升沿采到的字节, ADCCLK 下降沿采到的字节}
-// 采样用落后 adcclk 90 度的时钟即 sclk_p90_w 采样
+// 在 sclk_p90_w 上升沿采样得到高字节, sclk_p270_w 上升沿得到低字节,
+// 拼成 16bit 输出: {ADCCLK 上升沿采到的字节, ADCCLK 下降沿采到的字节}
+// 采样用 sclk_p90_w (落后 adcclk 90°) 和 sclk_p270_w (落后 270°)
 // ==================================================================
 reg [7:0]  adc_data_rise;     // ADCCLK 上升沿采样
 reg [15:0] pixel_data_reg;    // 拼合后的 16bit 数据
@@ -404,7 +406,7 @@ always @(posedge sclk_p90_w or negedge i_rst_n) begin
         adc_data_rise <= i_adc_data;
 end
 
-always @(negedge sclk_p90_w or negedge i_rst_n) begin
+always @(posedge sclk_p270_w or negedge i_rst_n) begin
     if (!i_rst_n)
         pixel_data_reg <= 16'd0;
     else

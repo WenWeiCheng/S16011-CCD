@@ -30,7 +30,6 @@ module test_async_fifo;
     reg                     i_rd_en;
     wire                    o_empty;
     wire                    o_almost_empty;
-    wire                    o_valid;
 
     // DUT
     async_fifo #(
@@ -47,8 +46,7 @@ module test_async_fifo;
         .o_rd_data     (o_rd_data),
         .i_rd_en       (i_rd_en),
         .o_empty       (o_empty),
-        .o_almost_empty(o_almost_empty),
-        .o_valid       (o_valid)
+        .o_almost_empty(o_almost_empty)
     );
 
     // 写时钟

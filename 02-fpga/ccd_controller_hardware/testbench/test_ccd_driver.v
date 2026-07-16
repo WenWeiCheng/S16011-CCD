@@ -45,6 +45,7 @@ module test_ccd_driver;
     wire [15:0] o_pixel_data;
     wire        o_frame_start;
     wire        o_frame_end;
+    wire        o_frame_idle;
 
     ccd_driver u_dut (
         .i_clk         (i_clk),
@@ -76,7 +77,8 @@ module test_ccd_driver;
         .o_pixel_type (o_pixel_type),
         .o_pixel_data (o_pixel_data),
         .o_frame_start(o_frame_start),
-        .o_frame_end  (o_frame_end)
+        .o_frame_end  (o_frame_end),
+        .o_frame_idle (o_frame_idle)
     );
 
     // 系统时钟
@@ -118,11 +120,11 @@ module test_ccd_driver;
     // ------------------------------------------------------------------
     initial begin
         // ================================================================
-        // 基础图像参数 (h 方向固定,整个仿真不变)
+        // 基础图像参数 (整个仿真不变)
         //   v = bevel_top(1) + image_height(2) + bevel_bottom(1) = 4
-        //   h = blank_left(1) + image_width(4) + bevel_left(1)
+        //   h = blank_left(1) + bevel_left(1) + image_width(4) + bevel_left(1) + blank_right(1) = 8
         //   l = 1 (line binning)
-        //     + bevel_right(1) + blank_right(1) = 8
+        //       4 (image)
         // ================================================================
         i_freq_sel     = 1'b0;
         i_rst_n        = 1'b0;
@@ -137,7 +139,7 @@ module test_ccd_driver;
         i_blank_right  = 4'd1;
         i_read_mode    = 2'd0;       // 0=line binning
         i_adc_data     = 8'd0;
-        i_cdsclk_delay = 7'd0;
+        i_cdsclk_delay = 7'd100;
         adc_cnt        = 4'd0;
 
         // 保持复位 5 个系统时钟,让 phase_gen 稳定
@@ -166,10 +168,10 @@ module test_ccd_driver;
         wait_us(300);
 
         // ================================================================
-        // 测试 3: image 模式, v=1, h=8, l=3
+        // 测试 3: image 模式, v=1, h=8, l=4
         //   v = 1 (image 模式固定)
-        //   l = bevel_top(1) + image_height(1) + bevel_bottom(1) = 3
-        //   3 × (1+12) = 39 SCLK ≈ 390 us
+        //   l = bevel_top(1) + image_height(2) + bevel_bottom(1) = 4
+        //   4 × (1+15) = 60 SCLK ≈ 600 us
         // ================================================================
         i_read_mode    = 2'd1;       // image
 
@@ -179,7 +181,7 @@ module test_ccd_driver;
         @(negedge i_clk);
         i_exposure = 1'b0;
 
-        wait_us(450);
+        wait_us(650);
 
         // ================================================================
         // 测试 4: exposure 打断

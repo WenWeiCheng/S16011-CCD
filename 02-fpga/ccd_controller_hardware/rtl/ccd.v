@@ -122,7 +122,8 @@ module ccd #(
         .o_pixel_type  (pixel_type_w),
         .o_pixel_data  (pixel_data_w),
         .o_frame_start (frame_start_w),
-        .o_frame_end   (frame_end_w)
+        .o_frame_end   (frame_end_w),
+        .o_frame_idle  ()
     );
 
     // ADCCLK 对外输出
@@ -162,8 +163,11 @@ module ccd #(
     // ccd_frame_tx 实例化
     //   从 ccd_frame_buf 读取帧数据, 转发至 FX2 Slave FIFO。
     // ==================================================================
+    wire ext_clk_n = ~i_rd_clk;
+
     ccd_frame_tx u_ccd_frame_tx (
         .i_ext_clk             (i_rd_clk),
+        .i_ext_clk_n           (ext_clk_n),
         .i_rst_n               (i_rst_n),
         .i_frame_fifo_data     (fifo_data_w),
         .i_frame_fifo_empty    (fifo_empty_w),

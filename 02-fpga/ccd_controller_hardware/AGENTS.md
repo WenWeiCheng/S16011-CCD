@@ -28,6 +28,7 @@
   `iverilog -o <out>.vvp rtl/*.v testbench/*.v`
 - iverilog 跑通即可,**不需要**保存波形、不需要 `vvp` 跑波形
 - 实际波形验证交给用户在 Vivado Simulation 中查看
+- 注释只解释大致逻辑，但不要写死计数器计到哪个值，方便”仿真-微调“
 
 ---
 
@@ -60,6 +61,7 @@
 - `reg` 与组合 / 中间 `wire`:小写 + 下划线,按用途命名(`cnt`, `vstate`, `h_count`)
 - 实例化名:`u_<instance_role>`(`u_ccd_phase_gen`, `u_dut`)
 - 不允许 `parameter` 与 `reg` 同名混用,内部 `reg` 必须另取名(`period_reg`, `cnt_reg`)
+- **同一模块内只使用上升沿触发**。如果需要下降沿同步的信号，则输入一对相位反相的时钟。
 
 ### 3.4 参数与常量
 
@@ -91,20 +93,19 @@ wire               state_done;
 - 每个 `always` / `assign` 块前用 `// -----` 或单行注释说明功能
 - 4 空格缩进,不用 tab
 - 行宽建议 ≤ 100 列
+- 一个文件只放一个模块，文件名和模块名保持一致
 
 ---
 
 ## 4. Testbench 约定
-
-(从根 AGENTS.md "### FPGA > testbench requirements" 迁入并细化)
 
 - **保持简单**:TB 只产生激励,不要写复杂功能 / 参考模型 / 评分逻辑
 - 顶层模块名:`test_<dut_name>`,**不带** `tb_` 前缀
 - DUT 例化名:`u_dut`
 - 时钟 / 复位 / 控制信号按本规范的 `i_*` 命名
 - TB 内 wire 可不加 `o_` 前缀(`wire sclk_p0;` OK),保持视觉简洁
-- **禁止** `$dumpfile` / `$dumpvars` / `$monitor` / `$display`
 - 波形验证交给用户在 Vivado Simulation 中查看
+- 需要明确的 `$finish` 结束仿真
 
 ---
 

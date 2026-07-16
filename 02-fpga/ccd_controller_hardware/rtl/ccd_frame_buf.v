@@ -4,7 +4,7 @@
 // Desc   : 乒乓帧缓存模块。
 //          实例化两个 async_fifo 作为子 FIFO, 以帧为单位乒乓切换,
 //          向上层呈现"深度为 2 的帧级 FIFO"。
-//          包含 S0-S3 读写状态机 (读域 i_rd_clk 下降沿) + 每 FIFO 的帧状态机 (写域 i_adcclk 上升沿)。
+//          包含 S0-S3 读写状态机 (读域 i_rd_clk 上升沿) + 每 FIFO 的帧状态机 (写域 i_adcclk 上升沿)。
 //==============================================================================
 module ccd_frame_buf #(
     parameter MAX_FRAME_DEPTH = 131072  // 子 FIFO 物理深度 (默认 2048×64)
@@ -78,8 +78,7 @@ module ccd_frame_buf #(
         .o_rd_data     (fifo0_rd_data),
         .i_rd_en       (fifo0_rd_en),
         .o_empty       (fifo0_empty),
-        .o_almost_empty(fifo0_almost_empty),
-        .o_valid       ()
+        .o_almost_empty(fifo0_almost_empty)
     );
 
     async_fifo #(
@@ -96,8 +95,7 @@ module ccd_frame_buf #(
         .o_rd_data     (fifo1_rd_data),
         .i_rd_en       (fifo1_rd_en),
         .o_empty       (fifo1_empty),
-        .o_almost_empty(fifo1_almost_empty),
-        .o_valid       ()
+        .o_almost_empty(fifo1_almost_empty)
     );
 
     // ==================================================================
@@ -406,13 +404,12 @@ module ccd_frame_buf #(
     assign fifo1_ready_rise = fifo1_ready_sync[2] && !fifo1_ready_sync_prev;
 
     // ==================================================================
-    // 读域 — S0-S3 读写状态机 (i_rd_clk 下降沿)
+    // 读域 — S0-S3 读写状态机 (i_rd_clk 上升沿)
     //
-    //   使用下降沿以对齐 async_fifo 的 output update 时钟沿。
-    //   async_fifo 在 negedge 更新 o_empty / o_rd_data, 本状态机
-    //   同样在 negedge 采样 fifo_empty 和更新 rd_sel, 使 rd_sel
-    //   在下一个 posedge (async_fifo 采样 i_rd_en) 前充分稳定。
-    //   fifo_frame_ready 通过 3 级同步器从写域获取 (posedge 更新)。
+    //   async_fifo 已在上升沿更新 o_empty / o_rd_data, 本状态机
+    //   同样在上升沿采样 fifo_empty 和更新 rd_sel, 与 async_fifo
+    //   的输出寄存器处于同一个时钟沿, 无跨沿时序问题。
+    //   fifo_frame_ready 通过 3 级同步器从写域获取。
     //   自环条件在 frame_end_fall_rd 时评估；跨状态转移
     //   (S0→S2 / S1→S3) 不受 frame_end 限制, 任何时刻满足即触发。
     //
@@ -428,7 +425,7 @@ module ccd_frame_buf #(
     reg       fifo0_rst_req_rd_reg;
     reg       fifo1_rst_req_rd_reg;
 
-    always @(negedge i_rd_clk or negedge i_rst_n) begin
+    always @(posedge i_rd_clk or negedge i_rst_n) begin
         if (!i_rst_n) begin
             rd_state              <= S_WR0_RD1;
             rd_exception_reg      <= 1'b0;
@@ -570,21 +567,19 @@ module ccd_frame_buf #(
     assign fifo0_rd_en = i_fifo_rd_en && (rd_sel == 1'b0);
     assign fifo1_rd_en = i_fifo_rd_en && (rd_sel == 1'b1);
 
-    // o_fifo_last_word — 组合 MUX 自 async_fifo 的下降沿寄存器输出
-    // (async_fifo 已在 negedge 更新 o_almost_empty, 此处无需再加一级)
+    // o_fifo_last_word — 组合 MUX 自 async_fifo 的输出寄存器
+    // (async_fifo 已在上升沿更新 o_almost_empty, 此处无需再加一级)
     assign o_fifo_data      = (rd_sel == 1'b0) ? fifo0_rd_data      : fifo1_rd_data;
     assign o_fifo_last_word = (rd_sel == 1'b0) ? fifo0_almost_empty : fifo1_almost_empty;
 
     // ==================================================================
-    // 读域 — PP FIFO 标志输出 (下降沿更新)
-    //   o_rd_fifo_sel 在上升沿采样, 比 S0-S3 negedge 晚 0.5 周期,
-    //   确保 rd_sel 已稳定。
+    // 读域 — PP FIFO 标志输出 (上升沿更新)
     // ==================================================================
     reg empty_reg;
     reg half_full_reg;
     reg full_reg;
 
-    always @(negedge i_rd_clk or negedge i_rst_n) begin
+    always @(posedge i_rd_clk or negedge i_rst_n) begin
         if (!i_rst_n) begin
             empty_reg     <= 1'b1;
             half_full_reg <= 1'b0;

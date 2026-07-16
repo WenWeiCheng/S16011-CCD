@@ -180,11 +180,11 @@ module test_ccd_frame_buf;
     reg [15:0] rd_result;
     task rd_pixel;
         begin
-            @(negedge i_rd_clk);
+            @(posedge i_rd_clk);
             i_fifo_rd_en <= 1'b1;
             @(posedge i_rd_clk);   // DUT 采样 i_fifo_rd_en
             i_fifo_rd_en <= 1'b0;
-            @(negedge i_rd_clk);   // DUT 更新 o_rd_data
+            @(posedge i_rd_clk);   // DUT 更新 o_rd_data
             @(posedge i_rd_clk);   // 采样稳定数据
             rd_result = o_fifo_data;
         end
@@ -200,6 +200,7 @@ module test_ccd_frame_buf;
                 if (rd_result !== expected_base + k) begin
                     $display("[FAIL] pixel[%0d]: expected 0x%04h, got 0x%04h",
                              k, expected_base + k, rd_result);
+                    $stop;
                 end
             end
         end
