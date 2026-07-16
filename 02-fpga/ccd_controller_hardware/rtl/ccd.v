@@ -7,7 +7,8 @@
 //          帧缓存，并通过帧发送模块转发至 EZ-USB Slave FIFO。
 //==============================================================================
 module ccd #(
-    parameter MAX_FRAME_DEPTH = 131072  // 子 FIFO 物理深度
+    parameter MAX_FRAME_DEPTH = 131072,  // 子 FIFO 物理深度
+    parameter MAX_FRAMES      = 2         // 最大缓存帧数
 ) (
     // ---- 系统 ----
     input  wire         i_clk,           // 系统时钟 (100 MHz)
@@ -53,7 +54,7 @@ module ccd #(
     output wire         o_slave_fifo_data_valid_n, // 数据有效 (低有效)
     output wire         o_frame_done_n,        // 帧发送完成 (低有效)
     // ---- 帧缓存状态 ----
-    output wire [1:0]   o_frame_num,           // 帧缓存中可读帧数: 0=空, 1=一帧, 2=两帧
+    output wire [$clog2(MAX_FRAMES+1)-1:0]   o_frame_num,  // 帧缓存中可读帧数
     // ---- 异常 ----
     output wire         o_frame_exception      // 帧异常脉冲
 );
@@ -72,22 +73,9 @@ module ccd #(
     // 内部连线: ccd_frame_buf → ccd_frame_tx
     // ==================================================================
     wire [15:0] fifo_data_w;
-    wire        fifo_empty_w;
-    wire        fifo_half_full_w;
-    wire        fifo_full_w;
+    wire [$clog2(MAX_FRAMES+1)-1:0] fifo_frame_num_w;
     wire        fifo_last_word_w;
     wire        fifo_rd_en_w;
-
-    // ==================================================================
-    // 帧深度计算 — 仅统计有效图像像素
-    //   line binning : frame_depth = image_width (一行合并)
-    //   image        : frame_depth = image_width * image_height
-    //   bevel 行属于传感器物理开销, 不计入有效帧深度
-    // ==================================================================
-    wire [31:0] frame_depth_w;
-    assign frame_depth_w = (i_read_mode == 2'd0) ?
-        {16'd0, i_image_width} :
-        (i_image_width * i_image_height);
 
     // ==================================================================
     // ccd_driver 实例化
@@ -129,8 +117,8 @@ module ccd #(
     // ADCCLK 对外输出
     assign o_adcclk = adcclk_w;
 
-    // 帧缓存帧数编码: 00=空, 01=一帧, 10=两帧
-    assign o_frame_num = {fifo_full_w, fifo_half_full_w};
+    // 帧缓存帧数 (直通 ccd_frame_buf.o_frame_num)
+    assign o_frame_num = fifo_frame_num_w;
 
     // ==================================================================
     // ccd_frame_buf 实例化
@@ -138,7 +126,8 @@ module ccd #(
     //   ccd_frame_tx 内部, 不再直接对外暴露。
     // ==================================================================
     ccd_frame_buf #(
-        .MAX_FRAME_DEPTH(MAX_FRAME_DEPTH)
+        .MAX_FRAME_DEPTH(MAX_FRAME_DEPTH),
+        .MAX_FRAMES     (MAX_FRAMES)
     ) u_ccd_frame_buf (
         .i_adcclk          (adcclk_w),
         .i_rst_n           (i_rst_n),
@@ -147,12 +136,12 @@ module ccd #(
         .i_pixel_type      (pixel_type_w),
         .i_frame_start     (frame_start_w),
         .i_frame_end       (frame_end_w),
-        .i_frame_depth     (frame_depth_w),
+        .i_image_width     (i_image_width),
+        .i_image_height    (i_image_height),
+        .i_read_mode       (i_read_mode),
         .i_rd_clk          (i_rd_clk),
         .o_fifo_data       (fifo_data_w),
-        .o_fifo_empty      (fifo_empty_w),
-        .o_fifo_half_full  (fifo_half_full_w),
-        .o_fifo_full       (fifo_full_w),
+        .o_frame_num       (fifo_frame_num_w),
         .o_fifo_last_word  (fifo_last_word_w),
         .i_fifo_rd_en      (fifo_rd_en_w),
         .o_rd_fifo_sel     (),
@@ -165,14 +154,14 @@ module ccd #(
     // ==================================================================
     wire ext_clk_n = ~i_rd_clk;
 
-    ccd_frame_tx u_ccd_frame_tx (
+    ccd_frame_tx #(
+        .MAX_FRAMES(MAX_FRAMES)
+    ) u_ccd_frame_tx (
         .i_ext_clk             (i_rd_clk),
         .i_ext_clk_n           (ext_clk_n),
         .i_rst_n               (i_rst_n),
         .i_frame_fifo_data     (fifo_data_w),
-        .i_frame_fifo_empty    (fifo_empty_w),
-        .i_frame_fifo_half_full(fifo_half_full_w),
-        .i_frame_fifo_full     (fifo_full_w),
+        .i_frame_fifo_num      (fifo_frame_num_w),
         .i_frame_fifo_last_word(fifo_last_word_w),
         .o_frame_fifo_rd_en    (fifo_rd_en_w),
         .o_slave_fifo_data     (o_slave_fifo_data),
