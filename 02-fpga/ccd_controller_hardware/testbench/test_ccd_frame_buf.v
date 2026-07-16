@@ -35,7 +35,6 @@ module test_ccd_frame_buf;
     wire [15:0] o_fifo_data;
     wire [1:0]  o_frame_num;
     reg         i_fifo_rd_en;
-    wire        o_rd_fifo_sel;
 
     // ---- 异常 ----
     wire        o_frame_exception;
@@ -60,7 +59,6 @@ module test_ccd_frame_buf;
         .o_fifo_data       (o_fifo_data),
         .o_frame_num       (o_frame_num),
         .i_fifo_rd_en      (i_fifo_rd_en),
-        .o_rd_fifo_sel     (o_rd_fifo_sel),
         .o_frame_exception (o_frame_exception)
     );
 

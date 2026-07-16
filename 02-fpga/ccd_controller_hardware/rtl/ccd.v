@@ -144,7 +144,6 @@ module ccd #(
         .o_frame_num       (fifo_frame_num_w),
         .o_fifo_last_word  (fifo_last_word_w),
         .i_fifo_rd_en      (fifo_rd_en_w),
-        .o_rd_fifo_sel     (),
         .o_frame_exception (o_frame_exception)
     );
 

@@ -28,7 +28,6 @@ module ccd_frame_buf #(
     output wire [15:0]  o_fifo_data,       // PP FIFO 读出数据 (16bit, 以帧为单位)
     output wire [FRAME_NUM_W-1:0] o_frame_num,  // 帧缓存中可读帧数
     input  wire         i_fifo_rd_en,      // PP FIFO 读使能
-    output wire         o_rd_fifo_sel,     // 当前读 FIFO 选择 (0=读fifo0, 1=读fifo1)
     output wire         o_fifo_last_word,  // 当前读出字是帧最后一字
 
     // ---- 异常帧 ----
@@ -587,18 +586,5 @@ module ccd_frame_buf #(
     // 读域 — o_frame_num 输出 (直接组合赋值)
     // ==================================================================
     assign o_frame_num = frames_ready_cnt;
-
-    // ==================================================================
-    // 读域 — rd_sel 寄存器输出 (o_rd_fifo_sel)
-    // ==================================================================
-    reg rd_sel_reg;
-    always @(posedge i_rd_clk or negedge i_rst_n) begin
-        if (!i_rst_n)
-            rd_sel_reg <= 1'b0;
-        else
-            rd_sel_reg <= rd_sel;
-    end
-
-    assign o_rd_fifo_sel    = rd_sel_reg;
 
 endmodule

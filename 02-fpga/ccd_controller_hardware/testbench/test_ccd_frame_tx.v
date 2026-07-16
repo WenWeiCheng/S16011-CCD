@@ -114,7 +114,6 @@ module test_ccd_frame_tx;
         .o_frame_num       (fifo_frame_num),
         .o_fifo_last_word  (fifo_last_word),
         .i_fifo_rd_en      (fifo_rd_en),
-        .o_rd_fifo_sel     (),
         .o_frame_exception (o_frame_exception)
     );
 
