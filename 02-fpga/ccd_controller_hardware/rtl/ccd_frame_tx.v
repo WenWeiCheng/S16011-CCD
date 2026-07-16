@@ -1,9 +1,10 @@
 `timescale 1ns / 1ps
 //==============================================================================
 // Module : ccd_frame_tx
-// Desc   : 帧发送模块。从 ccd_frame_buf (PP FIFO) 读取帧数据,
+// Desc   : 帧发送模块。从 ccd_frame_buf 读取帧数据,
 //          发送至 EZ-USB Slave FIFO。
 //          包含 idle / wait / transmit 三态状态机。
+//          通过 i_frame_fifo_num 判断 PP FIFO 是否有数据可读。
 //
 //  状态转换:
 //    idle    → wait   : i_frame_start 下降沿
@@ -16,17 +17,17 @@
 //    - o_frame_done_n 在 i_ext_clk_n 上升沿拉低, 同时 o_slave_fifo_data_valid_n=0,
 //      EZ-USB Slave FIFO 在上升沿打包将数据发送给主机
 //==============================================================================
-module ccd_frame_tx (
+module ccd_frame_tx #(
+    parameter MAX_FRAMES = 2  // 最大缓存帧数 (需与 ccd_frame_buf 一致)
+) (
     // 系统接口
     input  wire         i_ext_clk,            // 读时钟 (FX2 侧时钟)
     input  wire         i_ext_clk_n,          // i_ext_clk 的反相
     input  wire         i_rst_n,              // 异步复位, 低有效
 
-    // PP FIFO 读接口, 以帧为单位, 宽度为 16bit, 深度为 2
-    input  wire [15:0]  i_frame_fifo_data,
-    input  wire         i_frame_fifo_empty,
-    input  wire         i_frame_fifo_half_full,
-    input  wire         i_frame_fifo_full,
+    // PP FIFO 读接口, 以帧为单位, 宽度为 16bit
+    input  wire [15:0]                i_frame_fifo_data,
+    input  wire [$clog2(MAX_FRAMES+1)-1:0] i_frame_fifo_num,
     input  wire         i_frame_fifo_last_word,  // 当前读出字是帧最后一字 (来自 ccd_frame_buf.o_fifo_last_word)
     output wire         o_frame_fifo_rd_en,
 
@@ -106,7 +107,7 @@ module ccd_frame_tx (
             end
 
             S_WAIT: begin
-                if (!i_frame_fifo_empty && i_slave_fifo_full_n)
+                if ((i_frame_fifo_num != 0) && i_slave_fifo_full_n)
                     state_next = S_TRANSMIT;
             end
 

@@ -35,7 +35,9 @@ module test_ccd_frame_tx;
     reg  [1:0]  i_pixel_type;
     reg         i_frame_start_buf;
     reg         i_frame_end;
-    reg  [31:0] i_frame_depth;
+    reg  [15:0] i_image_width;
+    reg  [15:0] i_image_height;
+    reg  [1:0]  i_read_mode;
 
     // ==================================================================
     // 读侧时钟
@@ -47,9 +49,7 @@ module test_ccd_frame_tx;
     // ccd_frame_buf ↔ ccd_frame_tx 连接
     // ==================================================================
     wire [15:0] fifo_data;
-    wire        fifo_empty;
-    wire        fifo_half_full;
-    wire        fifo_full;
+    wire [1:0]  fifo_frame_num;
     wire        fifo_last_word;
     wire        fifo_rd_en;
 
@@ -106,12 +106,12 @@ module test_ccd_frame_tx;
         .i_pixel_type      (i_pixel_type),
         .i_frame_start     (i_frame_start_buf),
         .i_frame_end       (i_frame_end),
-        .i_frame_depth     (i_frame_depth),
+        .i_image_width     (i_image_width),
+        .i_image_height    (i_image_height),
+        .i_read_mode       (i_read_mode),
         .i_rd_clk          (i_ext_clk),
         .o_fifo_data       (fifo_data),
-        .o_fifo_empty      (fifo_empty),
-        .o_fifo_half_full  (fifo_half_full),
-        .o_fifo_full       (fifo_full),
+        .o_frame_num       (fifo_frame_num),
         .o_fifo_last_word  (fifo_last_word),
         .i_fifo_rd_en      (fifo_rd_en),
         .o_rd_fifo_sel     (),
@@ -123,9 +123,7 @@ module test_ccd_frame_tx;
         .i_ext_clk_n           (i_ext_clk_n),
         .i_rst_n               (i_rst_n),
         .i_frame_fifo_data     (fifo_data),
-        .i_frame_fifo_empty    (fifo_empty),
-        .i_frame_fifo_half_full(fifo_half_full),
-        .i_frame_fifo_full     (fifo_full),
+        .i_frame_fifo_num      (fifo_frame_num),
         .i_frame_fifo_last_word(fifo_last_word),
         .o_frame_fifo_rd_en    (fifo_rd_en),
         .o_slave_fifo_data     (o_slave_fifo_data),
@@ -171,7 +169,9 @@ module test_ccd_frame_tx;
     task wr_frame(input integer num_active, input [15:0] base);
         integer k;
         begin
-            i_frame_depth <= num_active;
+            i_image_width  <= num_active;
+            i_image_height <= 1;
+            i_read_mode    <= 2'd0;
             @(posedge i_adcclk);
             i_frame_start_buf <= 1'b1;
             @(posedge i_adcclk);
@@ -245,7 +245,9 @@ module test_ccd_frame_tx;
         i_pixel_type     = 2'b00;
         i_frame_start_buf = 1'b0;
         i_frame_end      = 1'b0;
-        i_frame_depth    = 32'd0;
+        i_image_width    = 16'd0;
+        i_image_height   = 16'd1;
+        i_read_mode      = 2'd0;
         i_frame_start_tx = 1'b0;
         i_slave_fifo_empty_n = 1'b1;
         i_slave_fifo_full_n  = 1'b1;
@@ -280,8 +282,8 @@ module test_ccd_frame_tx;
         $display("[TEST 2] Single frame transmission");
         clear_frame_done_capture;
         wr_frame(FRAME_WORDS, 16'd1000);
-        if(fifo_half_full!=1) begin
-            $display("  Frame written, but half_full=%b", fifo_half_full);
+        if(fifo_frame_num!=2'd1) begin
+            $display("  Frame written, but frame_num=%d", fifo_frame_num);
             $stop;
         end
 
@@ -353,7 +355,7 @@ module test_ccd_frame_tx;
         clear_frame_done_capture;
         wr_frame(FRAME_WORDS, 16'd7000);
         wr_frame(FRAME_WORDS, 16'd8000);
-        $display("  2 frames written, full=%b", fifo_full);
+        $display("  2 frames written, frame_num=%d", fifo_frame_num);
 
         clear_frame_done_capture;
         send_frame;
@@ -361,7 +363,7 @@ module test_ccd_frame_tx;
         if (frame_done_captured !== 1'b1) begin
             $display("[FAIL] Frame 0 done not received");
         end else begin
-            $display("  Frame 0 done, half_full=%b", fifo_half_full);
+            $display("  Frame 0 done, frame_num=%d", fifo_frame_num);
         end
         rd_wait(3);
 
@@ -371,7 +373,7 @@ module test_ccd_frame_tx;
         if (frame_done_captured !== 1'b1) begin
             $display("[FAIL] Frame 1 done not received");
         end else begin
-            $display("  Frame 1 done, empty=%b", fifo_empty);
+            $display("  Frame 1 done, frame_num=%d", fifo_frame_num);
         end
         rd_wait(3);
         $display("[PASS] Ping-pong OK");
@@ -384,7 +386,9 @@ module test_ccd_frame_tx;
         exception_captured = 1'b0;
 
         @(posedge i_adcclk);
-        i_frame_depth <= FRAME_WORDS;
+        i_image_width    <= FRAME_WORDS;
+        i_image_height   <= 1;
+        i_read_mode      <= 2'd0;
         i_frame_start_buf <= 1'b1;
         @(posedge i_adcclk);
         i_frame_start_buf <= 1'b0;

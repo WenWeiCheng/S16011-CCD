@@ -91,13 +91,7 @@ module async_fifo #(
         almost_empty_int <= (bin2gray(rd_ptr + 2'd2) == wr_gray_synced);
     end
 
-    always @(posedge i_rd_clk or negedge i_rst_n) begin
-        if (!i_rst_n)
-            almost_empty_reg <= 1'b0;
-        else
-            almost_empty_reg <= almost_empty_int;
-    end
-    assign o_almost_empty = almost_empty_reg;
+    assign o_almost_empty = almost_empty_int;
 
     // 读数据 (上升沿从 BRAM 读取, 此时 rd_addr 仍为 NBA 前的旧值)
     reg [DATA_WIDTH-1:0] rd_data_int;

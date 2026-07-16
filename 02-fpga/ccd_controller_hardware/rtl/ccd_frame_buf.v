@@ -1,13 +1,15 @@
 `timescale 1ns / 1ps
 //==============================================================================
 // Module : ccd_frame_buf
-// Desc   : 乒乓帧缓存模块。
+// Desc   : 帧缓存模块。以帧为单位缓存 CCD 像素数据,
 //          实例化两个 async_fifo 作为子 FIFO, 以帧为单位乒乓切换,
-//          向上层呈现"深度为 2 的帧级 FIFO"。
+//          向上层呈现"深度为 MAX_FRAMES 的帧级 FIFO"。
 //          包含 S0-S3 读写状态机 (读域 i_rd_clk 上升沿) + 每 FIFO 的帧状态机 (写域 i_adcclk 上升沿)。
+//          输出 o_frame_num 指示当前可读帧数, 便于上层轮询/中断调度。
 //==============================================================================
 module ccd_frame_buf #(
-    parameter MAX_FRAME_DEPTH = 131072  // 子 FIFO 物理深度 (默认 2048×64)
+    parameter MAX_FRAME_DEPTH = 131072,  // 子 FIFO 物理深度 (默认 2048×64)
+    parameter MAX_FRAMES      = 2        // 最大缓存帧数 (默认 2, 后续 DDR 可扩展)
 ) (
     // ---- 写侧 (ADCCLK 域) ----
     input  wire         i_adcclk,          // 写时钟 = ADCCLK (≤ 500kHz)
@@ -17,20 +19,20 @@ module ccd_frame_buf #(
     input  wire [1:0]   i_pixel_type,      // 像素类型 (00=bevel, 01=blank, 10=active)
     input  wire         i_frame_start,     // 标记新的一帧
     input  wire         i_frame_end,       // 标记帧的结束
-    input  wire [31:0]  i_frame_depth,     // 运行时帧深度 (有效像素个数)
+    input  wire [15:0]  i_image_width,     // 图像宽度 (pixels)
+    input  wire [15:0]  i_image_height,    // 图像高度 (pixels)
+    input  wire [1:0]   i_read_mode,       // 读出模式: 0=line binning, 1=image
 
     // ---- 读侧 (FX2 域: i_rd_clk) ----
     input  wire         i_rd_clk,          // 读时钟 (FX2 Slave FIFO, ≤ 48MHz)
     output wire [15:0]  o_fifo_data,       // PP FIFO 读出数据 (16bit, 以帧为单位)
-    output wire         o_fifo_empty,      // PP FIFO 空 (0 帧)
-    output wire         o_fifo_half_full,  // PP FIFO 半满 (1 帧)
-    output wire         o_fifo_full,       // PP FIFO 满 (2 帧)
+    output wire [FRAME_NUM_W-1:0] o_frame_num,  // 帧缓存中可读帧数
     input  wire         i_fifo_rd_en,      // PP FIFO 读使能
     output wire         o_rd_fifo_sel,     // 当前读 FIFO 选择 (0=读fifo0, 1=读fifo1)
     output wire         o_fifo_last_word,  // 当前读出字是帧最后一字
 
     // ---- 异常帧 ----
-    output wire         o_frame_exception  // 帧异常, 读到有效像素数不等于 i_frame_depth 的帧
+    output wire         o_frame_exception  // 帧异常, 读到有效像素数不等于计算帧深度的帧
 );
 
     // ==================================================================
@@ -39,6 +41,8 @@ module ccd_frame_buf #(
     localparam FRAME_EMPTY     = 2'd0;
     localparam FRAME_READY     = 2'd1;
     localparam FRAME_EXCEPTION = 2'd2;
+
+    localparam FRAME_NUM_W  = $clog2(MAX_FRAMES+1);
 
     localparam S_WR0_RD1 = 2'd0;  // S0: 写 fifo0, 读 fifo1
     localparam S_WR1_RD0 = 2'd1;  // S1: 写 fifo1, 读 fifo0
@@ -171,10 +175,17 @@ module ccd_frame_buf #(
     assign fifo1_rst_req = fifo1_rst_req_sync[1];
 
     // ==================================================================
-    // 写域 — 帧深度锁存 + 像素计数器
+    // 写域 — 帧深度计算 + 锁存 + 像素计数器
+    //   line binning : frame_depth = image_width (一行合并)
+    //   image        : frame_depth = image_width * image_height
     //   像素计数仅在 wr_enable_sync 有效时递增 (S0/S1 态),
     //   避免 S2/S3 等待态时误计入被丢弃帧的像素。
     // ==================================================================
+    wire [31:0] frame_depth;
+    assign frame_depth = (i_read_mode == 2'd0) ?
+        {16'd0, i_image_width} :
+        (i_image_width * i_image_height);
+
     reg [31:0] frame_depth_latched;
     reg [31:0] pixel_cnt;
 
@@ -185,7 +196,7 @@ module ccd_frame_buf #(
         end else begin
             // 帧开始时锁存帧深度, 复位像素计数器
             if (frame_start_rise) begin
-                frame_depth_latched <= i_frame_depth;
+                frame_depth_latched <= frame_depth;
                 pixel_cnt           <= 32'd0;
             end else if (i_wr_en && i_pixel_type == 2'b10
                          && wr_enable_sync[1]) begin
@@ -573,24 +584,13 @@ module ccd_frame_buf #(
     assign o_fifo_last_word = (rd_sel == 1'b0) ? fifo0_almost_empty : fifo1_almost_empty;
 
     // ==================================================================
-    // 读域 — PP FIFO 标志输出 (上升沿更新)
+    // 读域 — o_frame_num 输出 (直接组合赋值)
     // ==================================================================
-    reg empty_reg;
-    reg half_full_reg;
-    reg full_reg;
+    assign o_frame_num = frames_ready_cnt;
 
-    always @(posedge i_rd_clk or negedge i_rst_n) begin
-        if (!i_rst_n) begin
-            empty_reg     <= 1'b1;
-            half_full_reg <= 1'b0;
-            full_reg      <= 1'b0;
-        end else begin
-            empty_reg     <= (frames_ready_cnt == 2'd0);
-            half_full_reg <= (frames_ready_cnt == 2'd1);
-            full_reg      <= (frames_ready_cnt == 2'd2);
-        end
-    end
-
+    // ==================================================================
+    // 读域 — rd_sel 寄存器输出 (o_rd_fifo_sel)
+    // ==================================================================
     reg rd_sel_reg;
     always @(posedge i_rd_clk or negedge i_rst_n) begin
         if (!i_rst_n)
@@ -599,9 +599,6 @@ module ccd_frame_buf #(
             rd_sel_reg <= rd_sel;
     end
 
-    assign o_fifo_empty     = empty_reg;
-    assign o_fifo_half_full = half_full_reg;
-    assign o_fifo_full      = full_reg;
     assign o_rd_fifo_sel    = rd_sel_reg;
 
 endmodule

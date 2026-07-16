@@ -26,14 +26,14 @@ module test_ccd_frame_buf;
     reg  [1:0]  i_pixel_type;
     reg         i_frame_start;
     reg         i_frame_end;
-    reg  [31:0] i_frame_depth;
+    reg  [15:0] i_image_width;
+    reg  [15:0] i_image_height;
+    reg  [1:0]  i_read_mode;
 
     // ---- 读侧 ----
     reg         i_rd_clk;
     wire [15:0] o_fifo_data;
-    wire        o_fifo_empty;
-    wire        o_fifo_half_full;
-    wire        o_fifo_full;
+    wire [1:0]  o_frame_num;
     reg         i_fifo_rd_en;
     wire        o_rd_fifo_sel;
 
@@ -53,12 +53,12 @@ module test_ccd_frame_buf;
         .i_pixel_type      (i_pixel_type),
         .i_frame_start     (i_frame_start),
         .i_frame_end       (i_frame_end),
-        .i_frame_depth     (i_frame_depth),
+        .i_image_width     (i_image_width),
+        .i_image_height    (i_image_height),
+        .i_read_mode       (i_read_mode),
         .i_rd_clk          (i_rd_clk),
         .o_fifo_data       (o_fifo_data),
-        .o_fifo_empty      (o_fifo_empty),
-        .o_fifo_half_full  (o_fifo_half_full),
-        .o_fifo_full       (o_fifo_full),
+        .o_frame_num       (o_frame_num),
         .i_fifo_rd_en      (i_fifo_rd_en),
         .o_rd_fifo_sel     (o_rd_fifo_sel),
         .o_frame_exception (o_frame_exception)
@@ -119,7 +119,10 @@ module test_ccd_frame_buf;
         integer k;
         begin
             // 帧开始: frame_start 脉冲
-            i_frame_depth <= num_active;
+            // 设置 width=num_active, height=1, read_mode=0(line binning) → frame_depth = width
+            i_image_width  <= num_active;
+            i_image_height <= 1;
+            i_read_mode    <= 2'd0;
             @(posedge i_adcclk);
             i_frame_start <= 1'b1;
             @(posedge i_adcclk);
@@ -145,7 +148,9 @@ module test_ccd_frame_buf;
                                 input integer num_blank_after);
         integer k;
         begin
-            i_frame_depth <= num_active;
+            i_image_width  <= num_active;
+            i_image_height <= 1;
+            i_read_mode    <= 2'd0;
             @(posedge i_adcclk);
             i_frame_start <= 1'b1;
             @(posedge i_adcclk);
@@ -230,9 +235,11 @@ module test_ccd_frame_buf;
         i_wr_en       = 1'b0;
         i_pixel_type  = 2'b00;
         i_frame_start = 1'b0;
-        i_frame_end   = 1'b0;
-        i_frame_depth = 32'd0;
-        i_fifo_rd_en  = 1'b0;
+        i_frame_end    = 1'b0;
+        i_image_width  = 16'd0;
+        i_image_height = 16'd1;
+        i_read_mode    = 2'd0;
+        i_fifo_rd_en   = 1'b0;
 
         wr_wait(5);
         i_rst_n = 1'b1;
@@ -243,9 +250,9 @@ module test_ccd_frame_buf;
         // 测试 1: 复位后状态
         // ================================================================
         $display("[TEST 1] Reset check");
-        if (o_fifo_empty !== 1'b1 || o_fifo_half_full !== 1'b0 || o_fifo_full !== 1'b0) begin
-            $display("[FAIL] Reset state: empty=%b half_full=%b full=%b",
-                     o_fifo_empty, o_fifo_half_full, o_fifo_full);
+        if (o_frame_num !== 2'd0) begin
+            $display("[FAIL] Reset state: frame_num=%d (expected 0)",
+                     o_frame_num);
         end else begin
             $display("[PASS] Reset state OK");
         end
@@ -257,11 +264,11 @@ module test_ccd_frame_buf;
         wr_frame(8);
         wait_cdc;
 
-        if (o_fifo_half_full !== 1'b1) begin
-            $display("[FAIL] After write 1 frame: half_full=%b (expected 1)",
-                     o_fifo_half_full);
+        if (o_frame_num !== 2'd1) begin
+            $display("[FAIL] After write 1 frame: frame_num=%d (expected 1)",
+                     o_frame_num);
         end else begin
-            $display("[PASS] half_full=1 after 1 frame written");
+            $display("[PASS] frame_num=1 after 1 frame written");
         end
 
         // ================================================================
@@ -271,45 +278,45 @@ module test_ccd_frame_buf;
         rd_frame_verify(8, 16'd1000);
         wait_cdc;
 
-        if (o_fifo_empty !== 1'b1) begin
-            $display("[FAIL] After read 1 frame: empty=%b (expected 1)",
-                     o_fifo_empty);
+        if (o_frame_num !== 2'd0) begin
+            $display("[FAIL] After read 1 frame: frame_num=%d (expected 0)",
+                     o_frame_num);
         end else begin
-            $display("[PASS] empty=1 after frame read");
+            $display("[PASS] frame_num=0 after frame read");
         end
 
         // ================================================================
         // 测试 4: 乒乓切换 (写 2 帧 → 读 1 帧 → 读 1 帧)
         // ================================================================
         $display("[TEST 4] Ping-pong: write 2 frames, then read both");
-        wr_frame(8);   // frame 0 → half_full=1
-        wr_frame(8);   // frame 1 → full=1
+        wr_frame(8);   // frame 0 → frame_num=1
+        wr_frame(8);   // frame 1 → frame_num=2
         wait_cdc;
 
-        if (o_fifo_full !== 1'b1) begin
-            $display("[FAIL] After 2 frames: full=%b (expected 1)", o_fifo_full);
+        if (o_frame_num !== 2'd2) begin
+            $display("[FAIL] After 2 frames: frame_num=%d (expected 2)", o_frame_num);
         end else begin
-            $display("[PASS] full=1 after 2 frames written");
+            $display("[PASS] frame_num=2 after 2 frames written");
         end
 
         rd_frame_verify(8, 16'd1000);  // 读帧 0
         wait_cdc;
 
-        if (o_fifo_half_full !== 1'b1) begin
-            $display("[FAIL] After reading 1 of 2 frames: half_full=%b (expected 1)",
-                     o_fifo_half_full);
+        if (o_frame_num !== 2'd1) begin
+            $display("[FAIL] After reading 1 of 2 frames: frame_num=%d (expected 1)",
+                     o_frame_num);
         end else begin
-            $display("[PASS] half_full=1 after reading 1 frame");
+            $display("[PASS] frame_num=1 after reading 1 frame");
         end
 
         rd_frame_verify(8, 16'd1000);  // 读帧 1
         wait_cdc;
 
-        if (o_fifo_empty !== 1'b1) begin
-            $display("[FAIL] After reading both frames: empty=%b (expected 1)",
-                     o_fifo_empty);
+        if (o_frame_num !== 2'd0) begin
+            $display("[FAIL] After reading both frames: frame_num=%d (expected 0)",
+                     o_frame_num);
         end else begin
-            $display("[PASS] empty=1 after reading all frames");
+            $display("[PASS] frame_num=0 after reading all frames");
         end
 
         // ================================================================
@@ -319,14 +326,14 @@ module test_ccd_frame_buf;
         $display("[TEST 5] Concurrent write/read (ping-pong normal flow)");
 
         // 先清空
-        if (!o_fifo_empty) begin
+        if (o_frame_num != 0) begin
             // 如果还有残留帧, 先读空
-            while (!o_fifo_empty) rd_pixel;
+            while (o_frame_num != 0) rd_pixel;
         end
 
         wr_frame(8);  // 写帧 A (进 fifo0)
         wait_cdc;
-        $display("  Frame A written, half_full=%b", o_fifo_half_full);
+        $display("  Frame A written, frame_num=%d", o_frame_num);
 
         // 同时: 读帧 A + 写帧 B
         // 先启动读 (读出帧 A 的前几个像素)
@@ -348,15 +355,15 @@ module test_ccd_frame_buf;
         join
 
         wait_cdc;
-        $display("  Frame B written + Frame A read, half_full=%b full=%b",
-                 o_fifo_half_full, o_fifo_full);
+        $display("  Frame B written + Frame A read, frame_num=%d",
+                 o_frame_num);
 
         // 读帧 B
         rd_frame_verify(16, 16'd1000);
 
         wait_cdc;
-        if (o_fifo_empty !== 1'b1) begin
-            $display("[FAIL] Concurrent test: final empty=%b", o_fifo_empty);
+        if (o_frame_num !== 2'd0) begin
+            $display("[FAIL] Concurrent test: final frame_num=%d", o_frame_num);
         end else begin
             $display("[PASS] Concurrent write/read OK");
         end
@@ -368,8 +375,10 @@ module test_ccd_frame_buf;
 
         // 写入少于 frame_depth 的 active 像素 → 应触发 exception
         @(posedge i_adcclk);
-        i_frame_depth <= 8;
-        i_frame_start <= 1'b1;
+        i_image_width  <= 8;
+        i_image_height <= 1;
+        i_read_mode    <= 2'd0;
+        i_frame_start  <= 1'b1;
         @(posedge i_adcclk);
         i_frame_start <= 1'b0;
 
@@ -403,9 +412,9 @@ module test_ccd_frame_buf;
         wr_frame_with_overhead(8, 4, 4);
         wait_cdc;
 
-        if (o_fifo_half_full !== 1'b1) begin
-            $display("[FAIL] Pixel filter: half_full=%b after frame with overhead",
-                     o_fifo_half_full);
+        if (o_frame_num !== 2'd1) begin
+            $display("[FAIL] Pixel filter: frame_num=%d after frame with overhead",
+                     o_frame_num);
         end else begin
             $display("[PASS] Frame recognized despite blank/bevel pixels");
         end
@@ -420,7 +429,7 @@ module test_ccd_frame_buf;
         $display("[TEST 8] S2/S3 wait states");
 
         // 读空 test 7 残留
-        while (!o_fifo_empty) rd_pixel;
+        while (o_frame_num != 0) rd_pixel;
         wait_cdc;
 
         // 连续写 2 帧
@@ -428,16 +437,18 @@ module test_ccd_frame_buf;
         wr_frame(8);  // frame 1
         wait_cdc;
 
-        if (o_fifo_full !== 1'b1) begin
-            $display("[FAIL] S2/S3: full=%b after 2 frames", o_fifo_full);
+        if (o_frame_num !== 2'd2) begin
+            $display("[FAIL] S2/S3: frame_num=%d after 2 frames", o_frame_num);
         end else begin
-            $display("[PASS] full=1 after 2 frames (both FIFOs have ready frame)");
+            $display("[PASS] frame_num=2 after 2 frames (both FIFOs have ready frame)");
         end
 
         // 尝试写第 3 帧 — 状态机应进入 S2/S3 等待
         @(posedge i_adcclk);
-        i_frame_depth <= 8;
-        i_frame_start <= 1'b1;
+        i_image_width  <= 8;
+        i_image_height <= 1;
+        i_read_mode    <= 2'd0;
+        i_frame_start  <= 1'b1;
         @(posedge i_adcclk);
         i_frame_start <= 1'b0;
 
@@ -454,7 +465,7 @@ module test_ccd_frame_buf;
         $display("  S2/S3 test: check waveform for state transition");
 
         // 读空所有帧
-        while (!o_fifo_empty) rd_pixel;
+        while (o_frame_num != 0) rd_pixel;
         wait_cdc;
 
         $display("========================================");
