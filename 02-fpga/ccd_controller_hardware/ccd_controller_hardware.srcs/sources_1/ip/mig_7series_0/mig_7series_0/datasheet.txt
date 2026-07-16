@@ -13,7 +13,7 @@ MIG Output Options:
 
 FPGA Options:
    System Clock Type               : No Buffer
-   Reference Clock Type            : Use System Clock
+   Reference Clock Type            : No Buffer
    Debug Port                      : OFF
    Internal Vref                   : enabled
    IO Power Reduction              : ON
@@ -40,9 +40,9 @@ Controller Options :
 
    Phy to Controller Clock Ratio : 4:1
 
-   Input Clock Period            : 5000 ps
+   Input Clock Period            : 10000 ps
 
-   CLKFBOUT_MULT (PLL)           : 4
+   CLKFBOUT_MULT (PLL)           : 8
 
    DIVCLK_DIVIDE (PLL)           : 1
 
