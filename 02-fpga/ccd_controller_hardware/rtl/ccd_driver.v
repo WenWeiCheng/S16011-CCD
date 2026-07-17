@@ -82,6 +82,35 @@ wire cdsclk2_w;
 wire [31:0] v_shift_cnt;
 wire [31:0] h_shift_cnt;
 wire [31:0] line_cnt;
+reg [1:0]  exp_sync;
+reg        exp_sync_d1;
+reg [31:0] exp_stretch_cnt;
+wire       exp_fall_stretched;
+reg [1:0] state_reg, state_next;
+reg       freq_sel_prev;
+reg       exp_fall_sync;
+reg [31:0] v_counter;
+reg [31:0] h_counter;
+reg [31:0] l_counter;
+wire       freq_changed;
+wire       exposure_falling;
+wire       vstate;
+wire       hstate;
+reg        p1v_enable;
+reg        p2v_tg_enable;
+reg        p1h_enable;
+reg        p2h_enable;
+reg        p3h_enable;
+reg        p4h_sg_enable;
+reg        rg_enable;
+reg        cdsclk_enable;
+reg        data_valid_reg;
+reg [1:0]  pixel_type_reg;
+wire       outputs_idle;
+reg [7:0]  adc_data_rise;
+reg [15:0] pixel_data_reg;
+reg        frame_start_reg;
+reg        frame_end_reg;
 
 assign v_shift_cnt = (i_read_mode == 2'd0) ?
     (i_bevel_top + i_image_height + i_bevel_bottom) :  // line binning
@@ -132,10 +161,6 @@ cdsclk_gen #(
 //   i_exposure 是异步信号,先用 100 MHz 系统时钟双级同步,
 //   捕捉下降沿(1→0)后展宽至 20 µs,确保慢速 sclk_p0 域可靠采样。
 // ==================================================================
-reg [1:0]  exp_sync;          // 双级同步器
-reg        exp_sync_d1;       // 上一拍值,用于边沿检测
-reg [31:0] exp_stretch_cnt;   // 展宽计数器
-
 always @(posedge i_clk or negedge i_rst_n) begin
     if (!i_rst_n) begin
         exp_sync       <= 2'b11;
@@ -157,7 +182,7 @@ always @(posedge i_clk or negedge i_rst_n) begin
 end
 
 // 展宽后的脉冲 (高电平持续 ~20 µs)
-wire exp_fall_stretched = (exp_stretch_cnt > 0);
+assign exp_fall_stretched = (exp_stretch_cnt > 0);
 
 // ==================================================================
 // 三态状态机 (以 sclk_p0 为同步时钟)
@@ -165,10 +190,6 @@ wire exp_fall_stretched = (exp_stretch_cnt > 0);
 localparam STATE_IDLE            = 2'd0;
 localparam STATE_VERTICAL_SHIFT  = 2'd1;
 localparam STATE_HORIZONTAL_SHIFT = 2'd2;
-
-reg [1:0] state_reg, state_next;
-reg       freq_sel_prev;     // 频率切换检测
-reg       exp_fall_sync;     // 展宽后 exposure 下降沿 (sclk 域同步)
 
 // --- 状态寄存器 (s_clk 上升沿) ---
 always @(posedge sclk_p0_w or negedge i_rst_n) begin
@@ -183,13 +204,8 @@ always @(posedge sclk_p0_w or negedge i_rst_n) begin
     end
 end
 
-// --- 计数器 (s_clk 上升沿) ---
-reg [31:0] v_counter;
-reg [31:0] h_counter;
-reg [31:0] l_counter;
-
 // 频率切换发生时强制所有计数器复位
-wire freq_changed = (freq_sel_prev != i_freq_sel);
+assign freq_changed = (freq_sel_prev != i_freq_sel);
 
 always @(posedge sclk_p0_w or negedge i_rst_n) begin
     if (!i_rst_n || freq_changed) begin
@@ -218,7 +234,7 @@ always @(posedge sclk_p0_w or negedge i_rst_n) begin
 end
 
 // exposure 下降沿 (已在 sclk 域同步,来自展宽脉冲)
-wire exposure_falling = exp_fall_sync;
+assign exposure_falling = exp_fall_sync;
 
 // --- 次态逻辑 ---
 always @(*) begin
@@ -254,8 +270,8 @@ always @(*) begin
 end
 
 // --- 状态指示信号 ---
-wire vstate = (state_reg == STATE_VERTICAL_SHIFT);
-wire hstate = (state_reg == STATE_HORIZONTAL_SHIFT);
+assign vstate = (state_reg == STATE_VERTICAL_SHIFT);
+assign hstate = (state_reg == STATE_HORIZONTAL_SHIFT);
 
 // ==================================================================
 // CCD 驱动信号 — 使能寄存器 + 时钟组合输出
@@ -275,13 +291,12 @@ wire hstate = (state_reg == STATE_HORIZONTAL_SHIFT);
 assign o_adcclk  = sclk_p0_w;       // 同相, 50%, 不受任何门控
 
 // 输出复位条件: exposure 拉高 或 状态机处于 IDLE
-wire outputs_idle = i_exposure || (state_reg == STATE_IDLE);
+assign outputs_idle = i_exposure || (state_reg == STATE_IDLE);
 assign o_frame_idle = outputs_idle;
 
 // ------------------------------------------------------------------
 // 使能寄存器 — 垂直组 (s_clk_p180 上升沿, 等效原 sclk_p0 下降沿)
 // ------------------------------------------------------------------
-reg p1v_enable;
 always @(posedge sclk_p180_w or negedge i_rst_n) begin
     if (!i_rst_n)
         p1v_enable <= 1'b0;
@@ -294,7 +309,6 @@ assign o_p1v = p1v_enable ? sclk_p270_w : 1'b0;     // 落后 270°
 // ------------------------------------------------------------------
 // 使能寄存器 — 垂直组 (s_clk_p0 上升沿)
 // ------------------------------------------------------------------
-reg p2v_tg_enable;
 always @(posedge sclk_p0_w or negedge i_rst_n) begin
     if (!i_rst_n)
         p2v_tg_enable <= 1'b0;
@@ -307,10 +321,6 @@ assign o_p2v_tg = p2v_tg_enable ? sclk_p90_w : 1'b0;     // 落后 90°
 // ------------------------------------------------------------------
 // 使能寄存器 — 水平组 (s_clk_p180 上升沿, 等效原 sclk_p0 下降沿)
 // ------------------------------------------------------------------
-reg p1h_enable;
-reg p2h_enable;
-reg p3h_enable;
-
 always @(posedge sclk_p180_w or negedge i_rst_n) begin
     if (!i_rst_n) begin
         p1h_enable <= 1'b0;
@@ -330,10 +340,6 @@ assign o_p3h = p3h_enable ? sclk_p0_w   : 1'b0;          // 同相
 // ------------------------------------------------------------------
 // 使能寄存器 — 水平组 (s_clk 上升沿)
 // ------------------------------------------------------------------
-reg p4h_sg_enable;
-reg rg_enable;
-reg cdsclk_enable;
-
 always @(posedge sclk_p0_w or negedge i_rst_n) begin
     if (!i_rst_n) begin
         p4h_sg_enable  <= 1'b0;
@@ -361,8 +367,6 @@ assign o_cdsclk2 = cdsclk_enable ? cdsclk2_w   : 1'b0;     // 落后 270°, 12.5
 //   +width+1..+bevel_r     : bevel  (00)
 //   +bevel_r+1..+blank_r   : blank  (01)
 // ==================================================================
-reg        data_valid_reg;
-reg [1:0]  pixel_type_reg;
 assign o_data_valid = data_valid_reg;
 assign o_pixel_type = pixel_type_reg;
 
@@ -396,8 +400,6 @@ end
 // 拼成 16bit 输出: {ADCCLK 上升沿采到的字节, ADCCLK 下降沿采到的字节}
 // 采样用 sclk_p90_w (落后 adcclk 90°) 和 sclk_p270_w (落后 270°)
 // ==================================================================
-reg [7:0]  adc_data_rise;     // ADCCLK 上升沿采样
-reg [15:0] pixel_data_reg;    // 拼合后的 16bit 数据
 
 always @(posedge sclk_p90_w or negedge i_rst_n) begin
     if (!i_rst_n)
@@ -421,9 +423,6 @@ assign o_pixel_data = pixel_data_reg;
 // o_frame_start : 帧起始单周期脉冲 (IDLE→VERTICAL_SHIFT 时置位)
 // o_frame_end   : 帧结束单周期脉冲 (最后一帧行 HORIZONTAL→IDLE 时置位)
 // ==================================================================
-reg frame_start_reg;
-reg frame_end_reg;
-
 always @(posedge sclk_p0_w or negedge i_rst_n) begin
     if (!i_rst_n) begin
         frame_start_reg <= 1'b0;

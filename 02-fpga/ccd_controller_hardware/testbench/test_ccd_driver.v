@@ -46,6 +46,7 @@ module test_ccd_driver;
     wire        o_frame_start;
     wire        o_frame_end;
     wire        o_frame_idle;
+    reg [3:0] adc_cnt;
 
     ccd_driver u_dut (
         .i_clk         (i_clk),
@@ -104,8 +105,6 @@ module test_ccd_driver;
     //   则 o_pixel_data 应 = {adc_cnt, 4'hA, adc_cnt, 4'h5}。
     //   例如: cnt=0 → 0x0A05, cnt=1 → 0x1A15, cnt=2 → 0x2A25...
     // ------------------------------------------------------------------
-    reg [3:0] adc_cnt;
-
     always @(posedge o_adcclk) begin
         adc_cnt     <= adc_cnt + 1'b1;
         i_adc_data  <= {adc_cnt, 4'hA};

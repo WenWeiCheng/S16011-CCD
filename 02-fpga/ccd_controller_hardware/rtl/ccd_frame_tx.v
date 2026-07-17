@@ -60,6 +60,14 @@ module ccd_frame_tx #(
     // ==================================================================
     reg frame_start_d;
     wire frame_start_fall;
+    reg rd_en_reg;
+    reg rd_en_was_active;
+    reg [15:0] fifo_pipe_data;
+    reg        fifo_pipe_valid;
+    reg        fifo_last_pipe;
+    reg [15:0] slave_data_reg;
+    reg        slave_valid_n_reg;
+    reg        frame_done_n_reg;
 
     always @(posedge i_ext_clk or negedge i_rst_n) begin
         if (!i_rst_n)
@@ -75,7 +83,6 @@ module ccd_frame_tx #(
     //   用 state_next != S_IDLE 额外门控, 确保最后一字读出后立即停止,
     //   避免过渡周期仍拉高 rd_en 导致提前读出下一帧的首字。
     // ==================================================================
-    reg rd_en_reg;
 
     always @(posedge i_ext_clk or negedge i_rst_n) begin
         if (!i_rst_n)
@@ -85,8 +92,6 @@ module ccd_frame_tx #(
                          && (state_next != S_IDLE) && !i_frame_fifo_last_word;
     end
     assign o_frame_fifo_rd_en = rd_en_reg;
-
-    reg rd_en_was_active;
 
     always @(posedge i_ext_clk or negedge i_rst_n) begin
         if (!i_rst_n)
@@ -144,9 +149,6 @@ module ccd_frame_tx #(
     //     rd_en_was_active 在 i_ext_clk 上升沿记录"上一拍是否已处于 transmit 状态",
     //     用其作为有效标记正好匹配数据就绪时刻。
     // ==================================================================
-    reg [15:0] fifo_pipe_data;
-    reg        fifo_pipe_valid;
-    reg        fifo_last_pipe;      // 与 fifo_pipe_data 同步的 last_word 标志
 
     always @(posedge i_ext_clk or negedge i_rst_n) begin
         if (!i_rst_n) begin
@@ -176,9 +178,6 @@ module ccd_frame_tx #(
     //   使用 i_ext_clk_n 上升沿 (等效原下降沿), 使 Slave FIFO 输出
     //   在主时钟上升沿前稳定, 满足 FX2 建立时间要求。
     // ==================================================================
-    reg [15:0] slave_data_reg;
-    reg        slave_valid_n_reg;
-    reg        frame_done_n_reg;
 
     always @(posedge i_ext_clk_n or negedge i_rst_n) begin
         if (!i_rst_n) begin

@@ -58,6 +58,10 @@ module test_ccd;
     wire        o_frame_done_n;
     wire [1:0]  o_frame_num;
     wire        o_frame_exception;
+    reg [3:0] adc_cnt;
+    reg [15:0] slave_rd_result;
+    reg [15:0] wait_timeout;
+    reg        frame_done_detected;
 
     // ==================================================================
     // DUT
@@ -116,8 +120,6 @@ module test_ccd;
     //   高字节 = {adc_cnt, 4'hA}, 低字节 = {adc_cnt, 4'h5}
     //   → o_pixel_data = {adc_cnt_rise, 4'hA, adc_cnt_fall, 4'h5}
     // ==================================================================
-    reg [3:0] adc_cnt;
-
     always @(posedge o_adcclk) begin
         adc_cnt    <= adc_cnt + 1'b1;
         i_adc_data <= {adc_cnt, 4'hA};
@@ -146,7 +148,6 @@ module test_ccd;
     endtask
 
     // ---- 从 Slave FIFO 读取一字 (等待 valid_n=0 后采样) ----
-    reg [15:0] slave_rd_result;
     task slave_read_word;
         begin
             @(negedge i_rd_clk);
@@ -176,8 +177,6 @@ module test_ccd;
     endtask
 
     // ---- 等待 frame_done (最多等 500 rd_clk) ----
-    reg [15:0] wait_timeout;
-    reg        frame_done_detected;
     task wait_frame_done;
         begin
             wait_timeout = 0;

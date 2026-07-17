@@ -70,6 +70,9 @@ module test_ccd_frame_tx;
     // ccd_frame_buf 额外输出
     wire        o_frame_exception;
 
+    reg [15:0] wait_timeout;
+    integer i;
+
     // ==================================================================
     // o_frame_exception 捕获 (写域脉冲 → 寄存器展宽)
     // ==================================================================
@@ -206,7 +209,6 @@ module test_ccd_frame_tx;
     endtask
 
     // ---- 等待 frame_done (最多等 500 rd_clk) ----
-    reg [15:0] wait_timeout;
     task wait_frame_done;
         begin
             wait_timeout = 0;
@@ -228,7 +230,6 @@ module test_ccd_frame_tx;
     // ==================================================================
     // 主激励
     // ==================================================================
-    integer i;
 
     initial begin : stimulus
         $display("========================================");

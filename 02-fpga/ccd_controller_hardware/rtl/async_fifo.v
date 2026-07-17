@@ -50,6 +50,13 @@ module async_fifo #(
         bin2gray = bin ^ (bin >> 1);
     endfunction
 
+    reg almost_empty_int;
+    reg almost_empty_reg;
+    wire [ADDR_WIDTH:0] wr_gray_synced;
+    reg [DATA_WIDTH-1:0] rd_data_int;
+    wire [ADDR_WIDTH:0] rd_gray_synced;
+    wire [ADDR_WIDTH:0] space_left;
+
     // 写指针
     always @(posedge i_wr_clk or negedge i_rst_n) begin
         if (!i_rst_n) begin
@@ -84,8 +91,7 @@ module async_fifo #(
 
     // almost_empty: 在上升沿用读出前的 rd_ptr 预判,
     //               在上升沿注册输出 (与 o_rd_data / o_empty 同步)
-    reg almost_empty_int;   // 上升沿预判值
-    reg almost_empty_reg;   // 上升沿输出寄存器
+    assign wr_gray_synced = wr_gray_sync[1];
 
     always @(posedge i_rd_clk) begin
         almost_empty_int <= (bin2gray(rd_ptr + 2'd2) == wr_gray_synced);
@@ -94,7 +100,6 @@ module async_fifo #(
     assign o_almost_empty = almost_empty_int;
 
     // 读数据 (上升沿从 BRAM 读取, 此时 rd_addr 仍为 NBA 前的旧值)
-    reg [DATA_WIDTH-1:0] rd_data_int;
     always @(posedge i_rd_clk) begin
         if (i_rd_en && !o_empty)
             rd_data_int <= mem[rd_addr];
@@ -114,7 +119,6 @@ module async_fifo #(
     assign o_rd_data = rd_data_int;
 
     // 空标志 (上升沿更新)
-    wire [ADDR_WIDTH:0] wr_gray_synced = wr_gray_sync[1];
     assign o_empty = (rd_gray == wr_gray_synced);
 
     // 同步格雷码: 读格雷码 → 写时钟域
@@ -133,13 +137,13 @@ module async_fifo #(
     // ====================================================================
 
     // 满标志: 格雷码 MSB 相反, 次高位相反, 其余位相同
-    wire [ADDR_WIDTH:0] rd_gray_synced = rd_gray_sync[1];
+    assign rd_gray_synced = rd_gray_sync[1];
     assign o_full = (wr_gray[ADDR_WIDTH]   != rd_gray_synced[ADDR_WIDTH]) &&
                     (wr_gray[ADDR_WIDTH-1] != rd_gray_synced[ADDR_WIDTH-1]) &&
                     (wr_gray[ADDR_WIDTH-2:0] == rd_gray_synced[ADDR_WIDTH-2:0]);
 
     // Almost full: 剩余空间 < FIFO_DEPTH/4
-    wire [ADDR_WIDTH:0] space_left = (FIFO_DEPTH - (wr_ptr - rd_gray_synced));
+    assign space_left = (FIFO_DEPTH - (wr_ptr - rd_gray_synced));
     assign o_almost_full = (space_left < (FIFO_DEPTH >> 2));
 
 endmodule

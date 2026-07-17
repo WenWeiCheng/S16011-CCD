@@ -26,6 +26,19 @@ module cdsclk_gen #(
 
     reg [31:0] period_reg;     // 当前周期的输入时钟个数
     reg [31:0] cnt_reg;        // 自由计数器: 0 ~ period_reg-1
+    wire [31:0] half_cnt;
+    wire [31:0] quarter_cnt;
+    wire [31:0] three_q_cnt;
+    wire [31:0] eighth_cnt;
+    wire [31:0] delay_clamped;
+    wire [31:0] cdsclk1_start;
+    wire [31:0] cdsclk1_end;
+    wire        cdsclk1_active;
+    wire [31:0] cdsclk2_start;
+    wire [31:0] cdsclk2_end;
+    wire        cdsclk2_wrap;
+    wire [31:0] cdsclk2_end_wrapped;
+    wire        cdsclk2_active;
 
     // ------------------------------------------------------------------
     // 频率选择
@@ -53,24 +66,23 @@ module cdsclk_gen #(
     // ------------------------------------------------------------------
     // 时间边界常量
     // ------------------------------------------------------------------
-    wire [31:0] half_cnt    = period_reg >> 1;              // T/2  (180°)
-    wire [31:0] quarter_cnt = period_reg >> 2;              // T/4  (90°)
-    wire [31:0] three_q_cnt = period_reg - quarter_cnt;     // 3T/4 (270°)
-    wire [31:0] eighth_cnt  = period_reg >> 3;              // T/8  (45°)
+    assign half_cnt    = period_reg >> 1;              // T/2  (180°)
+    assign quarter_cnt = period_reg >> 2;              // T/4  (90°)
+    assign three_q_cnt = period_reg - quarter_cnt;     // 3T/4 (270°)
+    assign eighth_cnt  = period_reg >> 3;              // T/8  (45°)
 
     // ------------------------------------------------------------------
     // 延时钳位: i_delay 不能超过 T/8
     // ------------------------------------------------------------------
-    wire [31:0] delay_clamped = (i_delay > eighth_cnt) ? eighth_cnt : i_delay;
+    assign delay_clamped = (i_delay > eighth_cnt) ? eighth_cnt : i_delay;
 
     // ------------------------------------------------------------------
     // CDSCLK1 区间: [half_cnt + delay, half_cnt + delay + eighth_cnt)
     //   最大: start = T/2 + T/8 = 5T/8, end = 5T/8 + T/8 = 3T/4
     //   始终在 [T/2, 3T/4) 内, 不跨周期边界
     // ------------------------------------------------------------------
-    wire [31:0] cdsclk1_start = half_cnt + delay_clamped;
-    wire [31:0] cdsclk1_end   = cdsclk1_start + eighth_cnt;
-    wire        cdsclk1_active;
+    assign cdsclk1_start = half_cnt + delay_clamped;
+    assign cdsclk1_end   = cdsclk1_start + eighth_cnt;
 
     assign cdsclk1_active = (cnt_reg >= cdsclk1_start) && (cnt_reg < cdsclk1_end);
 
@@ -79,11 +91,10 @@ module cdsclk_gen #(
     //   最大: start = 3T/4 + T/8 = 7T/8, end = 7T/8 + T/8 = T (period)
     //   可能跨越周期边界, 需绕回处理
     // ------------------------------------------------------------------
-    wire [31:0] cdsclk2_start = three_q_cnt + delay_clamped;
-    wire [31:0] cdsclk2_end   = cdsclk2_start + eighth_cnt;
-    wire        cdsclk2_wrap  = (cdsclk2_end >= period_reg);
-    wire [31:0] cdsclk2_end_wrapped = cdsclk2_end - period_reg;
-    wire        cdsclk2_active;
+    assign cdsclk2_start = three_q_cnt + delay_clamped;
+    assign cdsclk2_end   = cdsclk2_start + eighth_cnt;
+    assign cdsclk2_wrap  = (cdsclk2_end >= period_reg);
+    assign cdsclk2_end_wrapped = cdsclk2_end - period_reg;
 
     assign cdsclk2_active = cdsclk2_wrap ?
         ((cnt_reg >= cdsclk2_start) || (cnt_reg < cdsclk2_end_wrapped)) :

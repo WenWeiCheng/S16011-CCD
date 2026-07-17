@@ -30,6 +30,8 @@ module test_async_fifo;
     reg                     i_rd_en;
     wire                    o_empty;
     wire                    o_almost_empty;
+    reg [15:0] rd_result;
+    integer i;
 
     // DUT
     async_fifo #(
@@ -80,7 +82,6 @@ module test_async_fifo;
 
     // 任务:读取一个数据 (返回读到的值)
     //   negedge 驱动 i_rd_en → posedge DUT 采样 → negedge DUT 更新输出 → posedge sample
-    reg [15:0] rd_result;
     task rd_data;
         begin
             @(negedge i_rd_clk);     // 驱动 i_rd_en, setup 到下一个 posedge
@@ -96,7 +97,6 @@ module test_async_fifo;
     // ------------------------------------------------------------------
     // 主激励
     // ------------------------------------------------------------------
-    integer i;
 
     initial begin : stimulus
         // ================================================================

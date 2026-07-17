@@ -27,6 +27,9 @@ module ccd_phase_gen #(
 
     reg [31:0] period_reg;     // 当前 SCLK 周期的输入时钟个数
     reg [31:0] cnt_reg;        // 自由计数器: 0 ~ period_reg-1
+    wire [31:0] quarter_cnt;
+    wire [31:0] half_cnt;
+    wire [31:0] three_q_cnt;
 
     // 频率选择
     always @(*) begin
@@ -48,9 +51,9 @@ module ccd_phase_gen #(
     end
 
     // 四分之一周期边界
-    wire [31:0] quarter_cnt = period_reg >> 2;              // period / 4
-    wire [31:0] half_cnt    = period_reg >> 1;              // period / 2
-    wire [31:0] three_q_cnt = period_reg - quarter_cnt;     // 3 * period / 4
+    assign quarter_cnt = period_reg >> 2;              // period / 4
+    assign half_cnt    = period_reg >> 1;              // period / 2
+    assign three_q_cnt = period_reg - quarter_cnt;     // 3 * period / 4
 
     // 相位解码,经寄存器输出避免毛刺
     always @(posedge i_clk or negedge i_rst_n) begin

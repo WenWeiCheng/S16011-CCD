@@ -38,6 +38,8 @@ module test_ccd_frame_buf;
 
     // ---- 异常 ----
     wire        o_frame_exception;
+    reg [15:0] rd_result;
+    integer i;
 
     // ==================================================================
     // DUT
@@ -180,7 +182,6 @@ module test_ccd_frame_buf;
 
     // ---- 读取一个像素 (返回读到的值) ----
     //   async_fifo 在 negedge 更新 o_rd_data, posedge 采样
-    reg [15:0] rd_result;
     task rd_pixel;
         begin
             @(posedge i_rd_clk);
@@ -220,7 +221,6 @@ module test_ccd_frame_buf;
     // ==================================================================
     // 主激励
     // ==================================================================
-    integer i;
 
     initial begin : stimulus
         $display("========================================");

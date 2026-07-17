@@ -76,6 +76,7 @@ module ccd #(
     wire [$clog2(MAX_FRAMES+1)-1:0] fifo_frame_num_w;
     wire        fifo_last_word_w;
     wire        fifo_rd_en_w;
+    wire        ext_clk_n;
 
     // ==================================================================
     // ccd_driver 实例化
@@ -151,7 +152,7 @@ module ccd #(
     // ccd_frame_tx 实例化
     //   从 ccd_frame_buf 读取帧数据, 转发至 FX2 Slave FIFO。
     // ==================================================================
-    wire ext_clk_n = ~i_rd_clk;
+    assign ext_clk_n = ~i_rd_clk;
 
     ccd_frame_tx #(
         .MAX_FRAMES(MAX_FRAMES)
