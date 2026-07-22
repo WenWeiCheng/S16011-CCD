@@ -8,9 +8,9 @@
   <Configuration>
     <Option Name="Id" Val="c69706c8786d43d491fb0d839989e736"/>
     <Option Name="Part" Val="xc7a100tfgg484-2"/>
-    <Option Name="CompiledLibDir" Val="$PPRDIR/../../../../30_Resources/Xilinx FPGA/compiled_library"/>
+    <Option Name="CompiledLibDir" Val="$PPRDIR/../../../30_Resources/Xilinx FPGA/compiled_library"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
-    <Option Name="CompiledLibDirModelSim" Val="$PPRDIR/../../../../30_Resources/Xilinx FPGA/compiled_library"/>
+    <Option Name="CompiledLibDirModelSim" Val="$PPRDIR/../../../30_Resources/Xilinx FPGA/compiled_library"/>
     <Option Name="CompiledLibDirQuesta" Val="$PCACHEDIR/compile_simlib/questa"/>
     <Option Name="CompiledLibDirIES" Val="$PCACHEDIR/compile_simlib/ies"/>
     <Option Name="CompiledLibDirXcelium" Val="$PCACHEDIR/compile_simlib/xcelium"/>
@@ -38,8 +38,8 @@
     <Option Name="IPUserFilesDir" Val="$PIPUSERFILESDIR"/>
     <Option Name="IPStaticSourceDir" Val="$PIPUSERFILESDIR/ipstatic"/>
     <Option Name="EnableBDX" Val="FALSE"/>
-    <Option Name="WTXSimLaunchSim" Val="117"/>
-    <Option Name="WTModelSimLaunchSim" Val="3"/>
+    <Option Name="WTXSimLaunchSim" Val="297"/>
+    <Option Name="WTModelSimLaunchSim" Val="14"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>
     <Option Name="WTVcsLaunchSim" Val="0"/>
@@ -128,7 +128,7 @@
           <Attr Name="ScopedToCell" Val="mig_7series_0"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/rtl/ccd_frame_buf_ddr.v">
+      <File Path="$PPRDIR/rtl/ccd_frame_buf_ddr/ccd_frame_buf_ddr.v">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -152,6 +152,22 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <File Path="$PPRDIR/rtl/ccd_frame_buf_ddr/ccd_frame_buf_ddr_ctrl.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/rtl/ccd_frame_buf_ddr/ccd_frame_buf_ddr_axi_adapter.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
         <Option Name="TopModule" Val="ccd"/>
@@ -166,29 +182,27 @@
     </FileSet>
     <FileSet Name="sim_1" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/sim_1">
       <Filter Type="Srcs"/>
-      <File Path="$PPRDIR/testbench/test_ccd_frame_tx.v">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PSRCDIR/sources_1/ip/mig_7series_0/mig_7series_0/example_design/sim/ddr3_model_parameters.vh">
         <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <File Path="$PSRCDIR/sources_1/ip/mig_7series_0/mig_7series_0/example_design/sim/ddr3_model.sv">
         <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/testbench/test_ccd_frame_buf_ddr.v">
+      <File Path="$PPRDIR/testbench/test_ccd_frame_tx_ddr.v">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/testbench/ccd_frame_buf_ddr/test_ccd_frame_buf_ddr.v">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -196,7 +210,23 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/testbench/test_ccd_frame_buf.v">
+      <File Path="$PPRDIR/testbench/ccd_frame_buf_ddr/test_ccd_frame_buf_ddr_ctrl.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/testbench/ccd_frame_buf_ddr/test_ccd_frame_buf_ddr_axi_adapter.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/testbench/test_async_fifo.v">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -220,7 +250,15 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/testbench/test_async_fifo.v">
+      <File Path="$PPRDIR/testbench/test_ccd_frame_buf.v">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/testbench/test_ccd_frame_tx.v">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -266,9 +304,24 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <File Path="$PSIMDIR/test_ccd_frame_buf_ddr_behav.wcfg">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSIMDIR/test_ccd_frame_buf_ddr_axi_adapter_behav.wcfg">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSIMDIR/test_ccd_frame_buf_ddr_ctrl_behav.wcfg">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
-        <Option Name="TopModule" Val="test_ccd_frame_tx"/>
+        <Option Name="TopModule" Val="test_ccd_frame_tx_ddr"/>
         <Option Name="TopLib" Val="xil_defaultlib"/>
         <Option Name="TransportPathDelay" Val="0"/>
         <Option Name="TransportIntDelay" Val="0"/>
@@ -278,6 +331,10 @@
         <Option Name="PamSignalDriverFile" Val="xil_bypass_driver"/>
         <Option Name="PamPseudoTop" Val="pseudo_tb"/>
         <Option Name="SrcSet" Val="sources_1"/>
+        <Option Name="XSimWcfgFile" Val="$PSIMDIR/test_ccd_frame_buf_ddr_behav.wcfg"/>
+        <Option Name="XSimWcfgFile" Val="$PSIMDIR/test_ccd_frame_buf_ddr_axi_adapter_behav.wcfg"/>
+        <Option Name="XSimWcfgFile" Val="$PSIMDIR/test_ccd_frame_buf_ddr_ctrl_behav.wcfg"/>
+        <Option Name="XSimWcfgFile" Val="$PSIMDIR/test_ccd_frame_buf_ddr_behav.wcfg"/>
         <Option Name="xsim.simulate.runtime" Val="1000us"/>
         <Option Name="modelsim.simulate.runtime" Val="1000us"/>
       </Config>
