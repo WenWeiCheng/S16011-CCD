@@ -6,18 +6,45 @@
 
 ```
 02-fpga/ccd_controller_hardware/
-├── AGENTS.md                     # 本文件 (本子项目约定)
-├── ccd_controller_hardware.xpr   # Vivado 工程入口
-├── constraints/                  # .xdc 管脚 / 时序约束
-├── rtl/                          # 可综合 RTL 源码 (.v)
+├── AGENTS.md                                          # 本文件 (子项目约定)
+├── ccd_controller_hardware.xpr                        # Vivado 工程入口
+├── ccd_controller_hardware.srcs/
+│   └── sources_1/
+│       └── ip/                                         # Vivado IP 核 (xci/xml/xdc)
+│           ├── fifo_generator_0/
+│           ├── mig_7series_0/
+│           ├── rd_ddr3_fifo/
+│           └── wr_ddr3_fifo/
+├── constraints/
+│   └── BX72_core_ddr3_pin.ucf                         # 管脚约束
+├── rtl/                                                # 可综合 RTL 源码 (.v)
+│   ├── async_fifo.v
+│   ├── ccd.v                                           # 顶层 CCD 控制器
+│   ├── ccd_driver.v
+│   ├── ccd_frame_buf.v
+│   ├── ccd_frame_buf_ddr.v
+│   ├── ccd_frame_tx.v
 │   ├── ccd_phase_gen.v
-│   └── ccd_driver.v
-└── testbench/                    # Vivado Simulation 用 testbench
-    └── test_<dut_name>.v
+│   ├── cdsclk_gen.v
+│   └── ddr/                                            # DDR3 控制器桥接
+│       ├── axi4_to_fifo.v
+│       ├── ddr3_ctrl_2port.v
+│       ├── fifo_axi4_adapter.v
+│       └── fifo_to_axi4.v
+└── testbench/                                          # 仿真 testbench (.v)
+    ├── fifo_axi4_adapter_tb.v
+    ├── test_async_fifo.v
+    ├── test_ccd.v
+    ├── test_ccd_driver.v
+    ├── test_ccd_frame_buf.v
+    ├── test_ccd_frame_buf_ddr.v
+    ├── test_ccd_frame_tx.v
+    └── test_cdsclk_gen.v
 ```
 
 > 不要在本目录新建 `sim_*/`,由 Vivado 自动生成。
-> 顶层设计模块放在 `rtl/`,TB 放在 `testbench/`,两边名字成对:`ccd_xxx.v` ↔ `test_ccd_xxx.v`。
+> 顶层设计模块放在 `rtl/`(子目录归类亦可,如 `rtl/ddr/`),TB 放在 `testbench/`。
+> RTL 与 TB 名字成对:`ccd_driver.v` ↔ `test_ccd_driver.v`。
 
 ---
 
@@ -29,6 +56,7 @@
 - iverilog 跑通即可,**不需要**保存波形、不需要 `vvp` 跑波形
 - 实际波形验证交给用户在 Vivado Simulation 中查看
 - 注释只解释大致逻辑，但不要写死计数器计到哪个值，方便”仿真-微调“
+- 声明放在使用之前
 
 ---
 
@@ -69,6 +97,64 @@
 - 频率 / 时间单位**显式后缀**:`_HZ` / `_KHZ` / `_MHZ` / `_NS` / `_US` / `_MS`
   - 例:`SYS_CLK_FREQ_HZ = 100_000_000`,`SYS_CLK_PERIOD_NS = 10.0`
 - 状态编码:`S_IDLE`, `S_VSHIFT`, `S_HSHIFT`(`S_` 前缀或 `_e` 后缀)
+
+---
+
+## 4. IP 核例化
+
+已有 IP 核位于以下两处（内容相同，互为镜像）：
+
+| 位置 | 说明 |
+|---|---|
+| `ccd_controller_hardware.srcs/sources_1/ip/<ip_name>/` | Vivado 工程源码目录下的 IP 核 |
+| `ccd_controller_hardware.ip_user_files/ip/<ip_name>/` | IP 用户文件镜像 |
+
+每个 IP 核目录下均有 `.veo`（Verilog Instantiation Example）文件，**这就是该 IP 核的 Verilog 例化模板**。
+
+### 4.1 现有 IP 核列表
+
+| IP 核名 | `.veo` 路径 | 用途 |
+|---|---|---|
+| `mig_7series_0` | `ip_user_files/ip/mig_7series_0/mig_7series_0.veo` | DDR3 内存控制器（MIG） |
+| `wr_ddr3_fifo` | `ip_user_files/ip/wr_ddr3_fifo/wr_ddr3_fifo.veo` | 写方向异步 FIFO（16→128bit） |
+| `rd_ddr3_fifo` | `ip_user_files/ip/rd_ddr3_fifo/rd_ddr3_fifo.veo` | 读方向异步 FIFO（128→16bit） |
+
+### 4.2 例化步骤
+
+1. **打开对应 IP 核的 `.veo` 文件**，定位到 `//----------- Begin Cut here for INSTANTIATION Template ---// INST_TAG` 与 `// INST_TAG_END ------ End INSTANTIATION Template ---------` 之间的代码块。
+
+2. **将模板复制到 RTL 代码中**，将模板内的 `your_instance_name` 替换为有意义的实例名（遵循 `u_<role>` 命名风格），并将各端口信号连接到实际信号。
+
+3. **例化示例**（已有代码参考）：
+
+   - `rtl/ddr/ddr3_ctrl_2port.v` 中例化 `mig_7series_0`：
+     ```verilog
+     mig_7series_0 u_mig_7series_0 (
+       .ddr3_addr            (ddr3_addr           ),
+       .ddr3_ba              (ddr3_ba             ),
+       // ...
+       .ui_clk               (ui_clk              ),
+       .ui_clk_sync_rst      (ui_clk_sync_rst     ),
+       // ...
+     );
+     ```
+
+   - `rtl/ddr/fifo_axi4_adapter.v` 中例化 `wr_ddr3_fifo` / `rd_ddr3_fifo`：
+     ```verilog
+     wr_ddr3_fifo wr_ddr3_fifo (
+       .rst           (wrfifo_clr         ),
+       .wr_clk        (wrfifo_clk         ),
+       // ...
+     );
+     ```
+
+### 4.3 注意事项
+
+- **不要手动修改 `.veo` 文件**——它们是 Vivado 自动生成的，修改会被覆盖。
+- **不要复制 `.veo` 中开头的版权声明**，只复制 `INST_TAG` 之间的模板代码。
+- **仿真时需要编译 IP 核的 wrapper 文件**（详见 `.veo` 末尾说明），在 Vivado 中 IP 核会自动加入仿真文件列表。
+- 如果需要新建 IP 核，请在 Vivado 中通过 IP Catalog 生成，不要在 `.veo` 中手写。
+- 当 IP 核参数需要调整时，在 Vivado 中重新配置（Re-Customize IP），重新生成后 `.veo` 会自动更新。
 
 ### 3.5 复位与有效电平
 

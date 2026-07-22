@@ -35,13 +35,6 @@
 
 
 
-问题：
-
-- 如何快速验证，接入 AI 辅助
-- 如何处理 FIFO 接口
-
-
-
 ### FPGA 框图
 
 集成 CCD 模块、SPI 控制器、IIC 控制器、GPIO 模块、串口、计时器、MicroBlaze 软核。

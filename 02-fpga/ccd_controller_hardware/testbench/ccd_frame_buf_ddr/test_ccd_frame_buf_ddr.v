@@ -513,7 +513,7 @@ module test_ccd_frame_buf_ddr;
         wait_read_available(5000);
         read_frame(16'd480, 16'hA000, 0);
 
-        // $stop;
+        $stop;
 
         // ================================================================
         // Test 3: 单帧含部分 burst 尾 (280 pixels = 1 full + 24 partial)
