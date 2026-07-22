@@ -170,6 +170,7 @@ module ccd_frame_buf_ddr_ctrl #(
     wire [127:0] rdfifo_din;
     wire         rdfifo_wren_w;
     wire         rdfifo_full;
+    wire         rdfifo_empty;
     wire [15:0]  rdfifo_dout;
     wire [FIFO_ADDR_WIDTH-1:0] rdfifo_wrcnt;
 
@@ -648,11 +649,11 @@ module ccd_frame_buf_ddr_ctrl #(
         end else begin
             // frames_in_fifo 计数: wr_frame_inc_rd 脉冲 +1, FX2 帧读完 -1
             // 带饱和度约束: 不超过 MAX_FRAMES, 不低于 0
-            if (wr_frame_inc_rd && i_fifo_rd_en && (rd_pixel_cnt == rd_frame_depth_active))
+            if (wr_frame_inc_rd && i_fifo_rd_en && (rd_pixel_cnt == rd_frame_depth_active-1))
                 frames_in_fifo <= frames_in_fifo;       // 同时增减, 不变
             else if (wr_frame_inc_rd && frames_in_fifo < MAX_FRAMES)
                 frames_in_fifo <= frames_in_fifo + 1'b1; // 有效帧写入 DDR (饱和)
-            else if (i_fifo_rd_en && (rd_pixel_cnt == rd_frame_depth_active) && frames_in_fifo > 0)
+            else if (i_fifo_rd_en && (rd_pixel_cnt == rd_frame_depth_active-1) && frames_in_fifo > 0)
                 frames_in_fifo <= frames_in_fifo - 1'b1; // FX2 读完一帧 (防下溢)
 
             if (i_fifo_rd_en) begin
@@ -664,7 +665,7 @@ module ccd_frame_buf_ddr_ctrl #(
                     // 最后一拍: 断言 last_word
                     last_word_reg <= 1'b1;
                     rd_pixel_cnt  <= rd_pixel_cnt + 1'b1;
-                end else if (rd_pixel_cnt == rd_frame_depth_active) begin
+                end else if (rd_pixel_cnt == rd_frame_depth_active-1) begin
                     // 帧读完: 推进 rd_frame_idx, 复位计数器
                     rd_frame_idx  <= rd_frame_idx + 1'b1;
                     rd_pixel_cnt  <= 32'd0;
@@ -680,7 +681,7 @@ module ccd_frame_buf_ddr_ctrl #(
     end
 
     assign o_fifo_last_word = last_word_reg;
-    assign o_frame_num      = frames_in_fifo;
+    assign o_frame_num      = rdfifo_empty ? {FRAME_NUM_W{1'b0}} : frames_in_fifo;
 
     // ==================================================================
     // ---- 模块例化 ----
@@ -719,7 +720,7 @@ module ccd_frame_buf_ddr_ctrl #(
         .rd_en         (i_fifo_rd_en),
         .dout          (rdfifo_dout),
         .full          (rdfifo_full),
-        .empty         (),
+        .empty         (rdfifo_empty),
         .rd_data_count (),
         .wr_data_count (rdfifo_wrcnt),
         .wr_rst_busy   (),

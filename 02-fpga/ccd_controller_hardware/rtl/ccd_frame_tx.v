@@ -61,8 +61,7 @@ module ccd_frame_tx #(
     reg frame_start_d;
     wire frame_start_fall;
     reg rd_en_reg;
-    reg rd_en_was_active;
-    reg [15:0] fifo_pipe_data;
+    wire [15:0] fifo_pipe_data;
     reg        fifo_pipe_valid;
     reg        fifo_last_pipe;
     reg [15:0] slave_data_reg;
@@ -92,13 +91,6 @@ module ccd_frame_tx #(
                          && (state_next != S_IDLE) && !i_frame_fifo_last_word;
     end
     assign o_frame_fifo_rd_en = rd_en_reg;
-
-    always @(posedge i_ext_clk or negedge i_rst_n) begin
-        if (!i_rst_n)
-            rd_en_was_active <= 1'b0;
-        else
-            rd_en_was_active <= rd_en_reg;
-    end
 
     // ==================================================================
     // 次态组合逻辑
@@ -146,23 +138,22 @@ module ccd_frame_tx #(
     //   管道有效标记:
     //     state→TRANSMIT 的下一拍 async_fifo 开始读出数据,
     //     数据在再下一拍的 posedge 稳定就绪。
-    //     rd_en_was_active 在 i_ext_clk 上升沿记录"上一拍是否已处于 transmit 状态",
-    //     用其作为有效标记正好匹配数据就绪时刻。
+    //     rd_en_reg 为 1 说明当前拍已在 transmit 状态且发出了读请求,
+    //     下一拍数据即就绪, 用其作为有效标记正好匹配数据就绪时刻。
     // ==================================================================
+    assign fifo_pipe_data = i_frame_fifo_data;
 
     always @(posedge i_ext_clk or negedge i_rst_n) begin
         if (!i_rst_n) begin
-            fifo_pipe_data  <= 16'd0;
             fifo_pipe_valid <= 1'b0;
             fifo_last_pipe  <= 1'b0;
         end else begin
             // 采样 PP FIFO 数据 + last_word 标志 (async_fifo 已于同一 i_ext_clk 上升沿更新)
-            fifo_pipe_data  <= i_frame_fifo_data;
             fifo_last_pipe  <= i_frame_fifo_last_word;
 
-            // 管道有效: rd_en_was_active 说明上一拍已在 transmit 状态,
-            // async_fifo 已至少完成一次读出, 数据就绪。
-            if (rd_en_was_active && state_next != S_IDLE)
+            // 管道有效: rd_en_reg 为 1 说明当前拍已在 transmit 状态且发出读请求,
+            // 下一拍 async_fifo 数据就绪, 用 rd_en_reg 作为有效标记。
+            if (rd_en_reg && state_next != S_IDLE)
                 fifo_pipe_valid <= 1'b1;
             else
                 fifo_pipe_valid <= 1'b0;
