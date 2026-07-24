@@ -7,43 +7,61 @@
 ```
 02-fpga/ccd_controller_hardware/
 ├── AGENTS.md                                          # 本文件 (子项目约定)
-├── ccd_controller_hardware.xpr                        # Vivado 工程入口
-├── ccd_controller_hardware.srcs/
-│   └── sources_1/
-│       └── ip/                                         # Vivado IP 核 (xci/xml/xdc)
-│           ├── fifo_generator_0/
-│           ├── mig_7series_0/
-│           ├── rd_ddr3_fifo/
-│           └── wr_ddr3_fifo/
-├── constraints/
+├── constraint/
 │   └── BX72_core_ddr3_pin.ucf                         # 管脚约束
 ├── rtl/                                                # 可综合 RTL 源码 (.v)
 │   ├── async_fifo.v
-│   ├── ccd.v                                           # 顶层 CCD 控制器
-│   ├── ccd_driver.v
-│   ├── ccd_frame_buf.v
-│   ├── ccd_frame_buf_ddr.v
-│   ├── ccd_frame_tx.v
-│   ├── ccd_phase_gen.v
-│   ├── cdsclk_gen.v
-│   └── ddr/                                            # DDR3 控制器桥接
+│   ├── ccd.v                                           # 顶层 CCD 控制器 (BRAM 版)
+│   ├── ccd_ddr.v                                       # 顶层 CCD 控制器 (DDR 版)
+│   ├── ccd_driver.v                                    # CCD 时序驱动
+│   ├── ccd_frame_buf.v                                 # BRAM 帧缓存
+│   ├── ccd_frame_buf_ddr.v                             # 已废弃 (旧版 DDR 帧缓存)
+│   ├── ccd_frame_tx.v                                  # 帧发送模块
+│   ├── ccd_phase_gen.v                                 # 相位生成
+│   ├── cdsclk_gen.v                                    # CDSCLK 生成
+│   ├── ccd_frame_buf_ddr/                              # DDR3 帧缓存 (新版)
+│   │   ├── ccd_frame_buf_ddr.v                         #   DDR3 帧缓存顶层
+│   │   ├── ccd_frame_buf_ddr_axi_adapter.v             #   AXI 适配器
+│   │   └── ccd_frame_buf_ddr_ctrl.v                    #   帧缓存控制器
+│   └── ddr_test/                                       # DDR3 控制器桥接 (测试用)
 │       ├── axi4_to_fifo.v
 │       ├── ddr3_ctrl_2port.v
 │       ├── fifo_axi4_adapter.v
 │       └── fifo_to_axi4.v
-└── testbench/                                          # 仿真 testbench (.v)
-    ├── fifo_axi4_adapter_tb.v
-    ├── test_async_fifo.v
-    ├── test_ccd.v
-    ├── test_ccd_driver.v
-    ├── test_ccd_frame_buf.v
-    ├── test_ccd_frame_buf_ddr.v
-    ├── test_ccd_frame_tx.v
-    └── test_cdsclk_gen.v
+├── tb/                                                 # 仿真 testbench (.v)
+│   ├── test_async_fifo.v
+│   ├── test_ccd.v
+│   ├── test_ccd_ddr.v
+│   ├── test_ccd_driver.v
+│   ├── test_ccd_frame_buf.v
+│   ├── test_ccd_frame_tx.v
+│   ├── test_ccd_frame_tx_ddr.v
+│   ├── test_cdsclk_gen.v
+│   ├── ccd_frame_buf_ddr/
+│   │   ├── test_ccd_frame_buf_ddr.v
+│   │   ├── test_ccd_frame_buf_ddr_axi_adapter.v
+│   │   └── test_ccd_frame_buf_ddr_ctrl.v
+│   └── ddr_test/
+│       └── fifo_axi4_adapter_tb.v
+└── vivado_proj/                                        # Vivado 工程目录
+    ├── ccd_controller_hardware.xpr                     #   工程文件
+    ├── mb_subsystem_wrapper.xsa                        #   导出硬件平台 (供 Vitis)
+    ├── ccd_controller_hardware.srcs/                   #   源文件
+    │   ├── sources_1/ip/                               #     IP 核
+    │   │   ├── mig_7series_0/
+    │   │   ├── rd_ddr3_fifo/
+    │   │   └── wr_ddr3_fifo/
+    │   ├── sources_1/bd/mb_subsystem/                  #     MicroBlaze 块设计
+    │   └── constrs_1/new/port.xdc                      #     顶层管脚约束
+    ├── ccd_controller_hardware.ip_user_files/          #   IP 用户文件 (仿真 / .veo)
+    ├── ccd_controller_hardware.runs/                   #   综合 & 实现 (含 .bit)
+    ├── ccd_controller_hardware.sim/                    #   仿真配置 (.wcfg)
+    ├── ccd_controller_hardware.cache/                  #   运行缓存
+    └── ccd_controller_hardware.hw/                     #   硬件管理器 (ILA)
 ```
 
 > 不要在本目录新建 `sim_*/`,由 Vivado 自动生成。
-> 顶层设计模块放在 `rtl/`(子目录归类亦可,如 `rtl/ddr/`),TB 放在 `testbench/`。
+> 顶层设计模块放在 `rtl/`(子目录归类亦可,如 `rtl/ccd_frame_buf_ddr/`),TB 放在 `tb/`。
 > RTL 与 TB 名字成对:`ccd_driver.v` ↔ `test_ccd_driver.v`。
 
 ---
@@ -52,7 +70,7 @@
 
 - **使用 Verilog**,不使用 SystemVerilog
 - 用 **iverilog** 验证语法:
-  `iverilog -o <out>.vvp rtl/*.v testbench/*.v`
+  `iverilog -o <out>.vvp rtl/*.v rtl/ccd_frame_buf_ddr/*.v rtl/ddr_test/*.v tb/*.v tb/ccd_frame_buf_ddr/*.v tb/ddr_test/*.v`
 - iverilog 跑通即可,**不需要**保存波形、不需要 `vvp` 跑波形
 - 实际波形验证交给用户在 Vivado Simulation 中查看
 - 注释只解释大致逻辑，但不要写死计数器计到哪个值，方便”仿真-微调“
@@ -127,7 +145,7 @@
 
 3. **例化示例**（已有代码参考）：
 
-   - `rtl/ddr/ddr3_ctrl_2port.v` 中例化 `mig_7series_0`：
+   - `rtl/ddr_test/ddr3_ctrl_2port.v` 中例化 `mig_7series_0`：
      ```verilog
      mig_7series_0 u_mig_7series_0 (
        .ddr3_addr            (ddr3_addr           ),
@@ -139,7 +157,7 @@
      );
      ```
 
-   - `rtl/ddr/fifo_axi4_adapter.v` 中例化 `wr_ddr3_fifo` / `rd_ddr3_fifo`：
+   - `rtl/ddr_test/fifo_axi4_adapter.v` 中例化 `wr_ddr3_fifo` / `rd_ddr3_fifo`：
      ```verilog
      wr_ddr3_fifo wr_ddr3_fifo (
        .rst           (wrfifo_clr         ),
@@ -197,8 +215,8 @@ wire               state_done;
 
 ## 5. 工作流(本子项目)
 
-1. 改 `rtl/` 或 `testbench/` 下的 `.v` 文件
-2. `iverilog -o <out>.vvp rtl/*.v testbench/*.v` 验证语法
+1. 改 `rtl/` 或 `tb/` 下的 `.v` 文件
+2. `iverilog -o <out>.vvp rtl/*.v rtl/ccd_frame_buf_ddr/*.v rtl/ddr_test/*.v tb/*.v tb/ccd_frame_buf_ddr/*.v tb/ddr_test/*.v` 验证语法
 3. `vvp <out>.vvp` 跑一下确认不崩溃(可选)
 4. 用户在 Vivado 中打开 `.xpr`,跑 Simulation 自行检查波形
 5. 完成后按根 AGENTS.md 约定提交 git(中文 commit message)
