@@ -29,6 +29,12 @@ vivado*.debug
 *.xpr.bak
 *.runs.bak
 **/_tmp/
+*.cache/
+*.hbs/
+*.hw/
+*.ip_user_files/
+*.runs/
+*.sim/
 
 # 备份工程
 *.bak

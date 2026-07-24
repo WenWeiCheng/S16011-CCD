@@ -1,0 +1,45 @@
+-- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
+-- --------------------------------------------------------------------------------
+-- Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
+-- Date        : Thu Jul 23 11:36:01 2026
+-- Host        : DESKTOP-KD2H86C running 64-bit major release  (build 9200)
+-- Command     : write_vhdl -force -mode synth_stub
+--               d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ccd_controller_hardware.srcs/sources_1/bd/mb_subsystem/ip/mb_subsystem_lmb_bram_4/mb_subsystem_lmb_bram_4_stub.vhdl
+-- Design      : mb_subsystem_lmb_bram_4
+-- Purpose     : Stub declaration of top-level module interface
+-- Device      : xc7a100tfgg484-2
+-- --------------------------------------------------------------------------------
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity mb_subsystem_lmb_bram_4 is
+  Port ( 
+    clka : in STD_LOGIC;
+    rsta : in STD_LOGIC;
+    ena : in STD_LOGIC;
+    wea : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    addra : in STD_LOGIC_VECTOR ( 31 downto 0 );
+    dina : in STD_LOGIC_VECTOR ( 31 downto 0 );
+    douta : out STD_LOGIC_VECTOR ( 31 downto 0 );
+    clkb : in STD_LOGIC;
+    rstb : in STD_LOGIC;
+    enb : in STD_LOGIC;
+    web : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    addrb : in STD_LOGIC_VECTOR ( 31 downto 0 );
+    dinb : in STD_LOGIC_VECTOR ( 31 downto 0 );
+    doutb : out STD_LOGIC_VECTOR ( 31 downto 0 );
+    rsta_busy : out STD_LOGIC;
+    rstb_busy : out STD_LOGIC
+  );
+
+end mb_subsystem_lmb_bram_4;
+
+architecture stub of mb_subsystem_lmb_bram_4 is
+attribute syn_black_box : boolean;
+attribute black_box_pad_pin : string;
+attribute syn_black_box of stub : architecture is true;
+attribute black_box_pad_pin of stub : architecture is "clka,rsta,ena,wea[3:0],addra[31:0],dina[31:0],douta[31:0],clkb,rstb,enb,web[3:0],addrb[31:0],dinb[31:0],doutb[31:0],rsta_busy,rstb_busy";
+attribute x_core_info : string;
+attribute x_core_info of stub : architecture is "blk_mem_gen_v8_4_4,Vivado 2020.1";
+begin
+end;
