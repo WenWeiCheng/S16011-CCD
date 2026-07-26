@@ -138,7 +138,7 @@ module test_ccd_driver;
         i_blank_right  = 4'd1;
         i_read_mode    = 2'd0;       // 0=line binning
         i_adc_data     = 8'd0;
-        i_cdsclk_delay = 7'd100;
+        i_cdsclk_delay = 3'd001;
         adc_cnt        = 4'd0;
 
         // 保持复位 5 个系统时钟,让 phase_gen 稳定
