@@ -61,7 +61,6 @@ module ccd_ddr #(
     output wire         o_frame_exception,     // 帧异常脉冲
 
     // ---- DDR3 时钟与复位 ----
-    input  wire         i_ddr3_clk100m,       // DDR3 系统时钟 (100 MHz)
     input  wire         i_ddr3_clk200m_ref,   // DDR3 参考时钟 (200 MHz)
     input  wire         i_mig_rst_n,          // MIG 专用复位 (低有效)
     output wire         o_ddr3_init_done,     // DDR3 校准完成
@@ -172,7 +171,7 @@ module ccd_ddr #(
         .o_fifo_last_word  (fifo_last_word_w),
         .i_fifo_rd_en      (fifo_rd_en_w),
         .o_frame_exception (o_frame_exception),
-        .i_ddr3_clk100m    (i_ddr3_clk100m),
+        .i_ddr3_clk100m    (i_clk),
         .i_ddr3_clk200m_ref(i_ddr3_clk200m_ref),
         .i_mig_rst_n       (i_mig_rst_n),
         .o_ddr3_init_done  (o_ddr3_init_done),

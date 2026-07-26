@@ -2,7 +2,8 @@
 //==============================================================================
 // Module : ccd_driver
 // Desc   : CCD 顶层驱动模块。
-//          实例化 ccd_phase_gen,产生 4 相 SCLK + 1 相 RG 相位时钟;
+//          实例化 ccd_clk_gen,产生 4 相 SCLK + 2 相 RG 相位时钟
+//          以及 2 相 CDSCLK 采样脉冲;
 //          组合出 ADCCLK / P1V / P2V(TG) / P1H / P2H / P3H / P4H(SG) / RG
 //          等 CCD 驱动信号。
 //
@@ -85,10 +86,10 @@ wire [31:0] line_cnt;
 reg [1:0]  exp_sync;
 reg        exp_sync_d1;
 reg [31:0] exp_stretch_cnt;
-wire       exp_fall_stretched;
+reg       exp_fall_stretched;
 reg [1:0] state_reg, state_next;
 reg       freq_sel_prev;
-reg       exp_fall_sync;
+reg [1:0]      exp_fall_sync;
 reg [31:0] v_counter;
 reg [31:0] h_counter;
 reg [31:0] l_counter;
@@ -124,32 +125,22 @@ assign line_cnt = (i_read_mode == 2'd0) ?
     (i_bevel_top + i_image_height + i_bevel_bottom);  // image
 
 // ------------------------------------------------------------------
-// 多相时钟生成 (自由运行,不受 exposure 影响)
+// 统一时钟生成 (自由运行,不受 exposure 影响)
+//   使用单一计数器驱动全部相位时钟,保证 SCLK/RG 与 CDSCLK 的固定相位关系
 // ------------------------------------------------------------------
-ccd_phase_gen #(
+ccd_clk_gen #(
     .SYS_CLK_FREQ_HZ(100_000_000)
-) u_ccd_phase_gen (
+) u_ccd_clk_gen (
     .i_clk        (i_clk),
     .i_rst_n      (i_rst_n),
     .i_freq_sel   (i_freq_sel),
+    .i_delay      (i_cdsclk_delay),
     .o_sclk_p0    (sclk_p0_w),
     .o_sclk_p90   (sclk_p90_w),
     .o_sclk_p180  (sclk_p180_w),
     .o_sclk_p270  (sclk_p270_w),
     .o_rg_p90     (rg_p90_w),
-    .o_rg_p270    (rg_p270_w)
-);
-
-// ------------------------------------------------------------------
-// CDS 采样时钟生成 (自由运行,受使能门控)
-// ------------------------------------------------------------------
-cdsclk_gen #(
-    .SYS_CLK_FREQ_HZ(100_000_000)
-) u_cdsclk_gen (
-    .i_clk        (i_clk),
-    .i_rst_n      (i_rst_n),
-    .i_freq_sel   (i_freq_sel),
-    .i_delay      (i_cdsclk_delay),
+    .o_rg_p270    (rg_p270_w),
     .o_cdsclk1    (cdsclk1_w),
     .o_cdsclk2    (cdsclk2_w)
 );
@@ -170,19 +161,20 @@ always @(posedge i_clk or negedge i_rst_n) begin
         exp_sync[0] <= i_exposure;
         exp_sync[1] <= exp_sync[0];
         exp_sync_d1 <= exp_sync[1];
+        exp_fall_stretched <= 0;
 
         // 下降沿检测: 同步后的值从 1→0
-        if (exp_sync_d1 && !exp_sync[1])
+        if (exp_sync_d1 && !exp_sync[1]) begin
             exp_stretch_cnt <= 32'd2000;  // 2000 × 10 ns = 20 µs
+        end
 
         // 展宽计数器递减
-        if (exp_stretch_cnt > 0)
+        if (exp_stretch_cnt > 0) begin
             exp_stretch_cnt <= exp_stretch_cnt - 1'b1;
+            exp_fall_stretched <= 1;
+        end
     end
 end
-
-// 展宽后的脉冲 (高电平持续 ~20 µs)
-assign exp_fall_stretched = (exp_stretch_cnt > 0);
 
 // ==================================================================
 // 三态状态机 (以 sclk_p0 为同步时钟)
@@ -196,11 +188,11 @@ always @(posedge sclk_p0_w or negedge i_rst_n) begin
     if (!i_rst_n) begin
         state_reg     <= STATE_IDLE;
         freq_sel_prev <= 1'b0;
-        exp_fall_sync <= 1'b0;
+        exp_fall_sync <= 2'b0;
     end else begin
         state_reg     <= state_next;
         freq_sel_prev <= i_freq_sel;
-        exp_fall_sync <= exp_fall_stretched;
+        exp_fall_sync <= {exp_fall_sync[0],exp_fall_stretched};
     end
 end
 
@@ -234,7 +226,7 @@ always @(posedge sclk_p0_w or negedge i_rst_n) begin
 end
 
 // exposure 下降沿 (已在 sclk 域同步,来自展宽脉冲)
-assign exposure_falling = exp_fall_sync;
+assign exposure_falling = exp_fall_sync[1];
 
 // --- 次态逻辑 ---
 always @(*) begin

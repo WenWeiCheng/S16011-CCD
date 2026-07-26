@@ -82,7 +82,9 @@ module ccd_frame_buf_ddr #(
     assign o_ddr3_init_done = ddr3_init_done_w;
 
     // 控制器复位: 系统复位 AND DDR3 初始化完成
-    wire ctrl_rst_n = i_rst_n && ddr3_init_done_w;
+    reg ctrl_rst_n;
+    always @(posedge ui_clk)
+        ctrl_rst_n <= i_rst_n && ddr3_init_done_w;
 
     // ==================================================================
     // Controller ↔ MIG AXI4 互连
