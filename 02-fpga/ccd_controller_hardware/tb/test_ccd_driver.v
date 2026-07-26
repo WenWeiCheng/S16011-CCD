@@ -9,7 +9,7 @@
 //   测试 4 : exposure 打断 — 运行中拉高 i_exposure,验证回到 IDLE
 //   测试 5 : freq_sel 打断 — 运行中切换 i_freq_sel,验证回到 IDLE
 //   测试 6 : i_rst_n 打断 — 运行中拉低 i_rst_n,验证回到 IDLE
-//   测试 7 : ADC 数据拼接 — 验证 ADCCLK 双沿采样拼合 16bit 像素数据
+//   测试 7 : mock 模式 — 屏蔽 ADC, bevel/blank=0, active 从 1 递增, 每帧复位
 //==============================================================================
 module test_ccd_driver;
 
@@ -28,6 +28,7 @@ module test_ccd_driver;
     reg  [3:0]  i_blank_left;
     reg  [3:0]  i_blank_right;
     reg  [1:0]  i_read_mode;
+    reg         i_mock_mode;
     reg  [7:0]  i_adc_data;
     reg  [6:0]  i_cdsclk_delay;
     wire        o_adcclk;
@@ -62,6 +63,7 @@ module test_ccd_driver;
         .i_blank_left  (i_blank_left),
         .i_blank_right (i_blank_right),
         .i_read_mode   (i_read_mode),
+        .i_mock_mode   (i_mock_mode),
         .i_adc_data    (i_adc_data),
         .o_adcclk     (o_adcclk),
         .o_p1v        (o_p1v),
@@ -137,6 +139,7 @@ module test_ccd_driver;
         i_blank_left   = 4'd1;
         i_blank_right  = 4'd1;
         i_read_mode    = 2'd0;       // 0=line binning
+        i_mock_mode    = 1'b0;
         i_adc_data     = 8'd0;
         i_cdsclk_delay = 3'd001;
         adc_cnt        = 4'd0;
@@ -225,6 +228,23 @@ module test_ccd_driver;
         @(negedge i_clk);
         i_exposure = 1'b1;
         wait_sclk(2);
+
+        // ================================================================
+        // 测试 7: mock 模式 — 虚拟递增数据
+        //   i_mock_mode=1 时屏蔽 ADC, bevel/blank=0, active 从 1 递增
+        //   每帧起始复位为 1
+        // ================================================================
+        i_mock_mode    = 1'b1;
+        i_read_mode    = 2'd0;       // line binning
+        @(negedge i_clk);
+        i_exposure = 1'b0;
+        wait_us(300);               // 等待一帧完成
+        @(negedge i_clk);
+        i_exposure = 1'b1;
+        wait_sclk(1);
+        @(negedge i_clk);
+        i_exposure = 1'b0;          // 再触发一帧,验证计数器复位
+        wait_us(350);
 
         $finish;
     end

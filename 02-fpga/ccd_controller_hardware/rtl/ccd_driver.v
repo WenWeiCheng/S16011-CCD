@@ -36,6 +36,7 @@ module ccd_driver (
     input  wire [3:0]   i_blank_left,    // 左侧空白
     input  wire [3:0]   i_blank_right,   // 右侧空白
     input  wire [1:0]   i_read_mode,     // 读出模式: 0=line binning, 1=image
+    input  wire         i_mock_mode,     // 调试模式: 屏蔽 ADC, 输出递增虚拟数据
     // --- ADC 数据接口 ---
     input  wire [7:0]   i_adc_data,      // ADC 采样数据 (8bit, 在 ADCCLK 上升/下降沿变化)
     // --- CCD 驱动信号 (受 exposure 门控,ADCCLK 除外) ---
@@ -112,6 +113,7 @@ reg [7:0]  adc_data_rise;
 reg [15:0] pixel_data_reg;
 reg        frame_start_reg;
 reg        frame_end_reg;
+reg [15:0] mock_pixel_cnt;
 
 assign v_shift_cnt = (i_read_mode == 2'd0) ?
     (i_bevel_top + i_image_height + i_bevel_bottom) :  // line binning
@@ -400,10 +402,26 @@ always @(posedge sclk_p90_w or negedge i_rst_n) begin
         adc_data_rise <= i_adc_data;
 end
 
+// Mock 像素计数器: 每帧起始复位为 1, active 像素递增 (sclk_p270 域)
+always @(posedge sclk_p270_w or negedge i_rst_n) begin
+    if (!i_rst_n) begin
+        mock_pixel_cnt <= 16'd1;
+    end else if (i_mock_mode && frame_start_reg) begin
+        mock_pixel_cnt <= 16'd1;
+    end else if (i_mock_mode && data_valid_reg && pixel_type_reg == 2'b10) begin
+        mock_pixel_cnt <= mock_pixel_cnt + 1'b1;
+    end
+end
+
 always @(posedge sclk_p270_w or negedge i_rst_n) begin
     if (!i_rst_n)
         pixel_data_reg <= 16'd0;
-    else
+    else if (i_mock_mode) begin
+        if (data_valid_reg && pixel_type_reg == 2'b10)
+            pixel_data_reg <= mock_pixel_cnt;
+        else
+            pixel_data_reg <= 16'd0;
+    end else
         pixel_data_reg <= {adc_data_rise, i_adc_data};
 end
 

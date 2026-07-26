@@ -29,6 +29,7 @@ module ccd_ddr #(
     input  wire [3:0]   i_blank_left,    // 左侧空白
     input  wire [3:0]   i_blank_right,   // 右侧空白
     input  wire [1:0]   i_read_mode,     // 读出模式: 0=line binning, 1=image
+    input  wire         i_mock_mode,     // 调试模式: 屏蔽 ADC, 输出递增虚拟数据
 
     // ---- ADC 数据 ----
     input  wire [7:0]   i_adc_data,      // ADC 采样数据 (8bit)
@@ -120,6 +121,7 @@ module ccd_ddr #(
         .i_blank_left  (i_blank_left),
         .i_blank_right (i_blank_right),
         .i_read_mode   (i_read_mode),
+        .i_mock_mode   (i_mock_mode),
         .i_adc_data    (i_adc_data),
         .o_adcclk      (adcclk_w),
         .o_p1v         (o_p1v),
