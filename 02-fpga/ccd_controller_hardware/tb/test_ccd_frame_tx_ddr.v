@@ -77,7 +77,7 @@ module test_ccd_frame_tx_ddr;
     // ==================================================================
     wire [15:0]            fifo_data;
     wire [FRAME_NUM_W-1:0] fifo_frame_num;
-    wire                   fifo_last_word;
+    wire                   fifo_prelast;
     wire                   fifo_rd_en;
 
     // ==================================================================
@@ -213,7 +213,7 @@ module test_ccd_frame_tx_ddr;
         .o_fifo_data       (fifo_data),
         .o_frame_num       (fifo_frame_num),
         .i_fifo_rd_en      (fifo_rd_en),
-        .o_fifo_last_word  (fifo_last_word),
+        .o_fifo_prelast  (fifo_prelast),
         .o_frame_exception (o_frame_exception),
         .i_ui_clk          (ui_clk),
         .i_ddr3_init_done  (ddr3_init_done),
@@ -340,7 +340,7 @@ module test_ccd_frame_tx_ddr;
         .i_rst_n                 (i_rst_n),
         .i_frame_fifo_data       (fifo_data),
         .i_frame_fifo_num        (fifo_frame_num),
-        .i_frame_fifo_last_word  (fifo_last_word),
+        .i_frame_fifo_prelast  (fifo_prelast),
         .o_frame_fifo_rd_en      (fifo_rd_en),
         .o_slave_fifo_data       (o_slave_fifo_data),
         .o_slave_fifo_data_valid_n(o_slave_fifo_data_valid_n),
@@ -446,9 +446,6 @@ module test_ccd_frame_tx_ddr;
             @(posedge i_adcclk);
             i_frame_end <= 1'b0;
 
-            // 等待 DDR 写入完成 (AXI burst + DDR3 模型延迟)
-            // wr_fifo → AXI burst 写入 → read side 检测到新帧
-            wr_wait(500);
             $display("  [WR] Done");
         end
     endtask
@@ -713,7 +710,7 @@ module test_ccd_frame_tx_ddr;
         wait_read_available;
         tx_and_verify(FRAME_WORDS, 0);
         rd_wait(20);
-        // $stop;
+        $stop;
 
         // ================================================================
         // 测试 3: 连续多帧发送
@@ -729,7 +726,7 @@ module test_ccd_frame_tx_ddr;
             rd_wait(10);
         end
         $display("[PASS] 3 frames verified");
-        // $stop;
+        $stop;
 
         // ================================================================
         // 测试 4: Slave FIFO 满反压
@@ -768,7 +765,7 @@ module test_ccd_frame_tx_ddr;
             $display("[PASS] Transmission resumed after back-pressure release");
         end
         rd_wait(20);
-        // $stop;
+        $stop;
 
         // ================================================================
         // 测试 5: 乒乓切换 — 写 2 帧再分别发送
@@ -790,7 +787,7 @@ module test_ccd_frame_tx_ddr;
         $display("  Frame 1 done, frame_num=%d", fifo_frame_num);
         rd_wait(10);
         $display("[PASS] Ping-pong OK");
-        // $stop;
+        $stop;
 
         // ================================================================
         // 测试 6: 帧长异常 — 写入少于 frame_depth 的像素
@@ -827,7 +824,7 @@ module test_ccd_frame_tx_ddr;
         end else begin
             $display("[PASS] Frame exception detected");
         end
-        // $stop;
+        $stop;
 
         // ================================================================
         // 测试 7: 先 start 后等数据 (idle→wait, 数据稍后到达, 验证数据)

@@ -34,7 +34,7 @@ module ccd_frame_buf_ddr #(
     output wire [15:0]  o_fifo_data,
     output wire [$clog2(MAX_FRAMES+1)-1:0] o_frame_num,
     input  wire         i_fifo_rd_en,
-    output wire         o_fifo_last_word,
+    output wire         o_fifo_prelast,
 
     // ---- 异常 ----
     output wire         o_frame_exception,
@@ -105,7 +105,23 @@ module ccd_frame_buf_ddr #(
         ctrl_rst_n <= i_rst_n && i_ddr3_init_done;
 
     // ==================================================================
-    // Controller 例化 (自包含: 控制逻辑 + FIFO + AXI adapter)
+    // ctrl ↔ adapter 内部连线
+    // ==================================================================
+    wire                ctrl_wr_req;
+    wire [29:0]         ctrl_wr_start;
+    wire [29:0]         ctrl_wr_end;
+    wire                ctrl_wr_idle;
+    wire                ctrl_rd_req;
+    wire [29:0]         ctrl_rd_start;
+    wire [29:0]         ctrl_rd_end;
+    wire                ctrl_rd_idle;
+    wire [127:0]        wrfifo_dout;
+    wire                wrfifo_rden;
+    wire                rdfifo_wren;
+    wire [127:0]        rdfifo_din;
+
+    // ==================================================================
+    // Controller 例化 (控制逻辑 + wr/rd FIFO, AXI adapter 在外部)
     // ==================================================================
     ccd_frame_buf_ddr_ctrl #(
         .MAX_FRAMES      (MAX_FRAMES),
@@ -135,55 +151,95 @@ module ccd_frame_buf_ddr #(
         .o_fifo_data      (o_fifo_data),
         .o_frame_num      (o_frame_num),
         .i_fifo_rd_en     (i_fifo_rd_en),
-        .o_fifo_last_word (o_fifo_last_word),
+        .o_fifo_prelast (o_fifo_prelast),
 
         // 异常
         .o_frame_exception(o_frame_exception),
 
-        // AXI4 Master → 外部 MIG
-        .m_axi_awid       (M_AXI_AWID),
-        .m_axi_awaddr     (M_AXI_AWADDR),
-        .m_axi_awlen      (M_AXI_AWLEN),
-        .m_axi_awsize     (M_AXI_AWSIZE),
-        .m_axi_awburst    (M_AXI_AWBURST),
-        .m_axi_awlock     (M_AXI_AWLOCK),
-        .m_axi_awcache    (M_AXI_AWCACHE),
-        .m_axi_awprot     (M_AXI_AWPROT),
-        .m_axi_awqos      (M_AXI_AWQOS),
-        .m_axi_awregion   (M_AXI_AWREGION),
-        .m_axi_awvalid    (M_AXI_AWVALID),
-        .m_axi_awready    (M_AXI_AWREADY),
+        // 写控制 → adapter
+        .o_axi_wr_req       (ctrl_wr_req),
+        .o_axi_wr_start_addr(ctrl_wr_start),
+        .o_axi_wr_end_addr  (ctrl_wr_end),
+        .i_axi_wr_idle      (ctrl_wr_idle),
 
-        .m_axi_wdata      (M_AXI_WDATA),
-        .m_axi_wstrb      (M_AXI_WSTRB),
-        .m_axi_wlast      (M_AXI_WLAST),
-        .m_axi_wvalid     (M_AXI_WVALID),
-        .m_axi_wready     (M_AXI_WREADY),
+        // 读控制 → adapter
+        .o_axi_rd_req       (ctrl_rd_req),
+        .o_axi_rd_start_addr(ctrl_rd_start),
+        .o_axi_rd_end_addr  (ctrl_rd_end),
+        .i_axi_rd_idle      (ctrl_rd_idle),
 
-        .m_axi_bid        (M_AXI_BID),
-        .m_axi_bresp      (M_AXI_BRESP),
-        .m_axi_bvalid     (M_AXI_BVALID),
-        .m_axi_bready     (M_AXI_BREADY),
+        // wr-fifo ↔ adapter
+        .o_wrfifo_dout      (wrfifo_dout),
+        .i_wrfifo_rden      (wrfifo_rden),
 
-        .m_axi_arid       (M_AXI_ARID),
-        .m_axi_araddr     (M_AXI_ARADDR),
-        .m_axi_arlen      (M_AXI_ARLEN),
-        .m_axi_arsize     (M_AXI_ARSIZE),
-        .m_axi_arburst    (M_AXI_ARBURST),
-        .m_axi_arlock     (M_AXI_ARLOCK),
-        .m_axi_arcache    (M_AXI_ARCACHE),
-        .m_axi_arprot     (M_AXI_ARPROT),
-        .m_axi_arqos      (M_AXI_ARQOS),
-        .m_axi_arregion   (M_AXI_ARREGION),
-        .m_axi_arvalid    (M_AXI_ARVALID),
-        .m_axi_arready    (M_AXI_ARREADY),
+        // rd-fifo ↔ adapter
+        .i_rdfifo_wren      (rdfifo_wren),
+        .i_rdfifo_din       (rdfifo_din)
+    );
 
-        .m_axi_rid        (M_AXI_RID),
-        .m_axi_rdata      (M_AXI_RDATA),
-        .m_axi_rresp      (M_AXI_RRESP),
-        .m_axi_rlast      (M_AXI_RLAST),
-        .m_axi_rvalid     (M_AXI_RVALID),
-        .m_axi_rready     (M_AXI_RREADY)
+    // ==================================================================
+    // AXI4 Adapter 例化 (ctrl ↔ 外部 MIG)
+    // ==================================================================
+    ccd_frame_buf_ddr_axi_adapter #(
+        .AXI_DATA_WIDTH (128),
+        .AXI_ADDR_WIDTH (30),
+        .AXI_ID_WIDTH   (4),
+        .AXI_ID         (4'b0000),
+        .AXI_BURST_LEN  (8'd31)
+    ) u_adapter (
+        .i_clk              (i_ui_clk),
+        .i_rst_n            (ctrl_rst_n),
+        .i_axi_wr_req       (ctrl_wr_req),
+        .i_axi_wr_start_addr(ctrl_wr_start),
+        .i_axi_wr_end_addr  (ctrl_wr_end),
+        .o_axi_wr_idle      (ctrl_wr_idle),
+        .i_axi_rd_req       (ctrl_rd_req),
+        .i_axi_rd_start_addr(ctrl_rd_start),
+        .i_axi_rd_end_addr  (ctrl_rd_end),
+        .o_axi_rd_idle      (ctrl_rd_idle),
+        .o_wrfifo_rden      (wrfifo_rden),
+        .i_wrfifo_dout      (wrfifo_dout),
+        .o_rdfifo_wren      (rdfifo_wren),
+        .o_rdfifo_din       (rdfifo_din),
+        .m_axi_awid         (M_AXI_AWID),
+        .m_axi_awaddr       (M_AXI_AWADDR),
+        .m_axi_awlen        (M_AXI_AWLEN),
+        .m_axi_awsize       (M_AXI_AWSIZE),
+        .m_axi_awburst      (M_AXI_AWBURST),
+        .m_axi_awlock       (M_AXI_AWLOCK),
+        .m_axi_awcache      (M_AXI_AWCACHE),
+        .m_axi_awprot       (M_AXI_AWPROT),
+        .m_axi_awqos        (M_AXI_AWQOS),
+        .m_axi_awregion     (M_AXI_AWREGION),
+        .m_axi_awvalid      (M_AXI_AWVALID),
+        .m_axi_awready      (M_AXI_AWREADY),
+        .m_axi_wdata        (M_AXI_WDATA),
+        .m_axi_wstrb        (M_AXI_WSTRB),
+        .m_axi_wlast        (M_AXI_WLAST),
+        .m_axi_wvalid       (M_AXI_WVALID),
+        .m_axi_wready       (M_AXI_WREADY),
+        .m_axi_bid          (M_AXI_BID),
+        .m_axi_bresp        (M_AXI_BRESP),
+        .m_axi_bvalid       (M_AXI_BVALID),
+        .m_axi_bready       (M_AXI_BREADY),
+        .m_axi_arid         (M_AXI_ARID),
+        .m_axi_araddr       (M_AXI_ARADDR),
+        .m_axi_arlen        (M_AXI_ARLEN),
+        .m_axi_arsize       (M_AXI_ARSIZE),
+        .m_axi_arburst      (M_AXI_ARBURST),
+        .m_axi_arlock       (M_AXI_ARLOCK),
+        .m_axi_arcache      (M_AXI_ARCACHE),
+        .m_axi_arprot       (M_AXI_ARPROT),
+        .m_axi_arqos        (M_AXI_ARQOS),
+        .m_axi_arregion     (M_AXI_ARREGION),
+        .m_axi_arvalid      (M_AXI_ARVALID),
+        .m_axi_arready      (M_AXI_ARREADY),
+        .m_axi_rid          (M_AXI_RID),
+        .m_axi_rdata        (M_AXI_RDATA),
+        .m_axi_rresp        (M_AXI_RRESP),
+        .m_axi_rlast        (M_AXI_RLAST),
+        .m_axi_rvalid       (M_AXI_RVALID),
+        .m_axi_rready       (M_AXI_RREADY)
     );
 
 endmodule

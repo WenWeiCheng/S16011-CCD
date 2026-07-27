@@ -28,7 +28,7 @@ module ccd_frame_buf #(
     output wire [15:0]  o_fifo_data,       // PP FIFO 读出数据 (16bit, 以帧为单位)
     output wire [FRAME_NUM_W-1:0] o_frame_num,  // 帧缓存中可读帧数
     input  wire         i_fifo_rd_en,      // PP FIFO 读使能
-    output wire         o_fifo_last_word,  // 当前读出字是帧最后一字
+    output wire         o_fifo_prelast,   // 当前读出字是帧倒数第2字（下一字为帧最后一字）
 
     // ---- 异常帧 ----
     output wire         o_frame_exception  // 帧异常, 读到有效像素数不等于计算帧深度的帧
@@ -67,7 +67,6 @@ module ccd_frame_buf #(
     wire frame_start_rise;
     reg frame_end_d;
     wire frame_end_rise;
-    wire frame_end_fall;
     wire wr_target;
     wire wr_enable;
     wire fifo0_rst_req_rd;
@@ -99,7 +98,6 @@ module ccd_frame_buf #(
     reg [2:0] frame_end_rd_sync;
     reg       frame_end_rd_sync_prev;
     reg       frame_end_rise_rd;
-    reg       frame_end_fall_rd;
     reg [1:0] frame_start_rd_sync;
     reg       frame_start_rd_d;
     wire      frame_start_rise_rd;
@@ -181,7 +179,6 @@ module ccd_frame_buf #(
             frame_end_d <= i_frame_end;
     end
     assign frame_end_rise = i_frame_end && !frame_end_d;
-    assign frame_end_fall = !i_frame_end && frame_end_d;
 
     // ==================================================================
     // CDC: 读域 → 写域 (wr_target, wr_enable, fifo_rst_req, exception)
@@ -293,7 +290,7 @@ module ccd_frame_buf #(
                         fifo0_frame_state <= FRAME_EMPTY;
                 end
                 FRAME_EXCEPTION: begin
-                    if (frame_end_fall)
+                    if (frame_end_rise)
                         fifo0_frame_state <= FRAME_EMPTY;
                 end
                 default: fifo0_frame_state <= FRAME_EMPTY;
@@ -314,7 +311,7 @@ module ccd_frame_buf #(
                         fifo1_frame_state <= FRAME_EMPTY;
                 end
                 FRAME_EXCEPTION: begin
-                    if (frame_end_fall)
+                    if (frame_end_rise)
                         fifo1_frame_state <= FRAME_EMPTY;
                 end
                 default: fifo1_frame_state <= FRAME_EMPTY;
@@ -363,14 +360,13 @@ module ccd_frame_buf #(
     // ==================================================================
 
     // ---- frame_end CDC (写域 → 读域) ----
-    //   使用 3 级同步 + 寄存器边沿检测, 确保 frame_end_fall_rd
+    //   使用 3 级同步 + 寄存器边沿检测, 确保 frame_end_rise_rd
     //   在 fifo_ready_sync[2] 稳定后才触发 (避免同沿竞争)。
     always @(posedge i_rd_clk or negedge i_rst_n) begin
         if (!i_rst_n) begin
             frame_end_rd_sync       <= 3'b000;
             frame_end_rd_sync_prev  <= 1'b0;
             frame_end_rise_rd       <= 1'b0;
-            frame_end_fall_rd       <= 1'b0;
         end else begin
             frame_end_rd_sync[0] <= i_frame_end;
             frame_end_rd_sync[1] <= frame_end_rd_sync[0];
@@ -378,7 +374,6 @@ module ccd_frame_buf #(
             frame_end_rd_sync_prev <= frame_end_rd_sync[2];
             // 寄存器边沿检测 (比 fifo_ready_sync[2] 晚 1 rd_clk, 消除竞争)
             frame_end_rise_rd <= frame_end_rd_sync[2] && !frame_end_rd_sync_prev;
-            frame_end_fall_rd <= !frame_end_rd_sync[2] && frame_end_rd_sync_prev;
         end
     end
 
@@ -396,7 +391,7 @@ module ccd_frame_buf #(
     assign frame_start_rise_rd = frame_start_rd_sync[1] && !frame_start_rd_d;
 
     // ---- fifoX_frame_ready CDC (写域 → 读域) ----
-    //   使用 3 级同步器 + 边沿检测, 确保在 frame_end_fall_rd
+    //   使用 3 级同步器 + 边沿检测, 确保在 frame_end_rise_rd
     //   触发时 fifo_ready_sync 已稳定 (避免同一个 rd_clk 沿的竞争)。
     always @(posedge i_rd_clk or negedge i_rst_n) begin
         if (!i_rst_n) begin
@@ -426,7 +421,7 @@ module ccd_frame_buf #(
     //   同样在上升沿采样 fifo_empty 和更新 rd_sel, 与 async_fifo
     //   的输出寄存器处于同一个时钟沿, 无跨沿时序问题。
     //   fifo_frame_ready 通过 3 级同步器从写域获取。
-    //   自环条件在 frame_end_fall_rd 时评估；跨状态转移
+    //   自环条件在 frame_end_rise_rd 时评估；跨状态转移
     //   (S0→S2 / S1→S3) 不受 frame_end 限制, 任何时刻满足即触发。
     //
     //   输出:
@@ -457,8 +452,8 @@ module ccd_frame_buf #(
                     if (fifo0_ready_sync[2] && !fifo1_empty) begin
                         rd_state <= S_NW_RD1;
                     end
-                    // frame_end 下降沿: 评估自环 vs 正常切换
-                    else if (frame_end_fall_rd) begin
+                    // frame_end 上升沿: 评估自环 vs 正常切换
+                    else if (frame_end_rise_rd) begin
                         if (!fifo1_empty || !fifo0_ready_sync[2]) begin
                             // 自环: 读侧忙 或 写侧帧异常 → 复位 fifo0
                             rd_state <= S_WR0_RD1;
@@ -479,8 +474,8 @@ module ccd_frame_buf #(
                     if (fifo1_ready_sync[2] && !fifo0_empty) begin
                         rd_state <= S_NW_RD0;
                     end
-                    // frame_end 下降沿: 评估自环 vs 正常切换
-                    else if (frame_end_fall_rd) begin
+                    // frame_end 上升沿: 评估自环 vs 正常切换
+                    else if (frame_end_rise_rd) begin
                         if (!fifo0_empty || !fifo1_ready_sync[2]) begin
                             // 自环: 读侧忙 或 写侧帧异常 → 复位 fifo1
                             rd_state <= S_WR1_RD0;
@@ -569,10 +564,10 @@ module ccd_frame_buf #(
     assign fifo0_rd_en = i_fifo_rd_en && (rd_sel == 1'b0);
     assign fifo1_rd_en = i_fifo_rd_en && (rd_sel == 1'b1);
 
-    // o_fifo_last_word — 组合 MUX 自 async_fifo 的输出寄存器
+    // o_fifo_prelast — 组合 MUX 自 async_fifo 的输出寄存器
     // (async_fifo 已在上升沿更新 o_almost_empty, 此处无需再加一级)
     assign o_fifo_data      = (rd_sel == 1'b0) ? fifo0_rd_data      : fifo1_rd_data;
-    assign o_fifo_last_word = (rd_sel == 1'b0) ? fifo0_almost_empty : fifo1_almost_empty;
+    assign o_fifo_prelast = (rd_sel == 1'b0) ? fifo0_almost_empty : fifo1_almost_empty;
 
     // ==================================================================
     // 读域 — o_frame_num 输出 (直接组合赋值)

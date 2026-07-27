@@ -8,8 +8,8 @@
 // 架构:
 //   DUT (ccd_frame_buf_ddr_ctrl) 内部已封装:
 //     wr_ddr3_fifo / rd_ddr3_fifo (Xilinx FIFO IP — 仿真需 Vivado xsim)
-//     ccd_frame_buf_ddr_axi_adapter
 //     ADC 域控制逻辑 / CDC / RD 域控制逻辑
+//   ccd_frame_buf_ddr_axi_adapter 在 DUT 外部例化, 连接 DUT 控制信号与 AXI BFM
 //
 //   Testbench 负责:
 //     - 驱动 i_adcclk 域: 模拟 CCD 像素数据输入
@@ -83,7 +83,7 @@ module test_ccd_frame_buf_ddr_ctrl;
     wire [15:0]                   o_fifo_data;
     wire [FRAME_NUM_W-1:0]        o_frame_num;
     reg                           i_fifo_rd_en;
-    wire                          o_fifo_last_word;
+    wire                          o_fifo_prelast;
 
     // ==================================================================
     // 异常
@@ -91,7 +91,23 @@ module test_ccd_frame_buf_ddr_ctrl;
     wire o_frame_exception;
 
     // ==================================================================
-    // AXI4 信号 (DUT ↔ BFM)
+    // ctrl ↔ adapter 控制 + FIFO 连线
+    // ==================================================================
+    wire                ctrl_wr_req;
+    wire [29:0]         ctrl_wr_start;
+    wire [29:0]         ctrl_wr_end;
+    wire                ctrl_wr_idle;
+    wire                ctrl_rd_req;
+    wire [29:0]         ctrl_rd_start;
+    wire [29:0]         ctrl_rd_end;
+    wire                ctrl_rd_idle;
+    wire [127:0]        wrfifo_dout;
+    wire                wrfifo_rden;
+    wire                rdfifo_wren;
+    wire [127:0]        rdfifo_din;
+
+    // ==================================================================
+    // AXI4 信号 (adapter ↔ BFM)
     // ==================================================================
     // 写地址
     wire [AXI_ID_WIDTH-1:0]   m_axi_awid;
@@ -181,53 +197,94 @@ module test_ccd_frame_buf_ddr_ctrl;
         .o_fifo_data      (o_fifo_data),
         .o_frame_num      (o_frame_num),
         .i_fifo_rd_en     (i_fifo_rd_en),
-        .o_fifo_last_word (o_fifo_last_word),
+        .o_fifo_prelast (o_fifo_prelast),
 
         .o_frame_exception(o_frame_exception),
 
-        .m_axi_awid       (m_axi_awid),
-        .m_axi_awaddr     (m_axi_awaddr),
-        .m_axi_awlen      (m_axi_awlen),
-        .m_axi_awsize     (m_axi_awsize),
-        .m_axi_awburst    (m_axi_awburst),
-        .m_axi_awlock     (m_axi_awlock),
-        .m_axi_awcache    (m_axi_awcache),
-        .m_axi_awprot     (m_axi_awprot),
-        .m_axi_awqos      (m_axi_awqos),
-        .m_axi_awregion   (m_axi_awregion),
-        .m_axi_awvalid    (m_axi_awvalid),
-        .m_axi_awready    (m_axi_awready),
+        // 写控制 → adapter
+        .o_axi_wr_req       (ctrl_wr_req),
+        .o_axi_wr_start_addr(ctrl_wr_start),
+        .o_axi_wr_end_addr  (ctrl_wr_end),
+        .i_axi_wr_idle      (ctrl_wr_idle),
 
-        .m_axi_wdata      (m_axi_wdata),
-        .m_axi_wstrb      (m_axi_wstrb),
-        .m_axi_wlast      (m_axi_wlast),
-        .m_axi_wvalid     (m_axi_wvalid),
-        .m_axi_wready     (m_axi_wready),
+        // 读控制 → adapter
+        .o_axi_rd_req       (ctrl_rd_req),
+        .o_axi_rd_start_addr(ctrl_rd_start),
+        .o_axi_rd_end_addr  (ctrl_rd_end),
+        .i_axi_rd_idle      (ctrl_rd_idle),
 
-        .m_axi_bid        (m_axi_bid),
-        .m_axi_bresp      (m_axi_bresp),
-        .m_axi_bvalid     (m_axi_bvalid),
-        .m_axi_bready     (m_axi_bready),
+        // wr-fifo ↔ adapter
+        .o_wrfifo_dout      (wrfifo_dout),
+        .i_wrfifo_rden      (wrfifo_rden),
 
-        .m_axi_arid       (m_axi_arid),
-        .m_axi_araddr     (m_axi_araddr),
-        .m_axi_arlen      (m_axi_arlen),
-        .m_axi_arsize     (m_axi_arsize),
-        .m_axi_arburst    (m_axi_arburst),
-        .m_axi_arlock     (m_axi_arlock),
-        .m_axi_arcache    (m_axi_arcache),
-        .m_axi_arprot     (m_axi_arprot),
-        .m_axi_arqos      (m_axi_arqos),
-        .m_axi_arregion   (m_axi_arregion),
-        .m_axi_arvalid    (m_axi_arvalid),
-        .m_axi_arready    (m_axi_arready),
+        // rd-fifo ↔ adapter
+        .i_rdfifo_wren      (rdfifo_wren),
+        .i_rdfifo_din       (rdfifo_din)
+    );
 
-        .m_axi_rid        (m_axi_rid),
-        .m_axi_rdata      (m_axi_rdata),
-        .m_axi_rresp      (m_axi_rresp),
-        .m_axi_rlast      (m_axi_rlast),
-        .m_axi_rvalid     (m_axi_rvalid),
-        .m_axi_rready     (m_axi_rready)
+    // ==================================================================
+    // AXI4 Adapter (ctrl ↔ BFM)
+    // ==================================================================
+    ccd_frame_buf_ddr_axi_adapter #(
+        .AXI_DATA_WIDTH (AXI_DATA_WIDTH),
+        .AXI_ADDR_WIDTH (AXI_ADDR_WIDTH),
+        .AXI_ID_WIDTH   (AXI_ID_WIDTH),
+        .AXI_ID         (AXI_ID),
+        .AXI_BURST_LEN  (AXI_BURST_LEN)
+    ) u_adapter (
+        .i_clk              (i_ui_clk),
+        .i_rst_n            (ctrl_rst_n),
+        .i_axi_wr_req       (ctrl_wr_req),
+        .i_axi_wr_start_addr(ctrl_wr_start),
+        .i_axi_wr_end_addr  (ctrl_wr_end),
+        .o_axi_wr_idle      (ctrl_wr_idle),
+        .i_axi_rd_req       (ctrl_rd_req),
+        .i_axi_rd_start_addr(ctrl_rd_start),
+        .i_axi_rd_end_addr  (ctrl_rd_end),
+        .o_axi_rd_idle      (ctrl_rd_idle),
+        .o_wrfifo_rden      (wrfifo_rden),
+        .i_wrfifo_dout      (wrfifo_dout),
+        .o_rdfifo_wren      (rdfifo_wren),
+        .o_rdfifo_din       (rdfifo_din),
+        .m_axi_awid         (m_axi_awid),
+        .m_axi_awaddr       (m_axi_awaddr),
+        .m_axi_awlen        (m_axi_awlen),
+        .m_axi_awsize       (m_axi_awsize),
+        .m_axi_awburst      (m_axi_awburst),
+        .m_axi_awlock       (m_axi_awlock),
+        .m_axi_awcache      (m_axi_awcache),
+        .m_axi_awprot       (m_axi_awprot),
+        .m_axi_awqos        (m_axi_awqos),
+        .m_axi_awregion     (m_axi_awregion),
+        .m_axi_awvalid      (m_axi_awvalid),
+        .m_axi_awready      (m_axi_awready),
+        .m_axi_wdata        (m_axi_wdata),
+        .m_axi_wstrb        (m_axi_wstrb),
+        .m_axi_wlast        (m_axi_wlast),
+        .m_axi_wvalid       (m_axi_wvalid),
+        .m_axi_wready       (m_axi_wready),
+        .m_axi_bid          (m_axi_bid),
+        .m_axi_bresp        (m_axi_bresp),
+        .m_axi_bvalid       (m_axi_bvalid),
+        .m_axi_bready       (m_axi_bready),
+        .m_axi_arid         (m_axi_arid),
+        .m_axi_araddr       (m_axi_araddr),
+        .m_axi_arlen        (m_axi_arlen),
+        .m_axi_arsize       (m_axi_arsize),
+        .m_axi_arburst      (m_axi_arburst),
+        .m_axi_arlock       (m_axi_arlock),
+        .m_axi_arcache      (m_axi_arcache),
+        .m_axi_arprot       (m_axi_arprot),
+        .m_axi_arqos        (m_axi_arqos),
+        .m_axi_arregion     (m_axi_arregion),
+        .m_axi_arvalid      (m_axi_arvalid),
+        .m_axi_arready      (m_axi_arready),
+        .m_axi_rid          (m_axi_rid),
+        .m_axi_rdata        (m_axi_rdata),
+        .m_axi_rresp        (m_axi_rresp),
+        .m_axi_rlast        (m_axi_rlast),
+        .m_axi_rvalid       (m_axi_rvalid),
+        .m_axi_rready       (m_axi_rready)
     );
 
     // ==================================================================
@@ -690,7 +747,7 @@ module test_ccd_frame_buf_ddr_ctrl;
         @(posedge i_adcclk);
         i_frame_start  <= 1'b0;
 
-        // 无数据进入（脉冲太短, frame_start_fall 来不及被 controller 锁存?）
+        // 无数据进入（脉冲太短, frame_start_rise 来不及被 controller 锁存?）
         // 实际: frame_start 脉冲经过 CDC 后在 ui_clk 域可能丢失,
         //       但 wr_not_full 检查会在 ui_clk 域拒绝
         wait_adc_cycles(50);
@@ -711,7 +768,7 @@ module test_ccd_frame_buf_ddr_ctrl;
         // ================================================================
         // Test 7: read_mode 切换 — 验证每帧使用正确深度
         //   写一帧 mode=0 (480 pixels), 再写一帧 mode=1 (60×8=480 pixels)
-        //   mode 不同但像素数相同, 验证 o_fifo_last_word 均正确
+        //   mode 不同但像素数相同, 验证 o_fifo_prelast 均正确
         // ================================================================
         test_num = test_num + 1;
         $display("\n##########################################################");
@@ -732,7 +789,7 @@ module test_ccd_frame_buf_ddr_ctrl;
         wait_read_available(5000);
         read_frame(16'd480, 16'hF000, 1);
 
-        $display("  [CHECK] o_fifo_last_word timing correct for per-frame depths");
+        $display("  [CHECK] o_fifo_prelast timing correct for per-frame depths");
         
         // ================================================================
         // 完成

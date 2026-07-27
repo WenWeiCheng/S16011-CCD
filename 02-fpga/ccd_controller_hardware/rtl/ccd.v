@@ -75,7 +75,7 @@ module ccd #(
     // ==================================================================
     wire [15:0] fifo_data_w;
     wire [$clog2(MAX_FRAMES+1)-1:0] fifo_frame_num_w;
-    wire        fifo_last_word_w;
+    wire        fifo_prelast_w;
     wire        fifo_rd_en_w;
     wire        ext_clk_n;
 
@@ -125,7 +125,7 @@ module ccd #(
 
     // ==================================================================
     // ccd_frame_buf 实例化
-    //   输出 o_fifo_data / o_fifo_empty / o_fifo_last_word 等连接至
+    //   输出 o_fifo_data / o_frame_num / o_fifo_prelast 等连接至
     //   ccd_frame_tx 内部, 不再直接对外暴露。
     // ==================================================================
     ccd_frame_buf #(
@@ -145,7 +145,7 @@ module ccd #(
         .i_rd_clk          (i_rd_clk),
         .o_fifo_data       (fifo_data_w),
         .o_frame_num       (fifo_frame_num_w),
-        .o_fifo_last_word  (fifo_last_word_w),
+        .o_fifo_prelast  (fifo_prelast_w),
         .i_fifo_rd_en      (fifo_rd_en_w),
         .o_frame_exception (o_frame_exception)
     );
@@ -164,7 +164,7 @@ module ccd #(
         .i_rst_n               (i_rst_n),
         .i_frame_fifo_data     (fifo_data_w),
         .i_frame_fifo_num      (fifo_frame_num_w),
-        .i_frame_fifo_last_word(fifo_last_word_w),
+        .i_frame_fifo_prelast(fifo_prelast_w),
         .o_frame_fifo_rd_en    (fifo_rd_en_w),
         .o_slave_fifo_data     (o_slave_fifo_data),
         .o_slave_fifo_data_valid_n(o_slave_fifo_data_valid_n),

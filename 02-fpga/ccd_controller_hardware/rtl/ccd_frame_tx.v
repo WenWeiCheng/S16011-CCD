@@ -7,9 +7,9 @@
 //          通过 i_frame_fifo_num 判断 PP FIFO 是否有数据可读。
 //
 //  状态转换:
-//    idle    → wait   : i_frame_start 下降沿
+//    idle    → wait   : i_frame_start 上升沿
 //    wait    → transmit: PP FIFO 非空 && Slave FIFO 未满
-//    transmit → idle   : fifo_last_pipe=1 (当前字是帧最后一字)
+//    transmit → idle   : fifo_prelast_pipe=1 (当前管道中为帧最后一字)
 //
 //  发送时序:
 //    - o_frame_fifo_rd_en 在 i_ext_clk 上升沿拉高, 从 PP FIFO 读一字
@@ -28,7 +28,7 @@ module ccd_frame_tx #(
     // PP FIFO 读接口, 以帧为单位, 宽度为 16bit
     input  wire [15:0]                i_frame_fifo_data,
     input  wire [$clog2(MAX_FRAMES+1)-1:0] i_frame_fifo_num,
-    input  wire         i_frame_fifo_last_word,  // 当前读出字是帧最后一字 (来自 ccd_frame_buf.o_fifo_last_word)
+    input  wire         i_frame_fifo_prelast,  // 当前读出字是帧倒数第2字（下一字为帧最后一字），来自 ccd_frame_buf.o_fifo_prelast
     output wire         o_frame_fifo_rd_en,
 
     // FX2 Slave FIFO 接口
@@ -56,14 +56,14 @@ module ccd_frame_tx #(
     reg [1:0] state_next;
 
     // ==================================================================
-    // 边沿检测 — i_frame_start 下降沿
+    // 边沿检测 — i_frame_start 上升沿
     // ==================================================================
     reg frame_start_d;
-    wire frame_start_fall;
+    wire frame_start_rise;
     reg rd_en_reg;
     wire [15:0] fifo_pipe_data;
     reg        fifo_pipe_valid;
-    reg        fifo_last_pipe;
+    reg        fifo_prelast_pipe;
     reg [15:0] slave_data_reg;
     reg        slave_valid_n_reg;
     reg        frame_done_n_reg;
@@ -74,7 +74,7 @@ module ccd_frame_tx #(
         else
             frame_start_d <= i_frame_start;
     end
-    assign frame_start_fall = !i_frame_start && frame_start_d;
+    assign frame_start_rise = i_frame_start && !frame_start_d;
 
     // ==================================================================
     //  读使能 (i_ext_clk 上升沿寄存器输出)
@@ -88,7 +88,7 @@ module ccd_frame_tx #(
             rd_en_reg <= 1'b0;
         else
             rd_en_reg <= (state == S_TRANSMIT) && i_slave_fifo_full_n
-                         && (state_next != S_IDLE) && !i_frame_fifo_last_word;
+                         && (state_next != S_IDLE) && !i_frame_fifo_prelast;
     end
     assign o_frame_fifo_rd_en = rd_en_reg;
 
@@ -99,7 +99,7 @@ module ccd_frame_tx #(
         state_next = state;
         case (state)
             S_IDLE: begin
-                if (frame_start_fall)
+                if (frame_start_rise)
                     state_next = S_WAIT;
             end
 
@@ -109,8 +109,8 @@ module ccd_frame_tx #(
             end
 
             S_TRANSMIT: begin
-                // fifo_last_pipe=1 说明当前管道中的字是帧最后一字
-                if (fifo_last_pipe)
+                // fifo_prelast_pipe=1 说明当前管道中的字是帧最后一字
+                if (fifo_prelast_pipe)
                     state_next = S_IDLE;
             end
 
@@ -146,10 +146,10 @@ module ccd_frame_tx #(
     always @(posedge i_ext_clk or negedge i_rst_n) begin
         if (!i_rst_n) begin
             fifo_pipe_valid <= 1'b0;
-            fifo_last_pipe  <= 1'b0;
+            fifo_prelast_pipe  <= 1'b0;
         end else begin
-            // 采样 PP FIFO 数据 + last_word 标志 (async_fifo 已于同一 i_ext_clk 上升沿更新)
-            fifo_last_pipe  <= i_frame_fifo_last_word;
+            // 采样 PP FIFO 数据 + prelast 标志 (async_fifo 已于同一 i_ext_clk 上升沿更新)
+            fifo_prelast_pipe  <= i_frame_fifo_prelast;
 
             // 管道有效: rd_en_reg 为 1 说明当前拍已在 transmit 状态且发出读请求,
             // 下一拍 async_fifo 数据就绪, 用 rd_en_reg 作为有效标记。
@@ -180,8 +180,8 @@ module ccd_frame_tx #(
             if (fifo_pipe_valid) begin
                 slave_data_reg    <= fifo_pipe_data;
                 slave_valid_n_reg <= 1'b0;
-                // fifo_last_pipe=1 时当前字为帧最后一字, 同步拉低 frame_done_n
-                frame_done_n_reg  <= !fifo_last_pipe;
+                // fifo_prelast_pipe=1 时当前字为帧最后一字, 同步拉低 frame_done_n
+                frame_done_n_reg  <= !fifo_prelast_pipe;
             end else begin
                 slave_valid_n_reg <= 1'b1;
                 frame_done_n_reg  <= 1'b1;

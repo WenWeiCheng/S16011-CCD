@@ -50,7 +50,7 @@ module test_ccd_frame_tx;
     // ==================================================================
     wire [15:0] fifo_data;
     wire [1:0]  fifo_frame_num;
-    wire        fifo_last_word;
+    wire        fifo_prelast;
     wire        fifo_rd_en;
 
     // ==================================================================
@@ -115,7 +115,7 @@ module test_ccd_frame_tx;
         .i_rd_clk          (i_ext_clk),
         .o_fifo_data       (fifo_data),
         .o_frame_num       (fifo_frame_num),
-        .o_fifo_last_word  (fifo_last_word),
+        .o_fifo_prelast  (fifo_prelast),
         .i_fifo_rd_en      (fifo_rd_en),
         .o_frame_exception (o_frame_exception)
     );
@@ -126,7 +126,7 @@ module test_ccd_frame_tx;
         .i_rst_n               (i_rst_n),
         .i_frame_fifo_data     (fifo_data),
         .i_frame_fifo_num      (fifo_frame_num),
-        .i_frame_fifo_last_word(fifo_last_word),
+        .i_frame_fifo_prelast(fifo_prelast),
         .o_frame_fifo_rd_en    (fifo_rd_en),
         .o_slave_fifo_data     (o_slave_fifo_data),
         .o_slave_fifo_data_valid_n(o_slave_fifo_data_valid_n),

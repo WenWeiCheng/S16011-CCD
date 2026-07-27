@@ -81,7 +81,7 @@ module test_ccd_frame_buf_ddr;
     wire [15:0]                   o_fifo_data;
     wire [FRAME_NUM_W-1:0]        o_frame_num;
     reg                           i_fifo_rd_en;
-    wire                          o_fifo_last_word;
+    wire                          o_fifo_prelast;
 
     // ==================================================================
     // 异常 / 状态
@@ -188,7 +188,7 @@ module test_ccd_frame_buf_ddr;
         .o_fifo_data      (o_fifo_data),
         .o_frame_num      (o_frame_num),
         .i_fifo_rd_en     (i_fifo_rd_en),
-        .o_fifo_last_word (o_fifo_last_word),
+        .o_fifo_prelast (o_fifo_prelast),
 
         // 异常
         .o_frame_exception(o_frame_exception),
@@ -464,9 +464,9 @@ module test_ccd_frame_buf_ddr;
 
             // 2. 脉冲 frame_start: 上升 → 保持 1T → 下降
             @(posedge i_adcclk);
-            i_frame_start  <= 1'b1;
+            i_frame_start  <= 1'b1;  // frame_start_rise 在此触发
             @(posedge i_adcclk);
-            i_frame_start  <= 1'b0;  // frame_start_fall 在此触发
+            i_frame_start  <= 1'b0;
 
             // 3. 发送 active pixels
             for (p = 0; p < pixel_count; p = p + 1) begin
@@ -482,9 +482,9 @@ module test_ccd_frame_buf_ddr;
             i_wr_en      <= 1'b0;
             i_pixel_type <= 2'b00;
 
-            i_frame_end  <= 1'b1;
+            i_frame_end  <= 1'b1;  // frame_end_rise 在此触发
             @(posedge i_adcclk);
-            i_frame_end  <= 1'b0;  // frame_end_fall 在此触发
+            i_frame_end  <= 1'b0;
 
             // 5. 等待帧处理完成 (CDC + controller 写状态机)
             //    等待足够长时间让所有 AXI 写事务完成
@@ -505,7 +505,7 @@ module test_ccd_frame_buf_ddr;
     //     2. 断言 rd_en=1
     //     3. 等 1 拍流水线延迟
     //     4. 逐拍捕获 pixel_count 个数据并比对 scoreboard
-    //     5. 检查 o_fifo_last_word 在最后一个像素时断言
+    //     5. 检查 o_fifo_prelast 在倒数第2字时断言（下一字为最后一字）
     // ------------------------------------------------------------------
     task read_frame;
         input [15:0] pixel_count;
@@ -670,7 +670,7 @@ module test_ccd_frame_buf_ddr;
         wait_read_available(5000);
         read_frame(16'd280, 16'hB000, 0);
 
-        // $stop;
+        $stop;
 
         // ================================================================
         // Test 4: 无效帧 — 像素计数不匹配 (announce 512, send only 500)
@@ -685,7 +685,7 @@ module test_ccd_frame_buf_ddr;
         send_frame(16'd512, 16'd1, 2'd0, 16'd500, 16'hC000, 0);
         wait_adc_cycles(200);
 
-        // $stop;
+        $stop;
         
         // ================================================================
         // Test 5: read_mode=1 (width × height), 60×8=480 pixels
@@ -702,7 +702,7 @@ module test_ccd_frame_buf_ddr;
         wait_read_available(5000);
         read_frame(16'd480, 16'hD000, 0);
 
-        // $stop;
+        $stop;
         
         // ================================================================
         // Test 6: 环形缓冲满 (MAX_FRAMES=4)
@@ -732,9 +732,9 @@ module test_ccd_frame_buf_ddr;
         i_read_mode    <= 2'd0;
 
         @(posedge i_adcclk);
-        i_frame_start  <= 1'b1;
+        i_frame_start  <= 1'b1;  // frame_start_rise
         @(posedge i_adcclk);
-        i_frame_start  <= 1'b0;  // frame_start_fall
+        i_frame_start  <= 1'b0;
 
         // 发送 256 像素 (1 burst) — 但 controller 不会发起 AXI 写
         for (pixel_i = 0; pixel_i < 256; pixel_i = pixel_i + 1) begin
@@ -762,7 +762,7 @@ module test_ccd_frame_buf_ddr;
             read_frame(16'd256, 16'h1000 + frame_i * 16'h100, frame_i);
         end
 
-        // $stop;
+        $stop;
         
         // ================================================================
         // Test 7: 读写同时进行
@@ -796,7 +796,7 @@ module test_ccd_frame_buf_ddr;
 
         $display("  o_frame_num = %0d (expect 0)", o_frame_num);
 
-        // $stop;
+        $stop;
         
         // ================================================================
         // Test 8: 乒乓读写
@@ -830,7 +830,7 @@ module test_ccd_frame_buf_ddr;
         read_frame(16'd256, 16'h3200, 2);
         $display("  After 2 reads: o_frame_num = %0d (expect 0)", o_frame_num);
 
-        // $stop;
+        $stop;
         
         // ================================================================
         // Test 9: 最小帧 (恰好 1 burst = 256 pixels)
@@ -845,7 +845,7 @@ module test_ccd_frame_buf_ddr;
         wait_read_available(5000);
         read_frame(16'd256, 16'h4000, 0);
 
-        // $stop;
+        $stop;
      
         // ================================================================
         // Test 10: 大帧 (接近 MAX_FRAME_DEPTH, 2048 pixels = 8 bursts)
