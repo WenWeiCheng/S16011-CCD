@@ -42,8 +42,8 @@ module test_ccd_frame_buf_ddr;
     // ==================================================================
     reg i_adcclk;
     reg i_rd_clk;
-    reg i_ddr3_clk100m;
-    reg i_ddr3_clk200m_ref;
+    reg mig_sys_clk;
+    reg mig_clk_ref;
 
     initial i_adcclk = 1'b0;
     always #(ADC_CLK_PERIOD/2) i_adcclk = ~i_adcclk;
@@ -51,17 +51,17 @@ module test_ccd_frame_buf_ddr;
     initial i_rd_clk = 1'b0;
     always #(RD_CLK_PERIOD/2) i_rd_clk = ~i_rd_clk;
 
-    initial i_ddr3_clk100m = 1'b0;
-    always #(DDR3_CLK100_PER/2) i_ddr3_clk100m = ~i_ddr3_clk100m;
+    initial mig_sys_clk = 1'b0;
+    always #(DDR3_CLK100_PER/2) mig_sys_clk = ~mig_sys_clk;
 
-    initial i_ddr3_clk200m_ref = 1'b0;
-    always #(DDR3_CLK200_PER/2) i_ddr3_clk200m_ref = ~i_ddr3_clk200m_ref;
+    initial mig_clk_ref = 1'b0;
+    always #(DDR3_CLK200_PER/2) mig_clk_ref = ~mig_clk_ref;
 
     // ==================================================================
     // 复位与 DUT 控制
     // ==================================================================
     reg i_rst_n;
-    reg i_mig_rst_n;   // MIG 专用复位, 独立于 i_rst_n
+    reg mig_rst_n;   // MIG 专用复位, 独立于 i_rst_n
 
     // ==================================================================
     // ADC 域信号 (i_adcclk)
@@ -87,10 +87,16 @@ module test_ccd_frame_buf_ddr;
     // 异常 / 状态
     // ==================================================================
     wire o_frame_exception;
-    wire o_ddr3_init_done;
+
+    // ---- MIG 接口 (ui_clk 域) ----
+    wire        ui_clk;
+    wire        ddr3_init_done;
+    wire        mmcm_locked;
+    wire        init_calib_complete;
+    wire        ui_clk_sync_rst;
 
     // ==================================================================
-    // DDR3 物理接口 (DUT ↔ ddr3_model)
+    // DDR3 物理接口 (MIG ↔ ddr3_model)
     // ==================================================================
     wire [31:0]  ddr3_dq;
     wire [3:0]   ddr3_dqs_n;
@@ -108,6 +114,45 @@ module test_ccd_frame_buf_ddr;
     wire [3:0]   ddr3_dm;
     wire [0:0]   ddr3_odt;
 
+    // ---- AXI4 互连 (DUT M_AXI ↔ MIG S_AXI) ----
+    wire [3:0]   axi_awid;
+    wire [29:0]  axi_awaddr;
+    wire [7:0]   axi_awlen;
+    wire [2:0]   axi_awsize;
+    wire [1:0]   axi_awburst;
+    wire         axi_awlock;
+    wire [3:0]   axi_awcache;
+    wire [2:0]   axi_awprot;
+    wire [3:0]   axi_awqos;
+    wire         axi_awvalid;
+    wire         axi_awready;
+    wire [127:0] axi_wdata;
+    wire [15:0]  axi_wstrb;
+    wire         axi_wlast;
+    wire         axi_wvalid;
+    wire         axi_wready;
+    wire [3:0]   axi_bid;
+    wire [1:0]   axi_bresp;
+    wire         axi_bvalid;
+    wire         axi_bready;
+    wire [3:0]   axi_arid;
+    wire [29:0]  axi_araddr;
+    wire [7:0]   axi_arlen;
+    wire [2:0]   axi_arsize;
+    wire [1:0]   axi_arburst;
+    wire         axi_arlock;
+    wire [3:0]   axi_arcache;
+    wire [2:0]   axi_arprot;
+    wire [3:0]   axi_arqos;
+    wire         axi_arvalid;
+    wire         axi_arready;
+    wire [3:0]   axi_rid;
+    wire [127:0] axi_rdata;
+    wire [1:0]   axi_rresp;
+    wire         axi_rlast;
+    wire         axi_rvalid;
+    wire         axi_rready;
+
     // ==================================================================
     // Scoreboard
     // ==================================================================
@@ -120,7 +165,7 @@ module test_ccd_frame_buf_ddr;
     reg   [7:0]  test_num;
 
     // ==================================================================
-    // DUT 例化
+    // DUT 例化 (MIG 已移出, 通过 AXI4 接口连接)
     // ==================================================================
     ccd_frame_buf_ddr #(
         .MAX_FRAME_DEPTH (MAX_FRAME_DEPTH),
@@ -148,28 +193,125 @@ module test_ccd_frame_buf_ddr;
         // 异常
         .o_frame_exception(o_frame_exception),
 
-        // DDR3 时钟
-        .i_ddr3_clk100m    (i_ddr3_clk100m),
-        .i_ddr3_clk200m_ref(i_ddr3_clk200m_ref),
-        .i_mig_rst_n       (i_mig_rst_n),
-        .o_ddr3_init_done  (o_ddr3_init_done),
+        // MIG 接口
+        .i_ui_clk         (ui_clk),
+        .i_ddr3_init_done (ddr3_init_done),
 
-        // DDR3 物理接口
-        .ddr3_dq      (ddr3_dq),
-        .ddr3_dqs_n   (ddr3_dqs_n),
-        .ddr3_dqs_p   (ddr3_dqs_p),
-        .ddr3_addr    (ddr3_addr),
-        .ddr3_ba      (ddr3_ba),
-        .ddr3_ras_n   (ddr3_ras_n),
-        .ddr3_cas_n   (ddr3_cas_n),
-        .ddr3_we_n    (ddr3_we_n),
-        .ddr3_reset_n (ddr3_reset_n),
-        .ddr3_ck_p    (ddr3_ck_p),
-        .ddr3_ck_n    (ddr3_ck_n),
-        .ddr3_cke     (ddr3_cke),
-        .ddr3_cs_n    (ddr3_cs_n),
-        .ddr3_dm      (ddr3_dm),
-        .ddr3_odt     (ddr3_odt)
+        // AXI4 Master
+        .M_AXI_AWID       (axi_awid),
+        .M_AXI_AWADDR     (axi_awaddr),
+        .M_AXI_AWLEN      (axi_awlen),
+        .M_AXI_AWSIZE     (axi_awsize),
+        .M_AXI_AWBURST    (axi_awburst),
+        .M_AXI_AWLOCK     (axi_awlock),
+        .M_AXI_AWCACHE    (axi_awcache),
+        .M_AXI_AWPROT     (axi_awprot),
+        .M_AXI_AWQOS      (axi_awqos),
+        .M_AXI_AWREGION   (),
+        .M_AXI_AWVALID    (axi_awvalid),
+        .M_AXI_AWREADY    (axi_awready),
+        .M_AXI_WDATA      (axi_wdata),
+        .M_AXI_WSTRB      (axi_wstrb),
+        .M_AXI_WLAST      (axi_wlast),
+        .M_AXI_WVALID     (axi_wvalid),
+        .M_AXI_WREADY     (axi_wready),
+        .M_AXI_BID        (axi_bid),
+        .M_AXI_BRESP      (axi_bresp),
+        .M_AXI_BVALID     (axi_bvalid),
+        .M_AXI_BREADY     (axi_bready),
+        .M_AXI_ARID       (axi_arid),
+        .M_AXI_ARADDR     (axi_araddr),
+        .M_AXI_ARLEN      (axi_arlen),
+        .M_AXI_ARSIZE     (axi_arsize),
+        .M_AXI_ARBURST    (axi_arburst),
+        .M_AXI_ARLOCK     (axi_arlock),
+        .M_AXI_ARCACHE    (axi_arcache),
+        .M_AXI_ARPROT     (axi_arprot),
+        .M_AXI_ARQOS      (axi_arqos),
+        .M_AXI_ARREGION   (),
+        .M_AXI_ARVALID    (axi_arvalid),
+        .M_AXI_ARREADY    (axi_arready),
+        .M_AXI_RID        (axi_rid),
+        .M_AXI_RDATA      (axi_rdata),
+        .M_AXI_RRESP      (axi_rresp),
+        .M_AXI_RLAST      (axi_rlast),
+        .M_AXI_RVALID     (axi_rvalid),
+        .M_AXI_RREADY     (axi_rready)
+    );
+
+    // ==================================================================
+    // MIG 7-Series DDR3 Controller (外部例化)
+    //   连接 DUT 的 AXI4 Master ↔ MIG S_AXI ↔ DDR3 仿真模型
+    // ==================================================================
+    assign ddr3_init_done = mmcm_locked && init_calib_complete;
+
+    mig_7series_0 u_mig (
+        .ddr3_dq              (ddr3_dq),
+        .ddr3_dqs_n           (ddr3_dqs_n),
+        .ddr3_dqs_p           (ddr3_dqs_p),
+        .ddr3_addr            (ddr3_addr),
+        .ddr3_ba              (ddr3_ba),
+        .ddr3_ras_n           (ddr3_ras_n),
+        .ddr3_cas_n           (ddr3_cas_n),
+        .ddr3_we_n            (ddr3_we_n),
+        .ddr3_reset_n         (ddr3_reset_n),
+        .ddr3_ck_p            (ddr3_ck_p),
+        .ddr3_ck_n            (ddr3_ck_n),
+        .ddr3_cke             (ddr3_cke),
+        .ddr3_cs_n            (ddr3_cs_n),
+        .ddr3_dm              (ddr3_dm),
+        .ddr3_odt             (ddr3_odt),
+        .init_calib_complete  (init_calib_complete),
+        .sys_clk_i            (mig_sys_clk),
+        .clk_ref_i            (mig_clk_ref),
+        .ui_clk               (ui_clk),
+        .ui_clk_sync_rst      (ui_clk_sync_rst),
+        .mmcm_locked          (mmcm_locked),
+        .aresetn              (mig_rst_n),
+        .sys_rst              (mig_rst_n),
+        .app_sr_req           (1'b0),
+        .app_ref_req          (1'b0),
+        .app_zq_req           (1'b0),
+        .app_sr_active        (),
+        .app_ref_ack          (),
+        .app_zq_ack           (),
+        .s_axi_awid           (axi_awid),
+        .s_axi_awaddr         (axi_awaddr),
+        .s_axi_awlen          (axi_awlen),
+        .s_axi_awsize         (axi_awsize),
+        .s_axi_awburst        (axi_awburst),
+        .s_axi_awlock         (axi_awlock),
+        .s_axi_awcache        (axi_awcache),
+        .s_axi_awprot         (axi_awprot),
+        .s_axi_awqos          (axi_awqos),
+        .s_axi_awvalid        (axi_awvalid),
+        .s_axi_awready        (axi_awready),
+        .s_axi_wdata          (axi_wdata),
+        .s_axi_wstrb          (axi_wstrb),
+        .s_axi_wlast          (axi_wlast),
+        .s_axi_wvalid         (axi_wvalid),
+        .s_axi_wready         (axi_wready),
+        .s_axi_bready         (axi_bready),
+        .s_axi_bid            (axi_bid),
+        .s_axi_bresp          (axi_bresp),
+        .s_axi_bvalid         (axi_bvalid),
+        .s_axi_arid           (axi_arid),
+        .s_axi_araddr         (axi_araddr),
+        .s_axi_arlen          (axi_arlen),
+        .s_axi_arsize         (axi_arsize),
+        .s_axi_arburst        (axi_arburst),
+        .s_axi_arlock         (axi_arlock),
+        .s_axi_arcache        (axi_arcache),
+        .s_axi_arprot         (axi_arprot),
+        .s_axi_arqos          (axi_arqos),
+        .s_axi_arvalid        (axi_arvalid),
+        .s_axi_arready        (axi_arready),
+        .s_axi_rready         (axi_rready),
+        .s_axi_rid            (axi_rid),
+        .s_axi_rdata          (axi_rdata),
+        .s_axi_rresp          (axi_rresp),
+        .s_axi_rlast          (axi_rlast),
+        .s_axi_rvalid         (axi_rvalid)
     );
 
     // ==================================================================
@@ -275,7 +417,7 @@ module test_ccd_frame_buf_ddr;
     task wait_ddr3_init;
         begin
             $display("  [DDR3] Waiting for init_calib_complete...");
-            while (!o_ddr3_init_done) begin
+            while (!ddr3_init_done) begin
                 @(posedge i_adcclk);
             end
             // 额外等待一段时间让 ui_clk 域稳定
@@ -466,7 +608,7 @@ module test_ccd_frame_buf_ddr;
         // 初始状态
         // ------------------------------------------------------------------
         i_rst_n         = 1'b0;
-        i_mig_rst_n     = 1'b0;   // MIG 复位 (仅上电时拉低一次)
+        mig_rst_n        = 1'b0;   // MIG 复位 (仅上电时拉低一次)
         i_wr_en         = 1'b0;
         i_wr_data       = 16'd0;
         i_pixel_type    = 2'b00;
@@ -494,7 +636,7 @@ module test_ccd_frame_buf_ddr;
         $display("  Test %0d: Reset & DDR3 Init", test_num);
         $display("##########################################################\n");
         reset_dut;
-        i_mig_rst_n <= 1'b1;  // 释放 MIG 复位, 启动 DDR 校准
+        mig_rst_n <= 1'b1;  // 释放 MIG 复位, 启动 DDR 校准
         wait_ddr3_init;
         $display("  o_frame_num = %0d (expect 0)", o_frame_num);
 

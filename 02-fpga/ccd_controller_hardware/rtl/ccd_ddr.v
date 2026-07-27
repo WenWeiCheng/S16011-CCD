@@ -5,6 +5,8 @@
 //          实例化 ccd_driver（CCD 时序驱动）、ccd_frame_buf_ddr（DDR3 乒乓帧缓存）
 //          和 ccd_frame_tx（帧发送模块），将 CCD 驱动输出的像素数据写入
 //          DDR3 帧缓存，并通过帧发送模块转发至 EZ-USB Slave FIFO。
+//
+//          MIG (mig_7series_0) 需在本模块外部例化, 通过 AXI4 Master 接口与本模块连接。
 //==============================================================================
 module ccd_ddr #(
     parameter MAX_FRAME_DEPTH = 131072,  // 每帧最大像素数 (每个像素 2 字节)
@@ -61,27 +63,55 @@ module ccd_ddr #(
     // ---- 异常 ----
     output wire         o_frame_exception,     // 帧异常脉冲
 
-    // ---- DDR3 时钟与复位 ----
-    input  wire         i_ddr3_clk200m_ref,   // DDR3 参考时钟 (200 MHz)
-    input  wire         i_mig_rst_n,          // MIG 专用复位 (低有效)
-    output wire         o_ddr3_init_done,     // DDR3 校准完成
+    // ---- MIG 接口 (ui_clk 域) ----
+    input  wire         i_ui_clk,           // 来自外部 MIG 的 ui_clk
+    input  wire         i_ddr3_init_done,   // 来自外部 MIG: mmcm_locked && init_calib_complete
 
-    // ---- DDR3 物理接口 ----
-    inout  [31:0]       ddr3_dq,
-    inout  [3:0]        ddr3_dqs_n,
-    inout  [3:0]        ddr3_dqs_p,
-    output [14:0]       ddr3_addr,
-    output [2:0]        ddr3_ba,
-    output              ddr3_ras_n,
-    output              ddr3_cas_n,
-    output              ddr3_we_n,
-    output              ddr3_reset_n,
-    output [0:0]        ddr3_ck_p,
-    output [0:0]        ddr3_ck_n,
-    output [0:0]        ddr3_cke,
-    output [0:0]        ddr3_cs_n,
-    output [3:0]        ddr3_dm,
-    output [0:0]        ddr3_odt
+    // ---- AXI4 Master 接口 (ui_clk 域, 连接外部 MIG S_AXI) ----
+    // 写地址通道
+    output wire [3:0]   M_AXI_AWID,
+    output wire [29:0]  M_AXI_AWADDR,
+    output wire [7:0]   M_AXI_AWLEN,
+    output wire [2:0]   M_AXI_AWSIZE,
+    output wire [1:0]   M_AXI_AWBURST,
+    output wire         M_AXI_AWLOCK,
+    output wire [3:0]   M_AXI_AWCACHE,
+    output wire [2:0]   M_AXI_AWPROT,
+    output wire [3:0]   M_AXI_AWQOS,
+    output wire [3:0]   M_AXI_AWREGION,
+    output wire         M_AXI_AWVALID,
+    input  wire         M_AXI_AWREADY,
+    // 写数据通道
+    output wire [127:0] M_AXI_WDATA,
+    output wire [15:0]  M_AXI_WSTRB,
+    output wire         M_AXI_WLAST,
+    output wire         M_AXI_WVALID,
+    input  wire         M_AXI_WREADY,
+    // 写响应通道
+    input  wire [3:0]   M_AXI_BID,
+    input  wire [1:0]   M_AXI_BRESP,
+    input  wire         M_AXI_BVALID,
+    output wire         M_AXI_BREADY,
+    // 读地址通道
+    output wire [3:0]   M_AXI_ARID,
+    output wire [29:0]  M_AXI_ARADDR,
+    output wire [7:0]   M_AXI_ARLEN,
+    output wire [2:0]   M_AXI_ARSIZE,
+    output wire [1:0]   M_AXI_ARBURST,
+    output wire         M_AXI_ARLOCK,
+    output wire [3:0]   M_AXI_ARCACHE,
+    output wire [2:0]   M_AXI_ARPROT,
+    output wire [3:0]   M_AXI_ARQOS,
+    output wire [3:0]   M_AXI_ARREGION,
+    output wire         M_AXI_ARVALID,
+    input  wire         M_AXI_ARREADY,
+    // 读数据通道
+    input  wire [3:0]   M_AXI_RID,
+    input  wire [127:0] M_AXI_RDATA,
+    input  wire [1:0]   M_AXI_RRESP,
+    input  wire         M_AXI_RLAST,
+    input  wire         M_AXI_RVALID,
+    output wire         M_AXI_RREADY
 );
 
     // ==================================================================
@@ -149,9 +179,7 @@ module ccd_ddr #(
 
     // ==================================================================
     // ccd_frame_buf_ddr 实例化
-    //   以 DDR3 作为存储后端, 接口与 ccd_frame_buf 兼容。
-    //   ADC/RD 域信号与 ccd.v 中 ccd_frame_buf 完全一致,
-    //   额外增加 DDR3 时钟、复位、初始化状态和物理接口。
+    //   DDR3 帧缓存薄封装, 通过 AXI4 Master 连接外部 MIG。
     // ==================================================================
     ccd_frame_buf_ddr #(
         .MAX_FRAME_DEPTH(MAX_FRAME_DEPTH),
@@ -173,25 +201,47 @@ module ccd_ddr #(
         .o_fifo_last_word  (fifo_last_word_w),
         .i_fifo_rd_en      (fifo_rd_en_w),
         .o_frame_exception (o_frame_exception),
-        .i_ddr3_clk100m    (i_clk),
-        .i_ddr3_clk200m_ref(i_ddr3_clk200m_ref),
-        .i_mig_rst_n       (i_mig_rst_n),
-        .o_ddr3_init_done  (o_ddr3_init_done),
-        .ddr3_dq           (ddr3_dq),
-        .ddr3_dqs_n        (ddr3_dqs_n),
-        .ddr3_dqs_p        (ddr3_dqs_p),
-        .ddr3_addr         (ddr3_addr),
-        .ddr3_ba           (ddr3_ba),
-        .ddr3_ras_n        (ddr3_ras_n),
-        .ddr3_cas_n        (ddr3_cas_n),
-        .ddr3_we_n         (ddr3_we_n),
-        .ddr3_reset_n      (ddr3_reset_n),
-        .ddr3_ck_p         (ddr3_ck_p),
-        .ddr3_ck_n         (ddr3_ck_n),
-        .ddr3_cke          (ddr3_cke),
-        .ddr3_cs_n         (ddr3_cs_n),
-        .ddr3_dm           (ddr3_dm),
-        .ddr3_odt          (ddr3_odt)
+        .i_ui_clk          (i_ui_clk),
+        .i_ddr3_init_done  (i_ddr3_init_done),
+        .M_AXI_AWID        (M_AXI_AWID),
+        .M_AXI_AWADDR      (M_AXI_AWADDR),
+        .M_AXI_AWLEN       (M_AXI_AWLEN),
+        .M_AXI_AWSIZE      (M_AXI_AWSIZE),
+        .M_AXI_AWBURST     (M_AXI_AWBURST),
+        .M_AXI_AWLOCK      (M_AXI_AWLOCK),
+        .M_AXI_AWCACHE     (M_AXI_AWCACHE),
+        .M_AXI_AWPROT      (M_AXI_AWPROT),
+        .M_AXI_AWQOS       (M_AXI_AWQOS),
+        .M_AXI_AWREGION    (M_AXI_AWREGION),
+        .M_AXI_AWVALID     (M_AXI_AWVALID),
+        .M_AXI_AWREADY     (M_AXI_AWREADY),
+        .M_AXI_WDATA       (M_AXI_WDATA),
+        .M_AXI_WSTRB       (M_AXI_WSTRB),
+        .M_AXI_WLAST       (M_AXI_WLAST),
+        .M_AXI_WVALID      (M_AXI_WVALID),
+        .M_AXI_WREADY      (M_AXI_WREADY),
+        .M_AXI_BID         (M_AXI_BID),
+        .M_AXI_BRESP       (M_AXI_BRESP),
+        .M_AXI_BVALID      (M_AXI_BVALID),
+        .M_AXI_BREADY      (M_AXI_BREADY),
+        .M_AXI_ARID        (M_AXI_ARID),
+        .M_AXI_ARADDR      (M_AXI_ARADDR),
+        .M_AXI_ARLEN       (M_AXI_ARLEN),
+        .M_AXI_ARSIZE      (M_AXI_ARSIZE),
+        .M_AXI_ARBURST     (M_AXI_ARBURST),
+        .M_AXI_ARLOCK      (M_AXI_ARLOCK),
+        .M_AXI_ARCACHE     (M_AXI_ARCACHE),
+        .M_AXI_ARPROT      (M_AXI_ARPROT),
+        .M_AXI_ARQOS       (M_AXI_ARQOS),
+        .M_AXI_ARREGION    (M_AXI_ARREGION),
+        .M_AXI_ARVALID     (M_AXI_ARVALID),
+        .M_AXI_ARREADY     (M_AXI_ARREADY),
+        .M_AXI_RID         (M_AXI_RID),
+        .M_AXI_RDATA       (M_AXI_RDATA),
+        .M_AXI_RRESP       (M_AXI_RRESP),
+        .M_AXI_RLAST       (M_AXI_RLAST),
+        .M_AXI_RVALID      (M_AXI_RVALID),
+        .M_AXI_RREADY      (M_AXI_RREADY)
     );
 
     // ==================================================================
