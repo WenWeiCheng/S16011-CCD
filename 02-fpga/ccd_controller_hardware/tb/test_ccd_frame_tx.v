@@ -6,7 +6,7 @@
 //   使用已验证的 ccd_frame_buf 作为 PP FIFO 源, 通过写侧写入像素数据,
 //   验证 ccd_frame_tx 从读侧读出并转发至 Slave FIFO 的完整通路。
 //
-//   测试 1 : 复位 — o_slave_fifo_data_valid_n=1, o_frame_done_n=1
+//   测试 1 : 复位 — o_slave_fifo_data_valid_n=1, o_tx_last_n=1
 //   测试 2 : 单帧发送 — 写一帧, 触发 TX, 验证 frame_done
 //   测试 3 : 数据验证 — 采集 Slave FIFO 输出, 比对 8 words
 //   测试 4 : 连续多帧 — 依次发送 3 帧
@@ -65,7 +65,7 @@ module test_ccd_frame_tx;
     // 帧控制
     // ==================================================================
     reg         i_frame_start_tx;
-    wire        o_frame_done_n;
+    wire        o_tx_last_n;
 
     // ccd_frame_buf 额外输出
     wire        o_frame_exception;
@@ -88,7 +88,7 @@ module test_ccd_frame_tx;
     // frame_done 捕获 (跨时钟域, 防止 wr_frame 阻塞时错过)
     // ==================================================================
     reg frame_done_captured;
-    always @(negedge o_frame_done_n or negedge i_rst_n) begin
+    always @(negedge o_tx_last_n or negedge i_rst_n) begin
         if (!i_rst_n)
             frame_done_captured <= 1'b0;
         else
@@ -133,7 +133,7 @@ module test_ccd_frame_tx;
         .i_slave_fifo_empty_n  (i_slave_fifo_empty_n),
         .i_slave_fifo_full_n   (i_slave_fifo_full_n),
         .i_frame_start         (i_frame_start_tx),
-        .o_frame_done_n        (o_frame_done_n)
+        .o_tx_last_n        (o_tx_last_n)
     );
 
     // ==================================================================
@@ -269,8 +269,8 @@ module test_ccd_frame_tx;
             $display("[FAIL] Reset: data_valid_n=%b (expected 1)",
                      o_slave_fifo_data_valid_n);
             $stop;
-        end else if (o_frame_done_n !== 1'b1) begin
-            $display("[FAIL] Reset: frame_done_n=%b (expected 1)", o_frame_done_n);
+        end else if (o_tx_last_n !== 1'b1) begin
+            $display("[FAIL] Reset: tx_last_n=%b (expected 1)", o_tx_last_n);
             $stop;
         end else begin
             $display("[PASS] Reset state OK");

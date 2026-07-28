@@ -57,12 +57,14 @@ module test_ccd_ddr;
 
     // ---- FX2 Slave FIFO 接口 ----
     reg         i_rd_clk;
+    wire        i_rd_clk_n;
     reg         i_tx_frame_start;
     reg         i_slave_fifo_empty_n;
     reg         i_slave_fifo_full_n;
     wire [15:0] o_slave_fifo_data;
     wire        o_slave_fifo_data_valid_n;
-    wire        o_frame_done_n;
+    wire        o_slave_fifo_clk;
+    wire        o_tx_last_n;
     wire [2:0]  o_frame_num;
     wire        o_frame_exception;
 
@@ -178,16 +180,19 @@ module test_ccd_ddr;
         .o_cdsclk1               (o_cdsclk1),
         .o_cdsclk2               (o_cdsclk2),
         .i_rd_clk                (i_rd_clk),
+        .i_rd_clk_n              (i_rd_clk_n),
+        .o_slave_fifo_clk        (o_slave_fifo_clk),
         .i_tx_frame_start        (i_tx_frame_start),
         .i_slave_fifo_empty_n    (i_slave_fifo_empty_n),
         .i_slave_fifo_full_n     (i_slave_fifo_full_n),
         .o_slave_fifo_data       (o_slave_fifo_data),
         .o_slave_fifo_data_valid_n(o_slave_fifo_data_valid_n),
-        .o_frame_done_n          (o_frame_done_n),
+        .o_tx_last_n          (o_tx_last_n),
         .o_frame_num             (o_frame_num),
         .o_frame_exception       (o_frame_exception),
         .i_ui_clk                (ui_clk),
-        .i_ddr3_init_done        (ddr3_init_done),
+        .i_mmcm_locked           (mmcm_locked),
+        .i_init_calib_complete   (init_calib_complete),
         .M_AXI_AWID              (axi_awid),
         .M_AXI_AWADDR            (axi_awaddr),
         .M_AXI_AWLEN             (axi_awlen),
@@ -233,6 +238,7 @@ module test_ccd_ddr;
     // MIG 7-Series DDR3 Controller (外部例化)
     //   连接 ccd_ddr 的 AXI4 Master ↔ MIG S_AXI ↔ DDR3 仿真模型
     // ==================================================================
+    assign i_rd_clk_n = ~i_rd_clk;
     assign ddr3_init_done = mmcm_locked && init_calib_complete;
 
     mig_7series_0 u_mig (
@@ -475,7 +481,7 @@ module test_ccd_ddr;
     task wait_frame_done;
         begin
             wait_timeout = 0;
-            while (o_frame_done_n !== 1'b0 && wait_timeout < 2000) begin
+            while (o_tx_last_n !== 1'b0 && wait_timeout < 2000) begin
                 @(posedge i_rd_clk);
                 wait_timeout = wait_timeout + 1;
             end
@@ -483,7 +489,7 @@ module test_ccd_ddr;
                 $display("  [WAIT] Timeout: no frame send complete after %0d us", 2000);
                 $stop;
             end
-            frame_done_detected = (o_frame_done_n === 1'b0);
+            frame_done_detected = (o_tx_last_n === 1'b0);
         end
     endtask
 

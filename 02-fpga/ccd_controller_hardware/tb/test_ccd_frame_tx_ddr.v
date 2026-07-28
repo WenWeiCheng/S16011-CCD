@@ -6,7 +6,7 @@
 //   使用 DDR 实现的 ccd_frame_buf_ddr 作为帧缓存源, 通过写侧写入像素数据,
 //   验证 ccd_frame_tx 从读侧读出并转发至 Slave FIFO 的完整通路。
 //
-//   测试 1 : 复位 — o_slave_fifo_data_valid_n=1, o_frame_done_n=1
+//   测试 1 : 复位 — o_slave_fifo_data_valid_n=1, o_tx_last_n=1
 //   测试 2 : 单帧发送 — 写一帧, 触发 TX, 验证数据 (含 scoreboard 比对)
 //   测试 3 : 连续多帧 — 依次发送 3 帧, 逐帧验证数据
 //   测试 4 : Slave FIFO 满反压 — full_n=0 时暂停发送, 恢复后继续
@@ -92,7 +92,7 @@ module test_ccd_frame_tx_ddr;
     // 帧控制
     // ==================================================================
     reg         i_frame_start_tx;
-    wire        o_frame_done_n;
+    wire        o_tx_last_n;
 
     // ==================================================================
     // DDR3 状态 / 异常
@@ -184,7 +184,7 @@ module test_ccd_frame_tx_ddr;
     end
 
     // frame_done 捕获 (跨时钟域, 防止 wr_frame 阻塞时错过)
-    always @(negedge o_frame_done_n or negedge i_rst_n) begin
+    always @(negedge o_tx_last_n or negedge i_rst_n) begin
         if (!i_rst_n)
             frame_done_captured <= 1'b0;
         else
@@ -347,7 +347,7 @@ module test_ccd_frame_tx_ddr;
         .i_slave_fifo_empty_n    (i_slave_fifo_empty_n),
         .i_slave_fifo_full_n     (i_slave_fifo_full_n),
         .i_frame_start           (i_frame_start_tx),
-        .o_frame_done_n          (o_frame_done_n)
+        .o_tx_last_n          (o_tx_last_n)
     );
 
     // ==================================================================
@@ -688,8 +688,8 @@ module test_ccd_frame_tx_ddr;
             $display("[FAIL] Reset: data_valid_n=%b (expected 1)",
                      o_slave_fifo_data_valid_n);
             $stop;
-        end else if (o_frame_done_n !== 1'b1) begin
-            $display("[FAIL] Reset: frame_done_n=%b (expected 1)", o_frame_done_n);
+        end else if (o_tx_last_n !== 1'b1) begin
+            $display("[FAIL] Reset: tx_last_n=%b (expected 1)", o_tx_last_n);
             $stop;
         end else begin
             $display("[PASS] Reset state OK");

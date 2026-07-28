@@ -50,12 +50,14 @@ module ccd_ddr #(
 
     // ---- FX2 Slave FIFO 接口 ----
     input  wire         i_rd_clk,              // 读时钟 (FX2 Slave FIFO)
+    input  wire         i_rd_clk_n,            // 读时钟反相 (来自 MMCM/PLL)
     input  wire         i_tx_frame_start,      // 帧发送触发 (下降沿启动)
     input  wire         i_slave_fifo_empty_n,  // FX2 Slave FIFO 空 (低有效)
     input  wire         i_slave_fifo_full_n,   // FX2 Slave FIFO 满 (低有效)
     output wire [15:0]  o_slave_fifo_data,     // 输出到 Slave FIFO 的数据
     output wire         o_slave_fifo_data_valid_n, // 数据有效 (低有效)
-    output wire         o_frame_done_n,        // 帧发送完成 (低有效)
+    output wire         o_slave_fifo_clk,      // 读时钟输出 (i_rd_clk 扇出)
+    output wire         o_tx_last_n,        // 帧最后一字标志, 低有效脉冲
 
     // ---- 帧缓存状态 ----
     output wire [$clog2(MAX_FRAMES+1)-1:0]   o_frame_num,  // 帧缓存中可读帧数
@@ -65,7 +67,8 @@ module ccd_ddr #(
 
     // ---- MIG 接口 (ui_clk 域) ----
     input  wire         i_ui_clk,           // 来自外部 MIG 的 ui_clk
-    input  wire         i_ddr3_init_done,   // 来自外部 MIG: mmcm_locked && init_calib_complete
+    input  wire         i_mmcm_locked,      // 来自外部 MIG: mmcm_locked
+    input  wire         i_init_calib_complete, // 来自外部 MIG: init_calib_complete
 
     // ---- AXI4 Master 接口 (ui_clk 域, 连接外部 MIG S_AXI) ----
     // 写地址通道
@@ -131,7 +134,11 @@ module ccd_ddr #(
     wire [$clog2(MAX_FRAMES+1)-1:0] fifo_frame_num_w;
     wire        fifo_prelast_w;
     wire        fifo_rd_en_w;
-    wire        ext_clk_n;
+
+    // ==================================================================
+    // 内部连线: DDR3 初始化状态 (mmcm_locked && init_calib_complete)
+    // ==================================================================
+    wire        ddr3_init_done = i_mmcm_locked && i_init_calib_complete;
 
     // ==================================================================
     // ccd_driver 实例化
@@ -202,7 +209,7 @@ module ccd_ddr #(
         .i_fifo_rd_en      (fifo_rd_en_w),
         .o_frame_exception (o_frame_exception),
         .i_ui_clk          (i_ui_clk),
-        .i_ddr3_init_done  (i_ddr3_init_done),
+        .i_ddr3_init_done  (ddr3_init_done),
         .M_AXI_AWID        (M_AXI_AWID),
         .M_AXI_AWADDR      (M_AXI_AWADDR),
         .M_AXI_AWLEN       (M_AXI_AWLEN),
@@ -244,17 +251,19 @@ module ccd_ddr #(
         .M_AXI_RREADY      (M_AXI_RREADY)
     );
 
+    // FX2 Slave FIFO 时钟扇出
+    assign o_slave_fifo_clk = i_rd_clk;
+
     // ==================================================================
     // ccd_frame_tx 实例化
     //   从 ccd_frame_buf_ddr 读取帧数据, 转发至 FX2 Slave FIFO。
     // ==================================================================
-    assign ext_clk_n = ~i_rd_clk;
 
     ccd_frame_tx #(
         .MAX_FRAMES(MAX_FRAMES)
     ) u_ccd_frame_tx (
         .i_ext_clk             (i_rd_clk),
-        .i_ext_clk_n           (ext_clk_n),
+        .i_ext_clk_n           (i_rd_clk_n),
         .i_rst_n               (i_rst_n),
         .i_frame_fifo_data     (fifo_data_w),
         .i_frame_fifo_num      (fifo_frame_num_w),
@@ -265,7 +274,7 @@ module ccd_ddr #(
         .i_slave_fifo_empty_n  (i_slave_fifo_empty_n),
         .i_slave_fifo_full_n   (i_slave_fifo_full_n),
         .i_frame_start         (i_tx_frame_start),
-        .o_frame_done_n        (o_frame_done_n)
+        .o_tx_last_n        (o_tx_last_n)
     );
 
 endmodule

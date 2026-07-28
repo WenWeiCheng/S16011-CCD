@@ -14,7 +14,7 @@
 //  发送时序:
 //    - o_frame_fifo_rd_en 在 i_ext_clk 上升沿拉高, 从 PP FIFO 读一字
 //    - o_slave_fifo_data / o_slave_fifo_data_valid_n 在 i_ext_clk_n 上升沿更新
-//    - o_frame_done_n 在 i_ext_clk_n 上升沿拉低, 同时 o_slave_fifo_data_valid_n=0,
+//    - o_tx_last_n 在 i_ext_clk_n 上升沿拉低, 同时 o_slave_fifo_data_valid_n=0,
 //      EZ-USB Slave FIFO 在上升沿打包将数据发送给主机
 //==============================================================================
 module ccd_frame_tx #(
@@ -39,7 +39,7 @@ module ccd_frame_tx #(
 
     // 帧控制
     input  wire         i_frame_start,     // 开始一帧数据传输
-    output wire         o_frame_done_n      // 一帧发送已完成, 低有效
+    output wire         o_tx_last_n      // 帧最后一字标志, 低有效脉冲
 );
 
     // ==================================================================
@@ -161,11 +161,11 @@ module ccd_frame_tx #(
     end
 
     // ==================================================================
-    // 反相时钟上升沿输出 — Slave FIFO 数据 / 有效标志 / frame_done_n
+    // 反相时钟上升沿输出 — Slave FIFO 数据 / 有效标志 / tx_last_n
     //
-    //   o_frame_done_n 与最后一字同步: fifo_pipe_valid=1 时,
-    //   fifo_last_pipe=1 表示当前管道数据是帧最后一字,
-    //   此时将 frame_done_n 拉低, EZ-USB 在上升沿打包上传。
+    //   o_tx_last_n 与最后一字同步: fifo_pipe_valid=1 时,
+    //   fifo_prelast_pipe=1 表示当前管道数据是帧最后一字,
+    //   此时将 o_tx_last_n 拉低, EZ-USB 在上升沿打包上传。
     //   使用 i_ext_clk_n 上升沿 (等效原下降沿), 使 Slave FIFO 输出
     //   在主时钟上升沿前稳定, 满足 FX2 建立时间要求。
     // ==================================================================
@@ -191,6 +191,6 @@ module ccd_frame_tx #(
 
     assign o_slave_fifo_data       = slave_data_reg;
     assign o_slave_fifo_data_valid_n = slave_valid_n_reg;
-    assign o_frame_done_n          = frame_done_n_reg;
+    assign o_tx_last_n          = frame_done_n_reg;
 
 endmodule
