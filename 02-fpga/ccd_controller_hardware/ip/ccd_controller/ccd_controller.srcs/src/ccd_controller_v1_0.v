@@ -50,7 +50,6 @@
 		input  wire         i_init_calib_complete,
 
 		// AXI4 Master → MIG S_AXI
-		output wire 		M_AXI_CLK,
 		output wire [3:0]   M_AXI_AWID,
 		output wire [29:0]  M_AXI_AWADDR,
 		output wire [7:0]   M_AXI_AWLEN,
@@ -210,7 +209,6 @@
 	);
 
 	// Add user logic here
-	assign M_AXI_CLK = i_ui_clk;
 	// User logic ends
 
 	endmodule
