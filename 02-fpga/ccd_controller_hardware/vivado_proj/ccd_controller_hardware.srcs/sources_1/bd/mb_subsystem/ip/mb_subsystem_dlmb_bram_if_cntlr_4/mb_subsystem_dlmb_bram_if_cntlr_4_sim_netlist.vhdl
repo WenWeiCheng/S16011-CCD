@@ -1,10 +1,10 @@
 -- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
--- Date        : Thu Jul 23 11:35:40 2026
+-- Date        : Mon Aug  3 00:09:11 2026
 -- Host        : DESKTOP-KD2H86C running 64-bit major release  (build 9200)
 -- Command     : write_vhdl -force -mode funcsim
---               d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ccd_controller_hardware.srcs/sources_1/bd/mb_subsystem/ip/mb_subsystem_dlmb_bram_if_cntlr_4/mb_subsystem_dlmb_bram_if_cntlr_4_sim_netlist.vhdl
+--               d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/vivado_proj/ccd_controller_hardware.srcs/sources_1/bd/mb_subsystem/ip/mb_subsystem_dlmb_bram_if_cntlr_4/mb_subsystem_dlmb_bram_if_cntlr_4_sim_netlist.vhdl
 -- Design      : mb_subsystem_dlmb_bram_if_cntlr_4
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -1707,7 +1707,7 @@ entity mb_subsystem_dlmb_bram_if_cntlr_4_lmb_bram_if_cntlr is
   attribute C_FAULT_INJECT : integer;
   attribute C_FAULT_INJECT of mb_subsystem_dlmb_bram_if_cntlr_4_lmb_bram_if_cntlr : entity is 0;
   attribute C_HIGHADDR : string;
-  attribute C_HIGHADDR of mb_subsystem_dlmb_bram_if_cntlr_4_lmb_bram_if_cntlr : entity is "64'b0000000000000000000000000000000000000000000000001111111111111111";
+  attribute C_HIGHADDR of mb_subsystem_dlmb_bram_if_cntlr_4_lmb_bram_if_cntlr : entity is "64'b0000000000000000000000000000000000000000000000011111111111111111";
   attribute C_INTERCONNECT : integer;
   attribute C_INTERCONNECT of mb_subsystem_dlmb_bram_if_cntlr_4_lmb_bram_if_cntlr : entity is 0;
   attribute C_LMB_AWIDTH : integer;
@@ -2016,7 +2016,7 @@ architecture STRUCTURE of mb_subsystem_dlmb_bram_if_cntlr_4 is
   attribute C_FAULT_INJECT : integer;
   attribute C_FAULT_INJECT of U0 : label is 0;
   attribute C_HIGHADDR : string;
-  attribute C_HIGHADDR of U0 : label is "64'b0000000000000000000000000000000000000000000000001111111111111111";
+  attribute C_HIGHADDR of U0 : label is "64'b0000000000000000000000000000000000000000000000011111111111111111";
   attribute C_INTERCONNECT : integer;
   attribute C_INTERCONNECT of U0 : label is 0;
   attribute C_LMB_AWIDTH : integer;
@@ -2052,7 +2052,7 @@ architecture STRUCTURE of mb_subsystem_dlmb_bram_if_cntlr_4 is
   attribute x_interface_info of BRAM_EN_A : signal is "xilinx.com:interface:bram:1.0 BRAM_PORT EN";
   attribute x_interface_info of BRAM_Rst_A : signal is "xilinx.com:interface:bram:1.0 BRAM_PORT RST";
   attribute x_interface_parameter : string;
-  attribute x_interface_parameter of BRAM_Rst_A : signal is "XIL_INTERFACENAME BRAM_PORT, MEM_SIZE 65536, MASTER_TYPE BRAM_CTRL, MEM_WIDTH 32, MEM_ECC NONE, READ_LATENCY 1";
+  attribute x_interface_parameter of BRAM_Rst_A : signal is "XIL_INTERFACENAME BRAM_PORT, MEM_SIZE 131072, MASTER_TYPE BRAM_CTRL, MEM_WIDTH 32, MEM_ECC NONE, READ_LATENCY 1";
   attribute x_interface_info of LMB1_AddrStrobe : signal is "xilinx.com:interface:lmb:1.0 SLMB1 ADDRSTROBE";
   attribute x_interface_info of LMB1_ReadStrobe : signal is "xilinx.com:interface:lmb:1.0 SLMB1 READSTROBE";
   attribute x_interface_info of LMB1_WriteStrobe : signal is "xilinx.com:interface:lmb:1.0 SLMB1 WRITESTROBE";

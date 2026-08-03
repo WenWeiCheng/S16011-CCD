@@ -1,10 +1,10 @@
 // Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-// Date        : Wed Jul 22 21:17:05 2026
+// Date        : Sat Aug  1 17:41:06 2026
 // Host        : DESKTOP-KD2H86C running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode funcsim
-//               d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ccd_controller_hardware.srcs/sources_1/bd/mb_subsystem/ip/mb_subsystem_clk_wiz_0_1/mb_subsystem_clk_wiz_0_1_sim_netlist.v
+//               d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/vivado_proj/ccd_controller_hardware.srcs/sources_1/bd/mb_subsystem/ip/mb_subsystem_clk_wiz_0_1/mb_subsystem_clk_wiz_0_1_sim_netlist.v
 // Design      : mb_subsystem_clk_wiz_0_1
 // Purpose     : This verilog netlist is a functional simulation representation of the design and should not be modified
 //               or synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -14,42 +14,66 @@
 
 (* NotValidForBitStream *)
 module mb_subsystem_clk_wiz_0_1
-   (clk_out1,
+   (clk_100M,
+    clk_200M,
+    clk_48M,
+    clk_48M_p180,
     reset,
     locked,
     clk_in1);
-  output clk_out1;
+  output clk_100M;
+  output clk_200M;
+  output clk_48M;
+  output clk_48M_p180;
   input reset;
   output locked;
   input clk_in1;
 
+  wire clk_100M;
+  wire clk_200M;
+  wire clk_48M;
+  wire clk_48M_p180;
   (* IBUF_LOW_PWR *) wire clk_in1;
-  wire clk_out1;
   wire locked;
   wire reset;
 
   mb_subsystem_clk_wiz_0_1_mb_subsystem_clk_wiz_0_1_clk_wiz inst
-       (.clk_in1(clk_in1),
-        .clk_out1(clk_out1),
+       (.clk_100M(clk_100M),
+        .clk_200M(clk_200M),
+        .clk_48M(clk_48M),
+        .clk_48M_p180(clk_48M_p180),
+        .clk_in1(clk_in1),
         .locked(locked),
         .reset(reset));
 endmodule
 
 (* ORIG_REF_NAME = "mb_subsystem_clk_wiz_0_1_clk_wiz" *) 
 module mb_subsystem_clk_wiz_0_1_mb_subsystem_clk_wiz_0_1_clk_wiz
-   (clk_out1,
+   (clk_100M,
+    clk_200M,
+    clk_48M,
+    clk_48M_p180,
     reset,
     locked,
     clk_in1);
-  output clk_out1;
+  output clk_100M;
+  output clk_200M;
+  output clk_48M;
+  output clk_48M_p180;
   input reset;
   output locked;
   input clk_in1;
 
+  wire clk_100M;
+  wire clk_100M_mb_subsystem_clk_wiz_0_1;
+  wire clk_200M;
+  wire clk_200M_mb_subsystem_clk_wiz_0_1;
+  wire clk_48M;
+  wire clk_48M_mb_subsystem_clk_wiz_0_1;
+  wire clk_48M_p180;
+  wire clk_48M_p180_mb_subsystem_clk_wiz_0_1;
   wire clk_in1;
   wire clk_in1_mb_subsystem_clk_wiz_0_1;
-  wire clk_out1;
-  wire clk_out1_mb_subsystem_clk_wiz_0_1;
   wire clkfbout_buf_mb_subsystem_clk_wiz_0_1;
   wire clkfbout_mb_subsystem_clk_wiz_0_1;
   wire locked;
@@ -58,10 +82,7 @@ module mb_subsystem_clk_wiz_0_1_mb_subsystem_clk_wiz_0_1_clk_wiz
   wire NLW_mmcm_adv_inst_CLKFBSTOPPED_UNCONNECTED;
   wire NLW_mmcm_adv_inst_CLKINSTOPPED_UNCONNECTED;
   wire NLW_mmcm_adv_inst_CLKOUT0B_UNCONNECTED;
-  wire NLW_mmcm_adv_inst_CLKOUT1_UNCONNECTED;
   wire NLW_mmcm_adv_inst_CLKOUT1B_UNCONNECTED;
-  wire NLW_mmcm_adv_inst_CLKOUT2_UNCONNECTED;
-  wire NLW_mmcm_adv_inst_CLKOUT2B_UNCONNECTED;
   wire NLW_mmcm_adv_inst_CLKOUT3_UNCONNECTED;
   wire NLW_mmcm_adv_inst_CLKOUT3B_UNCONNECTED;
   wire NLW_mmcm_adv_inst_CLKOUT4_UNCONNECTED;
@@ -86,25 +107,37 @@ module mb_subsystem_clk_wiz_0_1_mb_subsystem_clk_wiz_0_1_clk_wiz
         .O(clk_in1_mb_subsystem_clk_wiz_0_1));
   (* BOX_TYPE = "PRIMITIVE" *) 
   BUFG clkout1_buf
-       (.I(clk_out1_mb_subsystem_clk_wiz_0_1),
-        .O(clk_out1));
+       (.I(clk_100M_mb_subsystem_clk_wiz_0_1),
+        .O(clk_100M));
+  (* BOX_TYPE = "PRIMITIVE" *) 
+  BUFG clkout2_buf
+       (.I(clk_200M_mb_subsystem_clk_wiz_0_1),
+        .O(clk_200M));
+  (* BOX_TYPE = "PRIMITIVE" *) 
+  BUFG clkout3_buf
+       (.I(clk_48M_mb_subsystem_clk_wiz_0_1),
+        .O(clk_48M));
+  (* BOX_TYPE = "PRIMITIVE" *) 
+  BUFG clkout4_buf
+       (.I(clk_48M_p180_mb_subsystem_clk_wiz_0_1),
+        .O(clk_48M_p180));
   (* BOX_TYPE = "PRIMITIVE" *) 
   MMCME2_ADV #(
     .BANDWIDTH("OPTIMIZED"),
-    .CLKFBOUT_MULT_F(20.000000),
+    .CLKFBOUT_MULT_F(24.000000),
     .CLKFBOUT_PHASE(0.000000),
     .CLKFBOUT_USE_FINE_PS("FALSE"),
     .CLKIN1_PERIOD(20.000000),
     .CLKIN2_PERIOD(0.000000),
-    .CLKOUT0_DIVIDE_F(10.000000),
+    .CLKOUT0_DIVIDE_F(12.000000),
     .CLKOUT0_DUTY_CYCLE(0.500000),
     .CLKOUT0_PHASE(0.000000),
     .CLKOUT0_USE_FINE_PS("FALSE"),
-    .CLKOUT1_DIVIDE(1),
+    .CLKOUT1_DIVIDE(6),
     .CLKOUT1_DUTY_CYCLE(0.500000),
     .CLKOUT1_PHASE(0.000000),
     .CLKOUT1_USE_FINE_PS("FALSE"),
-    .CLKOUT2_DIVIDE(1),
+    .CLKOUT2_DIVIDE(25),
     .CLKOUT2_DUTY_CYCLE(0.500000),
     .CLKOUT2_PHASE(0.000000),
     .CLKOUT2_USE_FINE_PS("FALSE"),
@@ -147,12 +180,12 @@ module mb_subsystem_clk_wiz_0_1_mb_subsystem_clk_wiz_0_1_clk_wiz
         .CLKIN2(1'b0),
         .CLKINSEL(1'b1),
         .CLKINSTOPPED(NLW_mmcm_adv_inst_CLKINSTOPPED_UNCONNECTED),
-        .CLKOUT0(clk_out1_mb_subsystem_clk_wiz_0_1),
+        .CLKOUT0(clk_100M_mb_subsystem_clk_wiz_0_1),
         .CLKOUT0B(NLW_mmcm_adv_inst_CLKOUT0B_UNCONNECTED),
-        .CLKOUT1(NLW_mmcm_adv_inst_CLKOUT1_UNCONNECTED),
+        .CLKOUT1(clk_200M_mb_subsystem_clk_wiz_0_1),
         .CLKOUT1B(NLW_mmcm_adv_inst_CLKOUT1B_UNCONNECTED),
-        .CLKOUT2(NLW_mmcm_adv_inst_CLKOUT2_UNCONNECTED),
-        .CLKOUT2B(NLW_mmcm_adv_inst_CLKOUT2B_UNCONNECTED),
+        .CLKOUT2(clk_48M_mb_subsystem_clk_wiz_0_1),
+        .CLKOUT2B(clk_48M_p180_mb_subsystem_clk_wiz_0_1),
         .CLKOUT3(NLW_mmcm_adv_inst_CLKOUT3_UNCONNECTED),
         .CLKOUT3B(NLW_mmcm_adv_inst_CLKOUT3B_UNCONNECTED),
         .CLKOUT4(NLW_mmcm_adv_inst_CLKOUT4_UNCONNECTED),

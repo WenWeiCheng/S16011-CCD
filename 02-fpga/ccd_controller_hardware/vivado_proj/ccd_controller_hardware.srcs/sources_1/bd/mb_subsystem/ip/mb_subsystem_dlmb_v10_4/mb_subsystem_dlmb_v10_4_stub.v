@@ -1,11 +1,11 @@
 // Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-// Date        : Wed Jul 22 21:17:03 2026
+// Date        : Sat Aug  1 17:42:58 2026
 // Host        : DESKTOP-KD2H86C running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode synth_stub -rename_top mb_subsystem_dlmb_v10_4 -prefix
-//               mb_subsystem_dlmb_v10_4_ mb_subsystem_dlmb_v10_3_stub.v
-// Design      : mb_subsystem_dlmb_v10_3
+//               mb_subsystem_dlmb_v10_4_ mb_subsystem_lmb_v10_0_stub.v
+// Design      : mb_subsystem_lmb_v10_0
 // Purpose     : Stub declaration of top-level module interface
 // Device      : xc7a100tfgg484-2
 // --------------------------------------------------------------------------------

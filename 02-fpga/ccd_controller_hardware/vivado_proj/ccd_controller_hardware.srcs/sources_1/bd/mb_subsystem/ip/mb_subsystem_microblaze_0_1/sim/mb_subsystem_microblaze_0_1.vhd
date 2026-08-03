@@ -1003,7 +1003,7 @@ BEGIN
       C_USE_BARREL => 0,
       C_USE_DIV => 0,
       C_USE_HW_MUL => 0,
-      C_USE_FPU => 0,
+      C_USE_FPU => 1,
       C_USE_REORDER_INSTR => 1,
       C_UNALIGNED_EXCEPTIONS => 0,
       C_ILL_OPCODE_EXCEPTION => 0,

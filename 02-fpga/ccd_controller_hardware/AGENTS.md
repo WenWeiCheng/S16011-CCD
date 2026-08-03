@@ -17,8 +17,7 @@
 │   ├── ccd_frame_buf.v                                 # BRAM 帧缓存
 │   ├── ccd_frame_buf_ddr.v                             # 已废弃 (旧版 DDR 帧缓存)
 │   ├── ccd_frame_tx.v                                  # 帧发送模块
-│   ├── ccd_phase_gen.v                                 # 相位生成
-│   ├── cdsclk_gen.v                                    # CDSCLK 生成
+│   ├── ccd_clk_gen.v                                   # CCD 统一时钟生成 (SCLK/RG/CDSCLK)
 │   ├── ccd_frame_buf_ddr/                              # DDR3 帧缓存 (新版)
 │   │   ├── ccd_frame_buf_ddr.v                         #   DDR3 帧缓存顶层
 │   │   ├── ccd_frame_buf_ddr_axi_adapter.v             #   AXI 适配器
@@ -36,7 +35,7 @@
 │   ├── test_ccd_frame_buf.v
 │   ├── test_ccd_frame_tx.v
 │   ├── test_ccd_frame_tx_ddr.v
-│   ├── test_cdsclk_gen.v
+│   ├── test_ccd_clk_gen.v
 │   ├── ccd_frame_buf_ddr/
 │   │   ├── test_ccd_frame_buf_ddr.v
 │   │   ├── test_ccd_frame_buf_ddr_axi_adapter.v

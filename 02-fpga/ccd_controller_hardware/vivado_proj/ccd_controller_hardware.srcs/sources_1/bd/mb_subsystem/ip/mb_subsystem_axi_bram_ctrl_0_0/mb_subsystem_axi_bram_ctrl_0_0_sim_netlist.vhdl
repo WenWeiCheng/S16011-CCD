@@ -1,10 +1,10 @@
 -- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
--- Date        : Wed Jul 22 21:17:09 2026
+-- Date        : Sat Aug  1 17:43:07 2026
 -- Host        : DESKTOP-KD2H86C running 64-bit major release  (build 9200)
--- Command     : write_vhdl -force -mode funcsim -rename_top mb_subsystem_axi_bram_ctrl_0_0 -prefix
---               mb_subsystem_axi_bram_ctrl_0_0_ mb_subsystem_axi_bram_ctrl_0_0_sim_netlist.vhdl
+-- Command     : write_vhdl -force -mode funcsim
+--               d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/vivado_proj/ccd_controller_hardware.srcs/sources_1/bd/mb_subsystem/ip/mb_subsystem_axi_bram_ctrl_0_0/mb_subsystem_axi_bram_ctrl_0_0_sim_netlist.vhdl
 -- Design      : mb_subsystem_axi_bram_ctrl_0_0
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -49,6 +49,8 @@ entity mb_subsystem_axi_bram_ctrl_0_0_SRL_FIFO is
     s_axi_awid : in STD_LOGIC_VECTOR ( 0 to 0 );
     s_axi_bid : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
+  attribute ORIG_REF_NAME : string;
+  attribute ORIG_REF_NAME of mb_subsystem_axi_bram_ctrl_0_0_SRL_FIFO : entity is "SRL_FIFO";
 end mb_subsystem_axi_bram_ctrl_0_0_SRL_FIFO;
 
 architecture STRUCTURE of mb_subsystem_axi_bram_ctrl_0_0_SRL_FIFO is
@@ -514,6 +516,8 @@ entity mb_subsystem_axi_bram_ctrl_0_0_wrap_brst is
     \wrap_burst_total_reg[0]_0\ : in STD_LOGIC;
     s_axi_aclk : in STD_LOGIC
   );
+  attribute ORIG_REF_NAME : string;
+  attribute ORIG_REF_NAME of mb_subsystem_axi_bram_ctrl_0_0_wrap_brst : entity is "wrap_brst";
 end mb_subsystem_axi_bram_ctrl_0_0_wrap_brst;
 
 architecture STRUCTURE of mb_subsystem_axi_bram_ctrl_0_0_wrap_brst is
@@ -2145,6 +2149,8 @@ entity mb_subsystem_axi_bram_ctrl_0_0_rd_chnl is
     axi_aresetn_re_reg : in STD_LOGIC;
     bram_rddata_b : in STD_LOGIC_VECTOR ( 31 downto 0 )
   );
+  attribute ORIG_REF_NAME : string;
+  attribute ORIG_REF_NAME of mb_subsystem_axi_bram_ctrl_0_0_rd_chnl : entity is "rd_chnl";
 end mb_subsystem_axi_bram_ctrl_0_0_rd_chnl;
 
 architecture STRUCTURE of mb_subsystem_axi_bram_ctrl_0_0_rd_chnl is
@@ -6492,6 +6498,8 @@ entity mb_subsystem_axi_bram_ctrl_0_0_wr_chnl is
     s_axi_awlen : in STD_LOGIC_VECTOR ( 7 downto 0 );
     s_axi_wstrb : in STD_LOGIC_VECTOR ( 3 downto 0 )
   );
+  attribute ORIG_REF_NAME : string;
+  attribute ORIG_REF_NAME of mb_subsystem_axi_bram_ctrl_0_0_wr_chnl : entity is "wr_chnl";
 end mb_subsystem_axi_bram_ctrl_0_0_wr_chnl;
 
 architecture STRUCTURE of mb_subsystem_axi_bram_ctrl_0_0_wr_chnl is
@@ -8524,6 +8532,8 @@ entity mb_subsystem_axi_bram_ctrl_0_0_full_axi is
     s_axi_awvalid : in STD_LOGIC;
     s_axi_arvalid : in STD_LOGIC
   );
+  attribute ORIG_REF_NAME : string;
+  attribute ORIG_REF_NAME of mb_subsystem_axi_bram_ctrl_0_0_full_axi : entity is "full_axi";
 end mb_subsystem_axi_bram_ctrl_0_0_full_axi;
 
 architecture STRUCTURE of mb_subsystem_axi_bram_ctrl_0_0_full_axi is
@@ -8627,6 +8637,8 @@ entity mb_subsystem_axi_bram_ctrl_0_0_axi_bram_ctrl_top is
     s_axi_awvalid : in STD_LOGIC;
     s_axi_arvalid : in STD_LOGIC
   );
+  attribute ORIG_REF_NAME : string;
+  attribute ORIG_REF_NAME of mb_subsystem_axi_bram_ctrl_0_0_axi_bram_ctrl_top : entity is "axi_bram_ctrl_top";
 end mb_subsystem_axi_bram_ctrl_0_0_axi_bram_ctrl_top;
 
 architecture STRUCTURE of mb_subsystem_axi_bram_ctrl_0_0_axi_bram_ctrl_top is
@@ -8782,6 +8794,8 @@ entity mb_subsystem_axi_bram_ctrl_0_0_axi_bram_ctrl is
   attribute C_S_AXI_PROTOCOL of mb_subsystem_axi_bram_ctrl_0_0_axi_bram_ctrl : entity is "AXI4";
   attribute C_S_AXI_SUPPORTS_NARROW_BURST : integer;
   attribute C_S_AXI_SUPPORTS_NARROW_BURST of mb_subsystem_axi_bram_ctrl_0_0_axi_bram_ctrl : entity is 0;
+  attribute ORIG_REF_NAME : string;
+  attribute ORIG_REF_NAME of mb_subsystem_axi_bram_ctrl_0_0_axi_bram_ctrl : entity is "axi_bram_ctrl";
   attribute downgradeipidentifiedwarnings : string;
   attribute downgradeipidentifiedwarnings of mb_subsystem_axi_bram_ctrl_0_0_axi_bram_ctrl : entity is "yes";
 end mb_subsystem_axi_bram_ctrl_0_0_axi_bram_ctrl;
@@ -9087,7 +9101,7 @@ architecture STRUCTURE of mb_subsystem_axi_bram_ctrl_0_0 is
   attribute x_interface_info of s_axi_arprot : signal is "xilinx.com:interface:aximm:1.0 S_AXI ARPROT";
   attribute x_interface_info of s_axi_arsize : signal is "xilinx.com:interface:aximm:1.0 S_AXI ARSIZE";
   attribute x_interface_info of s_axi_awaddr : signal is "xilinx.com:interface:aximm:1.0 S_AXI AWADDR";
-  attribute x_interface_parameter of s_axi_awaddr : signal is "XIL_INTERFACENAME S_AXI, DATA_WIDTH 32, PROTOCOL AXI4, FREQ_HZ 100000000, ID_WIDTH 0, ADDR_WIDTH 14, AWUSER_WIDTH 0, ARUSER_WIDTH 0, WUSER_WIDTH 0, RUSER_WIDTH 0, BUSER_WIDTH 0, READ_WRITE_MODE READ_WRITE, HAS_BURST 1, HAS_LOCK 1, HAS_PROT 1, HAS_CACHE 1, HAS_QOS 0, HAS_REGION 0, HAS_WSTRB 1, HAS_BRESP 1, HAS_RRESP 1, SUPPORTS_NARROW_BURST 0, NUM_READ_OUTSTANDING 2, NUM_WRITE_OUTSTANDING 32, MAX_BURST_LENGTH 4, PHASE 0.0, CLK_DOMAIN /clk_wiz_0_clk_out1, NUM_READ_THREADS 1, NUM_WRITE_THREADS 1, RUSER_BITS_PER_BYTE 0, WUSER_BITS_PER_BYTE 0, INSERT_VIP 0";
+  attribute x_interface_parameter of s_axi_awaddr : signal is "XIL_INTERFACENAME S_AXI, DATA_WIDTH 32, PROTOCOL AXI4, FREQ_HZ 100000000, ID_WIDTH 0, ADDR_WIDTH 14, AWUSER_WIDTH 0, ARUSER_WIDTH 0, WUSER_WIDTH 0, RUSER_WIDTH 0, BUSER_WIDTH 0, READ_WRITE_MODE READ_WRITE, HAS_BURST 1, HAS_LOCK 1, HAS_PROT 1, HAS_CACHE 1, HAS_QOS 0, HAS_REGION 0, HAS_WSTRB 1, HAS_BRESP 1, HAS_RRESP 1, SUPPORTS_NARROW_BURST 0, NUM_READ_OUTSTANDING 2, NUM_WRITE_OUTSTANDING 32, MAX_BURST_LENGTH 32, PHASE 0.0, CLK_DOMAIN /clk_wiz_0_clk_out1, NUM_READ_THREADS 1, NUM_WRITE_THREADS 1, RUSER_BITS_PER_BYTE 0, WUSER_BITS_PER_BYTE 0, INSERT_VIP 0";
   attribute x_interface_info of s_axi_awburst : signal is "xilinx.com:interface:aximm:1.0 S_AXI AWBURST";
   attribute x_interface_info of s_axi_awcache : signal is "xilinx.com:interface:aximm:1.0 S_AXI AWCACHE";
   attribute x_interface_info of s_axi_awlen : signal is "xilinx.com:interface:aximm:1.0 S_AXI AWLEN";

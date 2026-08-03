@@ -1,11 +1,11 @@
 // Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-// Date        : Thu Jul 23 10:47:13 2026
+// Date        : Mon Aug  3 00:09:10 2026
 // Host        : DESKTOP-KD2H86C running 64-bit major release  (build 9200)
-// Command     : write_verilog -force -mode synth_stub -rename_top mb_subsystem_ilmb_bram_if_cntlr_4 -prefix
-//               mb_subsystem_ilmb_bram_if_cntlr_4_ mb_subsystem_dlmb_bram_if_cntlr_3_stub.v
-// Design      : mb_subsystem_dlmb_bram_if_cntlr_3
+// Command     : write_verilog -force -mode synth_stub
+//               d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/vivado_proj/ccd_controller_hardware.srcs/sources_1/bd/mb_subsystem/ip/mb_subsystem_ilmb_bram_if_cntlr_4/mb_subsystem_ilmb_bram_if_cntlr_4_stub.v
+// Design      : mb_subsystem_ilmb_bram_if_cntlr_4
 // Purpose     : Stub declaration of top-level module interface
 // Device      : xc7a100tfgg484-2
 // --------------------------------------------------------------------------------

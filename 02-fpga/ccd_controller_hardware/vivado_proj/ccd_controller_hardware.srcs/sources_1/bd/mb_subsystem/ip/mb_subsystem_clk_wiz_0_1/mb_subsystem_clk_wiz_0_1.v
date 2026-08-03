@@ -56,7 +56,10 @@
 //  Output     Output      Phase    Duty Cycle   Pk-to-Pk     Phase
 //   Clock     Freq (MHz)  (degrees)    (%)     Jitter (ps)  Error (ps)
 //----------------------------------------------------------------------------
-// clk_out1__100.00000______0.000______50.0______162.035____164.985
+// clk_100M__100.00000______0.000______50.0______139.128____154.678
+// clk_200M__200.00000______0.000______50.0______124.134____154.678
+// _clk_48M__48.00000______0.000______50.0______165.425____154.678
+// clk_48M_p180__48.00000____180.000______50.0______165.425____154.678
 //
 //----------------------------------------------------------------------------
 // Input Clock   Freq (MHz)    Input Jitter (UI)
@@ -65,12 +68,15 @@
 
 `timescale 1ps/1ps
 
-(* CORE_GENERATION_INFO = "mb_subsystem_clk_wiz_0_1,clk_wiz_v6_0_5_0_0,{component_name=mb_subsystem_clk_wiz_0_1,use_phase_alignment=true,use_min_o_jitter=false,use_max_i_jitter=false,use_dyn_phase_shift=false,use_inclk_switchover=false,use_dyn_reconfig=false,enable_axi=0,feedback_source=FDBK_AUTO,PRIMITIVE=MMCM,num_out_clk=1,clkin1_period=20.000,clkin2_period=10.0,use_power_down=false,use_reset=true,use_locked=true,use_inclk_stopped=false,feedback_type=SINGLE,CLOCK_MGR_TYPE=NA,manual_override=false}" *)
+(* CORE_GENERATION_INFO = "mb_subsystem_clk_wiz_0_1,clk_wiz_v6_0_5_0_0,{component_name=mb_subsystem_clk_wiz_0_1,use_phase_alignment=true,use_min_o_jitter=false,use_max_i_jitter=false,use_dyn_phase_shift=false,use_inclk_switchover=false,use_dyn_reconfig=false,enable_axi=0,feedback_source=FDBK_AUTO,PRIMITIVE=MMCM,num_out_clk=4,clkin1_period=20.000,clkin2_period=10.0,use_power_down=false,use_reset=true,use_locked=true,use_inclk_stopped=false,feedback_type=SINGLE,CLOCK_MGR_TYPE=NA,manual_override=false}" *)
 
 module mb_subsystem_clk_wiz_0_1 
  (
   // Clock out ports
-  output        clk_out1,
+  output        clk_100M,
+  output        clk_200M,
+  output        clk_48M,
+  output        clk_48M_p180,
   // Status and control signals
   input         reset,
   output        locked,
@@ -81,7 +87,10 @@ module mb_subsystem_clk_wiz_0_1
   mb_subsystem_clk_wiz_0_1_clk_wiz inst
   (
   // Clock out ports  
-  .clk_out1(clk_out1),
+  .clk_100M(clk_100M),
+  .clk_200M(clk_200M),
+  .clk_48M(clk_48M),
+  .clk_48M_p180(clk_48M_p180),
   // Status and control signals               
   .reset(reset), 
   .locked(locked),

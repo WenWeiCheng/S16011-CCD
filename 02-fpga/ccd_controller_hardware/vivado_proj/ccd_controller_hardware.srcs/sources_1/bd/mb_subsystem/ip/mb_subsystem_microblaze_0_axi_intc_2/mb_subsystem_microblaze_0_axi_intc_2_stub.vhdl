@@ -1,11 +1,11 @@
 -- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
--- Date        : Wed Jul 22 21:17:11 2026
+-- Date        : Sun Aug  2 16:35:05 2026
 -- Host        : DESKTOP-KD2H86C running 64-bit major release  (build 9200)
--- Command     : write_vhdl -force -mode synth_stub -rename_top mb_subsystem_microblaze_0_axi_intc_2 -prefix
---               mb_subsystem_microblaze_0_axi_intc_2_ mb_subsystem_microblaze_0_axi_intc_1_stub.vhdl
--- Design      : mb_subsystem_microblaze_0_axi_intc_1
+-- Command     : write_vhdl -force -mode synth_stub
+--               d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/vivado_proj/ccd_controller_hardware.srcs/sources_1/bd/mb_subsystem/ip/mb_subsystem_microblaze_0_axi_intc_2/mb_subsystem_microblaze_0_axi_intc_2_stub.vhdl
+-- Design      : mb_subsystem_microblaze_0_axi_intc_2
 -- Purpose     : Stub declaration of top-level module interface
 -- Device      : xc7a100tfgg484-2
 -- --------------------------------------------------------------------------------
@@ -33,7 +33,7 @@ entity mb_subsystem_microblaze_0_axi_intc_2 is
     s_axi_rresp : out STD_LOGIC_VECTOR ( 1 downto 0 );
     s_axi_rvalid : out STD_LOGIC;
     s_axi_rready : in STD_LOGIC;
-    intr : in STD_LOGIC_VECTOR ( 1 downto 0 );
+    intr : in STD_LOGIC_VECTOR ( 6 downto 0 );
     processor_clk : in STD_LOGIC;
     processor_rst : in STD_LOGIC;
     irq : out STD_LOGIC;
@@ -47,7 +47,7 @@ architecture stub of mb_subsystem_microblaze_0_axi_intc_2 is
 attribute syn_black_box : boolean;
 attribute black_box_pad_pin : string;
 attribute syn_black_box of stub : architecture is true;
-attribute black_box_pad_pin of stub : architecture is "s_axi_aclk,s_axi_aresetn,s_axi_awaddr[8:0],s_axi_awvalid,s_axi_awready,s_axi_wdata[31:0],s_axi_wstrb[3:0],s_axi_wvalid,s_axi_wready,s_axi_bresp[1:0],s_axi_bvalid,s_axi_bready,s_axi_araddr[8:0],s_axi_arvalid,s_axi_arready,s_axi_rdata[31:0],s_axi_rresp[1:0],s_axi_rvalid,s_axi_rready,intr[1:0],processor_clk,processor_rst,irq,processor_ack[1:0],interrupt_address[31:0]";
+attribute black_box_pad_pin of stub : architecture is "s_axi_aclk,s_axi_aresetn,s_axi_awaddr[8:0],s_axi_awvalid,s_axi_awready,s_axi_wdata[31:0],s_axi_wstrb[3:0],s_axi_wvalid,s_axi_wready,s_axi_bresp[1:0],s_axi_bvalid,s_axi_bready,s_axi_araddr[8:0],s_axi_arvalid,s_axi_arready,s_axi_rdata[31:0],s_axi_rresp[1:0],s_axi_rvalid,s_axi_rready,intr[6:0],processor_clk,processor_rst,irq,processor_ack[1:0],interrupt_address[31:0]";
 attribute x_core_info : string;
 attribute x_core_info of stub : architecture is "axi_intc,Vivado 2020.1";
 begin
