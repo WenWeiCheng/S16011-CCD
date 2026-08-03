@@ -140,7 +140,11 @@ static int BoardHal_InitSpi(void)
     if (status != XST_SUCCESS) {
         return status;
     }
-    status = XSpi_Start(&gSpi);
+    status = XSpi_Start(&gSpi);	
+    /*
+	 * Disable Global interrupt to use polled mode operation
+	 */
+	XSpi_IntrGlobalDisable(&gSpi);
     return status;
 }
 
