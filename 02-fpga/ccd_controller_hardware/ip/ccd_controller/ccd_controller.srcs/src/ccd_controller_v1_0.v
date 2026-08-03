@@ -41,7 +41,8 @@
 		input  wire         i_slave_fifo_empty_n,
 		input  wire         i_slave_fifo_full_n,
 		output wire [15:0]  o_slave_fifo_data,
-		output wire         o_slave_fifo_data_valid_n,
+		output wire         o_slave_fifo_data_wr_en_n,
+		output wire         o_slave_fifo_data_last_n,
 		output wire         o_slave_fifo_clk,
 
 		// MIG / DDR3
@@ -163,7 +164,8 @@
 		.i_slave_fifo_empty_n(i_slave_fifo_empty_n),
 		.i_slave_fifo_full_n (i_slave_fifo_full_n),
 		.o_slave_fifo_data    (o_slave_fifo_data),
-		.o_slave_fifo_data_valid_n(o_slave_fifo_data_valid_n),
+		.o_slave_fifo_data_wr_en_n(o_slave_fifo_data_wr_en_n),
+		.o_slave_fifo_data_last_n (o_slave_fifo_data_last_n),
 		.i_ui_clk        (i_ui_clk),
 		.i_mmcm_locked    (i_mmcm_locked),
 		.i_init_calib_complete(i_init_calib_complete),

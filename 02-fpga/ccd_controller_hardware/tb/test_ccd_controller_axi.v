@@ -762,8 +762,10 @@ module test_ccd_controller_axi;
             $display("  [FAIL] exception_pending not at bit[8], got 0x%08h", axi_rdata);
             $stop;
         end
-        if (axi_rdata & 32'h00000080)
+        if (axi_rdata & 32'h00000080) begin
             $display("  [FAIL] exception leaked to bit[7], got 0x%08h", axi_rdata);
+            $stop;
+        end
         else
             $display("  [PASS] bit[7] stays 0");
 
