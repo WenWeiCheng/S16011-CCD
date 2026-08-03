@@ -41,7 +41,8 @@
 		input  wire         i_slave_fifo_empty_n,
 		input  wire         i_slave_fifo_full_n,
 		output wire [15:0]  o_slave_fifo_data,
-		output wire         o_slave_fifo_data_valid_n,
+		output wire         o_slave_fifo_data_wr_en_n,
+		output wire         o_slave_fifo_data_last_n,
 		output wire         o_slave_fifo_clk,
 
 		// MIG / DDR3
@@ -212,6 +213,9 @@
 
 	assign ccd_frame_num = ccd_frame_num_raw;  // 自动零扩展, 保持 8bit 定宽
 
+	// FX2 Slave FIFO 最后一字标志: 直接透传 ccd_ddr 的 o_tx_last_n (rd_clk 域)
+	assign o_slave_fifo_data_last_n = ccd_tx_last_n;
+
 	// DDR3 初始化完成 (mmcm_locked && init_calib_complete, 来自 ui_clk 域)
 	wire ddr3_init_done = i_mmcm_locked && i_init_calib_complete;
 
@@ -233,10 +237,10 @@
 	                     ccd_frame_exception_s2,    // [8]   已同步
 	                     ccd_frame_num};            // [7:0] 8bit
 
-	// INTR_STS 寄存器 (锁存值)
+	// INTR_STS 寄存器 (锁存值) — bit[9]=tx_done_pending, bit[8]=exception_pending
 	wire [31:0] intr_sts_reg;
-	assign intr_sts_reg = {22'b0, tx_done_pending_latch, 1'b0,
-	                       exception_pending_latch, 7'b0};
+	assign intr_sts_reg = {22'b0, tx_done_pending_latch,
+	                       exception_pending_latch, 8'b0};
 
 	// I/O Connections assignments
 
@@ -665,7 +669,7 @@
 	    .i_slave_fifo_empty_n(i_slave_fifo_empty_n),
 	    .i_slave_fifo_full_n (i_slave_fifo_full_n),
 	    .o_slave_fifo_data    (o_slave_fifo_data),
-	    .o_slave_fifo_data_valid_n(o_slave_fifo_data_valid_n),
+	    .o_slave_fifo_data_valid_n(o_slave_fifo_data_wr_en_n),
 	    .o_tx_last_n (ccd_tx_last_n),
 	    .o_frame_num    (ccd_frame_num_raw),
 	    .o_frame_exception(ccd_frame_exception),
