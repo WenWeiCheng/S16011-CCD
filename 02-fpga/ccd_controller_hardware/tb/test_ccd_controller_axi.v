@@ -719,6 +719,74 @@ module test_ccd_controller_axi;
 
         axi_read_dbg(ADDR_STATUS, "STATUS(final)");
 
+        // ================================================================
+        // 测试 5: 异常中断 — INTR_STS[8] 读回位 + W1C 清除
+        // ================================================================
+        $display("========================================");
+        $display("[TEST 5] Exception IRQ — INTR_STS readback bit + W1C");
+        $display("========================================");
+        test_num = 4'd5;
+
+        // 清中断, 使能 exception 中断
+        axi_write(ADDR_INTR_STS, INTR_EXCEPTION);
+        axi_write(ADDR_INTR_EN,  INTR_EXCEPTION);
+        axi_read_dbg(ADDR_INTR_EN, "INTR_EN");
+
+        // line binning 8x2, 各消隐=1
+        axi_write(ADDR_IMG_SIZE, {16'd2, 16'd8});
+        axi_write(ADDR_BEVEL_BLANK, {8'h0, 4'd1, 4'd1, 4'd1, 4'd1, 4'd1, 4'd1});
+        axi_write(ADDR_CTRL, {20'h0, 7'd0, 2'd0, 1'b0, 1'b0, 1'b1});  // exposure=1: 曝光中
+        axi_write(ADDR_CTRL, {20'h0, 7'd0, 2'd0, 1'b0, 1'b0, 1'b0});  // 下降沿→触发读出
+
+        // 帧开始已锁存 depth=8; 读出中把宽度改为 16 → pixel_cnt(16)!=depth(8) → 帧异常
+        wait_us(80);
+        axi_write(ADDR_IMG_SIZE, {16'd2, 16'd16});
+
+        // 轮询 intr (~300us 后帧结束; 超时 800us)
+        wait_timeout = 0;
+        while (!intr && wait_timeout < 80) begin
+            #10000;
+            wait_timeout = wait_timeout + 1;
+        end
+        if (wait_timeout >= 80) begin
+            $display("  [FAIL] exception intr timeout");
+            $stop;
+        end
+        $display("  [PASS] exception intr asserted after ~%0d us", wait_timeout * 10);
+
+        // 读 INTR_STS: exception 必须在 bit[8], bit[7] 必须为 0 (回归断言)
+        axi_read_dbg(ADDR_INTR_STS, "INTR_STS");
+        if (axi_rdata & INTR_EXCEPTION)
+            $display("  [PASS] exception_pending=1 at bit[8]");
+        else begin
+            $display("  [FAIL] exception_pending not at bit[8], got 0x%08h", axi_rdata);
+            $stop;
+        end
+        if (axi_rdata & 32'h00000080)
+            $display("  [FAIL] exception leaked to bit[7], got 0x%08h", axi_rdata);
+        else
+            $display("  [PASS] bit[7] stays 0");
+
+        // STATUS: exception_cnt 应为 1
+        axi_read_dbg(ADDR_STATUS, "STATUS(after exception)");
+        if ((axi_rdata & STS_EXCEP_CNT) != 0)
+            $display("  [PASS] exception_cnt > 0 in STATUS");
+        else begin
+            $display("  [FAIL] exception_cnt == 0 in STATUS");
+            $stop;
+        end
+
+        // W1C: 写 0x100 清除, intr 拉低
+        axi_write(ADDR_INTR_STS, INTR_EXCEPTION);
+        sys_wait(5);
+        axi_read_dbg(ADDR_INTR_STS, "INTR_STS (after clear)");
+        if (!intr && !(axi_rdata & INTR_EXCEPTION))
+            $display("  [PASS] exception cleared, intr deasserted");
+        else begin
+            $display("  [FAIL] clear failed, intr=%0d sts=0x%08h", intr, axi_rdata);
+            $stop;
+        end
+
         $display("============================================================");
         $display("  ALL TESTS COMPLETE");
         $display("============================================================");
