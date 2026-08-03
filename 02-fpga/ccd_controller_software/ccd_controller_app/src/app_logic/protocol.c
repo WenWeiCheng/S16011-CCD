@@ -20,7 +20,9 @@
 *
 * Ver   Who  Date     Changes
 * ----- ---- -------- -----------------------------------------------
-* 1.0   whc  26/08/03 First release
+* 1.0   wwc  26/08/03 First release
+* 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
+* 1.2   wwc  26/08/03 Reply ERR on token overflow / empty line (never drop silently)
 * </pre>
 ******************************************************************************/
 #include "protocol.h"
@@ -115,7 +117,14 @@ typedef struct {
     u32 Cap;     /* buffer capacity in bytes */
 } ProtoBuf;
 
-/** Bind a caller-provided buffer to a ProtoBuf and reset it to an empty string. */
+/*****************************************************************************/
+/**
+* @brief  Binds a caller-provided buffer to a ProtoBuf and resets it to an empty string.
+*
+* @param  b    ProtoBuf to bind.
+* @param  buf  Destination buffer (caller-provided).
+* @param  cap  Buffer capacity in bytes.
+******************************************************************************/
 static void Pb_Init(ProtoBuf *b, char *buf, u32 cap)
 {
     b->Buf = buf;
@@ -124,10 +133,17 @@ static void Pb_Init(ProtoBuf *b, char *buf, u32 cap)
     if (cap > 0U) buf[0] = '\0';
 }
 
+/*****************************************************************************/
 /**
-* Append the first n bytes of s. Silently truncates if the buffer is full or the
-* chunk would overflow, keeping the result NUL-terminated.
-*/
+* @brief  Appends the first n bytes of s.
+*
+* Silently truncates if the buffer is full or the chunk would overflow, keeping the
+* result NUL-terminated.
+*
+* @param  b  ProtoBuf to append to.
+* @param  s  Source data.
+* @param  n  Number of bytes to append.
+******************************************************************************/
 static void Pb_AppendLen(ProtoBuf *b, const char *s, u32 n)
 {
     if (b->Len >= b->Cap - 1U) return;
@@ -137,20 +153,39 @@ static void Pb_AppendLen(ProtoBuf *b, const char *s, u32 n)
     b->Buf[b->Len] = '\0';
 }
 
-/** Append a whole NUL-terminated string. */
+/*****************************************************************************/
+/**
+* @brief  Appends a whole NUL-terminated string.
+*
+* @param  b  ProtoBuf to append to.
+* @param  s  NUL-terminated string to append.
+******************************************************************************/
 static void Pb_Append(ProtoBuf *b, const char *s)
 {
     Pb_AppendLen(b, s, (u32)strlen(s));
 }
 
-/** Append a signed integer (hand-written itoa; snprintf would pull in newlib printf). */
+/*****************************************************************************/
+/**
+* @brief  Appends a signed integer (hand-written itoa; snprintf would pull in newlib printf).
+*
+* @param  b  ProtoBuf to append to.
+* @param  v  Signed integer value.
+******************************************************************************/
 static void Pb_AppendInt(ProtoBuf *b, s32 v)
 {
     char tmp[12];
     Pb_AppendLen(b, tmp, Proto_Itoa(tmp, v));
 }
 
-/** Append a float with dec fixed decimals (hand-written formatting). */
+/*****************************************************************************/
+/**
+* @brief  Appends a float with dec fixed decimals (hand-written formatting).
+*
+* @param  b    ProtoBuf to append to.
+* @param  v    Float value.
+* @param  dec  Number of decimal places.
+******************************************************************************/
 static void Pb_AppendFloat(ProtoBuf *b, float v, int dec)
 {
     char tmp[40];
@@ -220,6 +255,19 @@ static Protocol_Param g_params[] = {
       "idle,exposing,reading,tx", { .I = 0 }, NULL, NULL },
     { "frame_num_ready", VAL_TYPE_INT_RANGE, VAL_ACCESS_RO, "frames ready in cache", "",
       "0:8:1", { .I = 0 }, NULL, NULL },
+    /* ---- CCD ADC (ad9826) ---- */
+    { "adc_gain_r", VAL_TYPE_INT_RANGE, VAL_ACCESS_RW, "red channel PGA gain code", "",
+      "0:63:1", { .I = 0 }, NULL, NULL },
+    { "adc_gain_g", VAL_TYPE_INT_RANGE, VAL_ACCESS_RW, "green channel PGA gain code", "",
+      "0:63:1", { .I = 0 }, NULL, NULL },
+    { "adc_gain_b", VAL_TYPE_INT_RANGE, VAL_ACCESS_RW, "blue channel PGA gain code", "",
+      "0:63:1", { .I = 0 }, NULL, NULL },
+    { "adc_offset_r", VAL_TYPE_INT_RANGE, VAL_ACCESS_RW, "red channel offset code (9-bit)", "",
+      "0:511:1", { .I = 0 }, NULL, NULL },
+    { "adc_offset_g", VAL_TYPE_INT_RANGE, VAL_ACCESS_RW, "green channel offset code (9-bit)", "",
+      "0:511:1", { .I = 0 }, NULL, NULL },
+    { "adc_offset_b", VAL_TYPE_INT_RANGE, VAL_ACCESS_RW, "blue channel offset code (9-bit)", "",
+      "0:511:1", { .I = 0 }, NULL, NULL },
 };
 #define PROTO_NUM_PARAMS  (sizeof g_params / sizeof g_params[0])
 
@@ -244,19 +292,33 @@ static const Proto_Cmd g_cmds[] = {
 /* ============================================================================
  * Response output
  * ==========================================================================*/
-/** Send one response line to the host UART. */
+/*****************************************************************************/
+/**
+* @brief  Sends one response line to the host UART.
+*
+* @param  line  NUL-terminated response line.
+******************************************************************************/
 static void Proto_Reply(const char *line)
 {
     Uart_SendLine(&gUartDrv, line);
 }
 
-/** Reply "OK" with no data. */
+/*****************************************************************************/
+/**
+* @brief  Replies "OK" with no data.
+******************************************************************************/
 static void Proto_Ok0(void)
 {
     Proto_Reply("OK");
 }
 
-/** Reply "ERR <code> <msg>"; code is one of the PROTO_ERR_* values. */
+/*****************************************************************************/
+/**
+* @brief  Replies "ERR <code> <msg>"; code is one of the PROTO_ERR_* values.
+*
+* @param  code  Error code (PROTO_ERR_*).
+* @param  msg   Human-readable error message.
+******************************************************************************/
 static void Proto_Err(int code, const char *msg)
 {
     char line[PROTO_RESP_MAX];
@@ -273,7 +335,14 @@ static void Proto_Err(int code, const char *msg)
 /* ============================================================================
  * Constraint / set utilities
  * ==========================================================================*/
-/** Map a value type to its protocol keyword ("int_range", "bool", ...). */
+/*****************************************************************************/
+/**
+* @brief  Maps a value type to its protocol keyword ("int_range", "bool", ...).
+*
+* @param  t  Value type.
+*
+* @return Protocol keyword, or "?" if out of range.
+******************************************************************************/
 static const char *Proto_TypeName(Protocol_ValType t)
 {
     static const char *const names[] = {
@@ -286,7 +355,14 @@ static const char *Proto_TypeName(Protocol_ValType t)
     return names[t];
 }
 
-/** Map an access level to its protocol keyword ("RO"/"RW"/"WO"). */
+/*****************************************************************************/
+/**
+* @brief  Maps an access level to its protocol keyword ("RO"/"RW"/"WO").
+*
+* @param  a  Access level.
+*
+* @return Protocol keyword, or "?" if out of range.
+******************************************************************************/
 static const char *Proto_AccessName(Protocol_Access a)
 {
     static const char *const names[] = { "RO", "RW", "WO" };
@@ -299,11 +375,19 @@ static const char *Proto_AccessName(Protocol_Access a)
 /* ============================================================================
  * Parameter parsing + validation (SETPARAM)
  * ==========================================================================*/
+/*****************************************************************************/
 /**
-* Parse + validate the token against p->Constraint and store the result in *v.
-* Out-of-range values are clamped; int values not on a step are snapped to the
-* nearest valid step. Returns 0 on success, -1 on malformed input.
-*/
+* @brief  Parses + validates the token against p->Constraint and stores the result in *v.
+*
+* Out-of-range values are clamped; int values not on a step are snapped to the nearest
+* valid step.
+*
+* @param  p    Parameter descriptor (Constraint / Type select the rules).
+* @param  tok  Token to parse.
+* @param  v    Receives the parsed value.
+*
+* @return 0 on success, -1 on malformed input.
+******************************************************************************/
 static int Proto_ParseValue(const Protocol_Param *p, const char *tok,
                             Protocol_Value *v)
 {
@@ -362,35 +446,71 @@ static int Proto_ParseValue(const Protocol_Param *p, const char *tok,
 /* ============================================================================
  * Apply callbacks (Apply): write the parameter's current value to hardware
  * ==========================================================================*/
-/** Apply: write the readout-mode selection to the CCD controller. */
+/*****************************************************************************/
+/**
+* @brief  Apply: writes the readout-mode selection to the CCD controller.
+*
+* @param  p  Parameter (uses p->Cur.I).
+*
+* @return 0 on success.
+******************************************************************************/
 static int Apply_ReadMode(const Protocol_Param *p)
 {
     CcdController_SetReadMode(&gCcdCtrl, (u8)p->Cur.I);
     return 0;
 }
 
-/** Apply: write the SCLK frequency selection to the CCD controller. */
+/*****************************************************************************/
+/**
+* @brief  Apply: writes the SCLK frequency selection to the CCD controller.
+*
+* @param  p  Parameter (uses p->Cur.I).
+*
+* @return 0 on success.
+******************************************************************************/
 static int Apply_FreqSel(const Protocol_Param *p)
 {
     CcdController_SetFreqSel(&gCcdCtrl, (u8)p->Cur.I);
     return 0;
 }
 
-/** Apply: enable/disable the mock-ADC virtual pixel mode. */
+/*****************************************************************************/
+/**
+* @brief  Apply: enables/disables the mock-ADC virtual pixel mode.
+*
+* @param  p  Parameter (uses p->Cur.B).
+*
+* @return 0 on success.
+******************************************************************************/
 static int Apply_MockMode(const Protocol_Param *p)
 {
     CcdController_SetMockMode(&gCcdCtrl, p->Cur.B);
     return 0;
 }
 
-/** Apply: write the CDSCLK fine-delay taps to the CCD controller. */
+/*****************************************************************************/
+/**
+* @brief  Apply: writes the CDSCLK fine-delay taps to the CCD controller.
+*
+* @param  p  Parameter (uses p->Cur.I).
+*
+* @return 0 on success.
+******************************************************************************/
 static int Apply_CdsclkDelay(const Protocol_Param *p)
 {
     CcdController_SetCdsclkDelay(&gCcdCtrl, (u8)p->Cur.I);
     return 0;
 }
 
-/** Apply: push image_width/image_height (from their own params) to the CCD controller. */
+/*****************************************************************************/
+/**
+* @brief  Apply: pushes image_width/image_height (from their own params) to the CCD
+* controller.
+*
+* @param  p  Unused (the width/height are read from the parameter table).
+*
+* @return 0 on success.
+******************************************************************************/
 static int Apply_ImageSize(const Protocol_Param *p)
 {
     Protocol_Param *w, *h;
@@ -402,10 +522,16 @@ static int Apply_ImageSize(const Protocol_Param *p)
     return 0;
 }
 
+/*****************************************************************************/
 /**
-* Apply: push all bevel/blank edges (from their own params) to the CCD controller.
-* Shared by bevel_* and blank_* params.
-*/
+* @brief  Apply: pushes all bevel/blank edges (from their own params) to the CCD controller.
+*
+* Shared by the bevel_* and blank_* params.
+*
+* @param  p  Unused (the edges are read from the parameter table).
+*
+* @return 0 on success.
+******************************************************************************/
 static int Apply_BevelBlank(const Protocol_Param *p)
 {
     CcdController_BevelBlank bb;
@@ -421,23 +547,71 @@ static int Apply_BevelBlank(const Protocol_Param *p)
     return 0;
 }
 
-/** Apply: enable/disable the TEC via the ADN8833 driver. */
+/*****************************************************************************/
+/**
+* @brief  Apply: enables/disables the TEC via the ADN8833 driver.
+*
+* @param  p  Parameter (uses p->Cur.B).
+*
+* @return 0 on success.
+******************************************************************************/
 static int Apply_TecEnable(const Protocol_Param *p)
 {
     Adn8833_SetEnable(&gAdn8833, p->Cur.B);
     return 0;
 }
 
-/** Apply: set the TEC output voltage via the DAC8311 driver. */
+/*****************************************************************************/
+/**
+* @brief  Apply: sets the TEC output voltage via the DAC8311 driver.
+*
+* @param  p  Parameter (uses p->Cur.F).
+*
+* @return 0 on success, -1 if the DAC write failed.
+******************************************************************************/
 static int Apply_TecVoltage(const Protocol_Param *p)
 {
     return (Dac8311_SetVoltage(&gDac8311, p->Cur.F) == XST_SUCCESS) ? 0 : -1;
 }
 
+/*****************************************************************************/
+/**
+* @brief  Apply: builds an Ad9826_Config from the six adc_gain and adc_offset
+* params and writes it to the ad9826 (Config/Mux use the power-up defaults).
+*
+* @param  p  Unused (the values are read from the parameter table).
+*
+* @return 0 on success, -1 if the SPI configuration write failed.
+******************************************************************************/
+static int Apply_AdcGainOffset(const Protocol_Param *p)
+{
+    Ad9826_Config c;
+
+    (void)p;
+    c.Config = AD9826_DEFAULT_CONFIG;
+    c.Mux = AD9826_DEFAULT_MUX;
+    c.GainR = (u8)Proto_FindParam("adc_gain_r")->Cur.I;
+    c.GainG = (u8)Proto_FindParam("adc_gain_g")->Cur.I;
+    c.GainB = (u8)Proto_FindParam("adc_gain_b")->Cur.I;
+    c.OffR = (u16)Proto_FindParam("adc_offset_r")->Cur.I;
+    c.OffG = (u16)Proto_FindParam("adc_offset_g")->Cur.I;
+    c.OffB = (u16)Proto_FindParam("adc_offset_b")->Cur.I;
+    return (Ad9826_Configure(&gAd9826, &c) == XST_SUCCESS) ? 0 : -1;
+}
+
 /* ============================================================================
  * Serialize callbacks (Format): write the current/live value as a protocol string
  * ==========================================================================*/
-/** Format: serialize an int param as its decimal string. */
+/*****************************************************************************/
+/**
+* @brief  Format: serializes an int param as its decimal string.
+*
+* @param  p    Parameter (uses p->Cur.I).
+* @param  buf  Destination buffer.
+* @param  cap  Buffer capacity in bytes.
+*
+* @return Number of bytes written (excluding NUL).
+******************************************************************************/
 static int Fmt_Int(const Protocol_Param *p, char *buf, u32 cap)
 {
     ProtoBuf b;
@@ -446,7 +620,16 @@ static int Fmt_Int(const Protocol_Param *p, char *buf, u32 cap)
     return (int)b.Len;
 }
 
-/** Format: serialize an enum param as its label ("line_binning", ...). */
+/*****************************************************************************/
+/**
+* @brief  Format: serializes an enum param as its label ("line_binning", ...).
+*
+* @param  p    Parameter (uses p->Cur.I as index into p->Constraint).
+* @param  buf  Destination buffer.
+* @param  cap  Buffer capacity in bytes.
+*
+* @return Number of bytes written (excluding NUL).
+******************************************************************************/
 static int Fmt_Enum(const Protocol_Param *p, char *buf, u32 cap)
 {
     ProtoBuf b;
@@ -461,7 +644,16 @@ static int Fmt_Enum(const Protocol_Param *p, char *buf, u32 cap)
     return (int)b.Len;
 }
 
-/** Format: serialize a bool param as "1"/"0". */
+/*****************************************************************************/
+/**
+* @brief  Format: serializes a bool param as "1"/"0".
+*
+* @param  p    Parameter (uses p->Cur.B).
+* @param  buf  Destination buffer.
+* @param  cap  Buffer capacity in bytes.
+*
+* @return Number of bytes written (excluding NUL).
+******************************************************************************/
 static int Fmt_Bool(const Protocol_Param *p, char *buf, u32 cap)
 {
     ProtoBuf b;
@@ -470,7 +662,16 @@ static int Fmt_Bool(const Protocol_Param *p, char *buf, u32 cap)
     return (int)b.Len;
 }
 
-/** Format: serialize a string param wrapped in double quotes. */
+/*****************************************************************************/
+/**
+* @brief  Format: serializes a string param wrapped in double quotes.
+*
+* @param  p    Parameter (uses p->Cur.S).
+* @param  buf  Destination buffer.
+* @param  cap  Buffer capacity in bytes.
+*
+* @return Number of bytes written (excluding NUL).
+******************************************************************************/
 static int Fmt_String(const Protocol_Param *p, char *buf, u32 cap)
 {
     ProtoBuf b;
@@ -481,7 +682,16 @@ static int Fmt_String(const Protocol_Param *p, char *buf, u32 cap)
     return (int)b.Len;
 }
 
-/** Format: serialize a float param with decimals taken from its constraint step. */
+/*****************************************************************************/
+/**
+* @brief  Format: serializes a float param with decimals taken from its constraint step.
+*
+* @param  p    Parameter (uses p->Cur.F and p->Constraint).
+* @param  buf  Destination buffer.
+* @param  cap  Buffer capacity in bytes.
+*
+* @return Number of bytes written (excluding NUL).
+******************************************************************************/
 static int Fmt_Float(const Protocol_Param *p, char *buf, u32 cap)
 {
     ProtoBuf b;
@@ -492,7 +702,16 @@ static int Fmt_Float(const Protocol_Param *p, char *buf, u32 cap)
 }
 
 /* ---- RO params: live values from monitor / ccd ---- */
-/** Format: read live sensor NTC temperature from the monitor. */
+/*****************************************************************************/
+/**
+* @brief  Format: reads the live sensor NTC temperature from the monitor.
+*
+* @param  p    Unused (live value).
+* @param  buf  Destination buffer.
+* @param  cap  Buffer capacity in bytes.
+*
+* @return Number of bytes written (excluding NUL).
+******************************************************************************/
 static int Fmt_SensorTemp(const Protocol_Param *p, char *buf, u32 cap)
 {
     ProtoBuf b;
@@ -502,7 +721,16 @@ static int Fmt_SensorTemp(const Protocol_Param *p, char *buf, u32 cap)
     return (int)b.Len;
 }
 
-/** Format: read live environment NTC temperature from the monitor. */
+/*****************************************************************************/
+/**
+* @brief  Format: reads the live environment NTC temperature from the monitor.
+*
+* @param  p    Unused (live value).
+* @param  buf  Destination buffer.
+* @param  cap  Buffer capacity in bytes.
+*
+* @return Number of bytes written (excluding NUL).
+******************************************************************************/
 static int Fmt_EnvTemp(const Protocol_Param *p, char *buf, u32 cap)
 {
     ProtoBuf b;
@@ -512,7 +740,16 @@ static int Fmt_EnvTemp(const Protocol_Param *p, char *buf, u32 cap)
     return (int)b.Len;
 }
 
-/** Format: read live TEC output voltage from the monitor. */
+/*****************************************************************************/
+/**
+* @brief  Format: reads the live TEC output voltage from the monitor.
+*
+* @param  p    Unused (live value).
+* @param  buf  Destination buffer.
+* @param  cap  Buffer capacity in bytes.
+*
+* @return Number of bytes written (excluding NUL).
+******************************************************************************/
 static int Fmt_TecVoltage(const Protocol_Param *p, char *buf, u32 cap)
 {
     ProtoBuf b;
@@ -522,7 +759,16 @@ static int Fmt_TecVoltage(const Protocol_Param *p, char *buf, u32 cap)
     return (int)b.Len;
 }
 
-/** Format: read live TEC output current (V * TEC_I_A_PER_V) from the monitor. */
+/*****************************************************************************/
+/**
+* @brief  Format: reads the live TEC output current (V * TEC_I_A_PER_V) from the monitor.
+*
+* @param  p    Unused (live value).
+* @param  buf  Destination buffer.
+* @param  cap  Buffer capacity in bytes.
+*
+* @return Number of bytes written (excluding NUL).
+******************************************************************************/
 static int Fmt_TecCurrent(const Protocol_Param *p, char *buf, u32 cap)
 {
     ProtoBuf b;
@@ -534,7 +780,16 @@ static int Fmt_TecCurrent(const Protocol_Param *p, char *buf, u32 cap)
     return (int)b.Len;
 }
 
-/** Format: serialize the current CCD acquisition state ("idle", "exposing", ...). */
+/*****************************************************************************/
+/**
+* @brief  Format: serializes the current CCD acquisition state ("idle", "exposing", ...).
+*
+* @param  p    Unused (state comes from gCcd).
+* @param  buf  Destination buffer.
+* @param  cap  Buffer capacity in bytes.
+*
+* @return Number of bytes written (excluding NUL).
+******************************************************************************/
 static int Fmt_AcqState(const Protocol_Param *p, char *buf, u32 cap)
 {
     static const char *const states[] = { "idle", "exposing", "reading", "tx" };
@@ -547,7 +802,16 @@ static int Fmt_AcqState(const Protocol_Param *p, char *buf, u32 cap)
     return (int)b.Len;
 }
 
-/** Format: serialize the number of frames ready in the cache. */
+/*****************************************************************************/
+/**
+* @brief  Format: serializes the number of frames ready in the cache.
+*
+* @param  p    Unused (value comes from gCcd).
+* @param  buf  Destination buffer.
+* @param  cap  Buffer capacity in bytes.
+*
+* @return Number of bytes written (excluding NUL).
+******************************************************************************/
 static int Fmt_FrameNum(const Protocol_Param *p, char *buf, u32 cap)
 {
     ProtoBuf b;
@@ -559,7 +823,10 @@ static int Fmt_FrameNum(const Protocol_Param *p, char *buf, u32 cap)
 
 /* Attach Apply / Format to each parameter (centralized assignment to keep the
  * initializer list short) */
-/** Bind the Apply/Format callbacks to every parameter (called once by Protocol_Init). */
+/*****************************************************************************/
+/**
+* @brief  Binds the Apply/Format callbacks to every parameter (called once by Protocol_Init).
+******************************************************************************/
 static void Proto_BindHandlers(void)
 {
     g_params[0].Format = Fmt_Int;                /* exposure_time_us */
@@ -584,12 +851,25 @@ static void Proto_BindHandlers(void)
     g_params[19].Format = Fmt_String;
     g_params[20].Format = Fmt_AcqState;
     g_params[21].Format = Fmt_FrameNum;
+    g_params[22].Apply = Apply_AdcGainOffset; g_params[22].Format = Fmt_Int;
+    g_params[23].Apply = Apply_AdcGainOffset; g_params[23].Format = Fmt_Int;
+    g_params[24].Apply = Apply_AdcGainOffset; g_params[24].Format = Fmt_Int;
+    g_params[25].Apply = Apply_AdcGainOffset; g_params[25].Format = Fmt_Int;
+    g_params[26].Apply = Apply_AdcGainOffset; g_params[26].Format = Fmt_Int;
+    g_params[27].Apply = Apply_AdcGainOffset; g_params[27].Format = Fmt_Int;
 }
 
 /* ============================================================================
  * Parameter lookup
  * ==========================================================================*/
-/** Look up a parameter by its protocol keyword; returns NULL if not found. */
+/*****************************************************************************/
+/**
+* @brief  Looks up a parameter by its protocol keyword.
+*
+* @param  name  Parameter keyword (ASCII, no spaces).
+*
+* @return Pointer to the parameter, or NULL if not found.
+******************************************************************************/
 static Protocol_Param *Proto_FindParam(const char *name)
 {
     u32 i;
@@ -604,7 +884,15 @@ static Protocol_Param *Proto_FindParam(const char *name)
 /* ============================================================================
  * Command handling
  * ==========================================================================*/
-/** LISTPARAMS [group]: reply with the comma-separated names of matching parameters. */
+/*****************************************************************************/
+/**
+* @brief  LISTPARAMS [group]: replies with the comma-separated names of matching parameters.
+*
+* @param  argc  Token count (>= 1).
+* @param  argv  Tokens; argv[1] is the optional group filter.
+*
+* @return 0.
+******************************************************************************/
 static int Cmd_ListParams(int argc, char **argv)
 {
     const char *group = (argc >= 2) ? argv[1] : NULL;
@@ -629,7 +917,15 @@ static int Cmd_ListParams(int argc, char **argv)
     return 0;
 }
 
-/** GETINFO <name>: reply with name, type, access, description, unit and constraint. */
+/*****************************************************************************/
+/**
+* @brief  GETINFO <name>: replies with name, type, access, description, unit and constraint.
+*
+* @param  argc  Token count (>= 2).
+* @param  argv  Tokens; argv[1] is the parameter name.
+*
+* @return 0.
+******************************************************************************/
 static int Cmd_GetInfo(int argc, char **argv)
 {
     const Protocol_Param *p;
@@ -657,7 +953,15 @@ static int Cmd_GetInfo(int argc, char **argv)
     return 0;
 }
 
-/** GETPARAM <name>: reply with the formatted current/live value of the parameter. */
+/*****************************************************************************/
+/**
+* @brief  GETPARAM <name>: replies with the formatted current/live value of the parameter.
+*
+* @param  argc  Token count (>= 2).
+* @param  argv  Tokens; argv[1] is the parameter name.
+*
+* @return 0.
+******************************************************************************/
 static int Cmd_GetParam(int argc, char **argv)
 {
     const Protocol_Param *p;
@@ -684,7 +988,15 @@ static int Cmd_GetParam(int argc, char **argv)
     return 0;
 }
 
-/** SETPARAM <name> <value>: parse, store, and apply the value to hardware. */
+/*****************************************************************************/
+/**
+* @brief  SETPARAM <name> <value>: parses, stores, and applies the value to hardware.
+*
+* @param  argc  Token count (>= 3).
+* @param  argv  Tokens; argv[1] = name, argv[2] = value.
+*
+* @return 0.
+******************************************************************************/
 static int Cmd_SetParam(int argc, char **argv)
 {
     Protocol_Param *p;
@@ -715,7 +1027,16 @@ static int Cmd_SetParam(int argc, char **argv)
     return 0;
 }
 
-/** ACQ single|live|abort: start/abort a capture; single/live use the exposure time param. */
+/*****************************************************************************/
+/**
+* @brief  ACQ single|live|abort: starts/aborts a capture; single/live use the exposure
+* time param.
+*
+* @param  argc  Token count (>= 2).
+* @param  argv  Tokens; argv[1] is the mode (single|live|abort).
+*
+* @return 0.
+******************************************************************************/
 static int Cmd_Acq(int argc, char **argv)
 {
     const Protocol_Param *pt;
@@ -749,10 +1070,16 @@ static int Cmd_Acq(int argc, char **argv)
 /* ============================================================================
  * Line parsing (spaces + double quotes, "\"" escaping)
  * ==========================================================================*/
+/*****************************************************************************/
 /**
-* Copy src into itself, decoding "\"" escapes, stopping at an unescaped '"' or
-* NUL. Returns a pointer to the stopping char (the '"' or the NUL terminator).
-*/
+* @brief  Copies src into itself, decoding "\"" escapes.
+*
+* Stops at an unescaped '"' or NUL.
+*
+* @param  src  Source/destination buffer (in-place).
+*
+* @return Pointer to the stopping char (the '"' or the NUL terminator).
+******************************************************************************/
 static char *Proto_CopyEscaped(char *src)
 {
     char *dst = src;
@@ -769,11 +1096,18 @@ static char *Proto_CopyEscaped(char *src)
     return src;
 }
 
+/*****************************************************************************/
 /**
-* Split line into whitespace-separated tokens into argv (max max), honoring
-* double quotes with "\"" escaping. Returns the token count, or -1 if more than
-* max tokens are present.
-*/
+* @brief  Splits line into whitespace-separated tokens into argv (max max).
+*
+* Honors double quotes with "\"" escaping.
+*
+* @param  line  Line buffer (modified in place: tokens become NUL-terminated).
+* @param  argv  Receives pointers to the tokens (capacity max).
+* @param  max   Maximum number of tokens.
+*
+* @return Token count, or -1 if more than max tokens are present.
+******************************************************************************/
 static int Proto_Tokenize(char *line, char **argv, u32 max)
 {
     u32 argc = 0U;
@@ -799,7 +1133,16 @@ static int Proto_Tokenize(char *line, char **argv, u32 max)
     return (int)argc;
 }
 
-/* Dispatch a command: tokenize then route the first token through the verb table. */
+/*****************************************************************************/
+/**
+* @brief  Dispatches a command: tokenizes then routes the first token through the verb table.
+*
+* The slave replies to every received line: token overflow (more than PROTO_MAX_ARGS)
+* and empty lines get an ERR response instead of being silently dropped, so the host
+* (send one command, wait for the reply) never hangs.
+*
+* @param  line  Complete command line (modified in place by tokenizing).
+******************************************************************************/
 static void Proto_Dispatch(char *line)
 {
     char *argv[PROTO_MAX_ARGS];
@@ -807,7 +1150,14 @@ static void Proto_Dispatch(char *line)
     u32 i;
 
     argc = Proto_Tokenize(line, argv, PROTO_MAX_ARGS);
-    if (argc <= 0) return;
+    if (argc < 0) {
+        Proto_Err(PROTO_ERR_INVALID_VALUE, "too many args");
+        return;
+    }
+    if (argc == 0) {
+        Proto_Err(PROTO_ERR_INVALID_VALUE, "empty line");
+        return;
+    }
 
     for (i = 0; i < PROTO_NUM_CMDS; i++) {
         if (strcmp(argv[0], g_cmds[i].Verb) == 0) {
@@ -829,6 +1179,9 @@ static char gPendingLine[UART_LINE_MAX];
 /**
 * @brief  UART received a complete line (ISR context): copies into the pending buffer and
 * sets the flag.
+*
+* @param  line  Received line.
+* @param  ref   Unused callback reference.
 ******************************************************************************/
 void Protocol_OnLine(const char *line, void *ref)
 {
@@ -846,6 +1199,9 @@ void Protocol_OnLine(const char *line, void *ref)
 /**
 * @brief  UART error callback (ISR context): sets a flag for an over-long line, the main
 * loop replies ERR 6.
+*
+* @param  err  UART error code.
+* @param  ref  Unused callback reference.
 ******************************************************************************/
 void Protocol_OnError(UartError err, void *ref)
 {
@@ -883,6 +1239,8 @@ void Protocol_ProcessPending(void)
 /**
 * @brief  Protocol initialization: binds Apply/Format, applies the parameter defaults to
 * hardware, prints READY.
+*
+* @return XST_SUCCESS.
 ******************************************************************************/
 int Protocol_Init(void)
 {

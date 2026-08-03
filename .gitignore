@@ -58,6 +58,7 @@ vivado*.debug
 *.o
 *.d
 build/
+Debug/
 logs/
 .lock
 
@@ -69,6 +70,10 @@ logs/
 .repo.yaml
 .peers.ini
 .ide/
+*.sdk/
+.analytics
+RemoteSystemsTempFiles/
+.log/
 
 # -----------------------------------------------------------
 # 3. 上位机（Qt + CMake 双栈兼容）

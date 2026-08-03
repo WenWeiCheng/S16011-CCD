@@ -15,7 +15,8 @@
 *
 * Ver   Who  Date     Changes
 * ----- ---- -------- -----------------------------------------------
-* 1.0   whc  26/08/03 First release
+* 1.0   wwc  26/08/03 First release
+* 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
 * </pre>
 ******************************************************************************/
 #include "monitor.h"
@@ -99,6 +100,10 @@ static const NtcPoint g_ntc_table[] = {
 /**
 * @brief  code -> temperature (degC), lookup table linear interpolation, clamped outside
 * the range.
+*
+* @param  code  Raw 16-bit ADC code of the NTC channel.
+*
+* @return Temperature in degC.
 ******************************************************************************/
 static float Monitor_LookupTemp(s16 code)
 {
@@ -128,6 +133,10 @@ static float Monitor_LookupTemp(s16 code)
 /*****************************************************************************/
 /**
 * @brief  Ads1118_Mux enum (0x4..0x7) -> channel order 0..3.
+*
+* @param  mux  One of the Ads1118_Mux channel values.
+*
+* @return Channel index 0..3 (clamped to 0 if out of range).
 ******************************************************************************/
 static u8 Monitor_MuxToIdx(Ads1118_Mux mux)
 {
@@ -168,6 +177,8 @@ int Monitor_Init(Monitor *d, Ads1118 *adc, Heartbeat *hb)
 /**
 * @brief  Main loop tick: switch channel every 8ms, read the current channel's raw code
 * into the cache every 2ms.
+*
+* @param  d  Monitor instance.
 ******************************************************************************/
 void Monitor_Tick(Monitor *d)
 {
@@ -192,6 +203,11 @@ void Monitor_Tick(Monitor *d)
 /*****************************************************************************/
 /**
 * @brief  Most recent raw code of a channel.
+*
+* @param  d    Monitor instance.
+* @param  mux  Channel to read.
+*
+* @return Cached raw ADC code (signed 16-bit).
 ******************************************************************************/
 s16 Monitor_GetRaw(Monitor *d, Ads1118_Mux mux)
 {
@@ -203,6 +219,11 @@ s16 Monitor_GetRaw(Monitor *d, Ads1118_Mux mux)
 * @brief  Converted voltage of a channel (V).
 *
 * V = code x FS / 2^15, single-ended half scale, FS = ADS1118_FS_VOLT.
+*
+* @param  d    Monitor instance.
+* @param  mux  Channel to read.
+*
+* @return Voltage in V.
 ******************************************************************************/
 float Monitor_GetVoltage(Monitor *d, Ads1118_Mux mux)
 {
@@ -213,6 +234,11 @@ float Monitor_GetVoltage(Monitor *d, Ads1118_Mux mux)
 /*****************************************************************************/
 /**
 * @brief  NTC channel converted temperature (degC). Meaningless for non-NTC channels.
+*
+* @param  d    Monitor instance.
+* @param  mux  NTC channel to read.
+*
+* @return Temperature in degC.
 ******************************************************************************/
 float Monitor_GetNtcTemp(Monitor *d, Ads1118_Mux mux)
 {

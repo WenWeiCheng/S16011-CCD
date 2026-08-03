@@ -70,6 +70,7 @@ ccd_controller_software/
 
 - 文件头为 Doxygen 风格 `/** @file ... @note <pre> MODIFICATION HISTORY: ... </pre>`；每个函数前用 `/**/` 块注释写明 `@param` / `@return` / `@note`；每段关键 API 前加解释性 `/* ... */` 注释。新代码沿用。
 - 驱动实例声明为全局（清零、方便调试器查看）。
+- 使用英文
 
 ## 构建与调试
 
@@ -116,6 +117,21 @@ ccd_controller_software/
 #### 纯逻辑模块可主机单测
 
 - 与硬件无关的纯逻辑（解析/格式化）抽成无 Xilinx 依赖的模块（如 `app_logic/proto_num.c`，只用 `xil_types.h` 的类型），临时目录放一个 `xil_types.h` 桩即可用主机 gcc 直接编译跑单测，无需硬件、迭代快。曾在单测中发现并修复两处逻辑 bug（约束解析遇 `:` 失败、Utoa/Itoa 未 NUL 结尾）。
+
+### clangd / compile_commands.json 经验
+
+- Vitis 工程（Eclipse CDT + GNU Make）的编译命令不在顶层 `makefile`，而在 `Debug/` 下由 `makefile` + 各 `subdir.mk` 拼出（`mb-gcc -c ...`）。
+- 生成 `compile_commands.json` 用 Python 工具 **compiledb**（`pip install compiledb`；Windows 上 bear 不可用）。已验证命令（在 `Debug/` 目录下执行）：
+  ```
+  make -n -B all 2>&1 | compiledb -f -o ..\compile_commands.json
+  ```
+  - `-B`（always-make）强制所有目标视为过期，保证干跑打印全部编译命令；`-n` 只打印不执行，无需 mb-gcc 在 PATH。
+  - **坑**：`compiledb -n make -B`（compiledb 自带 no-build 子进程模式）在 Windows + GnuWin32 make 下只捕获 1 条命令；必须用「make 输出管道喂给 compiledb 从 stdin 解析」的方式。
+  - 产物放应用工程根（如 `ccd_controller_app/compile_commands.json`），clangd / C/C++ 插件会自动向上查找；改了 `subdir.mk`（增删源文件）或 BSP 路径后重跑即可。
+- clangd 报错修复（在应用工程根放 `.clangd`，参考 `ccd_controller_app/.clangd`）：
+  - `drv_unknown_argument: '-mxl-soft-mul'`：clang 不认识 mb-gcc 专有参数（`-mxl-*`、`-mcpu=v11.0`、`-mlittle-endian`、`-Wl,*`、`-MT/-MF/-MMD/-MP` 等），用 `CompileFlags.Remove` 过滤（不影响真实编译）。
+  - `pp_file_not_found: 'xpseudo_asm.h'`：**不是缺文件**，而是缺预定义宏。`xil_io.h` 里 `#if defined(__MICROBLAZE__)` 决定 include `mb_interface.h`（MicroBlaze 有）还是 `xpseudo_asm.h`（仅 ARM 平台有）；clang 不自动定义 `__MICROBLAZE__`，走错分支。用 `CompileFlags.Add: -D__MICROBLAZE__`（必要时加 `-D__microblaze__`）修复。
+  - 改完 `.clangd` 需重启 clangd（命令面板 "clangd: Restart language server"）才生效。
 
 ## Git 提交约定
 

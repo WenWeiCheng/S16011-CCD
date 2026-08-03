@@ -9,7 +9,8 @@
 *
 * Ver   Who  Date     Changes
 * ----- ---- -------- -----------------------------------------------
-* 1.0   whc  26/08/02 First release
+* 1.0   wwc  26/08/02 First release
+* 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
 * </pre>
 ******************************************************************************/
 #include "ad9826.h"
@@ -24,6 +25,10 @@
 * @brief  Starts a 16-bit frame transfer (writes a command, reads back the previous frame data).
 *
 * Switches to SPI mode 0 and asserts the chip select before transferring.
+*
+* @param  d         ad9826 instance.
+* @param  word      16-bit frame: (rw<<15) | (addr<<12) | (data & 0x1FF).
+* @param  readback  Receives the 16-bit frame read back during the transfer.
 *
 * @return XST_SUCCESS / underlying error.
 ******************************************************************************/
@@ -55,6 +60,10 @@ static int Ad9826_Transfer(Ad9826 *d, u16 word, u16 *readback)
 /**
 * @brief  Initializes: stores SPI / chip select.
 *
+* @param  d    ad9826 instance.
+* @param  spi  XSpi instance (shared bus, initialized by board_hal).
+* @param  cs   Chip-select bit number (1U << cs selects the slave).
+*
 * @return XST_SUCCESS.
 ******************************************************************************/
 int Ad9826_Init(Ad9826 *d, XSpi *spi, u8 cs)
@@ -73,6 +82,9 @@ int Ad9826_Init(Ad9826 *d, XSpi *spi, u8 cs)
 *
 * Unspecified fields are filled with the power-up defaults. Write sequence:
 * Configuration -> MUX -> Red/Green/Blue PGA -> Red/Green/Blue Offset.
+*
+* @param  d    ad9826 instance.
+* @param  cfg  Desired configuration; NULL selects the power-up defaults.
 *
 * @return XST_SUCCESS / underlying error.
 ******************************************************************************/
@@ -132,8 +144,14 @@ int Ad9826_Configure(Ad9826 *d, const Ad9826_Config *cfg)
 /*****************************************************************************/
 /**
 * @brief  Writes a register (R/Wb=0).
+*
+* @param  d     ad9826 instance.
+* @param  addr  Register address (A2:A1:A0, 0..7).
+* @param  val   9-bit value, masked with AD9826_DATA_MASK.
+*
+* @return XST_SUCCESS / underlying error.
 ******************************************************************************/
-int Ad9826_WriteReg(Ad9826 *d, u8 addr, u8 val)
+int Ad9826_WriteReg(Ad9826 *d, u8 addr, u16 val)
 {
     u16 readback;
     u16 word;
@@ -147,8 +165,14 @@ int Ad9826_WriteReg(Ad9826 *d, u8 addr, u8 val)
 /*****************************************************************************/
 /**
 * @brief  Reads a register (R/Wb=1), for verification/debugging.
+*
+* @param  d     ad9826 instance.
+* @param  addr  Register address (A2:A1:A0, 0..7).
+* @param  val   Receives the 9-bit register value.
+*
+* @return XST_SUCCESS / underlying error.
 ******************************************************************************/
-int Ad9826_ReadReg(Ad9826 *d, u8 addr, u8 *val)
+int Ad9826_ReadReg(Ad9826 *d, u8 addr, u16 *val)
 {
     u16 readback;
     u16 word;
@@ -160,6 +184,6 @@ int Ad9826_ReadReg(Ad9826 *d, u8 addr, u8 *val)
     if (status != XST_SUCCESS) {
         return status;
     }
-    *val = (u8)(readback & AD9826_DATA_MASK);
+    *val = (u16)(readback & AD9826_DATA_MASK);
     return XST_SUCCESS;
 }

@@ -1,0 +1,23 @@
+# clangd 配置：让 clang 按 MicroBlaze GCC (mb-gcc) 的语义解析编译参数
+#
+# 1) Remove：过滤 mb-gcc 专有参数，避免 drv_unknown_argument 报错。
+#    这些参数只在真实编译时由 Xilinx 工具链使用，clangd 解析时需忽略。
+# 2) Add：补齐 mb-gcc 自动定义、但 clang 不知道的关键预定义宏。
+#    - __MICROBLAZE__ / __microblaze__：xil_io.h 等用 #if defined(__MICROBLAZE__)
+#      选择 include "mb_interface.h" 而不是 "xpseudo_asm.h"（后者只存在于
+#      ARM 平台，MicroBlaze 工具链里没有）。缺了这个宏 clangd 会报
+#      pp_file_not_found: 'xpseudo_asm.h' file not found。
+CompileFlags:
+  Add:
+    - -D__MICROBLAZE__
+    - -D__microblaze__
+  Remove:
+    - -mxl-*
+    - -mcpu=*
+    - -mlittle-endian
+    - -fmessage-length=*
+    - -Wl,*
+    - -MT*
+    - -MF*
+    - -MMD
+    - -MP

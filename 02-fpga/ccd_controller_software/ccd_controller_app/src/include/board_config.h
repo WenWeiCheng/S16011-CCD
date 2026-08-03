@@ -11,7 +11,7 @@
 *
 * Ver   Who  Date     Changes
 * ----- ---- -------- -----------------------------------------------
-* 1.0   whc  26/08/02 First release
+* 1.0   wwc  26/08/02 First release
 * </pre>
 ******************************************************************************/
 #ifndef BOARD_CONFIG_H
@@ -66,7 +66,7 @@ extern "C" {
  * LED polarity: 1=active low (most boards), 0=active high.
  * If the actual board is reversed, change it here; the driver inverts per this macro.
  */
-#define LED_ACTIVE_LOW           1U
+#define LED_ACTIVE_LOW           0U
 
 /* Key active-level mask: bits set to 1 are active low (pressed=0), bits set to 0 are active high. */
 #define KEY_ACTIVE_LOW_MASK      (KEY_IN_MASK)

@@ -11,7 +11,7 @@
 *
 * Ver   Who  Date     Changes
 * ----- ---- -------- -----------------------------------------------
-* 1.0   whc  26/08/02 First release
+* 1.0   wwc  26/08/02 First release
 * </pre>
 ******************************************************************************/
 #ifndef AD9826_H
@@ -58,7 +58,7 @@ typedef struct {
     u8 Config;                    /* Configuration (D8=0, D7..D0) */
     u8 Mux;                       /* MUX Config (D7..D4) */
     u8 GainR, GainG, GainB;       /* PGA gain codes 0~63 (G=0->1.0, G=63->6.0) */
-    u8 OffR, OffG, OffB;          /* offset codes (9-bit signed) */
+    u16 OffR, OffG, OffB;         /* offset codes (9-bit signed) */
 } Ad9826_Config;
 
 typedef struct {
@@ -68,8 +68,8 @@ typedef struct {
 
 int  Ad9826_Init(Ad9826 *d, XSpi *spi, u8 cs);
 int  Ad9826_Configure(Ad9826 *d, const Ad9826_Config *cfg);
-int  Ad9826_WriteReg(Ad9826 *d, u8 addr, u8 val);
-int  Ad9826_ReadReg(Ad9826 *d, u8 addr, u8 *val);
+int  Ad9826_WriteReg(Ad9826 *d, u8 addr, u16 val);
+int  Ad9826_ReadReg(Ad9826 *d, u8 addr, u16 *val);
 
 #ifdef __cplusplus
 }

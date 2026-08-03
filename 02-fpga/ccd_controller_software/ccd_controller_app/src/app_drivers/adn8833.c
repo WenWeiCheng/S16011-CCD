@@ -8,7 +8,8 @@
 *
 * Ver   Who  Date     Changes
 * ----- ---- -------- -----------------------------------------------
-* 1.0   whc  26/08/02 First release
+* 1.0   wwc  26/08/02 First release
+* 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
 * </pre>
 ******************************************************************************/
 #include "adn8833.h"
@@ -43,6 +44,11 @@ int Adn8833_Init(Adn8833 *d, XGpio *gpio, u32 en_bit)
 /*****************************************************************************/
 /**
 * @brief  Sets/clears the ADN8833 EN.
+*
+* Read-modify-write on Gpio_general so the other bits are left untouched.
+*
+* @param  d   ADN8833 instance.
+* @param  on  1 = enable TEC, 0 = disable.
 ******************************************************************************/
 void Adn8833_SetEnable(Adn8833 *d, u8 on)
 {
@@ -64,6 +70,10 @@ void Adn8833_SetEnable(Adn8833 *d, u8 on)
 /*****************************************************************************/
 /**
 * @brief  Reads the current enable state.
+*
+* @param  d  ADN8833 instance.
+*
+* @return 1 = enabled, 0 = disabled.
 ******************************************************************************/
 u8 Adn8833_GetEnable(Adn8833 *d)
 {

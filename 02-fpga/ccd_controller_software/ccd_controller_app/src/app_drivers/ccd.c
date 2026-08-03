@@ -15,7 +15,8 @@
 *
 * Ver   Who  Date     Changes
 * ----- ---- -------- -----------------------------------------------
-* 1.0   whc  26/08/02 First release
+* 1.0   wwc  26/08/02 First release
+* 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
 * </pre>
 ******************************************************************************/
 #include "ccd.h"
@@ -25,6 +26,8 @@
 /*****************************************************************************/
 /**
 * @brief  Calls back the app on state change.
+*
+* @param  d  Ccd instance.
 ******************************************************************************/
 static void Ccd_FireHandler(Ccd *d)
 {
@@ -40,6 +43,8 @@ static void Ccd_FireHandler(Ccd *d)
 * counts = exposure_us x (clock MHz); reset64 = 2^64 - counts;
 * counter1 = upper 32 bits, counter0 = lower 32 bits (counter0 interrupt is valid
 * when cascaded).
+*
+* @param  d  Ccd instance.
 ******************************************************************************/
 static void Ccd_StartExposureTimer(Ccd *d)
 {
@@ -56,6 +61,10 @@ static void Ccd_StartExposureTimer(Ccd *d)
 /*****************************************************************************/
 /**
 * @brief  Starts exposure: sets exposure=1 + starts the timer, enters EXPOSING.
+*
+* @param  d  Ccd instance.
+*
+* @return XST_SUCCESS / XST_DEVICE_BUSY (DDR3 not ready).
 ******************************************************************************/
 static int Ccd_StartExposure(Ccd *d)
 {
@@ -76,6 +85,8 @@ static int Ccd_StartExposure(Ccd *d)
 /**
 * @brief  Exposure expired (inside timer1 ISR): exposure=0 starts readout, enters READING.
 *         Live mode then triggers frame send automatically.
+*
+* @param  d  Ccd instance.
 ******************************************************************************/
 static void Ccd_OnExposureDone(Ccd *d)
 {
@@ -92,6 +103,8 @@ static void Ccd_OnExposureDone(Ccd *d)
 /**
 * @brief  Frame send complete (CcdController tx_done callback): enters TX.
 *         Live mode restarts exposure automatically; single mode returns to IDLE.
+*
+* @param  d  Ccd instance.
 ******************************************************************************/
 static void Ccd_OnTxDone(Ccd *d)
 {
@@ -109,6 +122,9 @@ static void Ccd_OnTxDone(Ccd *d)
 /*****************************************************************************/
 /**
 * @brief  CcdController interrupt callback (tx_done / exception).
+*
+* @param  IntrMask  Combination of CCDC_INTR_TX_DONE / CCDC_INTR_EXCEPTION.
+* @param  ref       Ccd instance pointer.
 ******************************************************************************/
 static void Ccd_CtrlHandler(u32 IntrMask, void *ref)
 {
@@ -128,6 +144,9 @@ static void Ccd_CtrlHandler(u32 IntrMask, void *ref)
 /*****************************************************************************/
 /**
 * @brief  XTmrCtr callback of timer1 (exposure expired).
+*
+* @param  ref            Ccd instance pointer.
+* @param  TmrCtrNumber   Number of the counter that triggered (should be 0).
 ******************************************************************************/
 static void Ccd_ExposureHandler(void *ref, u8 TmrCtrNumber)
 {
@@ -179,6 +198,10 @@ int Ccd_Init(Ccd *d, CcdController *ctrl, XTmrCtr *tmr1, u32 IntrVecId)
 /**
 * @brief  Starts capture (single or live).
 *
+* @param  d            Ccd instance.
+* @param  mode         CCD_MODE_SINGLE or CCD_MODE_LIVE.
+* @param  exposure_us  Exposure duration in microseconds.
+*
 * @return XST_SUCCESS / XST_DEVICE_BUSY (already capturing) / underlying error.
 ******************************************************************************/
 int Ccd_StartCapture(Ccd *d, CcdMode mode, u64 exposure_us)
@@ -195,6 +218,8 @@ int Ccd_StartCapture(Ccd *d, CcdMode mode, u64 exposure_us)
 /*****************************************************************************/
 /**
 * @brief  Stops: aborts exposure/readout, returns to IDLE and notifies.
+*
+* @param  d  Ccd instance.
 ******************************************************************************/
 void Ccd_Stop(Ccd *d)
 {
@@ -207,6 +232,8 @@ void Ccd_Stop(Ccd *d)
 /*****************************************************************************/
 /**
 * @brief  Aborts the current exposure: only clears exposure=0, does not change state / notify.
+*
+* @param  d  Ccd instance.
 ******************************************************************************/
 void Ccd_Abort(Ccd *d)
 {
@@ -216,7 +243,10 @@ void Ccd_Abort(Ccd *d)
 
 /*****************************************************************************/
 /**
-* @brief  Manually triggers frame send to FX2 (only when DDR3 is ready and the frame buffer has frames).
+* @brief  Manually triggers frame send to FX2 (only when DDR3 is ready and the frame
+* buffer has frames).
+*
+* @param  d  Ccd instance.
 ******************************************************************************/
 void Ccd_TriggerSend(Ccd *d)
 {
@@ -229,6 +259,10 @@ void Ccd_TriggerSend(Ccd *d)
 /*****************************************************************************/
 /**
 * @brief  Number of readable frames in the frame buffer.
+*
+* @param  d  Ccd instance.
+*
+* @return Frame count (forwarded from CcdController_GetFrameNum).
 ******************************************************************************/
 u8 Ccd_GetFrameNum(Ccd *d)
 {
@@ -238,6 +272,10 @@ u8 Ccd_GetFrameNum(Ccd *d)
 /*****************************************************************************/
 /**
 * @brief  Whether DDR3 is ready.
+*
+* @param  d  Ccd instance.
+*
+* @return 1 = ready, 0 = not ready.
 ******************************************************************************/
 u8 Ccd_IsDdrReady(Ccd *d)
 {
@@ -247,6 +285,10 @@ u8 Ccd_IsDdrReady(Ccd *d)
 /*****************************************************************************/
 /**
 * @brief  Frame exception flag.
+*
+* @param  d  Ccd instance.
+*
+* @return 1 = frame exception, 0 = none.
 ******************************************************************************/
 u8 Ccd_GetException(Ccd *d)
 {
@@ -256,6 +298,10 @@ u8 Ccd_GetException(Ccd *d)
 /*****************************************************************************/
 /**
 * @brief  Frame exception count.
+*
+* @param  d  Ccd instance.
+*
+* @return Accumulated frame exception count.
 ******************************************************************************/
 u32 Ccd_GetExceptionCnt(Ccd *d)
 {
@@ -265,6 +311,10 @@ u32 Ccd_GetExceptionCnt(Ccd *d)
 /*****************************************************************************/
 /**
 * @brief  Current capture mode.
+*
+* @param  d  Ccd instance.
+*
+* @return CCD_MODE_SINGLE or CCD_MODE_LIVE.
 ******************************************************************************/
 CcdMode Ccd_GetMode(Ccd *d)
 {
@@ -274,6 +324,10 @@ CcdMode Ccd_GetMode(Ccd *d)
 /*****************************************************************************/
 /**
 * @brief  Registers the state change callback.
+*
+* @param  d    Ccd instance.
+* @param  hdl  Callback invoked on every state change; NULL disables.
+* @param  ref  Opaque reference passed back to the callback.
 ******************************************************************************/
 void Ccd_RegisterHandler(Ccd *d, CcdHandler hdl, void *ref)
 {

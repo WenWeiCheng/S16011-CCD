@@ -10,7 +10,8 @@
 *
 * Ver   Who  Date     Changes
 * ----- ---- -------- -----------------------------------------------
-* 1.0   whc  26/08/02 First release
+* 1.0   wwc  26/08/02 First release
+* 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
 * </pre>
 ******************************************************************************/
 #include "ads1118.h"
@@ -24,6 +25,11 @@
 /*****************************************************************************/
 /**
 * @brief  Builds the config word for the current channel.
+*
+* @param  d    ads1118 instance (uses d->Mux).
+* @param  nop  NOP field: ADS1118_NOP_NORMAL (write config) or ADS1118_NOP_READ (fetch).
+*
+* @return 16-bit config word for the current channel.
 ******************************************************************************/
 static u16 Ads1118_BuildConfig(const Ads1118 *d, u16 nop)
 {
@@ -38,6 +44,10 @@ static u16 Ads1118_BuildConfig(const Ads1118 *d, u16 nop)
 *
 * Switches to SPI mode 1 and asserts the chip select before transferring; releases the
 * chip select when done.
+*
+* @param  d       ads1118 instance.
+* @param  cfg     16-bit frame to write (config or fetch-NOP).
+* @param  result  Receives the 16-bit value read back during the transfer.
 *
 * @return XST_SUCCESS / XST_FAILURE.
 ******************************************************************************/
@@ -73,6 +83,10 @@ static int Ads1118_Transfer(Ads1118 *d, u16 cfg, u16 *result)
 * @brief  Initializes: stores SPI / chip select, default channel is SENSOR_NTC and applies
 * the config immediately.
 *
+* @param  d    ads1118 instance.
+* @param  spi  XSpi instance (shared bus, initialized by board_hal).
+* @param  cs   Chip-select bit number (1U << cs selects the slave).
+*
 * @return XST_SUCCESS / underlying error.
 ******************************************************************************/
 int Ads1118_Init(Ads1118 *d, XSpi *spi, u8 cs)
@@ -95,6 +109,11 @@ int Ads1118_Init(Ads1118 *d, XSpi *spi, u8 cs)
 /**
 * @brief  Switches the input channel (writes a new MUX config, takes effect immediately in
 * continuous mode).
+*
+* @param  d    ads1118 instance.
+* @param  mux  One of the Ads1118_Mux channel values.
+*
+* @return XST_SUCCESS / underlying error.
 ******************************************************************************/
 int Ads1118_SetChannel(Ads1118 *d, Ads1118_Mux mux)
 {
@@ -108,6 +127,11 @@ int Ads1118_SetChannel(Ads1118 *d, Ads1118_Mux mux)
 /*****************************************************************************/
 /**
 * @brief  Reads the most recent conversion result (writes NOP=01b to fetch).
+*
+* @param  d    ads1118 instance.
+* @param  raw  Receives the signed 16-bit conversion result.
+*
+* @return XST_SUCCESS / underlying error.
 ******************************************************************************/
 int Ads1118_ReadRaw(Ads1118 *d, s16 *raw)
 {
@@ -126,6 +150,11 @@ int Ads1118_ReadRaw(Ads1118 *d, s16 *raw)
 /*****************************************************************************/
 /**
 * @brief  Writes the config register primitive (raw).
+*
+* @param  d    ads1118 instance.
+* @param  cfg  Raw 16-bit config word (custom construction).
+*
+* @return XST_SUCCESS / underlying error.
 ******************************************************************************/
 int Ads1118_WriteConfig(Ads1118 *d, u16 cfg)
 {

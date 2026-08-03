@@ -11,10 +11,11 @@
 *
 * Ver   Who  Date     Changes
 * ----- ---- -------- -----------------------------------------------
-* 1.0   whc  26/08/03 Rewrite: wire app logic layer (UART protocol)
-* 1.0   whc  26/08/02 First release (driver smoke test)
+* 1.0   wwc  26/08/03 Rewrite: wire app logic layer (UART protocol)
+* 1.0   wwc  26/08/02 First release (driver smoke test)
 * </pre>
 ******************************************************************************/
+#include "app_drivers/led.h"
 #include "hal/board_hal.h"
 #include "include/board_config.h"
 #include "app_logic/protocol.h"

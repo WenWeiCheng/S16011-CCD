@@ -10,6 +10,7 @@
 * Ver   Who  Date     Changes
 * ----- ---- -------- -----------------------------------------------
 * 1.0   whc  26/08/02 First release
+* 1.1   whc  26/08/03 Complete function doc comments (Xilinx style)
 * </pre>
 ******************************************************************************/
 #include "led.h"
@@ -43,6 +44,12 @@ int Led_Init(Led *d, XGpio *gpio, u32 out_mask)
 /*****************************************************************************/
 /**
 * @brief  Sets the LED by idx (idx=0/1, corresponding to LED0_BIT/LED1_BIT).
+*
+* Handles LED_ACTIVE_LOW polarity internally; out-of-range idx is ignored.
+*
+* @param  d    LED instance.
+* @param  idx  LED index, 0 or 1.
+* @param  on   1 = lit, 0 = off.
 ******************************************************************************/
 void Led_Set(Led *d, u8 idx, u8 on)
 {
@@ -70,6 +77,9 @@ void Led_Set(Led *d, u8 idx, u8 on)
 /*****************************************************************************/
 /**
 * @brief  Lights up LED idx.
+*
+* @param  d    LED instance.
+* @param  idx  LED index, 0 or 1.
 ******************************************************************************/
 void Led_On(Led *d, u8 idx)
 {
@@ -79,6 +89,9 @@ void Led_On(Led *d, u8 idx)
 /*****************************************************************************/
 /**
 * @brief  Turns off LED idx.
+*
+* @param  d    LED instance.
+* @param  idx  LED index, 0 or 1.
 ******************************************************************************/
 void Led_Off(Led *d, u8 idx)
 {
@@ -88,6 +101,9 @@ void Led_Off(Led *d, u8 idx)
 /*****************************************************************************/
 /**
 * @brief  Toggles LED idx.
+*
+* @param  d    LED instance.
+* @param  idx  LED index, 0 or 1.
 ******************************************************************************/
 void Led_Toggle(Led *d, u8 idx)
 {

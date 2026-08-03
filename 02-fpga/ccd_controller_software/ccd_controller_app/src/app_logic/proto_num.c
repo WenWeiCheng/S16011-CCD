@@ -9,7 +9,8 @@
 *
 * Ver   Who  Date     Changes
 * ----- ---- -------- -----------------------------------------------
-* 1.0   whc  26/08/03 First release
+* 1.0   wwc  26/08/03 First release
+* 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
 * </pre>
 ******************************************************************************/
 #include "proto_num.h"
@@ -18,6 +19,11 @@
 /*****************************************************************************/
 /**
 * @brief  Unsigned decimal -> buf (without NUL), returns the length.
+*
+* @param  buf  Destination buffer (caller-provided, must fit the number).
+* @param  v    Unsigned value to format.
+*
+* @return Number of digits written (excluding NUL).
 ******************************************************************************/
 u32 Proto_Utoa(char *buf, u32 v)
 {
@@ -38,6 +44,11 @@ u32 Proto_Utoa(char *buf, u32 v)
 /*****************************************************************************/
 /**
 * @brief  Signed decimal -> buf (with minus sign), returns the length.
+*
+* @param  buf  Destination buffer (caller-provided, must fit the number).
+* @param  v    Signed value to format.
+*
+* @return Number of characters written (excluding NUL).
 ******************************************************************************/
 u32 Proto_Itoa(char *buf, s32 v)
 {
@@ -52,6 +63,11 @@ u32 Proto_Itoa(char *buf, s32 v)
 /*****************************************************************************/
 /**
 * @brief  Decimal string -> s32; the whole string must be valid.
+*
+* @param  s    NUL-terminated decimal string (optional leading +/-).
+* @param  out  Receives the parsed value.
+*
+* @return 0 on success, -1 on malformed input.
 ******************************************************************************/
 int Proto_ParseInt(const char *s, s32 *out)
 {
@@ -74,6 +90,11 @@ int Proto_ParseInt(const char *s, s32 *out)
 /*****************************************************************************/
 /**
 * @brief  Decimal string -> u32; the whole string must be valid.
+*
+* @param  s    NUL-terminated decimal string (no sign).
+* @param  out  Receives the parsed value.
+*
+* @return 0 on success, -1 on malformed input.
 ******************************************************************************/
 int Proto_ParseUInt(const char *s, u32 *out)
 {
@@ -93,6 +114,11 @@ int Proto_ParseUInt(const char *s, u32 *out)
 /**
 * @brief  Decimal floating-point string -> float; the whole string must be valid (supports
 * fractions, no scientific notation).
+*
+* @param  s    NUL-terminated decimal string (optional leading +/- and one '.').
+* @param  out  Receives the parsed value.
+*
+* @return 0 on success, -1 on malformed input.
 ******************************************************************************/
 int Proto_ParseFloat(const char *s, float *out)
 {
@@ -128,6 +154,11 @@ int Proto_ParseFloat(const char *s, float *out)
 /**
 * @brief  Fixed-point formatting: dec decimal places (0..5), rounded, supports negatives,
 * avoids -0.
+*
+* @param  buf  Destination buffer.
+* @param  cap  Buffer capacity in bytes.
+* @param  v    Value to format.
+* @param  dec  Decimal places, clamped to 0..5.
 ******************************************************************************/
 void Proto_FmtFloat(char *buf, u32 cap, float v, int dec)
 {
@@ -171,6 +202,13 @@ void Proto_FmtFloat(char *buf, u32 cap, float v, int dec)
 /*****************************************************************************/
 /**
 * @brief  Parses "min:max:step" (int).
+*
+* @param  c    Constraint string.
+* @param  mn   Receives the minimum.
+* @param  mx   Receives the maximum.
+* @param  st   Receives the step.
+*
+* @return 0 on success, -1 on malformed input or if max < min / step <= 0.
 ******************************************************************************/
 int Proto_ParseIntConstraint(const char *c, long *mn, long *mx, long *st)
 {
@@ -203,6 +241,13 @@ int Proto_ParseIntConstraint(const char *c, long *mn, long *mx, long *st)
 /*****************************************************************************/
 /**
 * @brief  Parses "min:max:step" (float).
+*
+* @param  c    Constraint string.
+* @param  mn   Receives the minimum.
+* @param  mx   Receives the maximum.
+* @param  st   Receives the step.
+*
+* @return 0 on success, -1 on malformed input or if max < min / step <= 0.
 ******************************************************************************/
 int Proto_ParseFloatConstraint(const char *c, float *mn, float *mx, float *st)
 {
@@ -236,6 +281,10 @@ int Proto_ParseFloatConstraint(const char *c, float *mn, float *mx, float *st)
 /**
 * @brief  Decimal places of the step in a constraint string like "0:2.500:0.001"
 * -> output precision.
+*
+* @param  constraint  Constraint string ending with "min:max:step".
+*
+* @return Number of decimal places of the step (0 if none).
 ******************************************************************************/
 int Proto_StepDecimals(const char *constraint)
 {
@@ -252,6 +301,10 @@ int Proto_StepDecimals(const char *constraint)
 /*****************************************************************************/
 /**
 * @brief  Number of items in a comma-separated list.
+*
+* @param  list  Comma-separated label list (non-empty).
+*
+* @return Item count (>= 1).
 ******************************************************************************/
 u32 Proto_EnumCount(const char *list)
 {
@@ -266,6 +319,13 @@ u32 Proto_EnumCount(const char *list)
 /*****************************************************************************/
 /**
 * @brief  Copies the idx-th comma-separated label into buf.
+*
+* @param  list  Comma-separated label list.
+* @param  idx   Zero-based label index.
+* @param  buf   Destination buffer.
+* @param  cap   Buffer capacity in bytes.
+*
+* @return 0 on success, -1 if idx is out of range.
 ******************************************************************************/
 int Proto_EnumLabel(const char *list, u32 idx, char *buf, u32 cap)
 {
@@ -288,6 +348,12 @@ int Proto_EnumLabel(const char *list, u32 idx, char *buf, u32 cap)
 /*****************************************************************************/
 /**
 * @brief  Matches a label -> enum index.
+*
+* @param  list  Comma-separated label list.
+* @param  tok   Token to match (exact, case-sensitive).
+* @param  out   Receives the matched index.
+*
+* @return 0 on match, -1 if not found.
 ******************************************************************************/
 int Proto_ParseEnum(const char *list, const char *tok, s32 *out)
 {
@@ -307,6 +373,11 @@ int Proto_ParseEnum(const char *list, const char *tok, s32 *out)
 /*****************************************************************************/
 /**
 * @brief  Group filter: tec_* prefix matching, otherwise exact matching.
+*
+* @param  name   Parameter name to test.
+* @param  group  Group filter (may end with '*').
+*
+* @return 1 = name matches the group, 0 = no match.
 ******************************************************************************/
 int Proto_MatchGroup(const char *name, const char *group)
 {

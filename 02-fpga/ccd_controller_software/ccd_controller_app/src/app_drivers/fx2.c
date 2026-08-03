@@ -9,7 +9,8 @@
 *
 * Ver   Who  Date     Changes
 * ----- ---- -------- -----------------------------------------------
-* 1.0   whc  26/08/02 First release
+* 1.0   wwc  26/08/02 First release
+* 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
 * </pre>
 ******************************************************************************/
 #include "fx2.h"
@@ -50,6 +51,11 @@ int Fx2_Init(Fx2 *d, XGpio *gpio)
 /*****************************************************************************/
 /**
 * @brief  Switches the write endpoint (0=ep2, 1=ep4, 2=ep6, 3=ep8).
+*
+* Only the two FIFOADDR bits are touched; the other output bits are preserved.
+*
+* @param  d   FX2 instance.
+* @param  ep  Endpoint number 0..3 (masked to 2 bits).
 ******************************************************************************/
 void Fx2_SetEndpoint(Fx2 *d, u8 ep)
 {
@@ -72,6 +78,10 @@ void Fx2_SetEndpoint(Fx2 *d, u8 ep)
 /*****************************************************************************/
 /**
 * @brief  Reads PA0 sync: 1=FX2 configured, usable as a USB channel.
+*
+* @param  d  FX2 instance.
+*
+* @return 1 = USB ready, 0 = not ready.
 ******************************************************************************/
 u8 Fx2_IsUsbReady(Fx2 *d)
 {

@@ -12,7 +12,8 @@
 *
 * Ver   Who  Date     Changes
 * ----- ---- -------- -----------------------------------------------
-* 1.0   whc  26/08/02 First release
+* 1.0   wwc  26/08/02 First release
+* 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
 * </pre>
 ******************************************************************************/
 #include "ccd_controller.h"
@@ -150,6 +151,10 @@ int CcdController_SelfTest(CcdController *p)
 /*****************************************************************************/
 /**
 * @brief  Sets the image size (writes IMG_SIZE).
+*
+* @param  p  CcdController instance.
+* @param  w  Image width in pixels (1..2048, IMG_SIZE[15:0]).
+* @param  h  Image height in pixels (1..64, IMG_SIZE[31:16]).
 ******************************************************************************/
 void CcdController_SetImageSize(CcdController *p, u16 w, u16 h)
 {
@@ -160,6 +165,11 @@ void CcdController_SetImageSize(CcdController *p, u16 w, u16 h)
 /*****************************************************************************/
 /**
 * @brief  Sets the bevel/blank parameters (writes BEVEL_BLANK).
+*
+* Each 4-bit field is masked and packed into its register slot.
+*
+* @param  p   CcdController instance.
+* @param  bb  Bevel/blank values; NULL is ignored (returns without writing).
 ******************************************************************************/
 void CcdController_SetBevelBlank(CcdController *p,
                                  const CcdController_BevelBlank *bb)
@@ -180,6 +190,11 @@ void CcdController_SetBevelBlank(CcdController *p,
 /*****************************************************************************/
 /**
 * @brief  Sets the CDSCLK fine-tune delay (writes CTRL[11:5]).
+*
+* Read-modify-write keeps the other CTRL bits unchanged.
+*
+* @param  p      CcdController instance.
+* @param  delay  Fine delay taps, 0..127 (only [6:0] is used).
 ******************************************************************************/
 void CcdController_SetCdsclkDelay(CcdController *p, u8 delay)
 {
@@ -191,7 +206,12 @@ void CcdController_SetCdsclkDelay(CcdController *p, u8 delay)
 
 /*****************************************************************************/
 /**
-* @brief  Sets the readout mode (writes CTRL[4:3], read-modify-write keeps the other bits).
+* @brief  Sets the readout mode (writes CTRL[4:3]).
+*
+* Read-modify-write keeps the other CTRL bits unchanged.
+*
+* @param  p     CcdController instance.
+* @param  mode  CCDC_READ_MODE_LINE_BINNING (0) or CCDC_READ_MODE_IMAGE (1).
 ******************************************************************************/
 void CcdController_SetReadMode(CcdController *p, u8 mode)
 {
@@ -204,6 +224,9 @@ void CcdController_SetReadMode(CcdController *p, u8 mode)
 /*****************************************************************************/
 /**
 * @brief  Sets the SCLK frequency (writes CTRL[1]).
+*
+* @param  p     CcdController instance.
+* @param  freq  CCDC_FREQ_100K (0) or CCDC_FREQ_500K (1); nonzero is treated as 500k.
 ******************************************************************************/
 void CcdController_SetFreqSel(CcdController *p, u8 freq)
 {
@@ -219,6 +242,11 @@ void CcdController_SetFreqSel(CcdController *p, u8 freq)
 /*****************************************************************************/
 /**
 * @brief  Sets mock mode (writes CTRL[2]).
+*
+* When enabled, the hardware replaces the real ADC data with virtual pixels.
+*
+* @param  p     CcdController instance.
+* @param  mock  0 = real ADC data, 1 = mock virtual pixels.
 ******************************************************************************/
 void CcdController_SetMockMode(CcdController *p, u8 mock)
 {
@@ -239,7 +267,9 @@ void CcdController_SetMockMode(CcdController *p, u8 mock)
 * XST_DEVICE_BUSY if not. Uses read-modify-write to keep the other CTRL bits
 * (read_mode/freq/mock/cdsclk_delay etc.).
 *
-* @return XST_SUCCESS / XST_DEVICE_BUSY.
+* @param  p  CcdController instance.
+*
+* @return XST_SUCCESS / XST_DEVICE_BUSY (DDR3 not calibrated yet).
 ******************************************************************************/
 int CcdController_StartCapture(CcdController *p)
 {
@@ -259,6 +289,8 @@ int CcdController_StartCapture(CcdController *p)
 /*****************************************************************************/
 /**
 * @brief  Stops capture (clears exposure=0, falling edge starts readout).
+*
+* @param  p  CcdController instance.
 ******************************************************************************/
 void CcdController_StopCapture(CcdController *p)
 {
@@ -270,7 +302,11 @@ void CcdController_StopCapture(CcdController *p)
 
 /*****************************************************************************/
 /**
-* @brief  Triggers a frame send (writes TRIGGER[0]=1, hardware stretches it then clears it).
+* @brief  Triggers a frame send (writes TRIGGER[0]=1).
+*
+* The hardware stretches the trigger for one cycle then clears it; no readback needed.
+*
+* @param  p  CcdController instance.
 ******************************************************************************/
 void CcdController_TriggerFrameSend(CcdController *p)
 {
@@ -280,6 +316,10 @@ void CcdController_TriggerFrameSend(CcdController *p)
 /*****************************************************************************/
 /**
 * @brief  Number of readable frames in the frame buffer (STATUS[7:0]).
+*
+* @param  p  CcdController instance.
+*
+* @return Frame count, 0..255.
 ******************************************************************************/
 u8 CcdController_GetFrameNum(CcdController *p)
 {
@@ -290,6 +330,10 @@ u8 CcdController_GetFrameNum(CcdController *p)
 /*****************************************************************************/
 /**
 * @brief  Whether DDR3 calibration is complete (STATUS[16]).
+*
+* @param  p  CcdController instance.
+*
+* @return 1 = DDR3 ready, 0 = not ready.
 ******************************************************************************/
 u8 CcdController_IsDdrReady(CcdController *p)
 {
@@ -300,6 +344,10 @@ u8 CcdController_IsDdrReady(CcdController *p)
 /*****************************************************************************/
 /**
 * @brief  Frame exception flag (STATUS[8]).
+*
+* @param  p  CcdController instance.
+*
+* @return 1 = a frame exception occurred, 0 = none.
 ******************************************************************************/
 u8 CcdController_GetException(CcdController *p)
 {
@@ -310,6 +358,10 @@ u8 CcdController_GetException(CcdController *p)
 /*****************************************************************************/
 /**
 * @brief  Accumulated frame exception count (STATUS[15:9]).
+*
+* @param  p  CcdController instance.
+*
+* @return Number of accumulated frame exceptions.
 ******************************************************************************/
 u32 CcdController_GetExceptionCnt(CcdController *p)
 {
@@ -320,6 +372,10 @@ u32 CcdController_GetExceptionCnt(CcdController *p)
 /*****************************************************************************/
 /**
 * @brief  Reads the raw STATUS value (for debugging).
+*
+* @param  p  CcdController instance.
+*
+* @return Raw STATUS register contents.
 ******************************************************************************/
 u32 CcdController_GetStatus(CcdController *p)
 {
@@ -329,6 +385,10 @@ u32 CcdController_GetStatus(CcdController *p)
 /*****************************************************************************/
 /**
 * @brief  Registers the interrupt callback.
+*
+* @param  p    CcdController instance.
+* @param  hdl  Callback invoked by CcdController_InterruptHandler; NULL disables.
+* @param  ref  Opaque reference passed back to the callback.
 ******************************************************************************/
 void CcdController_SetHandler(CcdController *p, CcdController_Handler hdl,
                               void *ref)
@@ -340,6 +400,10 @@ void CcdController_SetHandler(CcdController *p, CcdController_Handler hdl,
 /*****************************************************************************/
 /**
 * @brief  Enables interrupts (writes INTR_EN).
+*
+* @param  p             CcdController instance.
+* @param  tx_done_en    Enable the TX_DONE interrupt (0/1).
+* @param  exception_en  Enable the EXCEPTION interrupt (0/1).
 ******************************************************************************/
 void CcdController_IntrEnable(CcdController *p, u8 tx_done_en,
                               u8 exception_en)
@@ -357,6 +421,8 @@ void CcdController_IntrEnable(CcdController *p, u8 tx_done_en,
 /*****************************************************************************/
 /**
 * @brief  Disables all interrupts.
+*
+* @param  p  CcdController instance.
 ******************************************************************************/
 void CcdController_IntrDisable(CcdController *p)
 {

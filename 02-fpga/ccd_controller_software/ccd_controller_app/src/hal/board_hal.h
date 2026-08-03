@@ -9,7 +9,8 @@
 *
 * Ver   Who  Date     Changes
 * ----- ---- -------- -----------------------------------------------
-* 1.0   whc  26/08/02 First release
+* 1.0   wwc  26/08/02 First release
+* 1.1   wwc  26/08/03 Remove dead BoardHal_SelfTest
 * </pre>
 ******************************************************************************/
 #ifndef BOARD_HAL_H
@@ -65,9 +66,6 @@ extern CcdController gCcdCtrl;
 
 /* Initialize all peripherals and wire up INTC (returns XST_SUCCESS / XST_FAILURE) */
 int  BoardHal_Init(void);
-
-/* CcdController self-test + status printout (for smoke testing) */
-void BoardHal_SelfTest(void);
 
 #ifdef __cplusplus
 }

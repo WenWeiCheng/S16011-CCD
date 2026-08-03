@@ -10,7 +10,8 @@
 *
 * Ver   Who  Date     Changes
 * ----- ---- -------- -----------------------------------------------
-* 1.0   whc  26/08/02 First release
+* 1.0   wwc  26/08/02 First release
+* 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
 * </pre>
 ******************************************************************************/
 #include "heartbeat.h"
@@ -57,6 +58,10 @@ int Heartbeat_Init(Heartbeat *d, XTmrCtr *tmr, u32 IntrVecId)
 /*****************************************************************************/
 /**
 * @brief  Registers a 1ms periodic callback (up to HEARTBEAT_MAX_HANDLERS internally).
+*
+* @param  d    Heartbeat instance.
+* @param  hdl  Callback invoked once per millisecond; NULL disables.
+* @param  ref  Opaque reference passed back to the callback.
 ******************************************************************************/
 void Heartbeat_RegisterHandler(Heartbeat *d, HeartbeatHandler hdl, void *ref)
 {

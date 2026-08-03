@@ -8,7 +8,8 @@
 *
 * Ver   Who  Date     Changes
 * ----- ---- -------- -----------------------------------------------
-* 1.0   whc  26/08/02 First release
+* 1.0   wwc  26/08/02 First release
+* 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
 * </pre>
 ******************************************************************************/
 #include "dac8311.h"
@@ -23,6 +24,9 @@
 * @brief  Starts a 16-bit transfer (writing dac8311, no readback).
 *
 * Switches to SPI mode 2 and asserts the chip select before transferring.
+*
+* @param  d     dac8311 instance.
+* @param  word  16-bit frame: (PD[15:14]) | (data[13:0]).
 *
 * @return XST_SUCCESS / underlying error.
 ******************************************************************************/
@@ -51,6 +55,11 @@ static int Dac8311_Transfer(Dac8311 *d, u16 word)
 /**
 * @brief  Initializes: stores the SPI / chip select / reference voltage.
 *
+* @param  d     dac8311 instance.
+* @param  spi   XSpi instance (shared bus, initialized by board_hal).
+* @param  cs    Chip-select bit number (1U << cs selects the slave).
+* @param  vref  Reference voltage (V); 0 or negative falls back to DAC8311_VREF_V.
+*
 * @return XST_SUCCESS.
 ******************************************************************************/
 int Dac8311_Init(Dac8311 *d, XSpi *spi, u8 cs, float vref)
@@ -68,7 +77,8 @@ int Dac8311_Init(Dac8311 *d, XSpi *spi, u8 cs, float vref)
 /**
 * @brief  Sets the output voltage (normal mode, PD=00).
 *
-* @param  volt Target voltage (V), clamped to 0..Vref.
+* @param  d     dac8311 instance.
+* @param  volt  Target voltage (V), clamped to 0..Vref.
 *
 * @return XST_SUCCESS / underlying error.
 ******************************************************************************/
@@ -97,6 +107,11 @@ int Dac8311_SetVoltage(Dac8311 *d, float volt)
 /*****************************************************************************/
 /**
 * @brief  Writes raw 16-bit ([15:14] control bits + [13:0] data).
+*
+* @param  d     dac8311 instance.
+* @param  code  Raw 16-bit code to write.
+*
+* @return XST_SUCCESS / underlying error.
 ******************************************************************************/
 int Dac8311_SetRaw(Dac8311 *d, u16 code)
 {
@@ -106,6 +121,11 @@ int Dac8311_SetRaw(Dac8311 *d, u16 code)
 /*****************************************************************************/
 /**
 * @brief  Enters Power-down mode (pd: 1=1k ohm, 2=100k ohm, 3=High-Z).
+*
+* @param  d   dac8311 instance.
+* @param  pd  Power-down select, 1..3 (clamped to 3).
+*
+* @return XST_SUCCESS / underlying error.
 ******************************************************************************/
 int Dac8311_SetPowerDown(Dac8311 *d, u8 pd)
 {

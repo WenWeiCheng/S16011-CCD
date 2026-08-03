@@ -9,15 +9,18 @@
 *   1 = timer0        -> XTmrCtr_InterruptHandler -> Heartbeat_InterruptHandler
 *   3 = uart          -> Uart_InterruptHandler
 *   5 = timer1        -> XTmrCtr_InterruptHandler -> Ccd_ExposureHandler
-*   6 = Gpio_key      -> Key_InterruptHandler
-*   (2 = spi, 4 = iic not used at this layer, not connected)
+*   (2 = spi, 4 = iic, 6 = Gpio_key not used at this layer; key is polled by
+*    Key_Tick() on each heartbeat, no interrupt involved)
 *
 * @note <pre>
 * MODIFICATION HISTORY:
 *
 * Ver   Who  Date     Changes
 * ----- ---- -------- -----------------------------------------------
-* 1.0   whc  26/08/02 First release
+* 1.0   wwc  26/08/02 First release
+* 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
+* 1.2   wwc  26/08/03 Refactor UART init into BoardHal_InitUart
+* 1.3   wwc  26/08/03 Remove dead key interrupt wiring and BoardHal_SelfTest
 * </pre>
 ******************************************************************************/
 #include "board_hal.h"
@@ -32,7 +35,6 @@
 #define TIMER0_VEC      XPAR_INTC_0_TMRCTR_0_VEC_ID
 #define UART_VEC        XPAR_INTC_0_UARTLITE_0_VEC_ID
 #define TIMER1_VEC      XPAR_INTC_0_TMRCTR_1_VEC_ID
-#define KEY_VEC         XPAR_INTC_0_GPIO_2_VEC_ID
 
 /* Shared global Xilinx instances */
 XSpi      gSpi;
@@ -61,30 +63,34 @@ CcdController gCcdCtrl;
 /*****************************************************************************/
 /**
 * @brief  Initializes the GPIO instances (direction set by each app driver Init).
+*
+* @return XST_SUCCESS / the status of the failing XGpio_Initialize.
 ******************************************************************************/
 static int BoardHal_InitGpio(void)
 {
     int status;
 
-    status = XGpio_Initialize(&gGpioFx2Fifo, XPAR_GPIO_0_DEVICE_ID);
+    status = XGpio_Initialize(&gGpioFx2Fifo, XPAR_AXI_GPIO_FX2FIFO_DEVICE_ID);
     if (status != XST_SUCCESS) {
         return status;
     }
-    status = XGpio_Initialize(&gGpioGeneral, XPAR_GPIO_1_DEVICE_ID);
+    status = XGpio_Initialize(&gGpioGeneral, XPAR_AXI_GPIO_GENERAL_DEVICE_ID);
     if (status != XST_SUCCESS) {
         return status;
     }
-    status = XGpio_Initialize(&gGpioKey, XPAR_GPIO_2_DEVICE_ID);
+    status = XGpio_Initialize(&gGpioKey, XPAR_AXI_GPIO_KEY_DEVICE_ID);
     if (status != XST_SUCCESS) {
         return status;
     }
-    status = XGpio_Initialize(&gGpioLed, XPAR_GPIO_3_DEVICE_ID);
+    status = XGpio_Initialize(&gGpioLed, XPAR_AXI_GPIO_LED_DEVICE_ID);
     return status;
 }
 
 /*****************************************************************************/
 /**
-* @brief  Initializes the timer instances.
+* @brief  Initializes the timer instances (timer0 heartbeat, timer1 exposure).
+*
+* @return XST_SUCCESS / the status of the failing init or self-test.
 ******************************************************************************/
 static int BoardHal_InitTimer(void)
 {
@@ -108,6 +114,8 @@ static int BoardHal_InitTimer(void)
 /*****************************************************************************/
 /**
 * @brief  Initializes SPI (master mode + manual chip select) and starts it.
+*
+* @return XST_SUCCESS / XST_DEVICE_NOT_FOUND / underlying error.
 ******************************************************************************/
 static int BoardHal_InitSpi(void)
 {
@@ -134,6 +142,29 @@ static int BoardHal_InitSpi(void)
     }
     status = XSpi_Start(&gSpi);
     return status;
+}
+
+/*****************************************************************************/
+/**
+* @brief  Initializes the UART (STDOUT device) and enables its interrupt.
+*
+* UART is the STDOUT device, so SelfTest is skipped on purpose (its loopback
+* test needs a physical loopback). It must be initialized before any prints.
+*
+* @return XST_SUCCESS / the status of the failing XUartLite_Initialize.
+******************************************************************************/
+static int BoardHal_InitUart(void)
+{
+    int status;
+
+    status = XUartLite_Initialize(&gUart, XPAR_UARTLITE_0_DEVICE_ID);
+    if (status != XST_SUCCESS) {
+        return status;
+    }
+    XUartLite_ResetFifos(&gUart);
+    XUartLite_EnableInterrupt(&gUart);
+
+    return XST_SUCCESS;
 }
 
 /*****************************************************************************/
@@ -176,12 +207,6 @@ static int BoardHal_SetupIntc(XIntc *intc)
     if (status != XST_SUCCESS) {
         return status;
     }
-    status = XIntc_Connect(intc, KEY_VEC,
-                           (XInterruptHandler)Key_InterruptHandler,
-                           &gKey);
-    if (status != XST_SUCCESS) {
-        return status;
-    }
 
     status = XIntc_Start(intc, XIN_REAL_MODE);
     if (status != XST_SUCCESS) {
@@ -192,7 +217,6 @@ static int BoardHal_SetupIntc(XIntc *intc)
     XIntc_Enable(intc, TIMER0_VEC);
     XIntc_Enable(intc, UART_VEC);
     XIntc_Enable(intc, TIMER1_VEC);
-    XIntc_Enable(intc, KEY_VEC);
 
     /* One-time setup: hook the exception handler to INTC */
     Xil_ExceptionInit();
@@ -208,8 +232,8 @@ static int BoardHal_SetupIntc(XIntc *intc)
 /**
 * @brief  Initializes all peripherals and wires up the INTC.
 *
-* Order: cache -> UART -> INTC -> SPI -> GPIO -> Timer -> CcdController ->
-* app drivers -> key interrupt enable -> heartbeat start.
+* Order: cache -> UART -> SPI -> GPIO -> Timer -> CcdController -> INTC ->
+* app drivers -> key GPIO direction.
 *
 * @return XST_SUCCESS / XST_FAILURE.
 ******************************************************************************/
@@ -220,15 +244,13 @@ int BoardHal_Init(void)
     Xil_ICacheEnable();
     Xil_DCacheEnable();
 
-    xil_printf("\r\n--- BoardHal_Init ---\r\n");
-
-    /* UART first, so later prints work.
-     * Note: UART is the STDOUT device, so SelfTest is skipped (its loopback test
-     * needs a physical loopback). */
-    status = XUartLite_Initialize(&gUart, XPAR_UARTLITE_0_DEVICE_ID);
+    /* UART first, so later prints work. */
+    status = BoardHal_InitUart();
     if (status != XST_SUCCESS) {
         return XST_FAILURE;
     }
+
+    xil_printf("--- BoardHal_Init Begin ---\r\n");
 
     /* SPI / GPIO / Timer */
     status = BoardHal_InitSpi();
@@ -264,13 +286,13 @@ int BoardHal_Init(void)
     }
 
     /* app drivers */
+    Uart_Init(&gUartDrv, &gUart, UART_VEC);
     Heartbeat_Init(&gHeartbeat, &gTimer0, TIMER0_VEC);
     Key_Init(&gKey, &gGpioKey, KEY_ACTIVE_LOW_MASK);
     Led_Init(&gLed, &gGpioLed, LED_OUT_MASK);
     Fx2_Init(&gFx2, &gGpioFx2Fifo);
     Adn8833_Init(&gAdn8833, &gGpioGeneral, ADN8833_EN_BIT);
     Ccd_Init(&gCcd, &gCcdCtrl, &gTimer1, TIMER1_VEC);
-    Uart_Init(&gUartDrv, &gUart, UART_VEC);
     Ads1118_Init(&gAds1118, &gSpi, SPI_CS_ADS1118);
     Dac8311_Init(&gDac8311, &gSpi, SPI_CS_DAC8311, DAC8311_VREF_V);
     Ad9826_Init(&gAd9826, &gSpi, SPI_CS_AD9826);
@@ -278,33 +300,6 @@ int BoardHal_Init(void)
     /* Enable ccd interrupts (tx_done + exception) */
     CcdController_IntrEnable(&gCcdCtrl, 1U, 1U);
 
-    /* Key: input direction (1=input) + interrupt enable */
-    XGpio_SetDataDirection(&gGpioKey, 1U, KEY_IN_MASK);
-    XGpio_InterruptGlobalEnable(&gGpioKey);
-    XGpio_InterruptEnable(&gGpioKey, KEY_IN_MASK);
-
     xil_printf("--- BoardHal_Init done ---\r\n");
     return XST_SUCCESS;
-}
-
-/*****************************************************************************/
-/**
-* @brief  CcdController self-test + key status printout (for smoke testing).
-******************************************************************************/
-void BoardHal_SelfTest(void)
-{
-    u32 status;
-
-    status = CcdController_SelfTest(&gCcdCtrl);
-    xil_printf("CcdController SelfTest: %s\r\n",
-               (status == XST_SUCCESS) ? "PASS" : "FAIL");
-
-    xil_printf("DDR3 ready: %d\r\n",
-               (int)CcdController_IsDdrReady(&gCcdCtrl));
-    xil_printf("frame_num: %d\r\n",
-               (int)CcdController_GetFrameNum(&gCcdCtrl));
-    xil_printf("exception: %d (cnt=%d)\r\n",
-               (int)CcdController_GetException(&gCcdCtrl),
-               (int)CcdController_GetExceptionCnt(&gCcdCtrl));
-    xil_printf("STATUS raw: 0x%x\r\n", (int)CcdController_GetStatus(&gCcdCtrl));
 }

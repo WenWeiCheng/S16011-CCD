@@ -10,7 +10,8 @@
 *
 * Ver   Who  Date     Changes
 * ----- ---- -------- -----------------------------------------------
-* 1.0   whc  26/08/02 First release
+* 1.0   wwc  26/08/02 First release
+* 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
 * </pre>
 ******************************************************************************/
 #include "uart.h"
@@ -20,6 +21,8 @@
 /*****************************************************************************/
 /**
 * @brief  Completes a line: NUL-terminates and calls back LineHandler, then resets the buffer.
+*
+* @param  d  UART instance.
 ******************************************************************************/
 static void Uart_CompleteLine(Uart *d)
 {
@@ -33,6 +36,9 @@ static void Uart_CompleteLine(Uart *d)
 /*****************************************************************************/
 /**
 * @brief  Error handling: clears the buffer and calls back ErrHandler.
+*
+* @param  d    UART instance.
+* @param  err  Error code reported to ErrHandler.
 ******************************************************************************/
 static void Uart_Reset(Uart *d, UartError err)
 {
@@ -46,6 +52,12 @@ static void Uart_Reset(Uart *d, UartError err)
 /*****************************************************************************/
 /**
 * @brief  Processes a single received byte (called in ISR context).
+*
+* Handles \r / \n line termination (including the \r\n pair) and the over-long
+* line error.
+*
+* @param  d   UART instance.
+* @param  ch  Received byte.
 ******************************************************************************/
 static void Uart_PushByte(Uart *d, u8 ch)
 {
@@ -97,15 +109,16 @@ int Uart_Init(Uart *d, XUartLite *uart, u32 IntrVecId)
     d->ErrHandler = NULL;
     d->ErrRef = NULL;
 
-    XUartLite_ResetFifos(uart);
-    XUartLite_EnableInterrupt(uart);
-
     return XST_SUCCESS;
 }
 
 /*****************************************************************************/
 /**
 * @brief  Registers the "complete line received" callback.
+*
+* @param  d    UART instance.
+* @param  hdl  Callback invoked with each complete line; NULL disables.
+* @param  ref  Opaque reference passed back to the callback.
 ******************************************************************************/
 void Uart_RegisterLineHandler(Uart *d, UartLineHandler hdl, void *ref)
 {
@@ -116,6 +129,10 @@ void Uart_RegisterLineHandler(Uart *d, UartLineHandler hdl, void *ref)
 /*****************************************************************************/
 /**
 * @brief  Registers the error callback (over-long / overflow).
+*
+* @param  d    UART instance.
+* @param  hdl  Callback invoked on receive errors; NULL disables.
+* @param  ref  Opaque reference passed back to the callback.
 ******************************************************************************/
 void Uart_RegisterErrorHandler(Uart *d, UartErrorHandler hdl, void *ref)
 {
@@ -126,6 +143,11 @@ void Uart_RegisterErrorHandler(Uart *d, UartErrorHandler hdl, void *ref)
 /*****************************************************************************/
 /**
 * @brief  Synchronously sends a line, appending \r\n automatically.
+*
+* @param  d     UART instance.
+* @param  line  NUL-terminated line to send.
+*
+* @return XST_SUCCESS / underlying send error.
 ******************************************************************************/
 int Uart_SendLine(Uart *d, const char *line)
 {
@@ -144,6 +166,12 @@ int Uart_SendLine(Uart *d, const char *line)
 /*****************************************************************************/
 /**
 * @brief  Raw send (no newline appended). Blocks until all bytes are written to the TX FIFO.
+*
+* @param  d  UART instance.
+* @param  s  Data to send.
+* @param  n  Number of bytes to send.
+*
+* @return XST_SUCCESS.
 ******************************************************************************/
 int Uart_Send(Uart *d, const char *s, u32 n)
 {
@@ -167,6 +195,8 @@ int Uart_Send(Uart *d, const char *s, u32 n)
 *
 * Reads the RX FIFO byte by byte into the line buffer, calling back LineHandler when
 * a line is complete.
+*
+* @param  ref  UART instance pointer.
 ******************************************************************************/
 void Uart_InterruptHandler(void *ref)
 {
