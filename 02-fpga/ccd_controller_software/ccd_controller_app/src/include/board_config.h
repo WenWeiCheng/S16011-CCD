@@ -97,6 +97,31 @@ extern "C" {
 #define NTC_BETA                 3435          /* B 值（25/85） */
 #define NTC_SERIES_R_OHM         10000         /* 分压上/下拉串联电阻 */
 
+/* ============================================================================
+ * S16011 传感器默认几何（image/bevel/blank，见 00-docs/verilog-design/ccd_driver.md）
+ * ==========================================================================*/
+#define CCD_IMG_WIDTH_DEFAULT    1024U
+#define CCD_IMG_HEIGHT_DEFAULT   64U
+#define CCD_BEVEL_L_DEFAULT      6U
+#define CCD_BEVEL_T_DEFAULT      2U
+#define CCD_BEVEL_R_DEFAULT      6U
+#define CCD_BEVEL_B_DEFAULT      4U
+#define CCD_BLANK_L_DEFAULT      4U
+#define CCD_BLANK_R_DEFAULT      4U
+
+/* ============================================================================
+ * NTC 分压拓扑
+ * TODO(待确认)：当前假设 Vref → Rseries → NTC → GND，ADC 测 NTC 端电压。
+ * 待拿到板子实际电路后确认/替换。
+ * ==========================================================================*/
+#define NTC_DIV_VREF_V           4.096f        /* 分压参考电压（与 ADC FS 一致） */
+
+/* ============================================================================
+ * TEC 输出电流换算（ads1118 AIN2）
+ * TODO(待确认)：当前假定 1 A/V（1Ω 采样电阻），待硬件确认后替换。
+ * ==========================================================================*/
+#define TEC_I_A_PER_V            1.0f          /* A per measured V */
+
 #ifdef __cplusplus
 }
 #endif

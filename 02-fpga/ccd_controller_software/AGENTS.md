@@ -77,6 +77,46 @@ ccd_controller_software/
 - `test/Debug/makefile` 是 IDE 生成的（每次构建会重写），不要手编。
 - UART 打印对不上时，硬件波形问题回 `ccd_controller_hardware` 用 ILA 抓（约束见其 `vivado_proj/.../constrs_1/new/debug.xdc`）。
 
+### 无头构建（mb-gcc 命令行）经验
+
+- `xsct app build -name ccd_controller_app` 在本工作区会报 **`Invalid Workspace`**（SDK 后端问题：`platform list` / `app list` 都正常，唯独 build 失败）。命令行走不通时用**手工 mb-gcc 构建**验证编译，正式烧录仍回 Vitis IDE。
+- 工具链：`C:\Xilinx\Vitis\2020.1\gnu\microblaze\nt\bin\mb-gcc.exe`（GCC 9.2.0）。编译/链接标志从示例工程 `*_example_1/Debug/{makefile,src/subdir.mk,objects.mk}` 抄。
+- 编译（每个 .c）：
+  ```
+  mb-gcc -O2 -g0 -c -mlittle-endian -mcpu=v11.0 -mxl-soft-mul -ffunction-sections -fdata-sections \
+         -I<export>/sw/mb_subsystem/standalone_domain/bspinclude/include -I<src根> -o out.o <源文件>
+  ```
+  把 `main.c` 拷到临时目录再编会让相对 include（`"hal/board_hal.h"`）失效，必须补 `-I<src根>`。
+- 链接：
+  ```
+  mb-gcc -Wl,-T -Wl,<lscript.ld> -L<export>/.../standalone_domain/bsplib/lib \
+         -mlittle-endian -mcpu=v11.0 -mxl-soft-mul -Wl,--no-relax -Wl,--gc-sections \
+         -o app.elf <objs...> -Wl,--start-group,-lxil,-lgcc,-lc,--end-group
+  ```
+  `_start` / 向量表来自 libxil（standalone BSP 的 crt0），无需额外对象；`main` 必须存在（crt0 引用）。
+- 开了 FPU 后 BSP 重建会自动加 `-mxl-hard-float`，源码无需改；未开 FPU 时 float 走软浮点（默认 `-mxl-soft-mul`），也不用改。
+
+#### newlib printf/strtod 体积教训（重要）
+
+- **不要用 newlib `snprintf` / `sprintf` / `strtof`**。newlib 的 `snprintf` 只要被调用（哪怕只格式化 `%d/%s`），就会把**完整浮点 printf 引擎**链进固件：`_svfprintf_r` ~12KB + `_svfiprintf_r` 5.5KB + `_dtoa_r` 7KB + malloc/realloc/free 机制 4.5KB + `__udivdi3/__umoddi3` 5.4KB；`strtof` 再拉 `_strtod_l` 7KB + 转换辅助 ~6KB，合计 ~40+KB。实测带 snprintf+strtof 的协议固件 **155KB > 128KB** local mem，直接链接溢出。
+- `xil_printf` **不支持 %f**，且与是否开 FPU 无关（它是轻量实现，没写浮点；FPU 只加速运算）。
+- 对策：**数字格式化/解析全部手写**（见 `ccd_controller_app/src/app_logic/proto_num.c`：itoa / 定点小数 / 十进制浮点解析）；`strlen/strcmp/memcpy` 等叶子函数可放心用（极小，基线已引用）。协议响应串用手写拼接器。
+- 体积基线：原驱动层（纯 xil_printf）≈62KB total（text 29.5K + data 0.5K + bss 33K，bss 含 16K heap + 16K stack）；全手写协议后 `-O2` ≈85KB / `-O0`(Debug) ≈92KB，128KB 放得下。
+
+#### 内存布局
+
+- 128KB local mem 在 `lscript.ld` 对应 `ORIGIN = 0x50, LENGTH = 0x1FFB0`（合计 0x20000 = 128KiB），栈/堆各 `0x4000`（16KB）。改 BD 的 local mem 大小后 Vitis 会重生成该文件，确认尺寸不回退。
+
+#### 构建脚本（Windows PowerShell）注意事项
+
+- PowerShell 5.1 解析**无 BOM 的 UTF-8 脚本遇到中文注释会报语法错**——写 .ps1 脚本避免中文字符，或保存为带 BOM 的 UTF-8。
+- 给 mb-gcc 传参用**参数数组 + splat**（`& $MBGCC @args`）最稳；`ForEach-Object` 块内给 gcc 传数组参数曾出过 `.0: No such file` 之类的解析问题，两种已验证可用的写法：单个 CFLAGS 字符串、或循环外先组好数组再 splat。
+- 体积/符号分析：`mb-nm --size-sort -S app.elf` 看最大符号；`mb-nm app.elf | Select-String "符号"` 确认没链进 newlib printf/malloc（`_svfprintf_r/_dtoa_r/_strtod_l/_malloc_r`）；`mb-size app.elf` 看各段。
+
+#### 纯逻辑模块可主机单测
+
+- 与硬件无关的纯逻辑（解析/格式化）抽成无 Xilinx 依赖的模块（如 `app_logic/proto_num.c`，只用 `xil_types.h` 的类型），临时目录放一个 `xil_types.h` 桩即可用主机 gcc 直接编译跑单测，无需硬件、迭代快。曾在单测中发现并修复两处逻辑 bug（约束解析遇 `:` 失败、Utoa/Itoa 未 NUL 结尾）。
+
 ## Git 提交约定
 
 - **整个目录当前未被 git 追踪**（未提交，不是被 ignore）。
