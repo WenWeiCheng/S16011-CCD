@@ -1,7 +1,8 @@
 /******************************************************************************
 * @file led.c
 *
-* LED 驱动实现：极性内置，逻辑 on=亮，物理电平由 LED_ACTIVE_LOW 决定。
+* LED driver implementation: polarity built-in, logic on=lit, physical level determined
+* by LED_ACTIVE_LOW.
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -17,13 +18,13 @@
 
 /*****************************************************************************/
 /**
-* @brief  初始化 LED 实例。
+* @brief  Initializes the LED instance.
 *
-* @param  d        LED 实例。
-* @param  gpio     Gpio_led 的 XGpio 实例（board_hal 已初始化）。
-* @param  out_mask 输出位掩码。
+* @param  d        LED instance.
+* @param  gpio     XGpio instance of Gpio_led (initialized by board_hal).
+* @param  out_mask Output bit mask.
 *
-* @return XST_SUCCESS。
+* @return XST_SUCCESS.
 ******************************************************************************/
 int Led_Init(Led *d, XGpio *gpio, u32 out_mask)
 {
@@ -33,7 +34,7 @@ int Led_Init(Led *d, XGpio *gpio, u32 out_mask)
     d->Gpio = gpio;
     d->OutMask = out_mask;
     d->Current = 0U;
-    /* 输出方向（1=输入，0=输出） */
+    /* Output direction (1=input, 0=output) */
     XGpio_SetDataDirection(gpio, 1U, ~out_mask);
     XGpio_DiscreteWrite(gpio, 1U, 0U);
     return XST_SUCCESS;
@@ -41,7 +42,7 @@ int Led_Init(Led *d, XGpio *gpio, u32 out_mask)
 
 /*****************************************************************************/
 /**
-* @brief  按 idx 设置 LED（idx=0/1，对应 LED0_BIT/LED1_BIT）。
+* @brief  Sets the LED by idx (idx=0/1, corresponding to LED0_BIT/LED1_BIT).
 ******************************************************************************/
 void Led_Set(Led *d, u8 idx, u8 on)
 {
@@ -68,7 +69,7 @@ void Led_Set(Led *d, u8 idx, u8 on)
 
 /*****************************************************************************/
 /**
-* @brief  点亮 idx 号 LED。
+* @brief  Lights up LED idx.
 ******************************************************************************/
 void Led_On(Led *d, u8 idx)
 {
@@ -77,7 +78,7 @@ void Led_On(Led *d, u8 idx)
 
 /*****************************************************************************/
 /**
-* @brief  熄灭 idx 号 LED。
+* @brief  Turns off LED idx.
 ******************************************************************************/
 void Led_Off(Led *d, u8 idx)
 {
@@ -86,7 +87,7 @@ void Led_Off(Led *d, u8 idx)
 
 /*****************************************************************************/
 /**
-* @brief  翻转 idx 号 LED。
+* @brief  Toggles LED idx.
 ******************************************************************************/
 void Led_Toggle(Led *d, u8 idx)
 {

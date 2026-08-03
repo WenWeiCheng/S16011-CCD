@@ -1,8 +1,8 @@
 /******************************************************************************
 * @file fx2.c
 *
-* FX2 Slave FIFO 控制实现。默认端点 2（FIFOADR=00）：
-*   sloe_n=1（不读）、slrd_n=1（不读）、fifo_addr0=0、fifo_addr1=0。
+* FX2 Slave FIFO control implementation. Default endpoint 2 (FIFOADR=00):
+*   sloe_n=1 (no read), slrd_n=1 (no read), fifo_addr0=0, fifo_addr1=0.
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -18,12 +18,12 @@
 
 /*****************************************************************************/
 /**
-* @brief  初始化 FX2 引脚：输出位置默认电平，PA0 配为输入。
+* @brief  Initializes the FX2 pins: output bits at default level, PA0 as input.
 *
-* @param  d    FX2 实例。
-* @param  gpio Gpio_fx2fifo 的 XGpio 实例（board_hal 已初始化）。
+* @param  d    FX2 instance.
+* @param  gpio XGpio instance of Gpio_fx2fifo (initialized by board_hal).
 *
-* @return XST_SUCCESS。
+* @return XST_SUCCESS.
 ******************************************************************************/
 int Fx2_Init(Fx2 *d, XGpio *gpio)
 {
@@ -35,9 +35,9 @@ int Fx2_Init(Fx2 *d, XGpio *gpio)
 
     d->Gpio = gpio;
     d->OutVal = (1U << FX2_GPIO_SLOE_N_BIT) |
-                (1U << FX2_GPIO_SLRD_N_BIT);   /* FIFOADR=00（端点 2） */
+                (1U << FX2_GPIO_SLRD_N_BIT);   /* FIFOADR=00 (endpoint 2) */
 
-    /* 输出位 0..3，其余（PA0）为输入 */
+    /* Output bits 0..3, the rest (PA0) as input */
     dir = ~FX2_GPIO_OUT_MASK;
     XGpio_SetDataDirection(gpio, 1U, dir);
 
@@ -49,7 +49,7 @@ int Fx2_Init(Fx2 *d, XGpio *gpio)
 
 /*****************************************************************************/
 /**
-* @brief  切换写端点（0=ep2, 1=ep4, 2=ep6, 3=ep8）。
+* @brief  Switches the write endpoint (0=ep2, 1=ep4, 2=ep6, 3=ep8).
 ******************************************************************************/
 void Fx2_SetEndpoint(Fx2 *d, u8 ep)
 {
@@ -71,7 +71,7 @@ void Fx2_SetEndpoint(Fx2 *d, u8 ep)
 
 /*****************************************************************************/
 /**
-* @brief  读 PA0 sync：1=FX2 已配置，可作为 USB 通道。
+* @brief  Reads PA0 sync: 1=FX2 configured, usable as a USB channel.
 ******************************************************************************/
 u8 Fx2_IsUsbReady(Fx2 *d)
 {

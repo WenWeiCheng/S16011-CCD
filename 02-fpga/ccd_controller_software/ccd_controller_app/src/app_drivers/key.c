@@ -1,8 +1,9 @@
 /******************************************************************************
 * @file key.c
 *
-* 按键驱动实现：消抖/长按 FSM，由心跳周期驱动 Key_Tick()。
-* 按下语义：掩码位中任一低有效键为低即视为"按下"（OR）。
+* Key driver implementation: debounce / long-press FSM, driven by Key_Tick() on each
+* heartbeat period.
+* Press semantics: any active-low key in the mask bits being low counts as "pressed" (OR).
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -17,13 +18,13 @@
 
 /*****************************************************************************/
 /**
-* @brief  初始化按键实例。
+* @brief  Initializes the key instance.
 *
-* @param  d              按键实例。
-* @param  gpio           Gpio_key 的 XGpio 实例（board_hal 已初始化）。
-* @param  active_low_mask 低有效键位掩码（按下=0）。
+* @param  d              Key instance.
+* @param  gpio           XGpio instance of Gpio_key (initialized by board_hal).
+* @param  active_low_mask Mask of active-low key bits (pressed=0).
 *
-* @return XST_SUCCESS。
+* @return XST_SUCCESS.
 ******************************************************************************/
 int Key_Init(Key *d, XGpio *gpio, u32 active_low_mask)
 {
@@ -47,7 +48,7 @@ int Key_Init(Key *d, XGpio *gpio, u32 active_low_mask)
 
 /*****************************************************************************/
 /**
-* @brief  注册按键事件回调（KEY_PRESSED / KEY_RELEASED / KEY_LONG_PRESS）。
+* @brief  Registers the key event callback (KEY_PRESSED / KEY_RELEASED / KEY_LONG_PRESS).
 ******************************************************************************/
 void Key_RegisterHandler(Key *d, KeyHandler hdl, void *ref)
 {
@@ -57,7 +58,7 @@ void Key_RegisterHandler(Key *d, KeyHandler hdl, void *ref)
 
 /*****************************************************************************/
 /**
-* @brief  返回消抖后的按键状态。
+* @brief  Returns the debounced key state.
 ******************************************************************************/
 KeyState Key_GetState(Key *d)
 {
@@ -66,18 +67,18 @@ KeyState Key_GetState(Key *d)
 
 /*****************************************************************************/
 /**
-* @brief  心跳周期推进消抖 FSM（每 1ms 调用一次）。
+* @brief  Advances the debounce FSM on each heartbeat period (called every 1ms).
 *
-* 状态：IDLE --按下消抖--> PRESSED --释放消抖--> IDLE。
-* 长按在 PRESSED 期间持续累计，超阈值触发一次 KEY_LONG_PRESS。
+* State: IDLE --press debounce--> PRESSED --release debounce--> IDLE.
+* Long press accumulates during PRESSED and triggers KEY_LONG_PRESS once past the threshold.
 *
-* @param  d  按键实例。
-* @param  ms 距上次调用的毫秒数（当前恒为 1）。
+* @param  d  Key instance.
+* @param  ms Milliseconds since the last call (currently always 1).
 ******************************************************************************/
 void Key_Tick(Key *d, u32 ms)
 {
     u32 raw = XGpio_DiscreteRead(d->Gpio, 1) & d->ActiveLowMask;
-    u8 pressed = (raw != d->ActiveLowMask) ? 1U : 0U; /* 任一低有效键按下 */
+    u8 pressed = (raw != d->ActiveLowMask) ? 1U : 0U; /* any active-low key pressed */
     u16 step = (u16)ms;
 
     if (d->State == KEY_STATE_IDLE) {
@@ -121,9 +122,10 @@ void Key_Tick(Key *d, u32 ms)
 
 /*****************************************************************************/
 /**
-* @brief  Gpio_key 中断（挂 INTC，vec6）。
+* @brief  Gpio_key interrupt (hooked to INTC, vec6).
 *
-* 只清中断并置"电平有变化"标志，真实状态判定交给 Key_Tick。
+* Only clears the interrupt and sets the "level changed" flag; the real state decision
+* is left to Key_Tick.
 ******************************************************************************/
 void Key_InterruptHandler(void *ref)
 {

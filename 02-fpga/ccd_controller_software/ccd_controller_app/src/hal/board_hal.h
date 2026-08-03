@@ -1,8 +1,8 @@
 /******************************************************************************
 * @file board_hal.h
 *
-* 板级硬件抽象：全局共享 Xilinx 实例 + app 驱动实例的声明，
-* 以及 BoardHal_Init（初始化外设 + 接线 INTC）。
+* Board-level hardware abstraction: declarations of the shared global Xilinx instances
+* and app driver instances, plus BoardHal_Init (initializes peripherals + wires up INTC).
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -39,7 +39,7 @@
 extern "C" {
 #endif
 
-/* 全局共享 Xilinx 实例（清零，方便调试器查看） */
+/* Shared global Xilinx instances (zeroed, easy to inspect in the debugger) */
 extern XSpi      gSpi;
 extern XGpio     gGpioFx2Fifo;
 extern XGpio     gGpioGeneral;
@@ -50,7 +50,7 @@ extern XTmrCtr   gTimer1;
 extern XUartLite gUart;
 extern XIntc     gIntc;
 
-/* 全局 app 驱动实例 */
+/* Global app driver instances */
 extern Heartbeat    gHeartbeat;
 extern Key          gKey;
 extern Led          gLed;
@@ -63,10 +63,10 @@ extern Dac8311      gDac8311;
 extern Ad9826       gAd9826;
 extern CcdController gCcdCtrl;
 
-/* 初始化所有外设并接线 INTC（返回 XST_SUCCESS / XST_FAILURE） */
+/* Initialize all peripherals and wire up INTC (returns XST_SUCCESS / XST_FAILURE) */
 int  BoardHal_Init(void);
 
-/* CcdController 自检 + 状态打印（供冒烟测试） */
+/* CcdController self-test + status printout (for smoke testing) */
 void BoardHal_SelfTest(void);
 
 #ifdef __cplusplus

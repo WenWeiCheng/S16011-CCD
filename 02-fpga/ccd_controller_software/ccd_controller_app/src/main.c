@@ -1,10 +1,10 @@
 /******************************************************************************
 * @file main.c
 *
-* CCD 控制器应用入口：装配 app 逻辑层。
-*  - UART 行 → Protocol（命令分发表 / 参数表 / ACQ）
-*  - Monitor 遥测采样循环（ads1118 四路：NTC×2 / TEC 电压 / TEC 电流）
-*  - 心跳 → 按键消抖；LED0 心跳闪烁
+* CCD controller application entry: assembles the app logic layer.
+*  - UART line -> Protocol (command dispatch table / parameter table / ACQ)
+*  - Monitor telemetry sampling loop (ads1118 four channels: NTC x2 / TEC voltage / TEC current)
+*  - Heartbeat -> key debounce; LED0 heartbeat blink
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -24,7 +24,7 @@
 
 /*****************************************************************************/
 /**
-* @brief  心跳周期任务：按键消抖 FSM（必须 1ms 节拍）。
+* @brief  Heartbeat periodic task: key debounce FSM (must tick at 1ms).
 ******************************************************************************/
 static void App_HeartbeatTick(void *ref)
 {
@@ -34,7 +34,7 @@ static void App_HeartbeatTick(void *ref)
 
 /*****************************************************************************/
 /**
-* @brief  主函数。
+* @brief  Main function.
 ******************************************************************************/
 int main(void)
 {
@@ -45,7 +45,7 @@ int main(void)
         return -1;
     }
 
-    /* 装配 app 逻辑层 */
+    /* Assemble the app logic layer */
     Uart_RegisterLineHandler(&gUartDrv, Protocol_OnLine, NULL);
     Uart_RegisterErrorHandler(&gUartDrv, Protocol_OnError, NULL);
     Heartbeat_RegisterHandler(&gHeartbeat, App_HeartbeatTick, NULL);
@@ -59,7 +59,7 @@ int main(void)
         Monitor_Tick(&gMonitor);
         Protocol_ProcessPending();
 
-        /* LED0 心跳闪烁（500ms） */
+        /* LED0 heartbeat blink (500ms) */
         if (tick - ledTick >= 500U) {
             ledTick = tick;
             Led_Toggle(&gLed, 0);

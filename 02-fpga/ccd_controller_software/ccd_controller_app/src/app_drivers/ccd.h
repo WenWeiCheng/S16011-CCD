@@ -1,8 +1,9 @@
 /******************************************************************************
 * @file ccd.h
 *
-* CCD 曝光控制 + 帧通路驱动：组合 CcdController（帧读出/缓存/发送）与
-* timer1 64-bit 级联模式（曝光时长计时）。区分 single 与 live 两种模式。
+* CCD exposure control + frame path driver: combines CcdController (frame readout /
+* buffering / send) with timer1 64-bit cascade mode (exposure duration timing).
+* Distinguishes single and live modes.
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -25,8 +26,8 @@ extern "C" {
 #endif
 
 typedef enum {
-    CCD_MODE_SINGLE = 0,   /* 单次采集：曝光→读出→发送，完成回 IDLE */
-    CCD_MODE_LIVE          /* 连续采集：驱动内自动重启曝光+触发发送 */
+    CCD_MODE_SINGLE = 0,   /* single capture: expose -> readout -> send, done returns to IDLE */
+    CCD_MODE_LIVE          /* continuous capture: driver restarts exposure and triggers send automatically */
 } CcdMode;
 
 typedef enum {
@@ -36,7 +37,7 @@ typedef enum {
     CCD_TX
 } CcdState;
 
-/* 状态变化回调 */
+/* State change callback */
 typedef void (*CcdHandler)(CcdState st, void *ref);
 
 typedef struct {
@@ -45,16 +46,16 @@ typedef struct {
     u32 IntrVecId;
     CcdMode Mode;
     CcdState State;
-    u64 ExposureUs;           /* 当前曝光时长（µs） */
+    u64 ExposureUs;           /* current exposure duration (us) */
     CcdHandler Handler;
     void *HandlerRef;
 } Ccd;
 
 int  Ccd_Init(Ccd *d, CcdController *ctrl, XTmrCtr *tmr1, u32 IntrVecId);
 int  Ccd_StartCapture(Ccd *d, CcdMode mode, u64 exposure_us);
-void Ccd_Stop(Ccd *d);              /* 停止：中止曝光，回 IDLE */
-void Ccd_Abort(Ccd *d);             /* 清 exposure=0 中止当前曝光 */
-void Ccd_TriggerSend(Ccd *d);       /* 手动触发帧发送到 FX2 */
+void Ccd_Stop(Ccd *d);              /* stop: abort exposure, return to IDLE */
+void Ccd_Abort(Ccd *d);             /* clear exposure=0 to abort the current exposure */
+void Ccd_TriggerSend(Ccd *d);       /* manually trigger frame send to FX2 */
 u8   Ccd_GetFrameNum(Ccd *d);
 u8   Ccd_IsDdrReady(Ccd *d);
 u8   Ccd_GetException(Ccd *d);

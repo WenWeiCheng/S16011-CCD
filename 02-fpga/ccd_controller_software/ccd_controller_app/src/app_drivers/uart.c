@@ -1,8 +1,9 @@
 /******************************************************************************
 * @file uart.c
 *
-* UART 行缓冲驱动实现。RX 中断按字节入缓冲，\r\n / \r / \n 成行回调；
-* 行超长清缓冲并上报 UART_ERR_LINE_TOO_LONG。TX 阻塞发送。
+* UART line-buffer driver implementation. RX interrupt fills the buffer byte by byte,
+* and \r\n / \r / \n complete a line and trigger the callback; an over-long line
+* clears the buffer and reports UART_ERR_LINE_TOO_LONG. TX sends blocking.
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -18,7 +19,7 @@
 
 /*****************************************************************************/
 /**
-* @brief  完成一行：NUL 结尾并回调 LineHandler，随后复位缓冲。
+* @brief  Completes a line: NUL-terminates and calls back LineHandler, then resets the buffer.
 ******************************************************************************/
 static void Uart_CompleteLine(Uart *d)
 {
@@ -31,7 +32,7 @@ static void Uart_CompleteLine(Uart *d)
 
 /*****************************************************************************/
 /**
-* @brief  错误处理：清缓冲并回调 ErrHandler。
+* @brief  Error handling: clears the buffer and calls back ErrHandler.
 ******************************************************************************/
 static void Uart_Reset(Uart *d, UartError err)
 {
@@ -44,12 +45,12 @@ static void Uart_Reset(Uart *d, UartError err)
 
 /*****************************************************************************/
 /**
-* @brief  处理一个接收字节（在 ISR 上下文中调用）。
+* @brief  Processes a single received byte (called in ISR context).
 ******************************************************************************/
 static void Uart_PushByte(Uart *d, u8 ch)
 {
     if (ch == '\n') {
-        /* \r\n 中的 \n：上一字节 \r 已成行，跳过以免产生空行 */
+        /* \n in a \r\n pair: the previous \r already completed the line, skip to avoid an empty line */
         if (d->CrPending) {
             d->CrPending = 0U;
             return;
@@ -74,13 +75,13 @@ static void Uart_PushByte(Uart *d, u8 ch)
 
 /*****************************************************************************/
 /**
-* @brief  初始化：清 FIFO、清缓冲并启用 UART 中断。
+* @brief  Initializes: resets the FIFOs, clears the buffer and enables UART interrupts.
 *
-* @param  d    UART 实例。
-* @param  uart XUartLite 实例（board_hal 已初始化）。
-* @param  IntrVecId INTC 向量号。
+* @param  d    UART instance.
+* @param  uart XUartLite instance (initialized by board_hal).
+* @param  IntrVecId INTC vector number.
 *
-* @return XST_SUCCESS。
+* @return XST_SUCCESS.
 ******************************************************************************/
 int Uart_Init(Uart *d, XUartLite *uart, u32 IntrVecId)
 {
@@ -104,7 +105,7 @@ int Uart_Init(Uart *d, XUartLite *uart, u32 IntrVecId)
 
 /*****************************************************************************/
 /**
-* @brief  注册"收到完整一行"回调。
+* @brief  Registers the "complete line received" callback.
 ******************************************************************************/
 void Uart_RegisterLineHandler(Uart *d, UartLineHandler hdl, void *ref)
 {
@@ -114,7 +115,7 @@ void Uart_RegisterLineHandler(Uart *d, UartLineHandler hdl, void *ref)
 
 /*****************************************************************************/
 /**
-* @brief  注册错误回调（超长/溢出）。
+* @brief  Registers the error callback (over-long / overflow).
 ******************************************************************************/
 void Uart_RegisterErrorHandler(Uart *d, UartErrorHandler hdl, void *ref)
 {
@@ -124,7 +125,7 @@ void Uart_RegisterErrorHandler(Uart *d, UartErrorHandler hdl, void *ref)
 
 /*****************************************************************************/
 /**
-* @brief  同步发送一行，自动补 \r\n。
+* @brief  Synchronously sends a line, appending \r\n automatically.
 ******************************************************************************/
 int Uart_SendLine(Uart *d, const char *line)
 {
@@ -142,7 +143,7 @@ int Uart_SendLine(Uart *d, const char *line)
 
 /*****************************************************************************/
 /**
-* @brief  raw 发送（不补换行）。阻塞直到全部写入 TX FIFO。
+* @brief  Raw send (no newline appended). Blocks until all bytes are written to the TX FIFO.
 ******************************************************************************/
 int Uart_Send(Uart *d, const char *s, u32 n)
 {
@@ -152,7 +153,7 @@ int Uart_Send(Uart *d, const char *s, u32 n)
     while (n > 0U) {
         u32 sent = XUartLite_Send(d->Uart, (u8 *)s, n);
         if (sent == 0U) {
-            continue;   /* TX FIFO 满，等待空位（阻塞） */
+            continue;   /* TX FIFO full, wait for a free slot (blocking) */
         }
         s += sent;
         n -= sent;
@@ -162,9 +163,10 @@ int Uart_Send(Uart *d, const char *s, u32 n)
 
 /*****************************************************************************/
 /**
-* @brief  RX 中断处理（挂 INTC，vec3）。
+* @brief  RX interrupt handler (hooked to INTC, vec3).
 *
-* 逐字节读出 RX FIFO 并送入行缓冲，成行即回调 LineHandler。
+* Reads the RX FIFO byte by byte into the line buffer, calling back LineHandler when
+* a line is complete.
 ******************************************************************************/
 void Uart_InterruptHandler(void *ref)
 {

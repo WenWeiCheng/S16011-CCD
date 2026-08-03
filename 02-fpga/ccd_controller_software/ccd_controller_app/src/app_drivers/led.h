@@ -1,8 +1,8 @@
 /******************************************************************************
 * @file led.h
 *
-* LED 驱动：基于 Gpio_led，按 idx 操作，极性内置（见 board_config.h
-* 的 LED_ACTIVE_LOW）。
+* LED driver: based on Gpio_led, operates by idx, polarity built-in (see
+* LED_ACTIVE_LOW in board_config.h).
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -25,8 +25,8 @@ extern "C" {
 
 typedef struct {
     XGpio *Gpio;
-    u32 OutMask;      /* 输出位掩码 */
-    u32 Current;      /* 逻辑层当前输出（未含极性） */
+    u32 OutMask;      /* output bit mask */
+    u32 Current;      /* current logical output (without polarity) */
 } Led;
 
 int  Led_Init(Led *d, XGpio *gpio, u32 out_mask);

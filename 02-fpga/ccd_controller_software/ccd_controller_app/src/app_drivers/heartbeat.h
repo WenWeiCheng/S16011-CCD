@@ -1,8 +1,8 @@
 /******************************************************************************
 * @file heartbeat.h
 *
-* 系统心跳：基于 timer0 的 1ms 心跳源，供按键消抖、LED 闪烁、
-* 遥测采样节拍等周期任务使用。
+* System heartbeat: a 1ms heartbeat source based on timer0, used by periodic tasks such
+* as key debounce, LED blink, and the telemetry sampling tick.
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -23,15 +23,15 @@
 extern "C" {
 #endif
 
-#define HEARTBEAT_MAX_HANDLERS   4U   /* 内部最多注册的周期任务数 */
+#define HEARTBEAT_MAX_HANDLERS   4U   /* max number of periodic tasks that can be registered */
 
-/* 每 1ms 回调 */
+/* Called every 1ms */
 typedef void (*HeartbeatHandler)(void *ref);
 
 typedef struct {
     XTmrCtr *Tmr;
     u32 IntrVecId;
-    volatile u32 Tick;                    /* 上电以来 tick 数（ms） */
+    volatile u32 Tick;                    /* tick count since power-up (ms) */
     HeartbeatHandler Handlers[HEARTBEAT_MAX_HANDLERS];
     void *HandlerRefs[HEARTBEAT_MAX_HANDLERS];
     u8 NumHandlers;
@@ -42,8 +42,8 @@ void Heartbeat_RegisterHandler(Heartbeat *d, HeartbeatHandler hdl, void *ref);
 u32  Heartbeat_GetTick(Heartbeat *d);
 
 /*
- * timer0 的 XTmrCtr 回调（经 XTmrCtr_SetHandler 注册；XTmrCtr_InterruptHandler
- * 负责挂 INTC）。签名固定为 XTmrCtr_Handler 的 (ref, TmrCtrNumber)。
+ * XTmrCtr callback of timer0 (registered via XTmrCtr_SetHandler; XTmrCtr_InterruptHandler
+ * hooks it to the INTC). Signature fixed as XTmrCtr_Handler's (ref, TmrCtrNumber).
  */
 void Heartbeat_InterruptHandler(void *ref, u8 TmrCtrNumber);
 

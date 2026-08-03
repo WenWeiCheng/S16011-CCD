@@ -1,9 +1,11 @@
 /******************************************************************************
 * @file monitor.h
 *
-* 采样监控循环：周期性采样 ads1118 四路输入（CCD 传感器 NTC、TEC 电压、
-* TEC 电流、环境 NTC），缓存各通道原始码，并按需换算成工程值。
-* 协议层 RO 参数（sensor_temp / tec_voltage / tec_current 等）经本模块取值。
+* Sampling/monitor loop: periodically samples the four ads1118 inputs (CCD sensor NTC,
+* TEC voltage, TEC current, ambient NTC), caches the raw codes of each channel, and
+* converts them to engineering values on demand.
+* The protocol layer's RO parameters (sensor_temp / tec_voltage / tec_current etc.) get
+* their values through this module.
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -27,21 +29,21 @@ extern "C" {
 #define MONITOR_CHANNELS   4U   /* SENSOR_NTC / TEC_V / TEC_I / ENV_NTC */
 
 typedef struct {
-    Ads1118 *Adc;                /* ads1118 驱动（board_hal 已初始化） */
-    Heartbeat *Hb;               /* 心跳节拍源（timer0，1ms） */
-    s16 Raw[MONITOR_CHANNELS];   /* 各通道最近一次原始码（索引=通道序） */
-    u8  MuxIdx;                  /* 当前采样通道（0..3） */
-    u32 LastReadMs;              /* 上次读数节拍 */
-    u32 LastSwitchMs;            /* 上次换通道节拍 */
+    Ads1118 *Adc;                /* ads1118 driver (initialized by board_hal) */
+    Heartbeat *Hb;               /* heartbeat tick source (timer0, 1ms) */
+    s16 Raw[MONITOR_CHANNELS];   /* most recent raw code of each channel (index = channel order) */
+    u8  MuxIdx;                  /* current sampling channel (0..3) */
+    u32 LastReadMs;              /* tick of the last read */
+    u32 LastSwitchMs;            /* tick of the last channel switch */
 } Monitor;
 
 extern Monitor gMonitor;
 
 int   Monitor_Init(Monitor *d, Ads1118 *adc, Heartbeat *hb);
-void  Monitor_Tick(Monitor *d);                       /* 主循环调用：2ms 读 / 8ms 换通道 */
-s16   Monitor_GetRaw(Monitor *d, Ads1118_Mux mux);    /* 原始码 */
+void  Monitor_Tick(Monitor *d);                       /* called from main loop: read every 2ms / switch every 8ms */
+s16   Monitor_GetRaw(Monitor *d, Ads1118_Mux mux);    /* raw code */
 float Monitor_GetVoltage(Monitor *d, Ads1118_Mux mux);/* V */
-float Monitor_GetNtcTemp(Monitor *d, Ads1118_Mux mux);/* degC（仅 NTC 通道有效） */
+float Monitor_GetNtcTemp(Monitor *d, Ads1118_Mux mux);/* degC (valid only for NTC channels) */
 
 #ifdef __cplusplus
 }

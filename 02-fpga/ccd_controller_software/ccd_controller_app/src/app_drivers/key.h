@@ -1,10 +1,12 @@
 /******************************************************************************
 * @file key.h
 *
-* 按键驱动：基于 Gpio_key（含中断），语义接口 + 内置消抖/长按判定。
+* Key driver: based on Gpio_key (with interrupts), semantic interface + built-in
+* debounce / long-press detection.
 *
-* 消抖 FSM 由心跳周期调用 Key_Tick() 推进；GPIO 边沿中断只置"电平有变化"
-* 标志，不在中断上下文做定时判定。
+* The debounce FSM is advanced by calling Key_Tick() on each heartbeat period; the GPIO
+* edge interrupt only sets the "level changed" flag, no timing decisions in interrupt
+* context.
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -26,10 +28,10 @@ extern "C" {
 #endif
 
 typedef enum {
-    KEY_IDLE = 0,       /* 无事件 */
-    KEY_PRESSED,        /* 消抖后按下 */
-    KEY_RELEASED,       /* 消抖后释放 */
-    KEY_LONG_PRESS       /* 长按 */
+    KEY_IDLE = 0,       /* no event */
+    KEY_PRESSED,        /* pressed after debounce */
+    KEY_RELEASED,       /* released after debounce */
+    KEY_LONG_PRESS       /* long press */
 } KeyEvent;
 
 typedef void (*KeyHandler)(KeyEvent evt, void *ref);
@@ -41,27 +43,27 @@ typedef enum {
 
 typedef struct {
     XGpio *Gpio;
-    u32 ActiveLowMask;        /* 低有效键位掩码（按下=0） */
-    u16 DebounceMs;           /* 消抖时间（ms） */
-    u16 LongPressMs;          /* 长按判定时间（ms） */
-    KeyState State;           /* 消抖后状态 */
+    u32 ActiveLowMask;        /* mask of active-low key bits (pressed=0) */
+    u16 DebounceMs;           /* debounce time (ms) */
+    u16 LongPressMs;          /* long-press threshold time (ms) */
+    KeyState State;           /* debounced state */
     u16 DebounceCount;
-    u16 PressCount;           /* 持续按下计数 */
-    u8  LongPressed;          /* 本次按下是否已触发长按 */
-    volatile u8 Changed;      /* GPIO 中断置位：电平有变化 */
+    u16 PressCount;           /* sustained press counter */
+    u8  LongPressed;          /* whether long press already triggered for this press */
+    volatile u8 Changed;      /* set by GPIO interrupt: level changed */
     KeyHandler Handler;
     void *HandlerRef;
 } Key;
 
-/* 默认时序参数（可在 Init 后覆盖） */
+/* Default timing parameters (can be overridden after Init) */
 #define KEY_DEBOUNCE_MS_DEFAULT   20U
 #define KEY_LONG_PRESS_MS_DEFAULT 1000U
 
 int  Key_Init(Key *d, XGpio *gpio, u32 active_low_mask);
 void Key_RegisterHandler(Key *d, KeyHandler hdl, void *ref);
 KeyState Key_GetState(Key *d);
-void Key_Tick(Key *d, u32 ms);            /* 心跳周期调用，推进消抖 FSM */
-void Key_InterruptHandler(void *ref);     /* GPIO 中断，置按键标志 */
+void Key_Tick(Key *d, u32 ms);            /* called on each heartbeat period, advances the debounce FSM */
+void Key_InterruptHandler(void *ref);     /* GPIO interrupt, sets the key flag */
 
 #ifdef __cplusplus
 }

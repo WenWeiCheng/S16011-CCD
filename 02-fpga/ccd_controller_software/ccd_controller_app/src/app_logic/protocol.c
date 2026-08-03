@@ -1,18 +1,19 @@
 /******************************************************************************
 * @file protocol.c
 *
-* UART 控制协议实现：
-*   - Value System：Protocol_Param 参数表（每参数一个描述结构体）
-*   - 命令分发表：VERB → handler（LISTPARAMS / GETINFO / GETPARAM / SETPARAM / ACQ）
-*   - 行解析：空格分隔 + 双引号包裹（\" 转义）
-*   - 响应：OK <data...> / ERR <code> <message>
+* UART control protocol implementation:
+*   - Value System: Protocol_Param parameter table (one descriptor struct per parameter)
+*   - Command dispatch table: VERB -> handler (LISTPARAMS / GETINFO / GETPARAM / SETPARAM / ACQ)
+*   - Line parsing: space separated + double quotes ("\"" escaping)
+*   - Response: OK <data...> / ERR <code> <message>
 *
-* 数字格式化/解析全部手写（itoa / 定点小数 / 浮点解析），不依赖 newlib
-* printf/strtod —— newlib printf 即便只用于整数也会把完整浮点引擎（_svfprintf_r
-* + _dtoa_r + malloc）拉进固件，128KB local mem 装不下。
+* Number formatting/parsing is all hand-written (itoa / fixed-point decimals / float
+* parsing), not depending on newlib printf/strtod -- newlib printf pulls in the complete
+* floating-point engine (_svfprintf_r + _dtoa_r + malloc) even when used only for integers,
+* which does not fit in the 128KB local mem.
 *
-* 依赖 app 驱动层（gUartDrv / gCcd / gCcdCtrl / gAdn8833 / gDac8311 / gMonitor），
-* 不直接访问寄存器或 Xilinx 驱动。
+* Depends on the app driver layer (gUartDrv / gCcd / gCcdCtrl / gAdn8833 / gDac8311 /
+* gMonitor); does not access registers or Xilinx drivers directly.
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -32,10 +33,10 @@
 #include <string.h>
 
 #define PROTO_MAX_ARGS     4U
-#define PROTO_RESP_MAX     512U   /* 响应行缓冲（TX 不受 256B RX 行限约束） */
-#define PROTO_STR_MAX      32U    /* 字符串参数容量（camera_name maxlen） */
+#define PROTO_RESP_MAX     512U   /* response line buffer (TX not bound by the 256B RX line limit) */
+#define PROTO_STR_MAX      32U    /* string parameter capacity (camera_name maxlen) */
 
-/* 错误码（对应 uart_protocol_design.md §3） */
+/* Error codes (correspond to uart_protocol_design.md sec. 3) */
 #define PROTO_ERR_UNKNOWN_VERB   1
 #define PROTO_ERR_UNKNOWN_PARAM  2
 #define PROTO_ERR_INVALID_VALUE  3
@@ -47,23 +48,28 @@
 /* ============================================================================
  * Value System
  * ==========================================================================*/
+/** Parameter value type: selects how the value is parsed (SETPARAM) and formatted (GETPARAM). */
 typedef enum {
-    VAL_TYPE_INT_RANGE = 0,
-    VAL_TYPE_INT_COLLECTION,
-    VAL_TYPE_FLOAT_RANGE,
-    VAL_TYPE_FLOAT_COLLECTION,
-    VAL_TYPE_STRING,
-    VAL_TYPE_BOOL
+    VAL_TYPE_INT_RANGE = 0,    /* integer bounded by min:max:step */
+    VAL_TYPE_ENUM,             /* integer index into a label list */
+    VAL_TYPE_FLOAT_RANGE,      /* float bounded by min:max:step */
+    VAL_TYPE_STRING,           /* NUL-terminated string */
+    VAL_TYPE_BOOL              /* boolean (0/off/false, 1/on/true) */
 } Protocol_ValType;
 
+/** Parameter access rights, enforced by SETPARAM. */
 typedef enum {
-    VAL_ACCESS_RO = 0,
-    VAL_ACCESS_RW,
-    VAL_ACCESS_WO
+    VAL_ACCESS_RO = 0,   /* read-only: no Apply, only Format */
+    VAL_ACCESS_RW,       /* read-write */
+    VAL_ACCESS_WO        /* write-only */
 } Protocol_Access;
 
+/**
+* Storage for a parameter's current/live value. Only one member is meaningful,
+* selected by Type (I for int, F for float, B for bool, S for string).
+*/
 typedef union {
-    s32   I;                  /* int_range / int_collection（索引） */
+    s32   I;                  /* int_range / enum (index) */
     float F;                  /* float_range */
     u8    B;                  /* bool */
     char  S[PROTO_STR_MAX];   /* string */
@@ -71,30 +77,45 @@ typedef union {
 
 typedef struct Protocol_Param Protocol_Param;
 
-typedef int (*Protocol_ApplyFn)(const Protocol_Param *p);  /* SETPARAM 生效→硬件 */
+/**
+* SETPARAM take-effect callback: writes p->Cur to hardware. Return 0 on success,
+* nonzero on failure (SETPARAM replies ERR 7 / init prints a warning).
+*/
+typedef int (*Protocol_ApplyFn)(const Protocol_Param *p);
+
+/**
+* GETPARAM serialize callback: writes the current/live value as a protocol string
+* into buf (capacity cap), NUL-terminated. Returns the number of bytes written.
+*/
 typedef int (*Protocol_FormatFn)(const Protocol_Param *p, char *buf, u32 cap);
 
+/** One entry of the parameter table; defines a settable/queryable protocol parameter. */
 struct Protocol_Param {
-    const char *Name;
-    Protocol_ValType Type;
-    Protocol_Access  Access;
-    const char *Desc;          /* 含空格，GETINFO 双引号包裹 */
-    const char *Unit;
-    const char *Constraint;    /* min:max:step | label,... | maxlen N | "" */
-    Protocol_Value Cur;        /* 当前值（RO 参数未用） */
-    Protocol_ApplyFn  Apply;
-    Protocol_FormatFn Format;
+    const char *Name;          /* protocol keyword (ASCII, no spaces) */
+    Protocol_ValType Type;     /* selects parsing/formatting rules */
+    Protocol_Access  Access;   /* RO/RW/WO */
+    const char *Desc;          /* human description, wrapped in double quotes by GETINFO */
+    const char *Unit;          /* e.g. "us", "px", "V"; empty if none */
+    const char *Constraint;    /* "min:max:step" | "label,..." | "maxlen N" | "" */
+    Protocol_Value Cur;        /* current value (unused for RO params) */
+    Protocol_ApplyFn  Apply;   /* write p->Cur to hardware; NULL for RO params */
+    Protocol_FormatFn Format;  /* serialize current/live value; NULL -> GETPARAM returns 0 */
 };
 
 /* ============================================================================
- * 响应行拼接器
+ * Response line builder
  * ==========================================================================*/
+/**
+* Bounded response-line buffer. Writes never overflow: appends past the end are
+* silently truncated, keeping the buffer NUL-terminated.
+*/
 typedef struct {
-    char *Buf;
-    u32 Len;
-    u32 Cap;
+    char *Buf;   /* destination buffer (caller-provided) */
+    u32 Len;     /* bytes written so far */
+    u32 Cap;     /* buffer capacity in bytes */
 } ProtoBuf;
 
+/** Bind a caller-provided buffer to a ProtoBuf and reset it to an empty string. */
 static void Pb_Init(ProtoBuf *b, char *buf, u32 cap)
 {
     b->Buf = buf;
@@ -103,6 +124,10 @@ static void Pb_Init(ProtoBuf *b, char *buf, u32 cap)
     if (cap > 0U) buf[0] = '\0';
 }
 
+/**
+* Append the first n bytes of s. Silently truncates if the buffer is full or the
+* chunk would overflow, keeping the result NUL-terminated.
+*/
 static void Pb_AppendLen(ProtoBuf *b, const char *s, u32 n)
 {
     if (b->Len >= b->Cap - 1U) return;
@@ -112,17 +137,20 @@ static void Pb_AppendLen(ProtoBuf *b, const char *s, u32 n)
     b->Buf[b->Len] = '\0';
 }
 
+/** Append a whole NUL-terminated string. */
 static void Pb_Append(ProtoBuf *b, const char *s)
 {
     Pb_AppendLen(b, s, (u32)strlen(s));
 }
 
+/** Append a signed integer (hand-written itoa; snprintf would pull in newlib printf). */
 static void Pb_AppendInt(ProtoBuf *b, s32 v)
 {
     char tmp[12];
     Pb_AppendLen(b, tmp, Proto_Itoa(tmp, v));
 }
 
+/** Append a float with dec fixed decimals (hand-written formatting). */
 static void Pb_AppendFloat(ProtoBuf *b, float v, int dec)
 {
     char tmp[40];
@@ -131,7 +159,7 @@ static void Pb_AppendFloat(ProtoBuf *b, float v, int dec)
 }
 
 /* ============================================================================
- * 前向声明
+ * Forward declarations
  * ==========================================================================*/
 static Protocol_Param *Proto_FindParam(const char *name);
 static int  Cmd_ListParams(int argc, char **argv);
@@ -141,15 +169,15 @@ static int  Cmd_SetParam(int argc, char **argv);
 static int  Cmd_Acq(int argc, char **argv);
 
 /* ============================================================================
- * 参数表（"新参数只需加一行"）
+ * Parameter table ("add a new parameter with just one line")
  * ==========================================================================*/
 static Protocol_Param g_params[] = {
-    /* ---- 曝光 / 图像 ---- */
+    /* ---- exposure / image ---- */
     { "exposure_time_us", VAL_TYPE_INT_RANGE, VAL_ACCESS_RW, "exposure time in us", "us",
       "100:10000:100", { .I = 1000 }, NULL, NULL },
-    { "read_mode", VAL_TYPE_INT_COLLECTION, VAL_ACCESS_RW, "readout mode", "",
+    { "read_mode", VAL_TYPE_ENUM, VAL_ACCESS_RW, "readout mode", "",
       "line_binning,image", { .I = CCDC_READ_MODE_LINE_BINNING }, NULL, NULL },
-    { "freq_sel", VAL_TYPE_INT_COLLECTION, VAL_ACCESS_RW, "SCLK frequency", "",
+    { "freq_sel", VAL_TYPE_ENUM, VAL_ACCESS_RW, "SCLK frequency", "",
       "100k,500k", { .I = CCDC_FREQ_100K }, NULL, NULL },
     { "mock_mode", VAL_TYPE_BOOL, VAL_ACCESS_RW, "mock ADC output virtual pixels", "",
       "", { .B = 0 }, NULL, NULL },
@@ -176,7 +204,7 @@ static Protocol_Param g_params[] = {
       "", { .B = 0 }, NULL, NULL },
     { "tec_voltage_set", VAL_TYPE_FLOAT_RANGE, VAL_ACCESS_RW, "TEC output voltage set", "V",
       "0:2.500:0.001", { .F = 0.0f }, NULL, NULL },
-    /* ---- 遥测（RO） ---- */
+    /* ---- telemetry (RO) ---- */
     { "sensor_temp", VAL_TYPE_FLOAT_RANGE, VAL_ACCESS_RO, "CCD sensor NTC temperature", "degC",
       "0:80:0.1", { .F = 0.0f }, NULL, NULL },
     { "environment_temp", VAL_TYPE_FLOAT_RANGE, VAL_ACCESS_RO, "environment NTC temperature", "degC",
@@ -185,10 +213,10 @@ static Protocol_Param g_params[] = {
       "0:4.096:0.001", { .F = 0.0f }, NULL, NULL },
     { "tec_current", VAL_TYPE_FLOAT_RANGE, VAL_ACCESS_RO, "TEC output current monitor", "A",
       "0:10:0.001", { .F = 0.0f }, NULL, NULL },
-    /* ---- 系统 ---- */
+    /* ---- system ---- */
     { "camera_name", VAL_TYPE_STRING, VAL_ACCESS_RW, "camera name", "",
       "maxlen 32", { .S = "ccd" }, NULL, NULL },
-    { "acq_state", VAL_TYPE_INT_COLLECTION, VAL_ACCESS_RO, "acquisition state", "",
+    { "acq_state", VAL_TYPE_ENUM, VAL_ACCESS_RO, "acquisition state", "",
       "idle,exposing,reading,tx", { .I = 0 }, NULL, NULL },
     { "frame_num_ready", VAL_TYPE_INT_RANGE, VAL_ACCESS_RO, "frames ready in cache", "",
       "0:8:1", { .I = 0 }, NULL, NULL },
@@ -196,7 +224,7 @@ static Protocol_Param g_params[] = {
 #define PROTO_NUM_PARAMS  (sizeof g_params / sizeof g_params[0])
 
 /* ============================================================================
- * 命令分发表（"新命令只需加一行"）
+ * Command dispatch table ("add a new command with just one line")
  * ==========================================================================*/
 typedef int (*Proto_CmdHandler)(int argc, char **argv);
 typedef struct {
@@ -214,20 +242,21 @@ static const Proto_Cmd g_cmds[] = {
 #define PROTO_NUM_CMDS  (sizeof g_cmds / sizeof g_cmds[0])
 
 /* ============================================================================
- * 响应输出
+ * Response output
  * ==========================================================================*/
+/** Send one response line to the host UART. */
 static void Proto_Reply(const char *line)
 {
     Uart_SendLine(&gUartDrv, line);
 }
 
-/* OK（无数据） */
+/** Reply "OK" with no data. */
 static void Proto_Ok0(void)
 {
     Proto_Reply("OK");
 }
 
-/* ERR <code> <msg> */
+/** Reply "ERR <code> <msg>"; code is one of the PROTO_ERR_* values. */
 static void Proto_Err(int code, const char *msg)
 {
     char line[PROTO_RESP_MAX];
@@ -242,12 +271,13 @@ static void Proto_Err(int code, const char *msg)
 }
 
 /* ============================================================================
- * 约束 / 集合工具
+ * Constraint / set utilities
  * ==========================================================================*/
+/** Map a value type to its protocol keyword ("int_range", "bool", ...). */
 static const char *Proto_TypeName(Protocol_ValType t)
 {
     static const char *const names[] = {
-        "int_range", "int_collection", "float_range", "float_collection",
+        "int_range", "enum", "float_range",
         "string", "bool"
     };
     if ((u32)t >= (sizeof names / sizeof names[0])) {
@@ -256,6 +286,7 @@ static const char *Proto_TypeName(Protocol_ValType t)
     return names[t];
 }
 
+/** Map an access level to its protocol keyword ("RO"/"RW"/"WO"). */
 static const char *Proto_AccessName(Protocol_Access a)
 {
     static const char *const names[] = { "RO", "RW", "WO" };
@@ -266,8 +297,13 @@ static const char *Proto_AccessName(Protocol_Access a)
 }
 
 /* ============================================================================
- * 参数解析 + 校验（SETPARAM）
+ * Parameter parsing + validation (SETPARAM)
  * ==========================================================================*/
+/**
+* Parse + validate the token against p->Constraint and store the result in *v.
+* Out-of-range values are clamped; int values not on a step are snapped to the
+* nearest valid step. Returns 0 on success, -1 on malformed input.
+*/
 static int Proto_ParseValue(const Protocol_Param *p, const char *tok,
                             Protocol_Value *v)
 {
@@ -281,21 +317,24 @@ static int Proto_ParseValue(const Protocol_Param *p, const char *tok,
     case VAL_TYPE_INT_RANGE:
         if (Proto_ParseIntConstraint(p->Constraint, &mn, &mx, &st) != 0) return -1;
         if (Proto_ParseInt(tok, &iv) != 0) return -1;
-        if (iv < mn || iv > mx) return -1;
-        if (st > 1 && ((iv - mn) % st) != 0) return -1;
+        if (iv < mn) iv = (s32)mn;               /* clamp to range */
+        if (iv > mx) iv = (s32)mx;
+        if (st > 1L) {                           /* snap to nearest valid step */
+            long q = ((long)iv - mn + st / 2L) / st;
+            iv = (s32)(mn + q * st);
+        }
         v->I = iv;
         return 0;
-    case VAL_TYPE_INT_COLLECTION:
-        if (Proto_ParseColl(p->Constraint, tok, &v->I) != 0) return -1;
+    case VAL_TYPE_ENUM:
+        if (Proto_ParseEnum(p->Constraint, tok, &v->I) != 0) return -1;
         return 0;
     case VAL_TYPE_FLOAT_RANGE:
         if (Proto_ParseFloatConstraint(p->Constraint, &fmn, &fmx, &fst) != 0) return -1;
         if (Proto_ParseFloat(tok, &fv) != 0) return -1;
-        if (fv < fmn || fv > fmx) return -1;
+        if (fv < fmn) fv = fmn;                  /* clamp to range */
+        if (fv > fmx) fv = fmx;
         v->F = fv;
         return 0;
-    case VAL_TYPE_FLOAT_COLLECTION:
-        return -1;   /* 本协议暂未使用 */
     case VAL_TYPE_BOOL:
         if (strcmp(tok, "0") == 0 || strcmp(tok, "off") == 0 ||
             strcmp(tok, "false") == 0) { v->B = 0U; return 0; }
@@ -321,32 +360,37 @@ static int Proto_ParseValue(const Protocol_Param *p, const char *tok,
 }
 
 /* ============================================================================
- * 生效回调（Apply）：把参数当前值写入硬件
+ * Apply callbacks (Apply): write the parameter's current value to hardware
  * ==========================================================================*/
+/** Apply: write the readout-mode selection to the CCD controller. */
 static int Apply_ReadMode(const Protocol_Param *p)
 {
     CcdController_SetReadMode(&gCcdCtrl, (u8)p->Cur.I);
     return 0;
 }
 
+/** Apply: write the SCLK frequency selection to the CCD controller. */
 static int Apply_FreqSel(const Protocol_Param *p)
 {
     CcdController_SetFreqSel(&gCcdCtrl, (u8)p->Cur.I);
     return 0;
 }
 
+/** Apply: enable/disable the mock-ADC virtual pixel mode. */
 static int Apply_MockMode(const Protocol_Param *p)
 {
     CcdController_SetMockMode(&gCcdCtrl, p->Cur.B);
     return 0;
 }
 
+/** Apply: write the CDSCLK fine-delay taps to the CCD controller. */
 static int Apply_CdsclkDelay(const Protocol_Param *p)
 {
     CcdController_SetCdsclkDelay(&gCcdCtrl, (u8)p->Cur.I);
     return 0;
 }
 
+/** Apply: push image_width/image_height (from their own params) to the CCD controller. */
 static int Apply_ImageSize(const Protocol_Param *p)
 {
     Protocol_Param *w, *h;
@@ -358,6 +402,10 @@ static int Apply_ImageSize(const Protocol_Param *p)
     return 0;
 }
 
+/**
+* Apply: push all bevel/blank edges (from their own params) to the CCD controller.
+* Shared by bevel_* and blank_* params.
+*/
 static int Apply_BevelBlank(const Protocol_Param *p)
 {
     CcdController_BevelBlank bb;
@@ -373,20 +421,23 @@ static int Apply_BevelBlank(const Protocol_Param *p)
     return 0;
 }
 
+/** Apply: enable/disable the TEC via the ADN8833 driver. */
 static int Apply_TecEnable(const Protocol_Param *p)
 {
     Adn8833_SetEnable(&gAdn8833, p->Cur.B);
     return 0;
 }
 
+/** Apply: set the TEC output voltage via the DAC8311 driver. */
 static int Apply_TecVoltage(const Protocol_Param *p)
 {
     return (Dac8311_SetVoltage(&gDac8311, p->Cur.F) == XST_SUCCESS) ? 0 : -1;
 }
 
 /* ============================================================================
- * 序列化回调（Format）：把当前值 / 实时值写为协议字符串
+ * Serialize callbacks (Format): write the current/live value as a protocol string
  * ==========================================================================*/
+/** Format: serialize an int param as its decimal string. */
 static int Fmt_Int(const Protocol_Param *p, char *buf, u32 cap)
 {
     ProtoBuf b;
@@ -395,13 +446,14 @@ static int Fmt_Int(const Protocol_Param *p, char *buf, u32 cap)
     return (int)b.Len;
 }
 
-static int Fmt_Coll(const Protocol_Param *p, char *buf, u32 cap)
+/** Format: serialize an enum param as its label ("line_binning", ...). */
+static int Fmt_Enum(const Protocol_Param *p, char *buf, u32 cap)
 {
     ProtoBuf b;
     char label[PROTO_STR_MAX];
 
     Pb_Init(&b, buf, cap);
-    if (Proto_CollLabel(p->Constraint, (u32)p->Cur.I, label, sizeof label) != 0) {
+    if (Proto_EnumLabel(p->Constraint, (u32)p->Cur.I, label, sizeof label) != 0) {
         Pb_Append(&b, "?");
     } else {
         Pb_Append(&b, label);
@@ -409,6 +461,7 @@ static int Fmt_Coll(const Protocol_Param *p, char *buf, u32 cap)
     return (int)b.Len;
 }
 
+/** Format: serialize a bool param as "1"/"0". */
 static int Fmt_Bool(const Protocol_Param *p, char *buf, u32 cap)
 {
     ProtoBuf b;
@@ -417,6 +470,7 @@ static int Fmt_Bool(const Protocol_Param *p, char *buf, u32 cap)
     return (int)b.Len;
 }
 
+/** Format: serialize a string param wrapped in double quotes. */
 static int Fmt_String(const Protocol_Param *p, char *buf, u32 cap)
 {
     ProtoBuf b;
@@ -427,6 +481,7 @@ static int Fmt_String(const Protocol_Param *p, char *buf, u32 cap)
     return (int)b.Len;
 }
 
+/** Format: serialize a float param with decimals taken from its constraint step. */
 static int Fmt_Float(const Protocol_Param *p, char *buf, u32 cap)
 {
     ProtoBuf b;
@@ -436,7 +491,8 @@ static int Fmt_Float(const Protocol_Param *p, char *buf, u32 cap)
     return (int)b.Len;
 }
 
-/* ---- RO 参数：实时取 monitor / ccd ---- */
+/* ---- RO params: live values from monitor / ccd ---- */
+/** Format: read live sensor NTC temperature from the monitor. */
 static int Fmt_SensorTemp(const Protocol_Param *p, char *buf, u32 cap)
 {
     ProtoBuf b;
@@ -446,6 +502,7 @@ static int Fmt_SensorTemp(const Protocol_Param *p, char *buf, u32 cap)
     return (int)b.Len;
 }
 
+/** Format: read live environment NTC temperature from the monitor. */
 static int Fmt_EnvTemp(const Protocol_Param *p, char *buf, u32 cap)
 {
     ProtoBuf b;
@@ -455,6 +512,7 @@ static int Fmt_EnvTemp(const Protocol_Param *p, char *buf, u32 cap)
     return (int)b.Len;
 }
 
+/** Format: read live TEC output voltage from the monitor. */
 static int Fmt_TecVoltage(const Protocol_Param *p, char *buf, u32 cap)
 {
     ProtoBuf b;
@@ -464,6 +522,7 @@ static int Fmt_TecVoltage(const Protocol_Param *p, char *buf, u32 cap)
     return (int)b.Len;
 }
 
+/** Format: read live TEC output current (V * TEC_I_A_PER_V) from the monitor. */
 static int Fmt_TecCurrent(const Protocol_Param *p, char *buf, u32 cap)
 {
     ProtoBuf b;
@@ -475,6 +534,7 @@ static int Fmt_TecCurrent(const Protocol_Param *p, char *buf, u32 cap)
     return (int)b.Len;
 }
 
+/** Format: serialize the current CCD acquisition state ("idle", "exposing", ...). */
 static int Fmt_AcqState(const Protocol_Param *p, char *buf, u32 cap)
 {
     static const char *const states[] = { "idle", "exposing", "reading", "tx" };
@@ -487,6 +547,7 @@ static int Fmt_AcqState(const Protocol_Param *p, char *buf, u32 cap)
     return (int)b.Len;
 }
 
+/** Format: serialize the number of frames ready in the cache. */
 static int Fmt_FrameNum(const Protocol_Param *p, char *buf, u32 cap)
 {
     ProtoBuf b;
@@ -496,12 +557,14 @@ static int Fmt_FrameNum(const Protocol_Param *p, char *buf, u32 cap)
     return (int)b.Len;
 }
 
-/* 给各参数挂上 Apply / Format（集中赋值，避免初始化列表过长） */
+/* Attach Apply / Format to each parameter (centralized assignment to keep the
+ * initializer list short) */
+/** Bind the Apply/Format callbacks to every parameter (called once by Protocol_Init). */
 static void Proto_BindHandlers(void)
 {
     g_params[0].Format = Fmt_Int;                /* exposure_time_us */
-    g_params[1].Apply  = Apply_ReadMode;   g_params[1].Format = Fmt_Coll;
-    g_params[2].Apply  = Apply_FreqSel;    g_params[2].Format = Fmt_Coll;
+    g_params[1].Apply  = Apply_ReadMode;   g_params[1].Format = Fmt_Enum;
+    g_params[2].Apply  = Apply_FreqSel;    g_params[2].Format = Fmt_Enum;
     g_params[3].Apply  = Apply_MockMode;   g_params[3].Format = Fmt_Bool;
     g_params[4].Apply  = Apply_CdsclkDelay;g_params[4].Format = Fmt_Int;
     g_params[5].Apply  = Apply_ImageSize;  g_params[5].Format = Fmt_Int;
@@ -524,8 +587,9 @@ static void Proto_BindHandlers(void)
 }
 
 /* ============================================================================
- * 参数查找
+ * Parameter lookup
  * ==========================================================================*/
+/** Look up a parameter by its protocol keyword; returns NULL if not found. */
 static Protocol_Param *Proto_FindParam(const char *name)
 {
     u32 i;
@@ -538,8 +602,9 @@ static Protocol_Param *Proto_FindParam(const char *name)
 }
 
 /* ============================================================================
- * 命令处理
+ * Command handling
  * ==========================================================================*/
+/** LISTPARAMS [group]: reply with the comma-separated names of matching parameters. */
 static int Cmd_ListParams(int argc, char **argv)
 {
     const char *group = (argc >= 2) ? argv[1] : NULL;
@@ -564,6 +629,7 @@ static int Cmd_ListParams(int argc, char **argv)
     return 0;
 }
 
+/** GETINFO <name>: reply with name, type, access, description, unit and constraint. */
 static int Cmd_GetInfo(int argc, char **argv)
 {
     const Protocol_Param *p;
@@ -591,6 +657,7 @@ static int Cmd_GetInfo(int argc, char **argv)
     return 0;
 }
 
+/** GETPARAM <name>: reply with the formatted current/live value of the parameter. */
 static int Cmd_GetParam(int argc, char **argv)
 {
     const Protocol_Param *p;
@@ -617,6 +684,7 @@ static int Cmd_GetParam(int argc, char **argv)
     return 0;
 }
 
+/** SETPARAM <name> <value>: parse, store, and apply the value to hardware. */
 static int Cmd_SetParam(int argc, char **argv)
 {
     Protocol_Param *p;
@@ -647,6 +715,7 @@ static int Cmd_SetParam(int argc, char **argv)
     return 0;
 }
 
+/** ACQ single|live|abort: start/abort a capture; single/live use the exposure time param. */
 static int Cmd_Acq(int argc, char **argv)
 {
     const Protocol_Param *pt;
@@ -678,8 +747,12 @@ static int Cmd_Acq(int argc, char **argv)
 }
 
 /* ============================================================================
- * 行解析（空格 + 双引号，\" 转义）
+ * Line parsing (spaces + double quotes, "\"" escaping)
  * ==========================================================================*/
+/**
+* Copy src into itself, decoding "\"" escapes, stopping at an unescaped '"' or
+* NUL. Returns a pointer to the stopping char (the '"' or the NUL terminator).
+*/
 static char *Proto_CopyEscaped(char *src)
 {
     char *dst = src;
@@ -696,6 +769,11 @@ static char *Proto_CopyEscaped(char *src)
     return src;
 }
 
+/**
+* Split line into whitespace-separated tokens into argv (max max), honoring
+* double quotes with "\"" escaping. Returns the token count, or -1 if more than
+* max tokens are present.
+*/
 static int Proto_Tokenize(char *line, char **argv, u32 max)
 {
     u32 argc = 0U;
@@ -721,7 +799,7 @@ static int Proto_Tokenize(char *line, char **argv, u32 max)
     return (int)argc;
 }
 
-/* 分发命令 */
+/* Dispatch a command: tokenize then route the first token through the verb table. */
 static void Proto_Dispatch(char *line)
 {
     char *argv[PROTO_MAX_ARGS];
@@ -741,7 +819,7 @@ static void Proto_Dispatch(char *line)
 }
 
 /* ============================================================================
- * ISR → main 循环的 pending 通道
+ * ISR -> main loop pending channel
  * ==========================================================================*/
 static volatile u8 gLinePending;
 static volatile u8 gLineTooLong;
@@ -749,7 +827,8 @@ static char gPendingLine[UART_LINE_MAX];
 
 /*****************************************************************************/
 /**
-* @brief  UART 收到完整行（ISR 上下文）：拷入 pending 缓冲并置标志。
+* @brief  UART received a complete line (ISR context): copies into the pending buffer and
+* sets the flag.
 ******************************************************************************/
 void Protocol_OnLine(const char *line, void *ref)
 {
@@ -765,7 +844,8 @@ void Protocol_OnLine(const char *line, void *ref)
 
 /*****************************************************************************/
 /**
-* @brief  UART 错误回调（ISR 上下文）：超长行置标志，主循环回 ERR 6。
+* @brief  UART error callback (ISR context): sets a flag for an over-long line, the main
+* loop replies ERR 6.
 ******************************************************************************/
 void Protocol_OnError(UartError err, void *ref)
 {
@@ -777,7 +857,7 @@ void Protocol_OnError(UartError err, void *ref)
 
 /*****************************************************************************/
 /**
-* @brief  主循环轮询：处理待发送的 ERR 6 与待分发的命令行。
+* @brief  Main loop polling: handles the pending ERR 6 and the command lines to dispatch.
 ******************************************************************************/
 void Protocol_ProcessPending(void)
 {
@@ -790,7 +870,7 @@ void Protocol_ProcessPending(void)
 
     if (gLinePending == 0) return;
 
-    /* 临界区拷出，避免 ISR 覆盖 */
+    /* Copy out in a critical section, to avoid being overwritten by the ISR */
     microblaze_disable_interrupts();
     memcpy(line, gPendingLine, sizeof line);
     gLinePending = 0;
@@ -801,7 +881,8 @@ void Protocol_ProcessPending(void)
 
 /*****************************************************************************/
 /**
-* @brief  协议初始化：绑定 Apply/Format，应用参数默认值到硬件，打印 READY。
+* @brief  Protocol initialization: binds Apply/Format, applies the parameter defaults to
+* hardware, prints READY.
 ******************************************************************************/
 int Protocol_Init(void)
 {

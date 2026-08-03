@@ -1,7 +1,7 @@
 /******************************************************************************
 * @file dac8311.c
 *
-* dac8311 驱动实现。SPI mode 2（CPOL=1, CPHA=0），16-bit 帧。
+* dac8311 driver implementation. SPI mode 2 (CPOL=1, CPHA=0), 16-bit frames.
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -20,11 +20,11 @@
 
 /*****************************************************************************/
 /**
-* @brief  发起一笔 16-bit 传输（写 dac8311 无回读）。
+* @brief  Starts a 16-bit transfer (writing dac8311, no readback).
 *
-* 传输前切 SPI mode 2 并选片。
+* Switches to SPI mode 2 and asserts the chip select before transferring.
 *
-* @return XST_SUCCESS / 底层错误。
+* @return XST_SUCCESS / underlying error.
 ******************************************************************************/
 static int Dac8311_Transfer(Dac8311 *d, u16 word)
 {
@@ -49,9 +49,9 @@ static int Dac8311_Transfer(Dac8311 *d, u16 word)
 
 /*****************************************************************************/
 /**
-* @brief  初始化：保存 SPI/片选/参考电压。
+* @brief  Initializes: stores the SPI / chip select / reference voltage.
 *
-* @return XST_SUCCESS。
+* @return XST_SUCCESS.
 ******************************************************************************/
 int Dac8311_Init(Dac8311 *d, XSpi *spi, u8 cs, float vref)
 {
@@ -66,11 +66,11 @@ int Dac8311_Init(Dac8311 *d, XSpi *spi, u8 cs, float vref)
 
 /*****************************************************************************/
 /**
-* @brief  设置输出电压（正常模式，PD=00）。
+* @brief  Sets the output voltage (normal mode, PD=00).
 *
-* @param  volt 目标电压（V），钳位到 0..Vref。
+* @param  volt Target voltage (V), clamped to 0..Vref.
 *
-* @return XST_SUCCESS / 底层错误。
+* @return XST_SUCCESS / underlying error.
 ******************************************************************************/
 int Dac8311_SetVoltage(Dac8311 *d, float volt)
 {
@@ -96,7 +96,7 @@ int Dac8311_SetVoltage(Dac8311 *d, float volt)
 
 /*****************************************************************************/
 /**
-* @brief  写原始 16-bit（[15:14] 控制位 + [13:0] 数据）。
+* @brief  Writes raw 16-bit ([15:14] control bits + [13:0] data).
 ******************************************************************************/
 int Dac8311_SetRaw(Dac8311 *d, u16 code)
 {
@@ -105,7 +105,7 @@ int Dac8311_SetRaw(Dac8311 *d, u16 code)
 
 /*****************************************************************************/
 /**
-* @brief  进入 Power-down 模式（pd: 1=1kΩ, 2=100kΩ, 3=High-Z）。
+* @brief  Enters Power-down mode (pd: 1=1k ohm, 2=100k ohm, 3=High-Z).
 ******************************************************************************/
 int Dac8311_SetPowerDown(Dac8311 *d, u8 pd)
 {

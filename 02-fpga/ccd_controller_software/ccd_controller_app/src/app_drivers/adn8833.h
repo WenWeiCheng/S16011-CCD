@@ -1,8 +1,8 @@
 /******************************************************************************
 * @file adn8833.h
 *
-* ADN8833 TEC 电源使能：基于 Gpio_general[0]，只做电平操作。
-* 使能时序（上电稳定、电流限制）由 app 逻辑控制。
+* ADN8833 TEC power enable: based on Gpio_general[0], only does level operations.
+* Enable timing (power-up settling, current limiting) is controlled by the app logic.
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -25,8 +25,8 @@ extern "C" {
 
 typedef struct {
     XGpio *Gpio;
-    u32 EnMask;       /* 使能位掩码 */
-    u8 Enable;        /* 当前使能状态 */
+    u32 EnMask;       /* enable bit mask */
+    u8 Enable;        /* current enable state */
 } Adn8833;
 
 int  Adn8833_Init(Adn8833 *d, XGpio *gpio, u32 en_bit);

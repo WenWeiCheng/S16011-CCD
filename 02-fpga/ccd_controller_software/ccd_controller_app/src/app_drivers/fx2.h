@@ -1,9 +1,10 @@
 /******************************************************************************
 * @file fx2.h
 *
-* FX2 Slave FIFO 控制：基于 Gpio_fx2fifo，固定向端点 2 写数据。
-* 软件只设静态引脚电平（sloe_n/slrd_n/FIFOADR），实际读写时序由 FPGA
-* ccd_controller.frame_tx 完成；PA0 为 FX2 sync 输入（高=配置完成）。
+* FX2 Slave FIFO control: based on Gpio_fx2fifo, writes data to endpoint 2.
+* Software only sets static pin levels (sloe_n/slrd_n/FIFOADR); the actual read/write
+* timing is done by the FPGA ccd_controller.frame_tx; PA0 is the FX2 sync input
+* (high=configuration complete).
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -24,7 +25,7 @@
 extern "C" {
 #endif
 
-/* 端点号 → FIFOADR[1:0] */
+/* Endpoint number -> FIFOADR[1:0] */
 #define FX2_EP_2    0U   /* FIFOADR=00 */
 #define FX2_EP_4    1U   /* FIFOADR=01 */
 #define FX2_EP_6    2U   /* FIFOADR=10 */
@@ -32,12 +33,12 @@ extern "C" {
 
 typedef struct {
     XGpio *Gpio;
-    u32 OutVal;       /* 当前输出位值（含 SLOE/SLRD/FIFOADR） */
+    u32 OutVal;       /* current output bit value (incl. SLOE/SLRD/FIFOADR) */
 } Fx2;
 
 int  Fx2_Init(Fx2 *d, XGpio *gpio);
 void Fx2_SetEndpoint(Fx2 *d, u8 ep);
-u8   Fx2_IsUsbReady(Fx2 *d);   /* 读 PA0：1=FX2 已配置 */
+u8   Fx2_IsUsbReady(Fx2 *d);   /* reads PA0: 1=FX2 configured */
 
 #ifdef __cplusplus
 }

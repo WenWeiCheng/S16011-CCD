@@ -1,8 +1,10 @@
 /******************************************************************************
 * @file uart.h
 *
-* UART 行缓冲 + 收发驱动：封装 XUartLite，为 app 逻辑提供按行收发语义。
-* 只做字节流 ↔ 行缓冲转换，不解析命令内容（解析属 app 逻辑层）。
+* UART line-buffer + send/receive driver: wraps XUartLite, providing line-based
+* send/receive semantics for the app logic.
+* Only converts byte stream <-> line buffer; it does not parse command content
+* (parsing belongs to the app logic layer).
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -23,12 +25,12 @@
 extern "C" {
 #endif
 
-#define UART_LINE_MAX   256U   /* 行长度上限，含 \r\n */
+#define UART_LINE_MAX   256U   /* max line length, including \r\n */
 
 typedef enum {
     UART_ERR_NONE = 0,
-    UART_ERR_LINE_TOO_LONG,     /* 行超长（对应协议 ERR 6 line too long） */
-    UART_ERR_RX_OVERFLOW        /* 接收缓冲溢出（保留，当前未用） */
+    UART_ERR_LINE_TOO_LONG,     /* line over-long (corresponds to protocol ERR 6 line too long) */
+    UART_ERR_RX_OVERFLOW        /* receive buffer overflow (reserved, currently unused) */
 } UartError;
 
 typedef void (*UartLineHandler)(const char *line, void *ref);
@@ -37,9 +39,9 @@ typedef void (*UartErrorHandler)(UartError err, void *ref);
 typedef struct {
     XUartLite *Uart;
     u32 IntrVecId;
-    u8  RxBuf[UART_LINE_MAX];    /* 当前行累积缓冲 */
+    u8  RxBuf[UART_LINE_MAX];    /* buffer accumulating the current line */
     u16 RxLen;
-    u8  CrPending;               /* 上一字节为 \r 的标志 */
+    u8  CrPending;               /* flag that the previous byte was \r */
     UartLineHandler LineHandler;
     void *LineRef;
     UartErrorHandler ErrHandler;
@@ -49,9 +51,9 @@ typedef struct {
 int  Uart_Init(Uart *d, XUartLite *uart, u32 IntrVecId);
 void Uart_RegisterLineHandler(Uart *d, UartLineHandler hdl, void *ref);
 void Uart_RegisterErrorHandler(Uart *d, UartErrorHandler hdl, void *ref);
-int  Uart_SendLine(Uart *d, const char *line);   /* 自动补 \r\n */
-int  Uart_Send(Uart *d, const char *s, u32 n);   /* raw：不补换行 */
-void Uart_InterruptHandler(void *ref);           /* RX ISR，挂 INTC */
+int  Uart_SendLine(Uart *d, const char *line);   /* appends \r\n automatically */
+int  Uart_Send(Uart *d, const char *s, u32 n);   /* raw: no newline appended */
+void Uart_InterruptHandler(void *ref);           /* RX ISR, hooked to INTC */
 
 #ifdef __cplusplus
 }

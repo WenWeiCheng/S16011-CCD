@@ -1,15 +1,16 @@
 /******************************************************************************
 * @file board_hal.c
 *
-* 板级硬件抽象实现：定义全局共享实例，初始化全部外设并接线 INTC。
+* Board-level hardware abstraction implementation: defines the shared global instances,
+* initializes all peripherals and wires up the INTC.
 *
-* 中断向量（见 xparameters.h，对照 ccd_controller_driver_architecture.md §6）：
-*   0 = ccd_controller → CcdController_InterruptHandler
-*   1 = timer0        → XTmrCtr_InterruptHandler → Heartbeat_InterruptHandler
-*   3 = uart          → Uart_InterruptHandler
-*   5 = timer1        → XTmrCtr_InterruptHandler → Ccd_ExposureHandler
-*   6 = Gpio_key      → Key_InterruptHandler
-*   （2 = spi、4 = iic 本层未使用，不接线）
+* Interrupt vectors (see xparameters.h, compare ccd_controller_driver_architecture.md sec. 6):
+*   0 = ccd_controller -> CcdController_InterruptHandler
+*   1 = timer0        -> XTmrCtr_InterruptHandler -> Heartbeat_InterruptHandler
+*   3 = uart          -> Uart_InterruptHandler
+*   5 = timer1        -> XTmrCtr_InterruptHandler -> Ccd_ExposureHandler
+*   6 = Gpio_key      -> Key_InterruptHandler
+*   (2 = spi, 4 = iic not used at this layer, not connected)
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -26,14 +27,14 @@
 #include "xil_exception.h"
 #include "xil_printf.h"
 
-/* 中断向量（别名缺失时用原始宏） */
+/* Interrupt vectors (use raw macros when an alias is missing) */
 #define CCD_INTR_VEC    XPAR_MICROBLAZE_0_AXI_INTC_CCD_CONTROLLER_V1_0_0_INTR_INTR
 #define TIMER0_VEC      XPAR_INTC_0_TMRCTR_0_VEC_ID
 #define UART_VEC        XPAR_INTC_0_UARTLITE_0_VEC_ID
 #define TIMER1_VEC      XPAR_INTC_0_TMRCTR_1_VEC_ID
 #define KEY_VEC         XPAR_INTC_0_GPIO_2_VEC_ID
 
-/* 全局共享 Xilinx 实例 */
+/* Shared global Xilinx instances */
 XSpi      gSpi;
 XGpio     gGpioFx2Fifo;
 XGpio     gGpioGeneral;
@@ -44,7 +45,7 @@ XTmrCtr   gTimer1;
 XUartLite gUart;
 XIntc     gIntc;
 
-/* 全局 app 驱动实例 */
+/* Global app driver instances */
 Heartbeat     gHeartbeat;
 Key           gKey;
 Led           gLed;
@@ -59,7 +60,7 @@ CcdController gCcdCtrl;
 
 /*****************************************************************************/
 /**
-* @brief  初始化 GPIO 实例（方向由各 app 驱动 Init 设置）。
+* @brief  Initializes the GPIO instances (direction set by each app driver Init).
 ******************************************************************************/
 static int BoardHal_InitGpio(void)
 {
@@ -83,7 +84,7 @@ static int BoardHal_InitGpio(void)
 
 /*****************************************************************************/
 /**
-* @brief  初始化 timer 实例。
+* @brief  Initializes the timer instances.
 ******************************************************************************/
 static int BoardHal_InitTimer(void)
 {
@@ -106,7 +107,7 @@ static int BoardHal_InitTimer(void)
 
 /*****************************************************************************/
 /**
-* @brief  初始化 SPI（主模式 + 手动片选），并启动。
+* @brief  Initializes SPI (master mode + manual chip select) and starts it.
 ******************************************************************************/
 static int BoardHal_InitSpi(void)
 {
@@ -137,10 +138,10 @@ static int BoardHal_InitSpi(void)
 
 /*****************************************************************************/
 /**
-* @brief  接线 INTC：Connect → Start → Enable 各向量。
+* @brief  Wires up the INTC: Connect -> Start -> Enable each vector.
 *
-* @param  Intc XIntc 实例。
-* @return XST_SUCCESS / 失败。
+* @param  Intc The XIntc instance.
+* @return XST_SUCCESS / failure.
 ******************************************************************************/
 static int BoardHal_SetupIntc(XIntc *intc)
 {
@@ -193,7 +194,7 @@ static int BoardHal_SetupIntc(XIntc *intc)
     XIntc_Enable(intc, TIMER1_VEC);
     XIntc_Enable(intc, KEY_VEC);
 
-    /* 一次性：异常处理器接入 INTC */
+    /* One-time setup: hook the exception handler to INTC */
     Xil_ExceptionInit();
     Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT,
                                  (Xil_ExceptionHandler)XIntc_InterruptHandler,
@@ -205,12 +206,12 @@ static int BoardHal_SetupIntc(XIntc *intc)
 
 /*****************************************************************************/
 /**
-* @brief  初始化全部外设并接线 INTC。
+* @brief  Initializes all peripherals and wires up the INTC.
 *
-* 顺序：cache → UART → INTC → SPI → GPIO → Timer → CcdController →
-* app 驱动 → 按键中断使能 → 心跳启动。
+* Order: cache -> UART -> INTC -> SPI -> GPIO -> Timer -> CcdController ->
+* app drivers -> key interrupt enable -> heartbeat start.
 *
-* @return XST_SUCCESS / XST_FAILURE。
+* @return XST_SUCCESS / XST_FAILURE.
 ******************************************************************************/
 int BoardHal_Init(void)
 {
@@ -221,8 +222,9 @@ int BoardHal_Init(void)
 
     xil_printf("\r\n--- BoardHal_Init ---\r\n");
 
-    /* UART 先行，便于后续打印。
-     * 注意：UART 为 STDOUT 设备，不跑 SelfTest（其回环测试需要物理回环）。 */
+    /* UART first, so later prints work.
+     * Note: UART is the STDOUT device, so SelfTest is skipped (its loopback test
+     * needs a physical loopback). */
     status = XUartLite_Initialize(&gUart, XPAR_UARTLITE_0_DEVICE_ID);
     if (status != XST_SUCCESS) {
         return XST_FAILURE;
@@ -254,14 +256,14 @@ int BoardHal_Init(void)
         return XST_FAILURE;
     }
 
-    /* 接线 INTC */
+    /* Wire up INTC */
     status = BoardHal_SetupIntc(&gIntc);
     if (status != XST_SUCCESS) {
         xil_printf("INTC setup FAILED\r\n");
         return XST_FAILURE;
     }
 
-    /* app 驱动 */
+    /* app drivers */
     Heartbeat_Init(&gHeartbeat, &gTimer0, TIMER0_VEC);
     Key_Init(&gKey, &gGpioKey, KEY_ACTIVE_LOW_MASK);
     Led_Init(&gLed, &gGpioLed, LED_OUT_MASK);
@@ -273,10 +275,10 @@ int BoardHal_Init(void)
     Dac8311_Init(&gDac8311, &gSpi, SPI_CS_DAC8311, DAC8311_VREF_V);
     Ad9826_Init(&gAd9826, &gSpi, SPI_CS_AD9826);
 
-    /* 使能 ccd 中断（tx_done + exception） */
+    /* Enable ccd interrupts (tx_done + exception) */
     CcdController_IntrEnable(&gCcdCtrl, 1U, 1U);
 
-    /* 按键：输入方向（1=输入）+ 中断使能 */
+    /* Key: input direction (1=input) + interrupt enable */
     XGpio_SetDataDirection(&gGpioKey, 1U, KEY_IN_MASK);
     XGpio_InterruptGlobalEnable(&gGpioKey);
     XGpio_InterruptEnable(&gGpioKey, KEY_IN_MASK);
@@ -287,7 +289,7 @@ int BoardHal_Init(void)
 
 /*****************************************************************************/
 /**
-* @brief  CcdController 自检 + 关键状态打印（冒烟测试用）。
+* @brief  CcdController self-test + key status printout (for smoke testing).
 ******************************************************************************/
 void BoardHal_SelfTest(void)
 {

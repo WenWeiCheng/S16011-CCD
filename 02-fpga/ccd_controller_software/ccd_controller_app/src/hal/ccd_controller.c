@@ -1,10 +1,11 @@
 /******************************************************************************
 * @file ccd_controller.c
 *
-* 自制 IP ccd_controller（AXI4-Lite）驱动实现。
+* Driver implementation for the custom IP ccd_controller (AXI4-Lite).
 *
-* 寄存器映射见 00-docs/verilog-design/ccd_controller_ip.md。
-* 本驱动在 BSP 中无对应 libsrc，全部手写；命名不以 X 开头便于跨平台移植。
+* Register map is in 00-docs/verilog-design/ccd_controller_ip.md.
+* This driver has no corresponding libsrc in the BSP, all hand-written; names do not
+* start with X for easier cross-platform porting.
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -19,11 +20,12 @@
 #include "xil_assert.h"
 
 /******************************************************************************
-* Config 查找表
+* Config lookup table
 ******************************************************************************/
 /*
- * xparameters.h 中只有基地址宏、没有独立的 DeviceID/中断向量别名，
- * 因此 DeviceId 取 0，IntrVecId 直接用 INTC 的原始向量号。
+ * xparameters.h only has base address macros, no separate DeviceID / interrupt
+ * vector aliases, so DeviceId is 0 and IntrVecId uses the raw INTC vector number
+ * directly.
  */
 static CcdController_Config CcdController_ConfigTable[] = {
     {
@@ -38,11 +40,11 @@ static CcdController_Config CcdController_ConfigTable[] = {
 
 /*****************************************************************************/
 /**
-* @brief  按 DeviceId 查找配置。
+* @brief  Looks up the config by DeviceId.
 *
-* @param  DeviceId 查找 ID（本板恒为 0）。
+* @param  DeviceId The ID to look up (always 0 on this board).
 *
-* @return 配置指针；未找到返回 NULL。
+* @return Config pointer, or NULL if not found.
 ******************************************************************************/
 CcdController_Config *CcdController_LookupConfig(u16 DeviceId)
 {
@@ -57,15 +59,16 @@ CcdController_Config *CcdController_LookupConfig(u16 DeviceId)
 
 /*****************************************************************************/
 /**
-* @brief  初始化驱动实例。
+* @brief  Initializes the driver instance.
 *
-* 只写 BaseAddress/IsReady，不预设图像参数（避免覆盖调用方已设定的配置）。
+* Only writes BaseAddress/IsReady, does not preset image parameters (to avoid
+* overwriting config already set by the caller).
 *
-* @param  p    实例指针。
-* @param  cfg  LookupConfig 返回的配置。
-* @param  addr 有效地址（通常为 cfg->BaseAddress）。
+* @param  p    Instance pointer.
+* @param  cfg  Config returned by LookupConfig.
+* @param  addr Valid address (usually cfg->BaseAddress).
 *
-* @return XST_SUCCESS / XST_DEVICE_NOT_FOUND / XST_FAILURE。
+* @return XST_SUCCESS / XST_DEVICE_NOT_FOUND / XST_FAILURE.
 ******************************************************************************/
 int CcdController_CfgInitialize(CcdController *p, CcdController_Config *cfg,
                                 u32 addr)
@@ -83,7 +86,7 @@ int CcdController_CfgInitialize(CcdController *p, CcdController_Config *cfg,
     p->Handler = NULL;
     p->CallBackRef = NULL;
 
-    /* 上电复位，关闭中断、清曝光位 */
+    /* Power-on reset: disable interrupts, clear the exposure bit */
     CcdController_WriteReg(p, CCDC_REG_INTR_EN, 0U);
     CcdController_WriteReg(p, CCDC_REG_INTR_STS, CCDC_INTR_ALL);
 
@@ -93,13 +96,14 @@ int CcdController_CfgInitialize(CcdController *p, CcdController_Config *cfg,
 
 /*****************************************************************************/
 /**
-* @brief  寄存器读写自检。
+* @brief  Register read/write self-test.
 *
-* 对 R/W 寄存器做"写-读回-恢复"验证；只写寄存器（TRIGGER）不参与。
+* Verifies R/W registers with a "write-read back-restore" check; write-only
+* registers (TRIGGER) are not involved.
 *
-* @param  p 实例指针。
+* @param  p Instance pointer.
 *
-* @return XST_SUCCESS / XST_FAILURE。
+* @return XST_SUCCESS / XST_FAILURE.
 ******************************************************************************/
 int CcdController_SelfTest(CcdController *p)
 {
@@ -117,8 +121,9 @@ int CcdController_SelfTest(CcdController *p)
         saved[i] = CcdController_ReadReg(p, rw_regs[i]);
     }
 
-    /* 写入已知模式并回读（避开保留/只读位；CTRL 测试值不含 bit0=exposure，
-     * 避免自检误触发采集） */
+    /* Write a known pattern and read it back (avoiding reserved/read-only bits;
+     * the CTRL test value excludes bit0=exposure so the self-test does not
+     * accidentally trigger capture) */
     CcdController_WriteReg(p, CCDC_REG_IMG_SIZE, 0x12345678U);
     if (CcdController_ReadReg(p, CCDC_REG_IMG_SIZE) != 0x12345678U) {
         return XST_FAILURE;
@@ -134,7 +139,7 @@ int CcdController_SelfTest(CcdController *p)
         return XST_FAILURE;
     }
 
-    /* 恢复原值 */
+    /* Restore the original values */
     for (i = 0; i < 3; i++) {
         CcdController_WriteReg(p, rw_regs[i], saved[i]);
     }
@@ -144,7 +149,7 @@ int CcdController_SelfTest(CcdController *p)
 
 /*****************************************************************************/
 /**
-* @brief  设置图像尺寸（写 IMG_SIZE）。
+* @brief  Sets the image size (writes IMG_SIZE).
 ******************************************************************************/
 void CcdController_SetImageSize(CcdController *p, u16 w, u16 h)
 {
@@ -154,7 +159,7 @@ void CcdController_SetImageSize(CcdController *p, u16 w, u16 h)
 
 /*****************************************************************************/
 /**
-* @brief  设置消隐/空白参数（写 BEVEL_BLANK）。
+* @brief  Sets the bevel/blank parameters (writes BEVEL_BLANK).
 ******************************************************************************/
 void CcdController_SetBevelBlank(CcdController *p,
                                  const CcdController_BevelBlank *bb)
@@ -174,7 +179,7 @@ void CcdController_SetBevelBlank(CcdController *p,
 
 /*****************************************************************************/
 /**
-* @brief  设置 CDSCLK 微调延时（写 CTRL[11:5]）。
+* @brief  Sets the CDSCLK fine-tune delay (writes CTRL[11:5]).
 ******************************************************************************/
 void CcdController_SetCdsclkDelay(CcdController *p, u8 delay)
 {
@@ -186,7 +191,7 @@ void CcdController_SetCdsclkDelay(CcdController *p, u8 delay)
 
 /*****************************************************************************/
 /**
-* @brief  设置读出模式（写 CTRL[4:3]，读-改-写保留其它位）。
+* @brief  Sets the readout mode (writes CTRL[4:3], read-modify-write keeps the other bits).
 ******************************************************************************/
 void CcdController_SetReadMode(CcdController *p, u8 mode)
 {
@@ -198,7 +203,7 @@ void CcdController_SetReadMode(CcdController *p, u8 mode)
 
 /*****************************************************************************/
 /**
-* @brief  设置 SCLK 频率（写 CTRL[1]）。
+* @brief  Sets the SCLK frequency (writes CTRL[1]).
 ******************************************************************************/
 void CcdController_SetFreqSel(CcdController *p, u8 freq)
 {
@@ -213,7 +218,7 @@ void CcdController_SetFreqSel(CcdController *p, u8 freq)
 
 /*****************************************************************************/
 /**
-* @brief  设置 mock 模式（写 CTRL[2]）。
+* @brief  Sets mock mode (writes CTRL[2]).
 ******************************************************************************/
 void CcdController_SetMockMode(CcdController *p, u8 mock)
 {
@@ -228,12 +233,13 @@ void CcdController_SetMockMode(CcdController *p, u8 mock)
 
 /*****************************************************************************/
 /**
-* @brief  启动采集（置 exposure=1）。
+* @brief  Starts capture (sets exposure=1).
 *
-* 启动前检查 DDR3 校准完成（STATUS[16]）；未完成返回 XST_DEVICE_BUSY。
-* 用读-改-写保留 CTRL 其它位（read_mode/freq/mock/cdsclk_delay 等）。
+* Checks that DDR3 calibration is complete (STATUS[16]) before starting; returns
+* XST_DEVICE_BUSY if not. Uses read-modify-write to keep the other CTRL bits
+* (read_mode/freq/mock/cdsclk_delay etc.).
 *
-* @return XST_SUCCESS / XST_DEVICE_BUSY。
+* @return XST_SUCCESS / XST_DEVICE_BUSY.
 ******************************************************************************/
 int CcdController_StartCapture(CcdController *p)
 {
@@ -252,7 +258,7 @@ int CcdController_StartCapture(CcdController *p)
 
 /*****************************************************************************/
 /**
-* @brief  停止采集（清 exposure=0，下降沿启动读出）。
+* @brief  Stops capture (clears exposure=0, falling edge starts readout).
 ******************************************************************************/
 void CcdController_StopCapture(CcdController *p)
 {
@@ -264,7 +270,7 @@ void CcdController_StopCapture(CcdController *p)
 
 /*****************************************************************************/
 /**
-* @brief  触发帧发送（写 TRIGGER[0]=1，硬件展宽后自动清 0）。
+* @brief  Triggers a frame send (writes TRIGGER[0]=1, hardware stretches it then clears it).
 ******************************************************************************/
 void CcdController_TriggerFrameSend(CcdController *p)
 {
@@ -273,7 +279,7 @@ void CcdController_TriggerFrameSend(CcdController *p)
 
 /*****************************************************************************/
 /**
-* @brief  帧缓存中可读帧数（STATUS[7:0]）。
+* @brief  Number of readable frames in the frame buffer (STATUS[7:0]).
 ******************************************************************************/
 u8 CcdController_GetFrameNum(CcdController *p)
 {
@@ -283,7 +289,7 @@ u8 CcdController_GetFrameNum(CcdController *p)
 
 /*****************************************************************************/
 /**
-* @brief  DDR3 校准是否完成（STATUS[16]）。
+* @brief  Whether DDR3 calibration is complete (STATUS[16]).
 ******************************************************************************/
 u8 CcdController_IsDdrReady(CcdController *p)
 {
@@ -293,7 +299,7 @@ u8 CcdController_IsDdrReady(CcdController *p)
 
 /*****************************************************************************/
 /**
-* @brief  帧异常标志（STATUS[8]）。
+* @brief  Frame exception flag (STATUS[8]).
 ******************************************************************************/
 u8 CcdController_GetException(CcdController *p)
 {
@@ -303,7 +309,7 @@ u8 CcdController_GetException(CcdController *p)
 
 /*****************************************************************************/
 /**
-* @brief  帧异常累计计数（STATUS[15:9]）。
+* @brief  Accumulated frame exception count (STATUS[15:9]).
 ******************************************************************************/
 u32 CcdController_GetExceptionCnt(CcdController *p)
 {
@@ -313,7 +319,7 @@ u32 CcdController_GetExceptionCnt(CcdController *p)
 
 /*****************************************************************************/
 /**
-* @brief  读 STATUS 原样值（调试用）。
+* @brief  Reads the raw STATUS value (for debugging).
 ******************************************************************************/
 u32 CcdController_GetStatus(CcdController *p)
 {
@@ -322,7 +328,7 @@ u32 CcdController_GetStatus(CcdController *p)
 
 /*****************************************************************************/
 /**
-* @brief  注册中断回调。
+* @brief  Registers the interrupt callback.
 ******************************************************************************/
 void CcdController_SetHandler(CcdController *p, CcdController_Handler hdl,
                               void *ref)
@@ -333,7 +339,7 @@ void CcdController_SetHandler(CcdController *p, CcdController_Handler hdl,
 
 /*****************************************************************************/
 /**
-* @brief  使能中断（写 INTR_EN）。
+* @brief  Enables interrupts (writes INTR_EN).
 ******************************************************************************/
 void CcdController_IntrEnable(CcdController *p, u8 tx_done_en,
                               u8 exception_en)
@@ -350,7 +356,7 @@ void CcdController_IntrEnable(CcdController *p, u8 tx_done_en,
 
 /*****************************************************************************/
 /**
-* @brief  关闭所有中断。
+* @brief  Disables all interrupts.
 ******************************************************************************/
 void CcdController_IntrDisable(CcdController *p)
 {
@@ -359,11 +365,12 @@ void CcdController_IntrDisable(CcdController *p)
 
 /*****************************************************************************/
 /**
-* @brief  ccd_controller ISR，挂 INTC。
+* @brief  ccd_controller ISR, hooked to the INTC.
 *
-* 读 INTR_STS → 按 INTR_EN 掩码 → W1C 清除 → 回调 app（最小处理）。
+* Reads INTR_STS -> masks with INTR_EN -> W1C clear -> calls back to the app
+* (minimal processing).
 *
-* @param ref CcdController 实例指针。
+* @param ref CcdController instance pointer.
 ******************************************************************************/
 void CcdController_InterruptHandler(void *ref)
 {
@@ -372,7 +379,7 @@ void CcdController_InterruptHandler(void *ref)
     u32 pending = CcdController_ReadReg(p, CCDC_REG_INTR_STS) & en;
 
     if (pending != 0U) {
-        /* W1C：写 1 清除 */
+        /* W1C: write 1 to clear */
         CcdController_WriteReg(p, CCDC_REG_INTR_STS, pending);
         if (p->Handler != NULL) {
             p->Handler(pending, p->CallBackRef);

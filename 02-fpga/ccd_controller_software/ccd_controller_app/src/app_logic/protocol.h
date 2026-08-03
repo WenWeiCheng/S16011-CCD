@@ -1,12 +1,13 @@
 /******************************************************************************
 * @file protocol.h
 *
-* UART 控制协议（app 逻辑层）：参数表 + 命令分发表 + 行解析/响应 + 采集命令。
-* 协议规范见 00-docs/embed-design/uart_protocol_design.md。
+* UART control protocol (app logic layer): parameter table + command dispatch table +
+* line parsing/response + acquisition commands.
+* Protocol spec is in 00-docs/embed-design/uart_protocol_design.md.
 *
-* 线程模型：UART RX 中断只把完整行拷入 pending 缓冲（Protocol_OnLine），
-* 真正的命令分发在 main 循环 Protocol_ProcessPending 中进行，避免在 ISR
-* 上下文执行阻塞 SPI 等耗时操作。
+* Thread model: the UART RX interrupt only copies a complete line into a pending buffer
+* (Protocol_OnLine); the real command dispatch happens in Protocol_ProcessPending in the
+* main loop, avoiding slow operations (e.g. blocking SPI) in ISR context.
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -26,10 +27,10 @@
 extern "C" {
 #endif
 
-int  Protocol_Init(void);                          /* 应用参数默认值 + 打印 READY */
-void Protocol_OnLine(const char *line, void *ref); /* UART LineHandler（ISR） */
-void Protocol_OnError(UartError err, void *ref);   /* UART ErrHandler（ISR） */
-void Protocol_ProcessPending(void);                /* 主循环调用：分发已入队命令 */
+int  Protocol_Init(void);                          /* app parameter defaults + print READY */
+void Protocol_OnLine(const char *line, void *ref); /* UART LineHandler (ISR) */
+void Protocol_OnError(UartError err, void *ref);   /* UART ErrHandler (ISR) */
+void Protocol_ProcessPending(void);                /* called from main loop: dispatch queued commands */
 
 #ifdef __cplusplus
 }

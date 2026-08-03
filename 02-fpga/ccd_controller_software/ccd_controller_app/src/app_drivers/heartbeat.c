@@ -1,8 +1,9 @@
 /******************************************************************************
 * @file heartbeat.c
 *
-* 系统心跳实现：timer0 配为 auto-reload 周期计数，周期 1ms。
-* 中断链：INTC vec1 → XTmrCtr_InterruptHandler → Heartbeat_InterruptHandler。
+* System heartbeat implementation: timer0 configured as an auto-reload periodic counter,
+* period 1ms.
+* Interrupt chain: INTC vec1 -> XTmrCtr_InterruptHandler -> Heartbeat_InterruptHandler.
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -16,22 +17,22 @@
 #include "../include/board_config.h"
 #include "xil_assert.h"
 
-/* 1ms 周期对应的 32-bit 递增计数初值（100MHz） */
+/* 32-bit up-count reset value for a 1ms period (100MHz) */
 #define HEARTBEAT_RESET_VALUE \
     (u32)(0xFFFFFFFFUL - (BOARD_CLK_FREQ_HZ / 1000UL - 1UL))
 
 /*****************************************************************************/
 /**
-* @brief  初始化心跳。
+* @brief  Initializes the heartbeat.
 *
-* timer 实例由 board_hal 预先初始化（XTmrCtr_Initialize），本函数只配置
-* counter0 为 1ms auto-reload 并注册 handler，随后启动。
+* The timer instance is pre-initialized by board_hal (XTmrCtr_Initialize); this function
+* only configures counter0 as a 1ms auto-reload and registers the handler, then starts it.
 *
-* @param  d          心跳实例。
-* @param  tmr        timer0 的 XTmrCtr 实例。
-* @param  IntrVecId  INTC 向量号（备用，当前未直接使用）。
+* @param  d          Heartbeat instance.
+* @param  tmr        XTmrCtr instance of timer0.
+* @param  IntrVecId  INTC vector number (reserved, not directly used currently).
 *
-* @return XST_SUCCESS。
+* @return XST_SUCCESS.
 ******************************************************************************/
 int Heartbeat_Init(Heartbeat *d, XTmrCtr *tmr, u32 IntrVecId)
 {
@@ -55,7 +56,7 @@ int Heartbeat_Init(Heartbeat *d, XTmrCtr *tmr, u32 IntrVecId)
 
 /*****************************************************************************/
 /**
-* @brief  注册 1ms 周期回调（内部最多 HEARTBEAT_MAX_HANDLERS 个）。
+* @brief  Registers a 1ms periodic callback (up to HEARTBEAT_MAX_HANDLERS internally).
 ******************************************************************************/
 void Heartbeat_RegisterHandler(Heartbeat *d, HeartbeatHandler hdl, void *ref)
 {
@@ -69,7 +70,7 @@ void Heartbeat_RegisterHandler(Heartbeat *d, HeartbeatHandler hdl, void *ref)
 
 /*****************************************************************************/
 /**
-* @brief  返回上电以来 tick 数（毫秒）。
+* @brief  Returns the tick count since power-up (milliseconds).
 ******************************************************************************/
 u32 Heartbeat_GetTick(Heartbeat *d)
 {
@@ -78,12 +79,13 @@ u32 Heartbeat_GetTick(Heartbeat *d)
 
 /*****************************************************************************/
 /**
-* @brief  timer0 的 XTmrCtr 回调（中断上下文）。
+* @brief  XTmrCtr callback of timer0 (interrupt context).
 *
-* tick 自增并依次调用已注册 handler，只做最小处理。
+* Increments the tick and calls each registered handler in turn, doing minimal
+* processing only.
 *
-* @param ref            Heartbeat 实例。
-* @param TmrCtrNumber   触发的 counter 号（应为 0）。
+* @param ref            Heartbeat instance.
+* @param TmrCtrNumber   Number of the counter that triggered (should be 0).
 ******************************************************************************/
 void Heartbeat_InterruptHandler(void *ref, u8 TmrCtrNumber)
 {

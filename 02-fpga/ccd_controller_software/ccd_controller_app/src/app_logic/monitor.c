@@ -1,12 +1,14 @@
 /******************************************************************************
 * @file monitor.c
 *
-* 采样监控循环实现：ads1118 连续模式 860SPS，每 2ms 读当前通道原始码，
-* 每 8ms 换一次输入通道，四路轮流采样（通道建立时间充足）。
+* Sampling/monitor loop implementation: ads1118 continuous mode at 860SPS, reads the raw
+* code of the current channel every 2ms, switches input channel every 8ms, sampling the
+* four channels in rotation (sufficient channel settling time).
 *
-* 换算：
-*   - 电压：V = code × FS / 2^15（单端半量程，FS=±4.096V）
-*   - NTC 温度：查表 + 线性插值（表由 board_config.h 占位常量离线生成）
+* Conversion:
+*   - Voltage: V = code x FS / 2^15 (single-ended half scale, FS=+/-4.096V)
+*   - NTC temperature: lookup table + linear interpolation (table generated offline from
+*     placeholder constants in board_config.h)
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -20,20 +22,22 @@
 #include "../include/board_config.h"
 #include "xil_assert.h"
 
-/* 索引映射：Ads1118_Mux 枚举连续（0x4..0x7）→ 通道序 0..3 */
+/* Index mapping: Ads1118_Mux enum is contiguous (0x4..0x7) -> channel order 0..3 */
 #define MONITOR_MUX_BASE   ((u8)ADS1118_MUX_SENSOR_NTC)
 
 Monitor gMonitor;
 
 /* ============================================================================
- * NTC 换算表
- * 占位常量（R25=10000, B=3435, Rser=10000, Vref=4.096V），温度 -50..+150°C，
- * 步进 1°C，离线生成。表按 code 升序、温度降序；区间外钳位到端点。
- * TODO(待确认)：拿到板子实际 NTC / 分压电路（含拓扑）后重新生成本表。
+ * NTC conversion table
+ * Placeholder constants (R25=10000, B=3435, Rser=10000, Vref=4.096V), temperature
+ * -50..+150 degC, 1 degC step, generated offline. Table is in ascending code order,
+ * descending temperature order; values outside the range are clamped to the endpoints.
+ * TODO(pending confirmation): regenerate this table after obtaining the actual board's
+ * NTC / divider circuit (including topology).
  * ==========================================================================*/
 typedef struct {
     u16 Code;
-    s16 TempX10;      /* 温度 ×10（degC） */
+    s16 TempX10;      /* temperature x10 (degC) */
 } NtcPoint;
 
 static const NtcPoint g_ntc_table[] = {
@@ -93,7 +97,8 @@ static const NtcPoint g_ntc_table[] = {
 
 /*****************************************************************************/
 /**
-* @brief  code → 温度（degC），查表线性插值，区间外钳位。
+* @brief  code -> temperature (degC), lookup table linear interpolation, clamped outside
+* the range.
 ******************************************************************************/
 static float Monitor_LookupTemp(s16 code)
 {
@@ -101,10 +106,10 @@ static float Monitor_LookupTemp(s16 code)
     u32 i;
 
     if ((u16)code >= g_ntc_table[0].Code) {
-        return (float)g_ntc_table[0].TempX10 / 10.0f;   /* 最热端 */
+        return (float)g_ntc_table[0].TempX10 / 10.0f;   /* hottest end */
     }
     if ((u16)code <= g_ntc_table[NTC_TABLE_N - 1U].Code) {
-        return (float)g_ntc_table[NTC_TABLE_N - 1U].TempX10 / 10.0f; /* 最冷端 */
+        return (float)g_ntc_table[NTC_TABLE_N - 1U].TempX10 / 10.0f; /* coldest end */
     }
 
     for (i = 0; i < NTC_TABLE_N - 1U; i++) {
@@ -122,7 +127,7 @@ static float Monitor_LookupTemp(s16 code)
 
 /*****************************************************************************/
 /**
-* @brief  Ads1118_Mux 枚举（0x4..0x7）→ 通道序 0..3。
+* @brief  Ads1118_Mux enum (0x4..0x7) -> channel order 0..3.
 ******************************************************************************/
 static u8 Monitor_MuxToIdx(Ads1118_Mux mux)
 {
@@ -135,12 +140,12 @@ static u8 Monitor_MuxToIdx(Ads1118_Mux mux)
 
 /*****************************************************************************/
 /**
-* @brief  初始化：保存依赖实例，默认从 SENSOR_NTC 开始采样。
+* @brief  Initializes: stores the dependency instances, starts sampling from SENSOR_NTC.
 *
-* @param  adc  ads1118 驱动实例（board_hal 已初始化）。
-* @param  hb   心跳节拍源。
+* @param  adc  ads1118 driver instance (initialized by board_hal).
+* @param  hb   Heartbeat tick source.
 *
-* @return XST_SUCCESS。
+* @return XST_SUCCESS.
 ******************************************************************************/
 int Monitor_Init(Monitor *d, Ads1118 *adc, Heartbeat *hb)
 {
@@ -161,7 +166,8 @@ int Monitor_Init(Monitor *d, Ads1118 *adc, Heartbeat *hb)
 
 /*****************************************************************************/
 /**
-* @brief  主循环节拍：每 8ms 换通道、每 2ms 读当前通道原始码入缓存。
+* @brief  Main loop tick: switch channel every 8ms, read the current channel's raw code
+* into the cache every 2ms.
 ******************************************************************************/
 void Monitor_Tick(Monitor *d)
 {
@@ -185,7 +191,7 @@ void Monitor_Tick(Monitor *d)
 
 /*****************************************************************************/
 /**
-* @brief  某通道最近一次原始码。
+* @brief  Most recent raw code of a channel.
 ******************************************************************************/
 s16 Monitor_GetRaw(Monitor *d, Ads1118_Mux mux)
 {
@@ -194,9 +200,9 @@ s16 Monitor_GetRaw(Monitor *d, Ads1118_Mux mux)
 
 /*****************************************************************************/
 /**
-* @brief  某通道换算电压（V）。
+* @brief  Converted voltage of a channel (V).
 *
-* V = code × FS / 2^15，单端半量程，FS = ADS1118_FS_VOLT。
+* V = code x FS / 2^15, single-ended half scale, FS = ADS1118_FS_VOLT.
 ******************************************************************************/
 float Monitor_GetVoltage(Monitor *d, Ads1118_Mux mux)
 {
@@ -206,7 +212,7 @@ float Monitor_GetVoltage(Monitor *d, Ads1118_Mux mux)
 
 /*****************************************************************************/
 /**
-* @brief  NTC 通道换算温度（degC）。非 NTC 通道无意义。
+* @brief  NTC channel converted temperature (degC). Meaningless for non-NTC channels.
 ******************************************************************************/
 float Monitor_GetNtcTemp(Monitor *d, Ads1118_Mux mux)
 {

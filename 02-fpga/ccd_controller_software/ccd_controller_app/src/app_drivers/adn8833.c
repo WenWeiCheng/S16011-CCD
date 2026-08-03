@@ -1,7 +1,7 @@
 /******************************************************************************
 * @file adn8833.c
 *
-* ADN8833 使能驱动实现。
+* ADN8833 enable driver implementation.
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -16,13 +16,13 @@
 
 /*****************************************************************************/
 /**
-* @brief  初始化 ADN8833 使能引脚。
+* @brief  Initializes the ADN8833 enable pin.
 *
-* @param  d      ADN8833 实例。
-* @param  gpio   Gpio_general 的 XGpio 实例（board_hal 已初始化）。
-* @param  en_bit 使能位号（默认 0）。
+* @param  d      ADN8833 instance.
+* @param  gpio   XGpio instance of Gpio_general (initialized by board_hal).
+* @param  en_bit Enable bit number (default 0).
 *
-* @return XST_SUCCESS。
+* @return XST_SUCCESS.
 ******************************************************************************/
 int Adn8833_Init(Adn8833 *d, XGpio *gpio, u32 en_bit)
 {
@@ -33,16 +33,16 @@ int Adn8833_Init(Adn8833 *d, XGpio *gpio, u32 en_bit)
     d->EnMask = 1U << en_bit;
     d->Enable = 0U;
 
-    /* 该位设为输出 */
+    /* Set that bit as output */
     XGpio_SetDataDirection(gpio, 1U, ~d->EnMask);
-    XGpio_DiscreteWrite(gpio, 1U, 0U);   /* 上电默认关 */
+    XGpio_DiscreteWrite(gpio, 1U, 0U);   /* off by default at power-up */
 
     return XST_SUCCESS;
 }
 
 /*****************************************************************************/
 /**
-* @brief  置/清 ADN8833 EN。
+* @brief  Sets/clears the ADN8833 EN.
 ******************************************************************************/
 void Adn8833_SetEnable(Adn8833 *d, u8 on)
 {
@@ -50,7 +50,7 @@ void Adn8833_SetEnable(Adn8833 *d, u8 on)
 
     Xil_AssertVoid(d != NULL);
 
-    /* 读-改-写，避免影响 Gpio_general 其它位 */
+    /* Read-modify-write, to avoid affecting the other bits of Gpio_general */
     cur = XGpio_DiscreteRead(d->Gpio, 1U);
     if (on) {
         cur |= d->EnMask;
@@ -63,7 +63,7 @@ void Adn8833_SetEnable(Adn8833 *d, u8 on)
 
 /*****************************************************************************/
 /**
-* @brief  读取当前使能状态。
+* @brief  Reads the current enable state.
 ******************************************************************************/
 u8 Adn8833_GetEnable(Adn8833 *d)
 {

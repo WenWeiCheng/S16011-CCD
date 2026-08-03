@@ -1,8 +1,8 @@
 /******************************************************************************
 * @file ad9826.c
 *
-* ad9826 驱动实现。SPI mode 0（CPOL=0, CPHA=0），16-bit 帧。
-* 帧装配：u16 = (rw<<15) | (addr<<12) | (data & 0x1FF)。
+* ad9826 driver implementation. SPI mode 0 (CPOL=0, CPHA=0), 16-bit frames.
+* Frame assembly: u16 = (rw<<15) | (addr<<12) | (data & 0x1FF).
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -21,11 +21,11 @@
 
 /*****************************************************************************/
 /**
-* @brief  发起一笔 16-bit 帧传输（写命令，回读上一帧数据）。
+* @brief  Starts a 16-bit frame transfer (writes a command, reads back the previous frame data).
 *
-* 传输前切 SPI mode 0 并选片。
+* Switches to SPI mode 0 and asserts the chip select before transferring.
 *
-* @return XST_SUCCESS / 底层错误。
+* @return XST_SUCCESS / underlying error.
 ******************************************************************************/
 static int Ad9826_Transfer(Ad9826 *d, u16 word, u16 *readback)
 {
@@ -53,9 +53,9 @@ static int Ad9826_Transfer(Ad9826 *d, u16 word, u16 *readback)
 
 /*****************************************************************************/
 /**
-* @brief  初始化：保存 SPI/片选。
+* @brief  Initializes: stores SPI / chip select.
 *
-* @return XST_SUCCESS。
+* @return XST_SUCCESS.
 ******************************************************************************/
 int Ad9826_Init(Ad9826 *d, XSpi *spi, u8 cs)
 {
@@ -69,12 +69,12 @@ int Ad9826_Init(Ad9826 *d, XSpi *spi, u8 cs)
 
 /*****************************************************************************/
 /**
-* @brief  依序写各寄存器完成配置。
+* @brief  Writes each register in order to complete the configuration.
 *
-* 未指定的字段用上电默认值补齐。写序列：Configuration → MUX →
-* Red/Green/Blue PGA → Red/Green/Blue Offset。
+* Unspecified fields are filled with the power-up defaults. Write sequence:
+* Configuration -> MUX -> Red/Green/Blue PGA -> Red/Green/Blue Offset.
 *
-* @return XST_SUCCESS / 底层错误。
+* @return XST_SUCCESS / underlying error.
 ******************************************************************************/
 int Ad9826_Configure(Ad9826 *d, const Ad9826_Config *cfg)
 {
@@ -103,7 +103,7 @@ int Ad9826_Configure(Ad9826 *d, const Ad9826_Config *cfg)
         return status;
     }
 
-    /* PGA：D8:D6=000，D5:D0=增益码 */
+    /* PGA: D8:D6=000, D5:D0=gain code */
     status = Ad9826_WriteReg(d, AD9826_REG_GAIN_RED, c.GainR & 0x3FU);
     if (status != XST_SUCCESS) {
         return status;
@@ -117,7 +117,7 @@ int Ad9826_Configure(Ad9826 *d, const Ad9826_Config *cfg)
         return status;
     }
 
-    /* Offset：9-bit 有符号 */
+    /* Offset: 9-bit signed */
     status = Ad9826_WriteReg(d, AD9826_REG_OFFSET_RED, c.OffR);
     if (status != XST_SUCCESS) {
         return status;
@@ -131,7 +131,7 @@ int Ad9826_Configure(Ad9826 *d, const Ad9826_Config *cfg)
 
 /*****************************************************************************/
 /**
-* @brief  写寄存器（R/Wb=0）。
+* @brief  Writes a register (R/Wb=0).
 ******************************************************************************/
 int Ad9826_WriteReg(Ad9826 *d, u8 addr, u8 val)
 {
@@ -146,7 +146,7 @@ int Ad9826_WriteReg(Ad9826 *d, u8 addr, u8 val)
 
 /*****************************************************************************/
 /**
-* @brief  读寄存器（R/Wb=1），供校验/调试。
+* @brief  Reads a register (R/Wb=1), for verification/debugging.
 ******************************************************************************/
 int Ad9826_ReadReg(Ad9826 *d, u8 addr, u8 *val)
 {

@@ -1,11 +1,12 @@
 /******************************************************************************
 * @file ccd_controller.h
 *
-* 自制 IP ccd_controller（AXI4-Lite）的驱动接口。
+* Driver interface for the custom IP ccd_controller (AXI4-Lite).
 *
-* 命名刻意不以 X 开头（非 Xilinx 提供），但 API 风格与 Xilinx 驱动一致：
-* Config 查找表 + 实例 + CfgInitialize + SelfTest + InterruptHandler。
-* 寄存器映射见 00-docs/verilog-design/ccd_controller_ip.md。
+* The names deliberately do not start with X (not Xilinx-provided), but the API style
+* matches Xilinx drivers: Config lookup table + instance + CfgInitialize + SelfTest +
+* InterruptHandler.
+* Register map is in 00-docs/verilog-design/ccd_controller_ip.md.
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -26,7 +27,7 @@ extern "C" {
 #endif
 
 /******************************************************************************
-* 寄存器偏移与位定义（对照 ccd_controller_ip.md）
+* Register offsets and bit definitions (compare ccd_controller_ip.md)
 ******************************************************************************/
 #define CCDC_REG_CTRL           0x00U   /* R/W */
 #define CCDC_REG_IMG_SIZE       0x04U   /* R/W */
@@ -69,24 +70,24 @@ extern "C" {
 #define CCDC_INTR_TX_DONE         (1U<<9)
 #define CCDC_INTR_ALL             (CCDC_INTR_EXCEPTION | CCDC_INTR_TX_DONE)
 
-/* 读出模式 */
+/* Readout modes */
 #define CCDC_READ_MODE_LINE_BINNING  0U
 #define CCDC_READ_MODE_IMAGE         1U
 
-/* 采样频率 */
+/* Sampling frequencies */
 #define CCDC_FREQ_100K               0U
 #define CCDC_FREQ_500K               1U
 
 /******************************************************************************
-* 类型定义
+* Type definitions
 ******************************************************************************/
 typedef struct {
     u16 DeviceId;
     u32 BaseAddress;
-    u32 IntrVecId;            /* INTC 向量号 */
+    u32 IntrVecId;            /* INTC vector number */
 } CcdController_Config;
 
-/* 消隐/空白参数（对应 BEVEL_BLANK 寄存器） */
+/* Bevel/blank parameters (correspond to the BEVEL_BLANK register) */
 typedef struct {
     u8 BevelLeft;   /* [3:0]   */
     u8 BevelTop;    /* [7:4]   */
@@ -96,7 +97,7 @@ typedef struct {
     u8 BlankRight;  /* [23:20] */
 } CcdController_BevelBlank;
 
-/* 中断回调：IntrMask 为 CCDC_INTR_* 组合 */
+/* Interrupt callback: IntrMask is a combination of CCDC_INTR_* */
 typedef void (*CcdController_Handler)(u32 IntrMask, void *CallBackRef);
 
 typedef struct {
@@ -109,7 +110,7 @@ typedef struct {
 } CcdController;
 
 /******************************************************************************
-* 寄存器级访问（静态内联）
+* Register-level access (static inline)
 ******************************************************************************/
 static inline u32 CcdController_ReadReg(CcdController *p, u32 off)
 {
@@ -122,7 +123,7 @@ static inline void CcdController_WriteReg(CcdController *p, u32 off, u32 val)
 }
 
 /******************************************************************************
-* 初始化 / 自检
+* Initialization / self-test
 ******************************************************************************/
 CcdController_Config *CcdController_LookupConfig(u16 DeviceId);
 int CcdController_CfgInitialize(CcdController *p, CcdController_Config *cfg,
@@ -130,7 +131,7 @@ int CcdController_CfgInitialize(CcdController *p, CcdController_Config *cfg,
 int CcdController_SelfTest(CcdController *p);
 
 /******************************************************************************
-* 配置语义 API（对照 IP 寄存器 0x00~0x08）
+* Configuration semantic APIs (compare IP registers 0x00~0x08)
 ******************************************************************************/
 void CcdController_SetImageSize(CcdController *p, u16 w, u16 h);
 void CcdController_SetBevelBlank(CcdController *p,
@@ -141,14 +142,14 @@ void CcdController_SetFreqSel(CcdController *p, u8 freq);
 void CcdController_SetMockMode(CcdController *p, u8 mock);
 
 /******************************************************************************
-* 采集控制语义 API
+* Capture control semantic APIs
 ******************************************************************************/
-int CcdController_StartCapture(CcdController *p);  /* 检查 ddr3_done 后置 exposure=1 */
-void CcdController_StopCapture(CcdController *p);   /* 清 exposure=0（下降沿启动读出） */
-void CcdController_TriggerFrameSend(CcdController *p); /* 写 TRIGGER[0]=1 */
+int CcdController_StartCapture(CcdController *p);  /* checks ddr3_done, then sets exposure=1 */
+void CcdController_StopCapture(CcdController *p);   /* clears exposure=0 (falling edge starts readout) */
+void CcdController_TriggerFrameSend(CcdController *p); /* writes TRIGGER[0]=1 */
 
 /******************************************************************************
-* 状态查询
+* Status queries
 ******************************************************************************/
 u8   CcdController_GetFrameNum(CcdController *p);
 u8   CcdController_IsDdrReady(CcdController *p);
@@ -157,7 +158,7 @@ u32  CcdController_GetExceptionCnt(CcdController *p);
 u32  CcdController_GetStatus(CcdController *p);
 
 /******************************************************************************
-* 中断
+* Interrupts
 ******************************************************************************/
 void CcdController_SetHandler(CcdController *p, CcdController_Handler hdl,
                               void *ref);
