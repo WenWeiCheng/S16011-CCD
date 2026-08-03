@@ -76,10 +76,13 @@ module test_ccd_controller_axi;
 
     // ---- FX2 Slave FIFO ----
     reg         i_rd_clk;
+    wire        i_rd_clk_n;       // 读时钟反相 (ccd_frame_tx 内部边沿采样用)
+    wire        o_slave_fifo_clk; // 读时钟扇出 (i_rd_clk)
     reg         i_slave_fifo_empty_n;
     reg         i_slave_fifo_full_n;
     wire [15:0] o_slave_fifo_data;
-    wire        o_slave_fifo_data_valid_n;
+    wire        o_slave_fifo_data_wr_en_n;
+    wire        o_slave_fifo_data_last_n;
 
     // ---- 中断 ----
     wire        intr;
@@ -131,7 +134,6 @@ module test_ccd_controller_axi;
     wire [127:0] m_axi_rdata;
     wire [1:0]   m_axi_rresp;
     wire         m_axi_rlast, m_axi_rvalid, m_axi_rready;
-    wire         m_axi_clk;
 
     // ---- 测试辅助 ----
     reg [3:0]   test_num;
@@ -184,12 +186,16 @@ module test_ccd_controller_axi;
         .o_cdsclk2       (o_cdsclk2),
         .i_adc_data      (i_adc_data),
         .i_rd_clk        (i_rd_clk),
+        .i_rd_clk_n      (i_rd_clk_n),
         .i_slave_fifo_empty_n(i_slave_fifo_empty_n),
         .i_slave_fifo_full_n (i_slave_fifo_full_n),
         .o_slave_fifo_data    (o_slave_fifo_data),
-        .o_slave_fifo_data_valid_n(o_slave_fifo_data_valid_n),
+        .o_slave_fifo_data_wr_en_n(o_slave_fifo_data_wr_en_n),
+        .o_slave_fifo_data_last_n (o_slave_fifo_data_last_n),
+        .o_slave_fifo_clk   (o_slave_fifo_clk),
         .i_ui_clk        (ui_clk),
-        .i_ddr3_init_done(ddr3_init_done),
+        .i_mmcm_locked   (mmcm_locked),
+        .i_init_calib_complete(init_calib_complete),
         // AXI4 Master → MIG
         .M_AXI_AWID      (m_axi_awid),
         .M_AXI_AWADDR    (m_axi_awaddr),
@@ -229,14 +235,12 @@ module test_ccd_controller_axi;
         .M_AXI_RRESP     (m_axi_rresp),
         .M_AXI_RLAST     (m_axi_rlast),
         .M_AXI_RVALID    (m_axi_rvalid),
-        .M_AXI_RREADY    (m_axi_rready),
-        .M_AXI_CLK       (m_axi_clk)
+        .M_AXI_RREADY    (m_axi_rready)
     );
 
     // ==================================================================
     // MIG 7-Series DDR3 Controller
     // ==================================================================
-    assign m_axi_clk = ui_clk;
     assign ddr3_init_done = mmcm_locked && init_calib_complete;
 
     mig_7series_0 u_mig (
@@ -357,6 +361,7 @@ module test_ccd_controller_axi;
 
     initial i_rd_clk = 1'b0;
     always #(RD_CLK_PERIOD_NS / 2.0) i_rd_clk = ~i_rd_clk;
+    assign i_rd_clk_n = ~i_rd_clk;
 
     initial mig_sys_clk = 1'b0;
     always #(DDR3_CLK100_PERIOD_NS / 2.0) mig_sys_clk = ~mig_sys_clk;
@@ -481,7 +486,7 @@ module test_ccd_controller_axi;
     task slave_read_word;
         begin
             @(posedge i_rd_clk);
-            while (o_slave_fifo_data_valid_n !== 1'b0)
+            while (o_slave_fifo_data_wr_en_n !== 1'b0)
                 @(posedge i_rd_clk);
             slave_rd_result = o_slave_fifo_data;
         end
