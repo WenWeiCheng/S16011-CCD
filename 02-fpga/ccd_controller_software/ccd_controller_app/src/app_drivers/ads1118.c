@@ -2,7 +2,7 @@
 * @file ads1118.c
 *
 * ads1118 driver implementation. SPI mode 1 (CPOL=0, CPHA=1), 16-bit frames.
-* "read by writing": writes NOP=01b to fetch data and synchronously reads back the most
+* "read by writing": writes NOP=00b to fetch data and synchronously reads back the most
 * recent 16-bit conversion result.
 *
 * @note <pre>
@@ -12,15 +12,16 @@
 * ----- ---- -------- -----------------------------------------------
 * 1.0   wwc  26/08/02 First release
 * 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
+* 1.2   wwc  26/08/03 Fix NOP field: config write must use NOP=01b, fetch uses NOP=00b
 * </pre>
 ******************************************************************************/
 #include "ads1118.h"
 #include "../include/board_config.h"
 #include "xil_assert.h"
 
-/* fetch data NOP=01b; write config NOP=00b */
-#define ADS1118_NOP_READ      (0x1U << ADS1118_CFG_NOP_SHIFT)
-#define ADS1118_NOP_NORMAL    (0x0U << ADS1118_CFG_NOP_SHIFT)
+/* write config NOP=01b; fetch data NOP=00b */
+#define ADS1118_NOP_READ      (0x0U << ADS1118_CFG_NOP_SHIFT)
+#define ADS1118_NOP_NORMAL    (0x1U << ADS1118_CFG_NOP_SHIFT)
 
 /*****************************************************************************/
 /**
@@ -126,7 +127,7 @@ int Ads1118_SetChannel(Ads1118 *d, Ads1118_Mux mux)
 
 /*****************************************************************************/
 /**
-* @brief  Reads the most recent conversion result (writes NOP=01b to fetch).
+* @brief  Reads the most recent conversion result (writes NOP=00b to fetch).
 *
 * @param  d    ads1118 instance.
 * @param  raw  Receives the signed 16-bit conversion result.

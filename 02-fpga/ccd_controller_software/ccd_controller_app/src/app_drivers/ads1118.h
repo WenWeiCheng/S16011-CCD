@@ -5,7 +5,7 @@
 *
 * Shares the XSpi instance, cs=Spi_cs_2; SPI mode 1 (CPOL=0, CPHA=1).
 * Operating mode: continuous conversion (MODE=0), 860SPS, PGA full scale +/-4.096V.
-* Every transaction is always 16-bit: write config (NOP=00) or write fetch (NOP=01) and
+* Every transaction is always 16-bit: write config (NOP=01) or write fetch (NOP=00) and
 * synchronously read back the previous conversion result.
 *
 * @note <pre>
@@ -14,6 +14,7 @@
 * Ver   Who  Date     Changes
 * ----- ---- -------- -----------------------------------------------
 * 1.0   wwc  26/08/02 First release
+* 1.1   wwc  26/08/03 Fix NOP comment: config write uses NOP=01, fetch uses NOP=00
 * </pre>
 ******************************************************************************/
 #ifndef ADS1118_H
