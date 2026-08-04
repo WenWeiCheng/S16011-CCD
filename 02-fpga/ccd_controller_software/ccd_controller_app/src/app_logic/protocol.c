@@ -23,9 +23,10 @@
 * 1.0   wwc  26/08/03 First release
 * 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
 * 1.2   wwc  26/08/03 Reply ERR on token overflow / empty line (never drop silently)
-* 1.3   wwc  26/08/04 TEC: PID params (tec_set_temp/kp/ki/kd) replace tec_voltage_set,
-*                      RO tec_voltage/current now apply the ADN8833 monitor conversions
-* </pre>
+ * 1.3   wwc  26/08/04 TEC: PID params (tec_set_temp/kp/ki/kd) replace tec_voltage_set,
+ *                      RO tec_voltage/current now apply the ADN8833 monitor conversions
+ * 1.4   wwc  26/08/04 Verb dispatch case-insensitive (debug convenience)
+ * </pre>
 ******************************************************************************/
 #include "protocol.h"
 #include "proto_num.h"
@@ -1181,6 +1182,9 @@ static int Proto_Tokenize(char *line, char **argv, u32 max)
 * and empty lines get an ERR response instead of being silently dropped, so the host
 * (send one command, wait for the reply) never hangs.
 *
+* @note Verb matching is case-insensitive; parameter names / values remain
+* case-sensitive (matching the existing lower-case convention).
+*
 * @param  line  Complete command line (modified in place by tokenizing).
 ******************************************************************************/
 static void Proto_Dispatch(char *line)
@@ -1188,6 +1192,7 @@ static void Proto_Dispatch(char *line)
     char *argv[PROTO_MAX_ARGS];
     int argc;
     u32 i;
+    char *v;
 
     argc = Proto_Tokenize(line, argv, PROTO_MAX_ARGS);
     if (argc < 0) {
@@ -1197,6 +1202,14 @@ static void Proto_Dispatch(char *line)
     if (argc == 0) {
         Proto_Err(PROTO_ERR_INVALID_VALUE, "empty line");
         return;
+    }
+
+    /* Uppercase the verb token in place: g_cmds[].Verb keys are upper-case, but
+     * tolerate lower/mixed-case host input for debug convenience. */
+    for (v = argv[0]; *v != '\0'; ++v) {
+        if ((*v >= 'a') && (*v <= 'z')) {
+            *v = (char)(*v - ('a' - 'A'));
+        }
     }
 
     for (i = 0; i < PROTO_NUM_CMDS; i++) {
