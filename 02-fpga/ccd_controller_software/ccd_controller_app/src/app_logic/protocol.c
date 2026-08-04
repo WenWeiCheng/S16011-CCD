@@ -12,8 +12,8 @@
 * floating-point engine (_svfprintf_r + _dtoa_r + malloc) even when used only for integers,
 * which does not fit in the 128KB local mem.
 *
-* Depends on the app driver layer (gUartDrv / gCcd / gCcdCtrl / gAdn8833 / gDac8311 /
-* gMonitor); does not access registers or Xilinx drivers directly.
+* Depends on the app driver layer (gUartDrv / gCcd / gCcdCtrl / gMonitor) and the
+* TEC control loop (gTecCtrl); does not access registers or Xilinx drivers directly.
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -23,6 +23,8 @@
 * 1.0   wwc  26/08/03 First release
 * 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
 * 1.2   wwc  26/08/03 Reply ERR on token overflow / empty line (never drop silently)
+* 1.3   wwc  26/08/04 TEC: PID params (tec_set_temp/kp/ki/kd) replace tec_voltage_set,
+*                      RO tec_voltage/current now apply the ADN8833 monitor conversions
 * </pre>
 ******************************************************************************/
 #include "protocol.h"
@@ -30,6 +32,8 @@
 #include "../hal/board_hal.h"
 #include "../include/board_config.h"
 #include "monitor.h"
+#include "tec.h"
+#include "tec_ctrl.h"
 #include "mb_interface.h"
 #include "xil_printf.h"
 #include <string.h>
@@ -234,20 +238,26 @@ static Protocol_Param g_params[] = {
       "0:15:1", { .I = CCD_BLANK_L_DEFAULT }, NULL, NULL },
     { "blank_right", VAL_TYPE_INT_RANGE, VAL_ACCESS_RW, "right blank pixels", "px",
       "0:15:1", { .I = CCD_BLANK_R_DEFAULT }, NULL, NULL },
-    /* ---- TEC ---- */
-    { "tec_enable", VAL_TYPE_BOOL, VAL_ACCESS_RW, "TEC cooling enable", "",
+    /* ---- TEC (temperature PID control) ---- */
+    { "tec_enable", VAL_TYPE_BOOL, VAL_ACCESS_RW, "TEC power enable", "",
       "", { .B = 0 }, NULL, NULL },
-    { "tec_voltage_set", VAL_TYPE_FLOAT_RANGE, VAL_ACCESS_RW, "TEC output voltage set", "V",
-      "0:2.500:0.001", { .F = 0.0f }, NULL, NULL },
+    { "tec_set_temp", VAL_TYPE_FLOAT_RANGE, VAL_ACCESS_RW, "sensor temperature setpoint", "degC",
+      "-80:30:0.1", { .F = 25.0f }, NULL, NULL },
+    { "tec_kp", VAL_TYPE_FLOAT_RANGE, VAL_ACCESS_RW, "TEC PID proportional gain", "V/degC",
+      "0:10:0.001", { .F = 0.5f }, NULL, NULL },
+    { "tec_ki", VAL_TYPE_FLOAT_RANGE, VAL_ACCESS_RW, "TEC PID integral gain", "1/s",
+      "0:5:0.001", { .F = 0.1f }, NULL, NULL },
+    { "tec_kd", VAL_TYPE_FLOAT_RANGE, VAL_ACCESS_RW, "TEC PID derivative gain", "s",
+      "0:5:0.001", { .F = 0.0f }, NULL, NULL },
     /* ---- telemetry (RO) ---- */
     { "sensor_temp", VAL_TYPE_FLOAT_RANGE, VAL_ACCESS_RO, "CCD sensor NTC temperature", "degC",
       "0:80:0.1", { .F = 0.0f }, NULL, NULL },
     { "environment_temp", VAL_TYPE_FLOAT_RANGE, VAL_ACCESS_RO, "environment NTC temperature", "degC",
       "0:80:0.1", { .F = 0.0f }, NULL, NULL },
     { "tec_voltage", VAL_TYPE_FLOAT_RANGE, VAL_ACCESS_RO, "TEC output voltage monitor", "V",
-      "0:4.096:0.001", { .F = 0.0f }, NULL, NULL },
+      "-3.3:3.3:0.001", { .F = 0.0f }, NULL, NULL },
     { "tec_current", VAL_TYPE_FLOAT_RANGE, VAL_ACCESS_RO, "TEC output current monitor", "A",
-      "0:10:0.001", { .F = 0.0f }, NULL, NULL },
+      "-1.1:1.1:0.001", { .F = 0.0f }, NULL, NULL },
     /* ---- system ---- */
     { "camera_name", VAL_TYPE_STRING, VAL_ACCESS_RW, "camera name", "",
       "maxlen 32", { .S = "ccd" }, NULL, NULL },
@@ -549,7 +559,8 @@ static int Apply_BevelBlank(const Protocol_Param *p)
 
 /*****************************************************************************/
 /**
-* @brief  Apply: enables/disables the TEC via the ADN8833 driver.
+* @brief  Apply: enables/disables the TEC. The TEC control loop powers the ADN8833
+* (EN pin) and commands the dac8311 together.
 *
 * @param  p  Parameter (uses p->Cur.B).
 *
@@ -557,21 +568,43 @@ static int Apply_BevelBlank(const Protocol_Param *p)
 ******************************************************************************/
 static int Apply_TecEnable(const Protocol_Param *p)
 {
-    Adn8833_SetEnable(&gAdn8833, p->Cur.B);
+    TecCtrl_SetEnable(&gTecCtrl, p->Cur.B);
     return 0;
 }
 
 /*****************************************************************************/
 /**
-* @brief  Apply: sets the TEC output voltage via the DAC8311 driver.
+* @brief  Apply: writes the sensor temperature setpoint to the TEC control loop.
 *
 * @param  p  Parameter (uses p->Cur.F).
 *
-* @return 0 on success, -1 if the DAC write failed.
+* @return 0 on success.
 ******************************************************************************/
-static int Apply_TecVoltage(const Protocol_Param *p)
+static int Apply_TecSetTemp(const Protocol_Param *p)
 {
-    return (Dac8311_SetVoltage(&gDac8311, p->Cur.F) == XST_SUCCESS) ? 0 : -1;
+    TecCtrl_SetSetTemp(&gTecCtrl, p->Cur.F);
+    return 0;
+}
+
+/*****************************************************************************/
+/**
+* @brief  Apply: pushes the three PID gains (from their own params) to the TEC
+* control loop.
+*
+* @param  p  Unused (the gains are read from the parameter table).
+*
+* @return 0 on success.
+******************************************************************************/
+static int Apply_TecTunings(const Protocol_Param *p)
+{
+    const Protocol_Param *kp, *ki, *kd;
+
+    (void)p;
+    kp = Proto_FindParam("tec_kp");
+    ki = Proto_FindParam("tec_ki");
+    kd = Proto_FindParam("tec_kd");
+    TecCtrl_SetTunings(&gTecCtrl, kp->Cur.F, ki->Cur.F, kd->Cur.F);
+    return 0;
 }
 
 /*****************************************************************************/
@@ -742,7 +775,8 @@ static int Fmt_EnvTemp(const Protocol_Param *p, char *buf, u32 cap)
 
 /*****************************************************************************/
 /**
-* @brief  Format: reads the live TEC output voltage from the monitor.
+* @brief  Format: reads the live TEC output voltage (Vvm monitor via
+* Vtec = 4*(Vvm - 1.25)) from the monitor.
 *
 * @param  p    Unused (live value).
 * @param  buf  Destination buffer.
@@ -755,13 +789,16 @@ static int Fmt_TecVoltage(const Protocol_Param *p, char *buf, u32 cap)
     ProtoBuf b;
     (void)p;
     Pb_Init(&b, buf, cap);
-    Pb_AppendFloat(&b, Monitor_GetVoltage(&gMonitor, ADS1118_MUX_TEC_V), 3);
+    Pb_AppendFloat(&b,
+                   Tec_VmonToVtec(Monitor_GetVoltage(&gMonitor, ADS1118_MUX_TEC_V)),
+                   3);
     return (int)b.Len;
 }
 
 /*****************************************************************************/
 /**
-* @brief  Format: reads the live TEC output current (V * TEC_I_A_PER_V) from the monitor.
+* @brief  Format: reads the live TEC output current (Vim monitor via
+* Itec = 1.905*(Vim - 1.25)) from the monitor.
 *
 * @param  p    Unused (live value).
 * @param  buf  Destination buffer.
@@ -775,7 +812,7 @@ static int Fmt_TecCurrent(const Protocol_Param *p, char *buf, u32 cap)
     (void)p;
     Pb_Init(&b, buf, cap);
     Pb_AppendFloat(&b,
-                   Monitor_GetVoltage(&gMonitor, ADS1118_MUX_TEC_I) * TEC_I_A_PER_V,
+                   Tec_ImonToItec(Monitor_GetVoltage(&gMonitor, ADS1118_MUX_TEC_I)),
                    3);
     return (int)b.Len;
 }
@@ -842,21 +879,24 @@ static void Proto_BindHandlers(void)
     g_params[10].Apply = Apply_BevelBlank; g_params[10].Format = Fmt_Int;
     g_params[11].Apply = Apply_BevelBlank; g_params[11].Format = Fmt_Int;
     g_params[12].Apply = Apply_BevelBlank; g_params[12].Format = Fmt_Int;
-    g_params[13].Apply = Apply_TecEnable;  g_params[13].Format = Fmt_Bool;
-    g_params[14].Apply = Apply_TecVoltage; g_params[14].Format = Fmt_Float;
-    g_params[15].Format = Fmt_SensorTemp;
-    g_params[16].Format = Fmt_EnvTemp;
-    g_params[17].Format = Fmt_TecVoltage;
-    g_params[18].Format = Fmt_TecCurrent;
-    g_params[19].Format = Fmt_String;
-    g_params[20].Format = Fmt_AcqState;
-    g_params[21].Format = Fmt_FrameNum;
-    g_params[22].Apply = Apply_AdcGainOffset; g_params[22].Format = Fmt_Int;
-    g_params[23].Apply = Apply_AdcGainOffset; g_params[23].Format = Fmt_Int;
-    g_params[24].Apply = Apply_AdcGainOffset; g_params[24].Format = Fmt_Int;
+    g_params[13].Apply = Apply_TecEnable;   g_params[13].Format = Fmt_Bool;
+    g_params[14].Apply = Apply_TecSetTemp;  g_params[14].Format = Fmt_Float;
+    g_params[15].Apply = Apply_TecTunings;  g_params[15].Format = Fmt_Float;
+    g_params[16].Apply = Apply_TecTunings;  g_params[16].Format = Fmt_Float;
+    g_params[17].Apply = Apply_TecTunings;  g_params[17].Format = Fmt_Float;
+    g_params[18].Format = Fmt_SensorTemp;
+    g_params[19].Format = Fmt_EnvTemp;
+    g_params[20].Format = Fmt_TecVoltage;
+    g_params[21].Format = Fmt_TecCurrent;
+    g_params[22].Format = Fmt_String;
+    g_params[23].Format = Fmt_AcqState;
+    g_params[24].Format = Fmt_FrameNum;
     g_params[25].Apply = Apply_AdcGainOffset; g_params[25].Format = Fmt_Int;
     g_params[26].Apply = Apply_AdcGainOffset; g_params[26].Format = Fmt_Int;
     g_params[27].Apply = Apply_AdcGainOffset; g_params[27].Format = Fmt_Int;
+    g_params[28].Apply = Apply_AdcGainOffset; g_params[28].Format = Fmt_Int;
+    g_params[29].Apply = Apply_AdcGainOffset; g_params[29].Format = Fmt_Int;
+    g_params[30].Apply = Apply_AdcGainOffset; g_params[30].Format = Fmt_Int;
 }
 
 /* ============================================================================

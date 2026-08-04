@@ -20,6 +20,7 @@
 * 1.0   wwc  26/08/03 First release
 * 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
 * 1.2   wwc  26/08/03 Per-channel NTC tables (sensor/env), lookup moved to ntc.c
+* 1.3   wwc  26/08/04 Per-channel sample tick (Monitor_GetSampleTick) for the TEC loop
 * </pre>
 ******************************************************************************/
 #include "monitor.h"
@@ -77,6 +78,7 @@ int Monitor_Init(Monitor *d, Ads1118 *adc, Heartbeat *hb)
     d->LastReadMs = 0U;
     d->LastSwitchMs = 0U;
     d->Raw[0] = d->Raw[1] = d->Raw[2] = d->Raw[3] = 0;
+    d->SampleTick[0] = d->SampleTick[1] = d->SampleTick[2] = d->SampleTick[3] = 0U;
 
     Ads1118_SetChannel(adc, ADS1118_MUX_SENSOR_NTC);
     return XST_SUCCESS;
@@ -105,6 +107,7 @@ void Monitor_Tick(Monitor *d)
         d->LastReadMs = tick;
         if (Ads1118_ReadRaw(d->Adc, &raw) == XST_SUCCESS) {
             d->Raw[d->MuxIdx] = raw;
+            d->SampleTick[d->MuxIdx] = tick;
         }
     }
 }
@@ -158,4 +161,21 @@ float Monitor_GetNtcTemp(Monitor *d, Ads1118_Mux mux)
         return 0.0f;    /* not an NTC channel */
     }
     return Ntc_LookupTemp(d->Raw[idx], cfg);
+}
+
+/*****************************************************************************/
+/**
+* @brief  Heartbeat tick of the last successful read of a channel.
+*
+* Consumers (e.g. the TEC control loop) compare successive ticks to detect a
+* fresh sample and derive the real sample interval.
+*
+* @param  d    Monitor instance.
+* @param  mux  Channel to query.
+*
+* @return Heartbeat tick (ms) of the channel's last read.
+******************************************************************************/
+u32 Monitor_GetSampleTick(Monitor *d, Ads1118_Mux mux)
+{
+    return d->SampleTick[Monitor_MuxToIdx(mux)];
 }

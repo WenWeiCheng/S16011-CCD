@@ -13,6 +13,7 @@
 * Ver   Who  Date     Changes
 * ----- ---- -------- -----------------------------------------------
 * 1.0   wwc  26/08/03 First release
+* 1.3   wwc  26/08/04 Per-channel sample tick (Monitor_GetSampleTick) for the TEC loop
 * </pre>
 ******************************************************************************/
 #ifndef MONITOR_H
@@ -32,6 +33,7 @@ typedef struct {
     Ads1118 *Adc;                /* ads1118 driver (initialized by board_hal) */
     Heartbeat *Hb;               /* heartbeat tick source (timer0, 1ms) */
     s16 Raw[MONITOR_CHANNELS];   /* most recent raw code of each channel (index = channel order) */
+    u32 SampleTick[MONITOR_CHANNELS]; /* heartbeat tick of the last successful read of each channel */
     u8  MuxIdx;                  /* current sampling channel (0..3) */
     u32 LastReadMs;              /* tick of the last read */
     u32 LastSwitchMs;            /* tick of the last channel switch */
@@ -44,6 +46,7 @@ void  Monitor_Tick(Monitor *d);                       /* called from main loop: 
 s16   Monitor_GetRaw(Monitor *d, Ads1118_Mux mux);    /* raw code */
 float Monitor_GetVoltage(Monitor *d, Ads1118_Mux mux);/* V */
 float Monitor_GetNtcTemp(Monitor *d, Ads1118_Mux mux);/* degC (valid only for NTC channels) */
+u32   Monitor_GetSampleTick(Monitor *d, Ads1118_Mux mux); /* heartbeat tick of the channel's last read */
 
 #ifdef __cplusplus
 }

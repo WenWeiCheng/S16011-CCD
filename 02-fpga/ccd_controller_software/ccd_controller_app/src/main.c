@@ -20,6 +20,7 @@
 #include "include/board_config.h"
 #include "app_logic/protocol.h"
 #include "app_logic/monitor.h"
+#include "app_logic/tec_ctrl.h"
 #include "xil_printf.h"
 #include "xil_types.h"
 
@@ -52,12 +53,14 @@ int main(void)
     Heartbeat_RegisterHandler(&gHeartbeat, App_HeartbeatTick, NULL);
 
     Monitor_Init(&gMonitor, &gAds1118, &gHeartbeat);
+    TecCtrl_Init(&gTecCtrl, &gDac8311, &gAdn8833, &gMonitor);
     Protocol_Init();
 
     while (1) {
         u32 tick = Heartbeat_GetTick(&gHeartbeat);
 
         Monitor_Tick(&gMonitor);
+        TecCtrl_Tick(&gTecCtrl);
         Protocol_ProcessPending();
 
         /* LED0 heartbeat blink (500ms) */

@@ -127,10 +127,23 @@ extern "C" {
 #define CCD_BLANK_R_DEFAULT      4U
 
 /* ============================================================================
- * TEC output current conversion (ads1118 AIN2)
- * TODO(pending confirmation): currently assumes 1 A/V (1 ohm sense resistor), replace after hardware confirmation.
+ * ADN8833 TEC control / monitor conversion (dac8311 Vcont, ads1118 AIN1/AIN2)
+ *   Vtec = 5 * (1.25 - Vcont)    DAC output Vcont -> TEC output voltage
+ *   Vtec = 4 * (Vvm - 1.25)      ADN8833 VVM monitor -> TEC output voltage
+ *   Itec = 1.905 * (Vim - 1.25)  ADN8833 VIM monitor -> TEC output current
+ * The three references share the same 1.25V mid-scale offset.
  * ==========================================================================*/
-#define TEC_I_A_PER_V            1.0f          /* A per measured V */
+#define ADN8833_VCONT_REF_V      1.25f         /* Vcont/Vvm/Vim mid-scale reference */
+#define ADN8833_VTEC_PER_VCONT    5.0f         /* Vtec per V below VCONT_REF (inverted) */
+#define ADN8833_VTEC_PER_VMON     4.0f         /* Vtec per V above VCONT_REF */
+#define ADN8833_ITEC_PER_IMON     1.905f       /* Atec per V above VCONT_REF */
+
+/* ============================================================================
+ * TEC temperature PID control (see app_logic/tec_ctrl.c)
+ * PID output clamp range = +/- VDD = +/- 3.3V.
+ * ==========================================================================*/
+#define TEC_CTRL_VTEC_MIN_V      -3.3f         /* PID output clamp, -VDD */
+#define TEC_CTRL_VTEC_MAX_V       3.3f         /* PID output clamp, +VDD */
 
 #ifdef __cplusplus
 }
