@@ -7,8 +7,10 @@
 *
 * Conversion:
 *   - Voltage: V = code x FS / 2^15 (single-ended half scale, FS=+/-4.096V)
-*   - NTC temperature: lookup table + linear interpolation (table generated offline from
-*     placeholder constants in board_config.h)
+*   - NTC temperature: per-channel lookup table + linear interpolation. The sensor
+*     (AIN0) and environment (AIN3) channels each have their own table (generated
+*     offline by tools/gen_ntc_table.py from the per-channel NTC parameters in
+*     board_config.h), so different NTC parts / divider resistors are supported.
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -17,9 +19,11 @@
 * ----- ---- -------- -----------------------------------------------
 * 1.0   wwc  26/08/03 First release
 * 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
+* 1.2   wwc  26/08/03 Per-channel NTC tables (sensor/env), lookup moved to ntc.c
 * </pre>
 ******************************************************************************/
 #include "monitor.h"
+#include "ntc.h"
 #include "../include/board_config.h"
 #include "xil_assert.h"
 
@@ -28,107 +32,12 @@
 
 Monitor gMonitor;
 
-/* ============================================================================
- * NTC conversion table
- * Placeholder constants (R25=10000, B=3435, Rser=10000, Vref=4.096V), temperature
- * -50..+150 degC, 1 degC step, generated offline. Table is in ascending code order,
- * descending temperature order; values outside the range are clamped to the endpoints.
- * TODO(pending confirmation): regenerate this table after obtaining the actual board's
- * NTC / divider circuit (including topology).
- * ==========================================================================*/
-typedef struct {
-    u16 Code;
-    s16 TempX10;      /* temperature x10 (degC) */
-} NtcPoint;
-
-static const NtcPoint g_ntc_table[] = {
-    { 1055, 1500}, { 1075, 1490}, { 1095, 1480}, { 1116, 1470},
-    { 1137, 1460}, { 1159, 1450}, { 1181, 1440}, { 1203, 1430},
-    { 1227, 1420}, { 1251, 1410}, { 1275, 1400}, { 1300, 1390},
-    { 1325, 1380}, { 1352, 1370}, { 1378, 1360}, { 1406, 1350},
-    { 1434, 1340}, { 1463, 1330}, { 1492, 1320}, { 1522, 1310},
-    { 1553, 1300}, { 1585, 1290}, { 1617, 1280}, { 1650, 1270},
-    { 1684, 1260}, { 1719, 1250}, { 1755, 1240}, { 1792, 1230},
-    { 1829, 1220}, { 1868, 1210}, { 1907, 1200}, { 1947, 1190},
-    { 1989, 1180}, { 2031, 1170}, { 2075, 1160}, { 2120, 1150},
-    { 2165, 1140}, { 2212, 1130}, { 2260, 1120}, { 2310, 1110},
-    { 2360, 1100}, { 2412, 1090}, { 2465, 1080}, { 2520, 1070},
-    { 2576, 1060}, { 2634, 1050}, { 2692, 1040}, { 2753, 1030},
-    { 2815, 1020}, { 2879, 1010}, { 2944, 1000}, { 3011,  990},
-    { 3079,  980}, { 3150,  970}, { 3222,  960}, { 3296,  950},
-    { 3372,  940}, { 3451,  930}, { 3531,  920}, { 3613,  910},
-    { 3697,  900}, { 3784,  890}, { 3873,  880}, { 3964,  870},
-    { 4057,  860}, { 4153,  850}, { 4251,  840}, { 4352,  830},
-    { 4456,  820}, { 4562,  810}, { 4671,  800}, { 4783,  790},
-    { 4897,  780}, { 5015,  770}, { 5135,  760}, { 5259,  750},
-    { 5386,  740}, { 5515,  730}, { 5649,  720}, { 5785,  710},
-    { 5925,  700}, { 6068,  690}, { 6215,  680}, { 6366,  670},
-    { 6520,  660}, { 6677,  650}, { 6839,  640}, { 7005,  630},
-    { 7174,  620}, { 7347,  610}, { 7525,  600}, { 7706,  590},
-    { 7892,  580}, { 8081,  570}, { 8275,  560}, { 8474,  550},
-    { 8676,  540}, { 8883,  530}, { 9094,  520}, { 9310,  510},
-    { 9530,  500}, { 9755,  490}, { 9984,  480}, {10217,  470},
-    {10455,  460}, {10697,  450}, {10944,  440}, {11195,  430},
-    {11451,  420}, {11710,  410}, {11974,  400}, {12243,  390},
-    {12515,  380}, {12792,  370}, {13072,  360}, {13356,  350},
-    {13644,  340}, {13936,  330}, {14231,  320}, {14530,  310},
-    {14832,  300}, {15137,  290}, {15445,  280}, {15755,  270},
-    {16069,  260}, {16384,  250}, {16702,  240}, {17021,  230},
-    {17342,  220}, {17665,  210}, {17989,  200}, {18313,  190},
-    {18639,  180}, {18965,  170}, {19291,  160}, {19616,  150},
-    {19942,  140}, {20267,  130}, {20591,  120}, {20913,  110},
-    {21234,  100}, {21553,   90}, {21871,   80}, {22186,   70},
-    {22498,   60}, {22807,   50}, {23113,   40}, {23416,   30},
-    {23715,   20}, {24011,   10}, {24302,    0}, {24589,  -10},
-    {24871,  -20}, {25149,  -30}, {25421,  -40}, {25689,  -50},
-    {25952,  -60}, {26209,  -70}, {26460,  -80}, {26706,  -90},
-    {26947, -100}, {27181, -110}, {27410, -120}, {27633, -130},
-    {27850, -140}, {28060, -150}, {28265, -160}, {28464, -170},
-    {28657, -180}, {28843, -190}, {29024, -200}, {29199, -210},
-    {29368, -220}, {29531, -230}, {29688, -240}, {29840, -250},
-    {29986, -260}, {30126, -270}, {30261, -280}, {30391, -290},
-    {30515, -300}, {30635, -310}, {30749, -320}, {30858, -330},
-    {30963, -340}, {31063, -350}, {31159, -360}, {31250, -370},
-    {31337, -380}, {31420, -390}, {31499, -400}, {31574, -410},
-    {31646, -420}, {31714, -430}, {31778, -440}, {31839, -450},
-    {31897, -460}, {31952, -470}, {32004, -480}, {32053, -490},
-    {32100, -500},
+/* Per-channel NTC lookup configs (channel order 0..3: SENSOR_NTC/TEC_V/TEC_I/ENV_NTC).
+ * Only the two NTC channels carry a table; the TEC channels are not NTCs. */
+static const NtcTableCfg g_ntc_cfg[MONITOR_CHANNELS] = {
+    [0] = { g_sensor_ntc_table, NTC_SENSOR_TABLE_N },   /* SENSOR_NTC */
+    [3] = { g_env_ntc_table,    NTC_ENV_TABLE_N    },   /* ENV_NTC    */
 };
-#define NTC_TABLE_N  (sizeof g_ntc_table / sizeof g_ntc_table[0])
-
-/*****************************************************************************/
-/**
-* @brief  code -> temperature (degC), lookup table linear interpolation, clamped outside
-* the range.
-*
-* @param  code  Raw 16-bit ADC code of the NTC channel.
-*
-* @return Temperature in degC.
-******************************************************************************/
-static float Monitor_LookupTemp(s16 code)
-{
-    s32 num, den;
-    u32 i;
-
-    if ((u16)code >= g_ntc_table[0].Code) {
-        return (float)g_ntc_table[0].TempX10 / 10.0f;   /* hottest end */
-    }
-    if ((u16)code <= g_ntc_table[NTC_TABLE_N - 1U].Code) {
-        return (float)g_ntc_table[NTC_TABLE_N - 1U].TempX10 / 10.0f; /* coldest end */
-    }
-
-    for (i = 0; i < NTC_TABLE_N - 1U; i++) {
-        if ((u16)code <= g_ntc_table[i].Code &&
-            (u16)code >  g_ntc_table[i + 1U].Code) {
-            den = (s32)g_ntc_table[i + 1U].Code - (s32)g_ntc_table[i].Code;
-            num = (s32)((u16)code - (s32)g_ntc_table[i].Code) *
-                  (s32)(g_ntc_table[i + 1U].TempX10 - g_ntc_table[i].TempX10);
-            return (float)((s32)g_ntc_table[i].TempX10 * den + num) /
-                   (10.0f * (float)den);
-        }
-    }
-    return (float)g_ntc_table[NTC_TABLE_N - 1U].TempX10 / 10.0f;
-}
 
 /*****************************************************************************/
 /**
@@ -242,5 +151,11 @@ float Monitor_GetVoltage(Monitor *d, Ads1118_Mux mux)
 ******************************************************************************/
 float Monitor_GetNtcTemp(Monitor *d, Ads1118_Mux mux)
 {
-    return Monitor_LookupTemp(d->Raw[Monitor_MuxToIdx(mux)]);
+    u8 idx = Monitor_MuxToIdx(mux);
+    const NtcTableCfg *cfg = &g_ntc_cfg[idx];
+
+    if (cfg->Table == NULL) {
+        return 0.0f;    /* not an NTC channel */
+    }
+    return Ntc_LookupTemp(d->Raw[idx], cfg);
 }

@@ -88,14 +88,31 @@ extern "C" {
 #define ADS1118_SPS              860U          /* DR=110b data rate */
 
 /* ============================================================================
- * NTC thermistor
+ * NTC thermistor (per channel: sensor AIN0 / environment AIN3)
  *
- * TODO(pending confirmation): currently common default values (10k ohm NTC, B=3435, divider series 10k ohm).
- * Replace after obtaining the actual NTC specs from the board BOM.
+ * Both channels use the same divider topology (confirmed):
+ *   Vref - R1 - (tap) - R2 - Rntc - GND
+ * The ADC measures the tap voltage (R1/R2 node to GND):
+ *   V = Vref * (R2 + Rntc) / (R1 + R2 + Rntc)
+ * Placeholder constants below are used by tools/gen_ntc_table.py to generate the
+ * code -> temperature lookup tables in src/app_logic/ntc_tables.h (GENERATED FILE,
+ * do not edit by hand).
+ *
+ * TODO(pending confirmation): currently placeholders (R1=R2=R25=10k, B=3435,
+ * Vref=2.5V, identical for both channels). Replace after obtaining the actual
+ * NTC specs / divider resistors from the board BOM, then re-run the generator.
  * ==========================================================================*/
-#define NTC_R25_OHM              10000         /* nominal resistance at 25C */
-#define NTC_BETA                 3435          /* B value (25/85) */
-#define NTC_SERIES_R_OHM         10000         /* divider series pull-up/pull-down resistor */
+#define NTC_SENSOR_R1_OHM        10000         /* top divider resistor */
+#define NTC_SENSOR_R2_OHM        10000         /* divider resistor in series with the NTC */
+#define NTC_SENSOR_R25_OHM       10000         /* nominal resistance at 25C */
+#define NTC_SENSOR_BETA          3435          /* B value (25/85) */
+#define NTC_SENSOR_DIV_VREF_V    2.5f          /* divider reference voltage */
+
+#define NTC_ENV_R1_OHM           10000         /* top divider resistor */
+#define NTC_ENV_R2_OHM           10000         /* divider resistor in series with the NTC */
+#define NTC_ENV_R25_OHM          10000         /* nominal resistance at 25C */
+#define NTC_ENV_BETA             3435          /* B value (25/85) */
+#define NTC_ENV_DIV_VREF_V       2.5f          /* divider reference voltage */
 
 /* ============================================================================
  * S16011 sensor default geometry (image/bevel/blank, see 00-docs/verilog-design/ccd_driver.md)
@@ -108,13 +125,6 @@ extern "C" {
 #define CCD_BEVEL_B_DEFAULT      4U
 #define CCD_BLANK_L_DEFAULT      4U
 #define CCD_BLANK_R_DEFAULT      4U
-
-/* ============================================================================
- * NTC divider topology
- * TODO(pending confirmation): currently assumes Vref -> Rseries -> NTC -> GND, ADC measures NTC terminal voltage.
- * Confirm/replace after getting the actual board circuit.
- * ==========================================================================*/
-#define NTC_DIV_VREF_V           4.096f        /* divider reference voltage (matches ADC FS) */
 
 /* ============================================================================
  * TEC output current conversion (ads1118 AIN2)
