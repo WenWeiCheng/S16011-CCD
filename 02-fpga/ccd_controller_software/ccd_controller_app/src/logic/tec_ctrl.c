@@ -18,7 +18,7 @@
 #include "../include/board_config.h"
 #include "xstatus.h"
 #include "xil_assert.h"
-#include "../app_drivers/adn8833.h"
+#include "../devices/adn8833.h"
 
 TecCtrl gTecCtrl;
 

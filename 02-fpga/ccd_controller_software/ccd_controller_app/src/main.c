@@ -15,12 +15,12 @@
 * 1.0   wwc  26/08/02 First release (driver smoke test)
 * </pre>
 ******************************************************************************/
-#include "app_drivers/led.h"
+#include "devices/led.h"
 #include "hal/board_hal.h"
 #include "include/board_config.h"
-#include "app_logic/protocol.h"
-#include "app_logic/monitor.h"
-#include "app_logic/tec_ctrl.h"
+#include "logic/protocol.h"
+#include "logic/monitor.h"
+#include "logic/tec_ctrl.h"
 #include "xil_printf.h"
 #include "xil_types.h"
 

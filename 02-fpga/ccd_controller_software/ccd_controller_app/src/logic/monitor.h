@@ -20,8 +20,8 @@
 #define MONITOR_H
 
 #include "xil_types.h"
-#include "../app_drivers/ads1118.h"
-#include "../app_drivers/heartbeat.h"
+#include "../devices/ads1118.h"
+#include "../devices/heartbeat.h"
 
 #ifdef __cplusplus
 extern "C" {

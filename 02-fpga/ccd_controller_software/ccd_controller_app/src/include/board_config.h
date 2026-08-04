@@ -95,7 +95,7 @@ extern "C" {
  * The ADC measures the tap voltage (R1/R2 node to GND):
  *   V = Vref * (R2 + Rntc) / (R1 + R2 + Rntc)
  * Placeholder constants below are used by tools/gen_ntc_table.py to generate the
- * code -> temperature lookup tables in src/app_logic/ntc_tables.h (GENERATED FILE,
+ * code -> temperature lookup tables in src/logic/ntc_tables.h (GENERATED FILE,
  * do not edit by hand).
  *
  * TODO(pending confirmation): currently placeholders (R1=R2=R25=10k, B=3435,
@@ -139,7 +139,7 @@ extern "C" {
 #define ADN8833_ITEC_PER_IMON     1.905f       /* Atec per V above VCONT_REF */
 
 /* ============================================================================
- * TEC temperature PID control (see app_logic/tec_ctrl.c)
+ * TEC temperature PID control (see logic/tec_ctrl.c)
  * PID output clamp range = +/- VDD = +/- 3.3V.
  * ==========================================================================*/
 #define TEC_CTRL_VTEC_MIN_V      -3.3f         /* PID output clamp, -VDD */

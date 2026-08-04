@@ -6,7 +6,7 @@
 *
 * NTC code -> temperature (x10 degC) lookup tables for the sensor (AIN0) and
 * environment (AIN3) channels. Each table is sorted by ascending code and is
-* interpolated linearly at runtime (see app_logic/ntc.c).
+* interpolated linearly at runtime (see logic/ntc.c).
 * Divider topology: Vref - R1 - (tap) - R2 - Rntc - GND
 *   V = Vref*(R2+Rntc)/(R1+R2+Rntc),  code = V/FS*32768 with FS=4.096V
 * Parameters come from board_config.h.

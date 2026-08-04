@@ -21,7 +21,7 @@
 #define PROTOCOL_H
 
 #include "xil_types.h"
-#include "../app_drivers/uart.h"
+#include "../devices/uart.h"
 
 #ifdef __cplusplus
 extern "C" {

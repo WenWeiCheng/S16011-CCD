@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate src/app_logic/ntc_tables.h (NTC code -> temperature lookup tables).
+Generate src/logic/ntc_tables.h (NTC code -> temperature lookup tables).
 
 Parses the NTC_* macros from src/include/board_config.h (single source of truth),
 computes the code->temperature table for the sensor (AIN0) and environment (AIN3)
@@ -27,7 +27,7 @@ T_STEP = 1              # degC
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 BOARD_CONFIG = os.path.join(HERE, '..', 'src', 'include', 'board_config.h')
-OUT_HEADER = os.path.join(HERE, '..', 'src', 'app_logic', 'ntc_tables.h')
+OUT_HEADER = os.path.join(HERE, '..', 'src', 'logic', 'ntc_tables.h')
 
 MACRO_RE = re.compile(r'#define\s+(NTC_[A-Z0-9_]+)\s+([0-9]+(?:\.[0-9]+)?)f?\s*/\*')
 
@@ -147,7 +147,7 @@ def main():
         '*\n'
         '* NTC code -> temperature (x10 degC) lookup tables for the sensor (AIN0) and\n'
         '* environment (AIN3) channels. Each table is sorted by ascending code and is\n'
-        '* interpolated linearly at runtime (see app_logic/ntc.c).\n'
+        '* interpolated linearly at runtime (see logic/ntc.c).\n'
         '* Divider topology: Vref - R1 - (tap) - R2 - Rntc - GND\n'
         '*   V = Vref*(R2+Rntc)/(R1+R2+Rntc),  code = V/FS*32768 with FS=%.3fV\n'
         '* Parameters come from board_config.h.\n'

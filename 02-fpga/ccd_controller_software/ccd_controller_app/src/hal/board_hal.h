@@ -24,17 +24,16 @@
 #include "xuartlite.h"
 #include "xintc.h"
 
-#include "ccd_controller.h"
-#include "../app_drivers/heartbeat.h"
-#include "../app_drivers/key.h"
-#include "../app_drivers/led.h"
-#include "../app_drivers/fx2.h"
-#include "../app_drivers/adn8833.h"
-#include "../app_drivers/ccd.h"
-#include "../app_drivers/uart.h"
-#include "../app_drivers/ads1118.h"
-#include "../app_drivers/dac8311.h"
-#include "../app_drivers/ad9826.h"
+#include "../devices/ccd.h"
+#include "../devices/heartbeat.h"
+#include "../devices/key.h"
+#include "../devices/led.h"
+#include "../devices/fx2.h"
+#include "../devices/adn8833.h"
+#include "../devices/uart.h"
+#include "../devices/ads1118.h"
+#include "../devices/dac8311.h"
+#include "../devices/ad9826.h"
 
 #ifdef __cplusplus
 extern "C" {

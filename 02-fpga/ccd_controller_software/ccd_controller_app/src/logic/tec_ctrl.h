@@ -27,10 +27,10 @@
 #define TEC_CTRL_H
 
 #include "xil_types.h"
-#include "../app_drivers/dac8311.h"
-#include "../app_drivers/adn8833.h"
-#include "../app_logic/monitor.h"
-#include "../app_logic/pid.h"
+#include "../devices/dac8311.h"
+#include "../devices/adn8833.h"
+#include "../logic/monitor.h"
+#include "../logic/pid.h"
 
 #ifdef __cplusplus
 extern "C" {

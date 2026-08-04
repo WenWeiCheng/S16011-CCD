@@ -254,8 +254,6 @@ int BoardHal_Init(void)
         return XST_FAILURE;
     }
 
-    xil_printf("--- BoardHal_Init Begin ---\r\n");
-
     /* SPI / GPIO / Timer */
     status = BoardHal_InitSpi();
     if (status != XST_SUCCESS) {
@@ -304,6 +302,5 @@ int BoardHal_Init(void)
     /* Enable ccd interrupts (tx_done + exception) */
     CcdController_IntrEnable(&gCcdCtrl, 1U, 1U);
 
-    xil_printf("--- BoardHal_Init done ---\r\n");
     return XST_SUCCESS;
 }

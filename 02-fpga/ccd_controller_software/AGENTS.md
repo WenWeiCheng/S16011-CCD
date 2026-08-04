@@ -101,7 +101,7 @@ ccd_controller_software/
 
 - **不要用 newlib `snprintf` / `sprintf` / `strtof`**。newlib 的 `snprintf` 只要被调用（哪怕只格式化 `%d/%s`），就会把**完整浮点 printf 引擎**链进固件：`_svfprintf_r` ~12KB + `_svfiprintf_r` 5.5KB + `_dtoa_r` 7KB + malloc/realloc/free 机制 4.5KB + `__udivdi3/__umoddi3` 5.4KB；`strtof` 再拉 `_strtod_l` 7KB + 转换辅助 ~6KB，合计 ~40+KB。实测带 snprintf+strtof 的协议固件 **155KB > 128KB** local mem，直接链接溢出。
 - `xil_printf` **不支持 %f**，且与是否开 FPU 无关（它是轻量实现，没写浮点；FPU 只加速运算）。
-- 对策：**数字格式化/解析全部手写**（见 `ccd_controller_app/src/app_logic/proto_num.c`：itoa / 定点小数 / 十进制浮点解析）；`strlen/strcmp/memcpy` 等叶子函数可放心用（极小，基线已引用）。协议响应串用手写拼接器。
+- 对策：**数字格式化/解析全部手写**（见 `ccd_controller_app/src/logic/proto_num.c`：itoa / 定点小数 / 十进制浮点解析）；`strlen/strcmp/memcpy` 等叶子函数可放心用（极小，基线已引用）。协议响应串用手写拼接器。
 - 体积基线：原驱动层（纯 xil_printf）≈62KB total（text 29.5K + data 0.5K + bss 33K，bss 含 16K heap + 16K stack）；全手写协议后 `-O2` ≈85KB / `-O0`(Debug) ≈92KB，128KB 放得下。
 
 #### 内存布局
@@ -116,7 +116,7 @@ ccd_controller_software/
 
 #### 纯逻辑模块可主机单测
 
-- 与硬件无关的纯逻辑（解析/格式化）抽成无 Xilinx 依赖的模块（如 `app_logic/proto_num.c`，只用 `xil_types.h` 的类型），临时目录放一个 `xil_types.h` 桩即可用主机 gcc 直接编译跑单测，无需硬件、迭代快。曾在单测中发现并修复两处逻辑 bug（约束解析遇 `:` 失败、Utoa/Itoa 未 NUL 结尾）。
+- 与硬件无关的纯逻辑（解析/格式化）抽成无 Xilinx 依赖的模块（如 `logic/proto_num.c`，只用 `xil_types.h` 的类型），临时目录放一个 `xil_types.h` 桩即可用主机 gcc 直接编译跑单测，无需硬件、迭代快。曾在单测中发现并修复两处逻辑 bug（约束解析遇 `:` 失败、Utoa/Itoa 未 NUL 结尾）。
 
 ### clangd / compile_commands.json 经验
 
