@@ -17,8 +17,8 @@ module ccd_frame_buf_ddr #(
     parameter MAX_FRAME_DEPTH = 131072,  // 每帧最大像素数 (每个像素 2 字节)
     parameter MAX_FRAMES      = 8        // 最大缓存帧数
 ) (
-    // ---- 写侧 (ADCCLK 域) ----
-    input  wire         i_adcclk,
+    // ---- 写侧 (wr_clk 域) ----
+    input  wire         i_wr_clk,
     input  wire         i_rst_n,
     input  wire [15:0]  i_wr_data,
     input  wire         i_wr_en,
@@ -41,7 +41,6 @@ module ccd_frame_buf_ddr #(
 
     // ---- MIG 接口 (ui_clk 域) ----
     input  wire         i_ui_clk,           // 来自外部 MIG 的 ui_clk
-    input  wire         i_ddr3_init_done,   // 来自外部 MIG: mmcm_locked && init_calib_complete
 
     // ---- AXI4 Master 接口 (ui_clk 域, 连接外部 MIG S_AXI) ----
     // 写地址通道
@@ -98,13 +97,6 @@ module ccd_frame_buf_ddr #(
     localparam FIFO_ADDR_WIDTH = 6;
 
     // ==================================================================
-    // 控制器复位: 系统复位 AND DDR3 初始化完成
-    // ==================================================================
-    reg ctrl_rst_n;
-    always @(posedge i_ui_clk)
-        ctrl_rst_n <= i_rst_n && i_ddr3_init_done;
-
-    // ==================================================================
     // ctrl ↔ adapter 内部连线
     // ==================================================================
     wire                ctrl_wr_req;
@@ -133,9 +125,9 @@ module ccd_frame_buf_ddr #(
     ) u_ctrl (
         // 时钟与复位
         .i_ui_clk         (i_ui_clk),
-        .i_adcclk         (i_adcclk),
+        .i_wr_clk         (i_wr_clk),
         .i_rd_clk         (i_rd_clk),
-        .i_rst_n          (ctrl_rst_n),
+        .i_rst_n          (i_rst_n),
 
         // ADC 域 — 像素数据
         .i_wr_data        (i_wr_data),
@@ -188,7 +180,7 @@ module ccd_frame_buf_ddr #(
         .AXI_BURST_LEN  (8'd31)
     ) u_adapter (
         .i_clk              (i_ui_clk),
-        .i_rst_n            (ctrl_rst_n),
+        .i_rst_n            (i_rst_n),
         .i_axi_wr_req       (ctrl_wr_req),
         .i_axi_wr_start_addr(ctrl_wr_start),
         .i_axi_wr_end_addr  (ctrl_wr_end),

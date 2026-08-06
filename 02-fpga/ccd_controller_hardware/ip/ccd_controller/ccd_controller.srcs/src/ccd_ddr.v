@@ -13,7 +13,7 @@ module ccd_ddr #(
     parameter MAX_FRAMES      = 8        // 最大缓存帧数
 ) (
     // ---- 系统 ----
-    input  wire         i_clk,           // 系统时钟 (100 MHz)
+    input  wire         i_ccd_clk,       // CCD 时序参考时钟 (100 MHz, 仅用于 CCD 时序信号分频)
     input  wire         i_rst_n,         // 异步复位, 低有效
 
     // ---- CCD 控制 ----
@@ -141,11 +141,17 @@ module ccd_ddr #(
     wire        ddr3_init_done = i_mmcm_locked && i_init_calib_complete;
 
     // ==================================================================
+    // 控制器复位: 系统复位 AND DDR3 初始化完成
+    //   ccd_driver / ccd_frame_buf_ddr / ccd_frame_tx 共享此复位
+    // ==================================================================
+    wire        ctrl_rst_n = i_rst_n && ddr3_init_done;
+
+    // ==================================================================
     // ccd_driver 实例化
     // ==================================================================
     ccd_driver u_ccd_driver (
-        .i_clk         (i_clk),
-        .i_rst_n       (i_rst_n),
+        .i_clk         (i_ccd_clk),
+        .i_rst_n       (ctrl_rst_n),
         .i_exposure    (i_exposure),
         .i_freq_sel    (i_freq_sel),
         .i_cdsclk_delay(i_cdsclk_delay),
@@ -192,8 +198,8 @@ module ccd_ddr #(
         .MAX_FRAME_DEPTH(MAX_FRAME_DEPTH),
         .MAX_FRAMES     (MAX_FRAMES)
     ) u_ccd_frame_buf_ddr (
-        .i_adcclk          (adcclk_w),
-        .i_rst_n           (i_rst_n),
+        .i_wr_clk          (adcclk_w),
+        .i_rst_n           (ctrl_rst_n),
         .i_wr_data         (pixel_data_w),
         .i_wr_en           (data_valid_w),
         .i_pixel_type      (pixel_type_w),
@@ -209,7 +215,6 @@ module ccd_ddr #(
         .i_fifo_rd_en      (fifo_rd_en_w),
         .o_frame_exception (o_frame_exception),
         .i_ui_clk          (i_ui_clk),
-        .i_ddr3_init_done  (ddr3_init_done),
         .M_AXI_AWID        (M_AXI_AWID),
         .M_AXI_AWADDR      (M_AXI_AWADDR),
         .M_AXI_AWLEN       (M_AXI_AWLEN),
@@ -264,7 +269,7 @@ module ccd_ddr #(
     ) u_ccd_frame_tx (
         .i_ext_clk             (i_rd_clk),
         .i_ext_clk_n           (i_rd_clk_n),
-        .i_rst_n               (i_rst_n),
+        .i_rst_n               (ctrl_rst_n),
         .i_frame_fifo_data     (fifo_data_w),
         .i_frame_fifo_num      (fifo_frame_num_w),
         .i_frame_fifo_prelast(fifo_prelast_w),

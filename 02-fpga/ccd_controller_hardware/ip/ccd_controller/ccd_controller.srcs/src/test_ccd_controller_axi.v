@@ -40,7 +40,7 @@ module test_ccd_controller_axi;
     parameter [31:0] INTR_EXCEPTION  = 32'h00000100;  // EN[8]
 
     // ==================================================================
-    // 系统 — AXI 域 (s00_axi_aclk = ccd_ddr.i_clk)
+    // 系统 — AXI 域 (s00_axi_aclk = ccd_ddr.i_ccd_clk)
     // ==================================================================
     reg         s00_axi_aclk;
     reg         s00_axi_aresetn;

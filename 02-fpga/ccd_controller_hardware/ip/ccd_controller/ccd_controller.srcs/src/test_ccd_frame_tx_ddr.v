@@ -105,6 +105,8 @@ module test_ccd_frame_tx_ddr;
     wire        mmcm_locked;
     wire        init_calib_complete;
     wire        ui_clk_sync_rst;
+    // 控制器复位: 系统复位 AND DDR3 初始化完成 (ccd_frame_buf_ddr 不再内部门控)
+    wire        ctrl_rst_n = i_rst_n && ddr3_init_done;
 
     // ==================================================================
     // DDR3 物理接口 (MIG ↔ ddr3_model)
@@ -199,8 +201,8 @@ module test_ccd_frame_tx_ddr;
         .MAX_FRAME_DEPTH (MAX_FRAME_DEPTH),
         .MAX_FRAMES      (MAX_FRAMES)
     ) u_ccd_frame_buf_ddr (
-        .i_adcclk          (i_adcclk),
-        .i_rst_n           (i_rst_n),
+        .i_wr_clk          (i_wr_clk),
+        .i_rst_n           (ctrl_rst_n),
         .i_wr_data         (i_wr_data),
         .i_wr_en           (i_wr_en),
         .i_pixel_type      (i_pixel_type),
@@ -216,7 +218,6 @@ module test_ccd_frame_tx_ddr;
         .o_fifo_prelast  (fifo_prelast),
         .o_frame_exception (o_frame_exception),
         .i_ui_clk          (ui_clk),
-        .i_ddr3_init_done  (ddr3_init_done),
         .M_AXI_AWID        (axi_awid),
         .M_AXI_AWADDR      (axi_awaddr),
         .M_AXI_AWLEN       (axi_awlen),
@@ -337,7 +338,7 @@ module test_ccd_frame_tx_ddr;
     ) u_ccd_frame_tx (
         .i_ext_clk               (i_ext_clk),
         .i_ext_clk_n             (i_ext_clk_n),
-        .i_rst_n                 (i_rst_n),
+        .i_rst_n                 (ctrl_rst_n),
         .i_frame_fifo_data       (fifo_data),
         .i_frame_fifo_num        (fifo_frame_num),
         .i_frame_fifo_prelast  (fifo_prelast),

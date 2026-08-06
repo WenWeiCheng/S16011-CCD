@@ -224,10 +224,6 @@
 	reg  ccd_frame_exception_s1, ccd_frame_exception_s2;
 	reg  ccd_tx_last_n_s1,     ccd_tx_last_n_s2;
 
-	// ccd_ddr 门控复位: DDR3 校准完成前保持复位, 防止提前写 DDR
-	wire ccd_rst_n;
-	assign ccd_rst_n = S_AXI_ARESETN && ddr3_init_done_s2;  // 同步后使用
-
 
 	// STATUS 寄存器组装 (使用同步后信号)
 	wire [31:0] status_reg;
@@ -636,8 +632,8 @@
 	    .MAX_FRAME_DEPTH(MAX_FRAME_DEPTH),
 	    .MAX_FRAMES     (MAX_FRAMES)
 	) u_ccd_ddr (
-	    .i_clk          (S_AXI_ACLK),
-	    .i_rst_n        (ccd_rst_n),         // AXI 复位 AND DDR3 就绪
+	    .i_ccd_clk      (S_AXI_ACLK),
+	    .i_rst_n        (S_AXI_ARESETN), 
 	    .i_exposure     (slv_reg0[0]),
 	    .i_freq_sel     (slv_reg0[1]),
 	    .i_cdsclk_delay (slv_reg0[11:5]),
