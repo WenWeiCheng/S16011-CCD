@@ -32,6 +32,8 @@
  *                     维度, 不再体现在采集状态机中
  * 1.7   wwc  26/08/07 ACQ 三命令统一走 Ccd_Start(d,n,us) (burst 首次获得显式
  *                     曝光); 新增 RO frame_capacity (最大缓存帧数)
+ * 1.8   wwc  26/08/07 新增 RO exception_flag / exception_cnt (帧异常标志与
+ *                     累计计数, 源自 STATUS[8]/[15:9])
  * </pre>
 ******************************************************************************/
 #include "protocol.h"
@@ -275,6 +277,10 @@ static Protocol_Param g_params[] = {
       "0:2000:1", { .I = 0 }, NULL, NULL },
     { "frame_capacity", VAL_TYPE_INT_RANGE, VAL_ACCESS_RO, "max frames cache capacity", "",
       "0:2000:1", { .I = 0 }, NULL, NULL },
+    { "exception_flag", VAL_TYPE_BOOL, VAL_ACCESS_RO, "frame exception level flag", "",
+      "", { .B = 0 }, NULL, NULL },
+    { "exception_cnt", VAL_TYPE_INT_RANGE, VAL_ACCESS_RO, "accumulated frame exception count", "",
+      "0:127:1", { .I = 0 }, NULL, NULL },
     /* ---- CCD ADC (ad9826) ---- */
     { "adc_gain_r", VAL_TYPE_INT_RANGE, VAL_ACCESS_RW, "red channel PGA gain code", "",
       "0:63:1", { .I = 0 }, NULL, NULL },
@@ -895,6 +901,44 @@ static int Fmt_FrameCapacity(const Protocol_Param *p, char *buf, u32 cap)
     return (int)b.Len;
 }
 
+/*****************************************************************************/
+/**
+* @brief  Format: serializes the live frame exception flag (STATUS[8]).
+*
+* @param  p    Unused (value comes from gCcd).
+* @param  buf  Destination buffer.
+* @param  cap  Buffer capacity in bytes.
+*
+* @return Number of bytes written (excluding NUL).
+******************************************************************************/
+static int Fmt_ExceptionFlag(const Protocol_Param *p, char *buf, u32 cap)
+{
+    ProtoBuf b;
+    (void)p;
+    Pb_Init(&b, buf, cap);
+    Pb_Append(&b, Ccd_GetException(&gCcd) ? "1" : "0");
+    return (int)b.Len;
+}
+
+/*****************************************************************************/
+/**
+* @brief  Format: serializes the accumulated frame exception count (STATUS[15:9]).
+*
+* @param  p    Unused (value comes from gCcd).
+* @param  buf  Destination buffer.
+* @param  cap  Buffer capacity in bytes.
+*
+* @return Number of bytes written (excluding NUL).
+******************************************************************************/
+static int Fmt_ExceptionCnt(const Protocol_Param *p, char *buf, u32 cap)
+{
+    ProtoBuf b;
+    (void)p;
+    Pb_Init(&b, buf, cap);
+    Pb_AppendInt(&b, (s32)Ccd_GetExceptionCnt(&gCcd));
+    return (int)b.Len;
+}
+
 /* Attach Apply / Format to each parameter (centralized assignment to keep the
  * initializer list short) */
 /*****************************************************************************/
@@ -929,12 +973,14 @@ static void Proto_BindHandlers(void)
     g_params[23].Format = Fmt_AcqState;
     g_params[24].Format = Fmt_FrameNum;
     g_params[25].Format = Fmt_FrameCapacity;
-    g_params[26].Apply = Apply_AdcGainOffset; g_params[26].Format = Fmt_Int;
-    g_params[27].Apply = Apply_AdcGainOffset; g_params[27].Format = Fmt_Int;
+    g_params[26].Format = Fmt_ExceptionFlag;
+    g_params[27].Format = Fmt_ExceptionCnt;
     g_params[28].Apply = Apply_AdcGainOffset; g_params[28].Format = Fmt_Int;
     g_params[29].Apply = Apply_AdcGainOffset; g_params[29].Format = Fmt_Int;
     g_params[30].Apply = Apply_AdcGainOffset; g_params[30].Format = Fmt_Int;
     g_params[31].Apply = Apply_AdcGainOffset; g_params[31].Format = Fmt_Int;
+    g_params[32].Apply = Apply_AdcGainOffset; g_params[32].Format = Fmt_Int;
+    g_params[33].Apply = Apply_AdcGainOffset; g_params[33].Format = Fmt_Int;
 }
 
 /* ============================================================================
