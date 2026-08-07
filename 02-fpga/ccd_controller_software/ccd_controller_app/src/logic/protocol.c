@@ -26,6 +26,12 @@
  * 1.3   wwc  26/08/04 TEC: PID params (tec_set_temp/kp/ki/kd) replace tec_voltage_set,
  *                      RO tec_voltage/current now apply the ADN8833 monitor conversions
  * 1.4   wwc  26/08/04 Verb dispatch case-insensitive (debug convenience)
+ * 1.5   wwc  26/08/07 ACQ 新增 burst N (连续采 N 帧入缓存) 与 fetch N (发送 N 帧)
+ *                     子命令; 帧发送改由主机 fetch 驱动
+ * 1.6   wwc  26/08/07 acq_state 改三值 (idle,exposing,reading): 帧发送为正交
+ *                     维度, 不再体现在采集状态机中
+ * 1.7   wwc  26/08/07 ACQ 三命令统一走 Ccd_Start(d,n,us) (burst 首次获得显式
+ *                     曝光); 新增 RO frame_capacity (最大缓存帧数)
  * </pre>
 ******************************************************************************/
 #include "protocol.h"
@@ -263,9 +269,12 @@ static Protocol_Param g_params[] = {
     { "camera_name", VAL_TYPE_STRING, VAL_ACCESS_RW, "camera name", "",
       "maxlen 32", { .S = "ccd" }, NULL, NULL },
     { "acq_state", VAL_TYPE_ENUM, VAL_ACCESS_RO, "acquisition state", "",
-      "idle,exposing,reading,tx", { .I = 0 }, NULL, NULL },
+      "idle,exposing,reading", { .I = 0 }, NULL, NULL },
+    /* frame_num_ready / frame_capacity 上限须与 CCD_MAX_FRAMES (BD MAX_FRAMES) 一致 */
     { "frame_num_ready", VAL_TYPE_INT_RANGE, VAL_ACCESS_RO, "frames ready in cache", "",
-      "0:8:1", { .I = 0 }, NULL, NULL },
+      "0:2000:1", { .I = 0 }, NULL, NULL },
+    { "frame_capacity", VAL_TYPE_INT_RANGE, VAL_ACCESS_RO, "max frames cache capacity", "",
+      "0:2000:1", { .I = 0 }, NULL, NULL },
     /* ---- CCD ADC (ad9826) ---- */
     { "adc_gain_r", VAL_TYPE_INT_RANGE, VAL_ACCESS_RW, "red channel PGA gain code", "",
       "0:63:1", { .I = 0 }, NULL, NULL },
@@ -467,6 +476,9 @@ static int Proto_ParseValue(const Protocol_Param *p, const char *tok,
 ******************************************************************************/
 static int Apply_ReadMode(const Protocol_Param *p)
 {
+    /* 切换 read_mode 会触发硬件软复位 (帧缓存清空, 固定帧长度重新锁定);
+       先停止采集/发送并同步清理软件状态 (State/TxActive/FetchPending/RdWaiting) */
+    Ccd_Stop(&gCcd);
     CcdController_SetReadMode(&gCcdCtrl, (u8)p->Cur.I);
     return 0;
 }
@@ -529,6 +541,9 @@ static int Apply_ImageSize(const Protocol_Param *p)
     (void)p;
     w = Proto_FindParam("image_width");
     h = Proto_FindParam("image_height");
+    /* 写 IMG_SIZE 会触发硬件软复位 (帧缓存清空, 固定帧长度重新锁定);
+       先停止采集/发送并同步清理软件状态 */
+    Ccd_Stop(&gCcd);
     CcdController_SetImageSize(&gCcdCtrl, (u16)w->Cur.I, (u16)h->Cur.I);
     return 0;
 }
@@ -821,6 +836,8 @@ static int Fmt_TecCurrent(const Protocol_Param *p, char *buf, u32 cap)
 /*****************************************************************************/
 /**
 * @brief  Format: serializes the current CCD acquisition state ("idle", "exposing", ...).
+*         Frame sending (fetch) is orthogonal to this state machine and not
+*         reflected here.
 *
 * @param  p    Unused (state comes from gCcd).
 * @param  buf  Destination buffer.
@@ -830,7 +847,7 @@ static int Fmt_TecCurrent(const Protocol_Param *p, char *buf, u32 cap)
 ******************************************************************************/
 static int Fmt_AcqState(const Protocol_Param *p, char *buf, u32 cap)
 {
-    static const char *const states[] = { "idle", "exposing", "reading", "tx" };
+    static const char *const states[] = { "idle", "exposing", "reading" };
     ProtoBuf b;
     u32 idx = (u32)gCcd.State;
     (void)p;
@@ -856,6 +873,25 @@ static int Fmt_FrameNum(const Protocol_Param *p, char *buf, u32 cap)
     (void)p;
     Pb_Init(&b, buf, cap);
     Pb_AppendInt(&b, (s32)Ccd_GetFrameNum(&gCcd));
+    return (int)b.Len;
+}
+
+/*****************************************************************************/
+/**
+* @brief  Format: serializes the max frame cache capacity (CCD_MAX_FRAMES).
+*
+* @param  p    Unused (compile-time constant).
+* @param  buf  Destination buffer.
+* @param  cap  Buffer capacity in bytes.
+*
+* @return Number of bytes written (excluding NUL).
+******************************************************************************/
+static int Fmt_FrameCapacity(const Protocol_Param *p, char *buf, u32 cap)
+{
+    ProtoBuf b;
+    (void)p;
+    Pb_Init(&b, buf, cap);
+    Pb_AppendInt(&b, (s32)CCD_MAX_FRAMES);
     return (int)b.Len;
 }
 
@@ -892,12 +928,13 @@ static void Proto_BindHandlers(void)
     g_params[22].Format = Fmt_String;
     g_params[23].Format = Fmt_AcqState;
     g_params[24].Format = Fmt_FrameNum;
-    g_params[25].Apply = Apply_AdcGainOffset; g_params[25].Format = Fmt_Int;
+    g_params[25].Format = Fmt_FrameCapacity;
     g_params[26].Apply = Apply_AdcGainOffset; g_params[26].Format = Fmt_Int;
     g_params[27].Apply = Apply_AdcGainOffset; g_params[27].Format = Fmt_Int;
     g_params[28].Apply = Apply_AdcGainOffset; g_params[28].Format = Fmt_Int;
     g_params[29].Apply = Apply_AdcGainOffset; g_params[29].Format = Fmt_Int;
     g_params[30].Apply = Apply_AdcGainOffset; g_params[30].Format = Fmt_Int;
+    g_params[31].Apply = Apply_AdcGainOffset; g_params[31].Format = Fmt_Int;
 }
 
 /* ============================================================================
@@ -1070,17 +1107,31 @@ static int Cmd_SetParam(int argc, char **argv)
 
 /*****************************************************************************/
 /**
-* @brief  ACQ single|live|abort: starts/aborts a capture; single/live use the exposure
-* time param.
+* @brief  ACQ single|live|burst|fetch|abort: capture/send control.
+*
+*   - single      : capture one frame (frame written to cache -> IDLE), host fetches it
+*   - live        : continuous capture into cache (host fetch drains frames)
+*   - burst <n>   : capture n frames continuously into cache, then IDLE
+*   - fetch <n>   : send n cached frames to FX2 (immediate OK; the send itself
+*                   is paced by TX_DONE; poll acq_state / frame_num_ready)
+*   - abort       : stop capture / pending fetch / burst
+*
+* All three capture modes go through Ccd_Start(d, n, us): single/live use the
+* exposure_time_us parameter; burst uses the same exposure_time_us value too.
+* A burst (or single) whose frames cannot fit the free cache space is rejected
+* (ERR 3 ... exceeds cache).
 *
 * @param  argc  Token count (>= 2).
-* @param  argv  Tokens; argv[1] is the mode (single|live|abort).
+* @param  argv  Tokens; argv[1] is the mode, argv[2] the frame count for
+*               burst/fetch.
 *
 * @return 0.
 ******************************************************************************/
 static int Cmd_Acq(int argc, char **argv)
 {
     const Protocol_Param *pt;
+    u32 n;
+    int st;
 
     if (argc < 2) { Proto_Err(PROTO_ERR_INVALID_VALUE, "missing mode"); return 0; }
 
@@ -1090,21 +1141,54 @@ static int Cmd_Acq(int argc, char **argv)
         return 0;
     }
 
+    if (strcmp(argv[1], "burst") == 0) {
+        if (argc < 3 || Proto_ParseUInt(argv[2], &n) != 0 || n == 0U) {
+            Proto_Err(PROTO_ERR_INVALID_VALUE, "burst needs frame count");
+            return 0;
+        }
+        st = Ccd_Start(&gCcd, n, (u64)((pt != NULL) ? pt->Cur.I : 1000L));
+        if (st == XST_DEVICE_BUSY) { Proto_Err(PROTO_ERR_BUSY, "busy"); return 0; }
+        if (st != XST_SUCCESS)     { Proto_Err(PROTO_ERR_INVALID_VALUE,
+                                               "burst exceeds cache"); return 0; }
+        Proto_Ok0();
+        return 0;
+    }
+
+    if (strcmp(argv[1], "fetch") == 0) {
+        char msg[PROTO_RESP_MAX];
+        ProtoBuf b;
+
+        if (argc < 3 || Proto_ParseUInt(argv[2], &n) != 0 || n == 0U) {
+            Proto_Err(PROTO_ERR_INVALID_VALUE, "fetch needs frame count");
+            return 0;
+        }
+        st = Ccd_StartFetch(&gCcd, n);
+        if (st == XST_DEVICE_BUSY) { Proto_Err(PROTO_ERR_BUSY, "busy"); return 0; }
+        if (st != XST_SUCCESS) {
+            Pb_Init(&b, msg, sizeof msg);
+            Pb_Append(&b, "insufficient frames (");
+            Pb_AppendInt(&b, (s32)Ccd_GetFrameNum(&gCcd));
+            Pb_Append(&b, " ready)");
+            Proto_Err(PROTO_ERR_BUSY, msg);
+            return 0;
+        }
+        Proto_Ok0();
+        return 0;
+    }
+
     if (strcmp(argv[1], "single") == 0 || strcmp(argv[1], "live") == 0) {
-        CcdMode mode = (argv[1][0] == 'l') ? CCD_MODE_LIVE : CCD_MODE_SINGLE;
         u64 us;
-        int st;
 
         pt = Proto_FindParam("exposure_time_us");
         us = (u64)((pt != NULL) ? pt->Cur.I : 1000L);
-        st = Ccd_StartCapture(&gCcd, mode, us);
+        st = Ccd_Start(&gCcd, (argv[1][0] == 'l') ? 0U : 1U, us);
         if (st == XST_DEVICE_BUSY) { Proto_Err(PROTO_ERR_BUSY, "busy"); return 0; }
         if (st != XST_SUCCESS)     { Proto_Err(PROTO_ERR_INTERNAL, "acq start failed"); return 0; }
         Proto_Ok0();
         return 0;
     }
 
-    Proto_Err(PROTO_ERR_INVALID_VALUE, "invalid mode (single|live|abort)");
+    Proto_Err(PROTO_ERR_INVALID_VALUE, "invalid mode (single|live|burst|fetch|abort)");
     return 0;
 }
 

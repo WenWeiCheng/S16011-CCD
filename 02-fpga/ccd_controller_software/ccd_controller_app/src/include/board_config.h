@@ -6,13 +6,14 @@
 * This file contains only "board facts", no Xilinx names (XPAR_*), to ease porting to other platforms.
 * The concrete Xilinx device / interrupt vector mapping is in hal/board_hal.c.
 *
-* @note <pre>
-* MODIFICATION HISTORY:
-*
-* Ver   Who  Date     Changes
-* ----- ---- -------- -----------------------------------------------
-* 1.0   wwc  26/08/02 First release
-* </pre>
+ * @note <pre>
+ * MODIFICATION HISTORY:
+ *
+ * Ver   Who  Date     Changes
+ * ----- ---- -------- -----------------------------------------------
+ * 1.0   wwc  26/08/02 First release
+ * 1.1   wwc  26/08/07 新增 CCD_MAX_FRAMES (帧缓存容量, 与 BD MAX_FRAMES 同步)
+ * </pre>
 ******************************************************************************/
 #ifndef BOARD_CONFIG_H
 #define BOARD_CONFIG_H
@@ -117,14 +118,20 @@ extern "C" {
 /* ============================================================================
  * S16011 sensor default geometry (image/bevel/blank, see 00-docs/verilog-design/ccd_driver.md)
  * ==========================================================================*/
-#define CCD_IMG_WIDTH_DEFAULT    1024U
-#define CCD_IMG_HEIGHT_DEFAULT   64U
-#define CCD_BEVEL_L_DEFAULT      6U
-#define CCD_BEVEL_T_DEFAULT      2U
-#define CCD_BEVEL_R_DEFAULT      6U
-#define CCD_BEVEL_B_DEFAULT      4U
-#define CCD_BLANK_L_DEFAULT      4U
-#define CCD_BLANK_R_DEFAULT      4U
+#define CCD_IMG_WIDTH_DEFAULT    8U
+#define CCD_IMG_HEIGHT_DEFAULT   1U
+#define CCD_BEVEL_L_DEFAULT      1U
+#define CCD_BEVEL_T_DEFAULT      1U
+#define CCD_BEVEL_R_DEFAULT      1U
+#define CCD_BEVEL_B_DEFAULT      1U
+#define CCD_BLANK_L_DEFAULT      1U
+#define CCD_BLANK_R_DEFAULT      1U
+
+/* ============================================================================
+ * CCD frame cache (DDR3 block ring)
+ * 须与 BD 中 ccd_controller IP 的 MAX_FRAMES 参数保持一致。
+ * ==========================================================================*/
+#define CCD_MAX_FRAMES           2000U
 
 /* ============================================================================
  * ADN8833 TEC control / monitor conversion (dac8311 Vcont, ads1118 AIN1/AIN2)

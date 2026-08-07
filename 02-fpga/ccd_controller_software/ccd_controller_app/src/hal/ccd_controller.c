@@ -10,11 +10,13 @@
 * @note <pre>
 * MODIFICATION HISTORY:
 *
-* Ver   Who  Date     Changes
-* ----- ---- -------- -----------------------------------------------
-* 1.0   wwc  26/08/02 First release
-* 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
-* </pre>
+ * Ver   Who  Date     Changes
+ * ----- ---- -------- -----------------------------------------------
+ * 1.0   wwc  26/08/02 First release
+ * 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
+ * 1.2   wwc  26/08/07 GetFrameNum 改读 FRAME_NUM[0x1C] (32bit)
+ * 1.3   wwc  26/08/07 IntrEnable 支持 FRAME_WRITTEN (INTR[10])
+ * </pre>
 ******************************************************************************/
 #include "ccd_controller.h"
 #include "xparameters.h"
@@ -276,7 +278,7 @@ int CcdController_StartCapture(CcdController *p)
     u32 ctrl;
 
     if (!CcdController_IsDdrReady(p)) {
-        return XST_DEVICE_BUSY;
+        return XST_FAILURE;
     }
 
     ctrl = CcdController_ReadReg(p, CCDC_REG_CTRL);
@@ -315,16 +317,18 @@ void CcdController_TriggerFrameSend(CcdController *p)
 
 /*****************************************************************************/
 /**
-* @brief  Number of readable frames in the frame buffer (STATUS[7:0]).
+* @brief  Number of readable frames in the frame buffer (FRAME_NUM[0x1C], 32bit).
+*
+* The frame count has its own read-only register (since the MAX_FRAMES cache
+* capacity can exceed the 8-bit field that used to live in STATUS[7:0]).
 *
 * @param  p  CcdController instance.
 *
-* @return Frame count, 0..255.
+* @return Frame count, 0..MAX_FRAMES.
 ******************************************************************************/
-u8 CcdController_GetFrameNum(CcdController *p)
+u32 CcdController_GetFrameNum(CcdController *p)
 {
-    return (u8)(CcdController_ReadReg(p, CCDC_REG_STATUS) &
-                CCDC_STATUS_FRAME_NUM_MASK);
+    return CcdController_ReadReg(p, CCDC_REG_FRAME_NUM);
 }
 
 /*****************************************************************************/
@@ -401,12 +405,14 @@ void CcdController_SetHandler(CcdController *p, CcdController_Handler hdl,
 /**
 * @brief  Enables interrupts (writes INTR_EN).
 *
-* @param  p             CcdController instance.
-* @param  tx_done_en    Enable the TX_DONE interrupt (0/1).
-* @param  exception_en  Enable the EXCEPTION interrupt (0/1).
+* @param  p                  CcdController instance.
+* @param  tx_done_en         Enable the TX_DONE interrupt (0/1).
+* @param  exception_en       Enable the EXCEPTION interrupt (0/1).
+* @param  frame_written_en   Enable the FRAME_WRITTEN interrupt (0/1)
+*                            (one frame fully written to DDR = readout done).
 ******************************************************************************/
 void CcdController_IntrEnable(CcdController *p, u8 tx_done_en,
-                              u8 exception_en)
+                              u8 exception_en, u8 frame_written_en)
 {
     u32 en = 0U;
     if (tx_done_en) {
@@ -414,6 +420,9 @@ void CcdController_IntrEnable(CcdController *p, u8 tx_done_en,
     }
     if (exception_en) {
         en |= CCDC_INTR_EXCEPTION;
+    }
+    if (frame_written_en) {
+        en |= CCDC_INTR_FRAME_WRITTEN;
     }
     CcdController_WriteReg(p, CCDC_REG_INTR_EN, en);
 }

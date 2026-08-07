@@ -11,10 +11,13 @@
 * @note <pre>
 * MODIFICATION HISTORY:
 *
-* Ver   Who  Date     Changes
-* ----- ---- -------- -----------------------------------------------
-* 1.0   wwc  26/08/02 First release
-* </pre>
+ * Ver   Who  Date     Changes
+ * ----- ---- -------- -----------------------------------------------
+ * 1.0   wwc  26/08/02 First release
+ * 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
+ * 1.2   wwc  26/08/07 FRAME_NUM[0x1C] 独立寄存器 (32bit), GetFrameNum 返回 u32
+ * 1.3   wwc  26/08/07 新增 FRAME_WRITTEN 中断 (INTR[10], 帧写入完成/读出完成)
+ * </pre>
 ******************************************************************************/
 #ifndef CCD_CONTROLLER_H
 #define CCD_CONTROLLER_H
@@ -36,6 +39,7 @@ extern "C" {
 #define CCDC_REG_STATUS         0x10U   /* R  */
 #define CCDC_REG_INTR_EN        0x14U   /* R/W */
 #define CCDC_REG_INTR_STS       0x18U   /* W1C */
+#define CCDC_REG_FRAME_NUM      0x1CU   /* R, 帧缓存可读帧数 (实时, 32bit) */
 
 /* CTRL[0x00] */
 #define CCDC_CTRL_EXPOSURE_MASK      (1U<<0)
@@ -60,7 +64,6 @@ extern "C" {
 #define CCDC_TRIGGER_TX_START_MASK  (1U<<0)
 
 /* STATUS[0x10] */
-#define CCDC_STATUS_FRAME_NUM_MASK   0x000000FFU
 #define CCDC_STATUS_EXCEPTION_MASK   (1U<<8)
 #define CCDC_STATUS_EXCEPTION_CNT    (0x7FU<<9)
 #define CCDC_STATUS_DDR3_DONE_MASK   (1U<<16)
@@ -68,7 +71,9 @@ extern "C" {
 /* INTR_EN[0x14] / INTR_STS[0x18] */
 #define CCDC_INTR_EXCEPTION       (1U<<8)
 #define CCDC_INTR_TX_DONE         (1U<<9)
-#define CCDC_INTR_ALL             (CCDC_INTR_EXCEPTION | CCDC_INTR_TX_DONE)
+#define CCDC_INTR_FRAME_WRITTEN   (1U<<10)   /* 一帧完整写入 DDR (读出完成) */
+#define CCDC_INTR_ALL             (CCDC_INTR_EXCEPTION | CCDC_INTR_TX_DONE | \
+                                   CCDC_INTR_FRAME_WRITTEN)
 
 /* Readout modes */
 #define CCDC_READ_MODE_LINE_BINNING  0U
@@ -151,7 +156,7 @@ void CcdController_TriggerFrameSend(CcdController *p); /* writes TRIGGER[0]=1 */
 /******************************************************************************
 * Status queries
 ******************************************************************************/
-u8   CcdController_GetFrameNum(CcdController *p);
+u32  CcdController_GetFrameNum(CcdController *p);   /* FRAME_NUM[0x1C] (32bit) */
 u8   CcdController_IsDdrReady(CcdController *p);
 u8   CcdController_GetException(CcdController *p);
 u32  CcdController_GetExceptionCnt(CcdController *p);
@@ -163,7 +168,7 @@ u32  CcdController_GetStatus(CcdController *p);
 void CcdController_SetHandler(CcdController *p, CcdController_Handler hdl,
                               void *ref);
 void CcdController_IntrEnable(CcdController *p, u8 tx_done_en,
-                              u8 exception_en);
+                              u8 exception_en, u8 frame_written_en);
 void CcdController_IntrDisable(CcdController *p);
 void CcdController_InterruptHandler(void *ref);
 

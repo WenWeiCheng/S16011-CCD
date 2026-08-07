@@ -9,11 +9,13 @@
 * @note <pre>
 * MODIFICATION HISTORY:
 *
-* Ver   Who  Date     Changes
-* ----- ---- -------- -----------------------------------------------
-* 1.0   wwc  26/08/03 Rewrite: wire app logic layer (UART protocol)
-* 1.0   wwc  26/08/02 First release (driver smoke test)
-* </pre>
+ * Ver   Who  Date     Changes
+ * ----- ---- -------- -----------------------------------------------
+ * 1.0   wwc  26/08/03 Rewrite: wire app logic layer (UART protocol)
+ * 1.0   wwc  26/08/02 First release (driver smoke test)
+ * 1.1   wwc  26/08/07 主循环加 Ccd_Tick (live/burst 连续采集推进)
+ * 1.2   wwc  26/08/07 移除 Ccd_Tick (采集环改由 FRAME_WRITTEN 中断驱动)
+ * </pre>
 ******************************************************************************/
 #include "devices/led.h"
 #include "hal/board_hal.h"

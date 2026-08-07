@@ -299,8 +299,8 @@ int BoardHal_Init(void)
     Dac8311_Init(&gDac8311, &gSpi, SPI_CS_DAC8311, DAC8311_VREF_V);
     Ad9826_Init(&gAd9826, &gSpi, SPI_CS_AD9826);
 
-    /* Enable ccd interrupts (tx_done + exception) */
-    CcdController_IntrEnable(&gCcdCtrl, 1U, 1U);
+    /* Enable ccd interrupts (tx_done + exception + frame_written) */
+    CcdController_IntrEnable(&gCcdCtrl, 1U, 1U, 1U);
 
     return XST_SUCCESS;
 }
