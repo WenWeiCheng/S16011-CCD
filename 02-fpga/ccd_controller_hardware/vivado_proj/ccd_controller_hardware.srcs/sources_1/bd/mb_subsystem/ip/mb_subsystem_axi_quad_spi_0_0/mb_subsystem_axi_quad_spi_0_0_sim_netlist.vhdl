@@ -3,8 +3,8 @@
 -- Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
 -- Date        : Mon Aug  3 00:09:25 2026
 -- Host        : DESKTOP-KD2H86C running 64-bit major release  (build 9200)
--- Command     : write_vhdl -force -mode funcsim
---               d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/vivado_proj/ccd_controller_hardware.srcs/sources_1/bd/mb_subsystem/ip/mb_subsystem_axi_quad_spi_0_0/mb_subsystem_axi_quad_spi_0_0_sim_netlist.vhdl
+-- Command     : write_vhdl -force -mode funcsim -rename_top mb_subsystem_axi_quad_spi_0_0 -prefix
+--               mb_subsystem_axi_quad_spi_0_0_ mb_subsystem_axi_quad_spi_0_0_sim_netlist.vhdl
 -- Design      : mb_subsystem_axi_quad_spi_0_0
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -557,8 +557,6 @@ entity mb_subsystem_axi_quad_spi_0_0_cdc_sync is
     prmry_in : in STD_LOGIC;
     ext_spi_clk : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_quad_spi_0_0_cdc_sync : entity is "cdc_sync";
 end mb_subsystem_axi_quad_spi_0_0_cdc_sync;
 
 architecture STRUCTURE of mb_subsystem_axi_quad_spi_0_0_cdc_sync is
@@ -715,8 +713,6 @@ entity mb_subsystem_axi_quad_spi_0_0_cross_clk_sync_fifo_0 is
     SPISEL_sync : in STD_LOGIC;
     \LOGIC_GENERATION_FDR.receive_Data_cdc_from_spi_d1_reg[0]_0\ : in STD_LOGIC_VECTOR ( 15 downto 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_quad_spi_0_0_cross_clk_sync_fifo_0 : entity is "cross_clk_sync_fifo_0";
 end mb_subsystem_axi_quad_spi_0_0_cross_clk_sync_fifo_0;
 
 architecture STRUCTURE of mb_subsystem_axi_quad_spi_0_0_cross_clk_sync_fifo_0 is
@@ -2773,8 +2769,6 @@ entity mb_subsystem_axi_quad_spi_0_0_interrupt_control is
     E : in STD_LOGIC_VECTOR ( 0 to 0 );
     s_axi_wdata : in STD_LOGIC_VECTOR ( 6 downto 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_quad_spi_0_0_interrupt_control : entity is "interrupt_control";
 end mb_subsystem_axi_quad_spi_0_0_interrupt_control;
 
 architecture STRUCTURE of mb_subsystem_axi_quad_spi_0_0_interrupt_control is
@@ -3036,8 +3030,6 @@ entity mb_subsystem_axi_quad_spi_0_0_qspi_cntrl_reg is
     p_7_in_2 : in STD_LOGIC;
     Bus_RNW_reg : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_quad_spi_0_0_qspi_cntrl_reg : entity is "qspi_cntrl_reg";
 end mb_subsystem_axi_quad_spi_0_0_qspi_cntrl_reg;
 
 architecture STRUCTURE of mb_subsystem_axi_quad_spi_0_0_qspi_cntrl_reg is
@@ -3231,8 +3223,6 @@ entity mb_subsystem_axi_quad_spi_0_0_qspi_receive_transmit_reg is
     \GEN_IP_IRPT_STATUS_REG[3].GEN_REG_STATUS.ip_irpt_status_reg_reg[3]\ : in STD_LOGIC;
     p_1_in28_in : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_quad_spi_0_0_qspi_receive_transmit_reg : entity is "qspi_receive_transmit_reg";
 end mb_subsystem_axi_quad_spi_0_0_qspi_receive_transmit_reg;
 
 architecture STRUCTURE of mb_subsystem_axi_quad_spi_0_0_qspi_receive_transmit_reg is
@@ -3583,8 +3573,6 @@ entity mb_subsystem_axi_quad_spi_0_0_qspi_status_slave_sel_reg is
     Bus_RNW_reg : in STD_LOGIC;
     p_3_in_3 : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_quad_spi_0_0_qspi_status_slave_sel_reg : entity is "qspi_status_slave_sel_reg";
 end mb_subsystem_axi_quad_spi_0_0_qspi_status_slave_sel_reg;
 
 architecture STRUCTURE of mb_subsystem_axi_quad_spi_0_0_qspi_status_slave_sel_reg is
@@ -3677,8 +3665,6 @@ entity mb_subsystem_axi_quad_spi_0_0_reset_sync_module is
     reset2ip_reset_int : in STD_LOGIC;
     ext_spi_clk : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_quad_spi_0_0_reset_sync_module : entity is "reset_sync_module";
 end mb_subsystem_axi_quad_spi_0_0_reset_sync_module;
 
 architecture STRUCTURE of mb_subsystem_axi_quad_spi_0_0_reset_sync_module is
@@ -3758,8 +3744,6 @@ entity mb_subsystem_axi_quad_spi_0_0_soft_reset is
     ip2Bus_WrAck_intr_reg_hole : in STD_LOGIC;
     ip2Bus_WrAck_core_reg : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_quad_spi_0_0_soft_reset : entity is "soft_reset";
 end mb_subsystem_axi_quad_spi_0_0_soft_reset;
 
 architecture STRUCTURE of mb_subsystem_axi_quad_spi_0_0_soft_reset is
@@ -4393,8 +4377,6 @@ entity mb_subsystem_axi_quad_spi_0_0_address_decoder is
     s_axi_wready : in STD_LOGIC;
     s_axi_wready_0 : in STD_LOGIC_VECTOR ( 5 downto 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_quad_spi_0_0_address_decoder : entity is "address_decoder";
 end mb_subsystem_axi_quad_spi_0_0_address_decoder;
 
 architecture STRUCTURE of mb_subsystem_axi_quad_spi_0_0_address_decoder is
@@ -5892,8 +5874,6 @@ entity mb_subsystem_axi_quad_spi_0_0_qspi_mode_0_module is
     \SS_O_reg[2]_0\ : in STD_LOGIC;
     spicr_7_ss_to_spi_clk : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_quad_spi_0_0_qspi_mode_0_module : entity is "qspi_mode_0_module";
 end mb_subsystem_axi_quad_spi_0_0_qspi_mode_0_module;
 
 architecture STRUCTURE of mb_subsystem_axi_quad_spi_0_0_qspi_mode_0_module is
@@ -8387,8 +8367,6 @@ entity mb_subsystem_axi_quad_spi_0_0_qspi_core_interface is
     io1_i_sync : in STD_LOGIC;
     io0_i_sync : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_quad_spi_0_0_qspi_core_interface : entity is "qspi_core_interface";
 end mb_subsystem_axi_quad_spi_0_0_qspi_core_interface;
 
 architecture STRUCTURE of mb_subsystem_axi_quad_spi_0_0_qspi_core_interface is
@@ -9366,8 +9344,6 @@ entity mb_subsystem_axi_quad_spi_0_0_slave_attachment is
     s_axi_araddr : in STD_LOGIC_VECTOR ( 4 downto 0 );
     s_axi_awaddr : in STD_LOGIC_VECTOR ( 4 downto 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_quad_spi_0_0_slave_attachment : entity is "slave_attachment";
 end mb_subsystem_axi_quad_spi_0_0_slave_attachment;
 
 architecture STRUCTURE of mb_subsystem_axi_quad_spi_0_0_slave_attachment is
@@ -10416,8 +10392,6 @@ entity mb_subsystem_axi_quad_spi_0_0_axi_lite_ipif is
     s_axi_araddr : in STD_LOGIC_VECTOR ( 4 downto 0 );
     s_axi_awaddr : in STD_LOGIC_VECTOR ( 4 downto 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_quad_spi_0_0_axi_lite_ipif : entity is "axi_lite_ipif";
 end mb_subsystem_axi_quad_spi_0_0_axi_lite_ipif;
 
 architecture STRUCTURE of mb_subsystem_axi_quad_spi_0_0_axi_lite_ipif is
@@ -10567,8 +10541,6 @@ entity mb_subsystem_axi_quad_spi_0_0_axi_quad_spi_top is
     s_axi_awaddr : in STD_LOGIC_VECTOR ( 4 downto 0 );
     s_axi_wstrb : in STD_LOGIC_VECTOR ( 1 downto 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_quad_spi_0_0_axi_quad_spi_top : entity is "axi_quad_spi_top";
 end mb_subsystem_axi_quad_spi_0_0_axi_quad_spi_top;
 
 architecture STRUCTURE of mb_subsystem_axi_quad_spi_0_0_axi_quad_spi_top is
@@ -11150,8 +11122,6 @@ entity mb_subsystem_axi_quad_spi_0_0_axi_quad_spi is
   attribute C_USE_STARTUP_EXT of mb_subsystem_axi_quad_spi_0_0_axi_quad_spi : entity is 0;
   attribute C_XIP_MODE : integer;
   attribute C_XIP_MODE of mb_subsystem_axi_quad_spi_0_0_axi_quad_spi : entity is 0;
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_quad_spi_0_0_axi_quad_spi : entity is "axi_quad_spi";
   attribute downgradeipidentifiedwarnings : string;
   attribute downgradeipidentifiedwarnings of mb_subsystem_axi_quad_spi_0_0_axi_quad_spi : entity is "yes";
 end mb_subsystem_axi_quad_spi_0_0_axi_quad_spi;

@@ -88,8 +88,6 @@ module mb_subsystem_mig_7series_0_0 (
   // Inputs
   // Single-ended system clock
   input             sys_clk_i,
-  // Single-ended iodelayctrl clk (reference clock)
-  input             clk_ref_i,
   // user interface signals
   output            ui_clk,
   output            ui_clk_sync_rst,
@@ -226,8 +224,6 @@ module mb_subsystem_mig_7series_0_0 (
     .s_axi_rready                   (s_axi_rready),
     // System Clock Ports
     .sys_clk_i                       (sys_clk_i),
-    // Reference Clock Ports
-    .clk_ref_i                      (clk_ref_i),
        .device_temp            (device_temp),
        `ifdef SKIP_CALIB
        .calib_tap_req                    (calib_tap_req),

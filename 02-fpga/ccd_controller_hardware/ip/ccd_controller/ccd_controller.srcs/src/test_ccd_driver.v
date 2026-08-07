@@ -17,6 +17,7 @@ module test_ccd_driver;
 
     reg         i_clk;
     reg         i_rst_n;
+    reg         i_clk_locked;
     reg         i_exposure;
     reg         i_freq_sel;
     reg  [15:0] i_image_width;
@@ -52,6 +53,7 @@ module test_ccd_driver;
     ccd_driver u_dut (
         .i_clk         (i_clk),
         .i_rst_n       (i_rst_n),
+        .i_clk_locked  (i_clk_locked),
         .i_exposure    (i_exposure),
         .i_freq_sel    (i_freq_sel),
         .i_image_width (i_image_width),
@@ -129,6 +131,7 @@ module test_ccd_driver;
         // ================================================================
         i_freq_sel     = 1'b0;
         i_rst_n        = 1'b0;
+        i_clk_locked   = 1'b0;       // 时钟锁定前 ccd_clk_gen 保持复位
         i_exposure     = 1'b1;       // 初始拉高,避免复位后立即触发
         i_image_width  = 16'd4;
         i_image_height = 16'd2;
@@ -151,6 +154,7 @@ module test_ccd_driver;
         // 测试 1: 复位
         // ================================================================
         @(negedge i_clk);
+        i_clk_locked = 1'b1;        // 时钟锁定, ccd_clk_gen 开始运行
         i_rst_n = 1'b1;
         // 复位释放后,exposure=1 保持 IDLE
         wait_sclk(2);

@@ -1,10 +1,10 @@
 -- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
--- Date        : Sat Aug  1 17:41:06 2026
+-- Date        : Sat Aug  1 17:41:05 2026
 -- Host        : DESKTOP-KD2H86C running 64-bit major release  (build 9200)
--- Command     : write_vhdl -force -mode synth_stub
---               d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/vivado_proj/ccd_controller_hardware.srcs/sources_1/bd/mb_subsystem/ip/mb_subsystem_clk_wiz_0_1/mb_subsystem_clk_wiz_0_1_stub.vhdl
+-- Command     : write_vhdl -force -mode synth_stub -rename_top mb_subsystem_clk_wiz_0_1 -prefix
+--               mb_subsystem_clk_wiz_0_1_ mb_subsystem_clk_wiz_0_1_stub.vhdl
 -- Design      : mb_subsystem_clk_wiz_0_1
 -- Purpose     : Stub declaration of top-level module interface
 -- Device      : xc7a100tfgg484-2

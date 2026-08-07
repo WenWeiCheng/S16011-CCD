@@ -48,7 +48,7 @@
 
 
 // IP VLNV: xilinx.com:user:ccd_controller_v1_0:1.0
-// IP Revision: 17
+// IP Revision: 30
 
 `timescale 1ns/1ps
 
@@ -167,6 +167,8 @@ input wire i_slave_fifo_full_n;
 output wire [15 : 0] o_slave_fifo_data;
 output wire o_slave_fifo_data_wr_en_n;
 output wire o_slave_fifo_data_last_n;
+(* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME o_slave_fifo_clk, FREQ_HZ 48000000, FREQ_TOLERANCE_HZ 0, PHASE 0.000, CLK_DOMAIN mb_subsystem_ccd_controller_v1_0_0_0_o_slave_fifo_clk, INSERT_VIP 0" *)
+(* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 o_slave_fifo_clk CLK" *)
 output wire o_slave_fifo_clk;
 (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME i_ui_clk, FREQ_HZ 100000000, ASSOCIATED_BUSIF M_AXI, FREQ_TOLERANCE_HZ 0, PHASE 0.000, INSERT_VIP 0" *)
 (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 i_ui_clk CLK" *)

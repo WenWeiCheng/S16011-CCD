@@ -143,9 +143,9 @@ module example_top #
    // The following parameters are multiplier and divisor factors for PLLE2.
    // Based on the selected design frequency these parameters vary.
    //***************************************************************************
-   parameter CLKIN_PERIOD          = 10000,
+   parameter CLKIN_PERIOD          = 5000,
                                      // Input Clock Period
-   parameter CLKFBOUT_MULT         = 8,
+   parameter CLKFBOUT_MULT         = 4,
                                      // write PLL VCO multiplier
    parameter DIVCLK_DIVIDE         = 1,
                                      // write PLL VCO divisor
@@ -248,8 +248,6 @@ module example_top #
    // Single-ended system clock
    input                                        sys_clk_i,
    
-   // Single-ended iodelayctrl clk (reference clock)
-   input                                        clk_ref_i,
 
    output                                       tg_compare_error,
    output                                       init_calib_complete,
@@ -482,8 +480,6 @@ function integer clogb2 (input integer size);
        
 // System Clock Ports
        .sys_clk_i                       (sys_clk_i),
-// Reference Clock Ports
-       .clk_ref_i                      (clk_ref_i),
        .device_temp            (device_temp),
        `ifdef SKIP_CALIB
        .calib_tap_req                    (calib_tap_req),

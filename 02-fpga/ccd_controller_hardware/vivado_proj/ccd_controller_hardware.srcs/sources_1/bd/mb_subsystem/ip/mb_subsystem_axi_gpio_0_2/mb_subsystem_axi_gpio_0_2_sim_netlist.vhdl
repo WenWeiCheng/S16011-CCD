@@ -1,10 +1,10 @@
 -- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
--- Date        : Sun Aug  2 16:59:51 2026
+-- Date        : Sun Aug  2 16:59:50 2026
 -- Host        : DESKTOP-KD2H86C running 64-bit major release  (build 9200)
--- Command     : write_vhdl -force -mode funcsim
---               d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/vivado_proj/ccd_controller_hardware.srcs/sources_1/bd/mb_subsystem/ip/mb_subsystem_axi_gpio_0_2/mb_subsystem_axi_gpio_0_2_sim_netlist.vhdl
+-- Command     : write_vhdl -force -mode funcsim -rename_top mb_subsystem_axi_gpio_0_2 -prefix
+--               mb_subsystem_axi_gpio_0_2_ mb_subsystem_axi_gpio_0_2_sim_netlist.vhdl
 -- Design      : mb_subsystem_axi_gpio_0_2
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -54,8 +54,6 @@ entity mb_subsystem_axi_gpio_0_2_address_decoder is
     ip2bus_wrack_i_D1 : in STD_LOGIC;
     s_axi_wready : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_gpio_0_2_address_decoder : entity is "address_decoder";
 end mb_subsystem_axi_gpio_0_2_address_decoder;
 
 architecture STRUCTURE of mb_subsystem_axi_gpio_0_2_address_decoder is
@@ -947,8 +945,6 @@ entity mb_subsystem_axi_gpio_0_2_cdc_sync is
     gpio_io_i : in STD_LOGIC_VECTOR ( 3 downto 0 );
     s_axi_aclk : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_gpio_0_2_cdc_sync : entity is "cdc_sync";
 end mb_subsystem_axi_gpio_0_2_cdc_sync;
 
 architecture STRUCTURE of mb_subsystem_axi_gpio_0_2_cdc_sync is
@@ -1257,8 +1253,6 @@ entity mb_subsystem_axi_gpio_0_2_interrupt_control is
     \GEN_IP_IRPT_STATUS_REG[0].GEN_REG_STATUS.ip_irpt_status_reg_reg[0]_0\ : in STD_LOGIC;
     s_axi_wdata : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_gpio_0_2_interrupt_control : entity is "interrupt_control";
 end mb_subsystem_axi_gpio_0_2_interrupt_control;
 
 architecture STRUCTURE of mb_subsystem_axi_gpio_0_2_interrupt_control is
@@ -1392,8 +1386,6 @@ entity mb_subsystem_axi_gpio_0_2_GPIO_Core is
     D : in STD_LOGIC_VECTOR ( 3 downto 0 );
     \Not_Dual.gpio_OE_reg[0]_0\ : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_gpio_0_2_GPIO_Core : entity is "GPIO_Core";
 end mb_subsystem_axi_gpio_0_2_GPIO_Core;
 
 architecture STRUCTURE of mb_subsystem_axi_gpio_0_2_GPIO_Core is
@@ -1736,8 +1728,6 @@ entity mb_subsystem_axi_gpio_0_2_slave_attachment is
     s_axi_araddr : in STD_LOGIC_VECTOR ( 6 downto 0 );
     s_axi_awaddr : in STD_LOGIC_VECTOR ( 6 downto 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_gpio_0_2_slave_attachment : entity is "slave_attachment";
 end mb_subsystem_axi_gpio_0_2_slave_attachment;
 
 architecture STRUCTURE of mb_subsystem_axi_gpio_0_2_slave_attachment is
@@ -2548,8 +2538,6 @@ entity mb_subsystem_axi_gpio_0_2_axi_lite_ipif is
     s_axi_araddr : in STD_LOGIC_VECTOR ( 6 downto 0 );
     s_axi_awaddr : in STD_LOGIC_VECTOR ( 6 downto 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_gpio_0_2_axi_lite_ipif : entity is "axi_lite_ipif";
 end mb_subsystem_axi_gpio_0_2_axi_lite_ipif;
 
 architecture STRUCTURE of mb_subsystem_axi_gpio_0_2_axi_lite_ipif is
@@ -2674,8 +2662,6 @@ entity mb_subsystem_axi_gpio_0_2_axi_gpio is
   attribute C_TRI_DEFAULT of mb_subsystem_axi_gpio_0_2_axi_gpio : entity is -1;
   attribute C_TRI_DEFAULT_2 : integer;
   attribute C_TRI_DEFAULT_2 of mb_subsystem_axi_gpio_0_2_axi_gpio : entity is -1;
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_gpio_0_2_axi_gpio : entity is "axi_gpio";
   attribute downgradeipidentifiedwarnings : string;
   attribute downgradeipidentifiedwarnings of mb_subsystem_axi_gpio_0_2_axi_gpio : entity is "yes";
   attribute ip_group : string;

@@ -1,10 +1,10 @@
 // Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-// Date        : Sat Aug  1 17:41:14 2026
+// Date        : Sat Aug  1 17:41:13 2026
 // Host        : DESKTOP-KD2H86C running 64-bit major release  (build 9200)
-// Command     : write_verilog -force -mode synth_stub
-//               d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/vivado_proj/ccd_controller_hardware.srcs/sources_1/bd/mb_subsystem/ip/mb_subsystem_axi_timer_0_0/mb_subsystem_axi_timer_0_0_stub.v
+// Command     : write_verilog -force -mode synth_stub -rename_top mb_subsystem_axi_timer_0_0 -prefix
+//               mb_subsystem_axi_timer_0_0_ mb_subsystem_axi_timer_0_0_stub.v
 // Design      : mb_subsystem_axi_timer_0_0
 // Purpose     : Stub declaration of top-level module interface
 // Device      : xc7a100tfgg484-2

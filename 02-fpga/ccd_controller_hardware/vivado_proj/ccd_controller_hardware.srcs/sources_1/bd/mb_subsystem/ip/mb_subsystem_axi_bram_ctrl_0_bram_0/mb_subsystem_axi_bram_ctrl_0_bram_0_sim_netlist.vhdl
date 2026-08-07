@@ -3,8 +3,8 @@
 -- Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
 -- Date        : Sat Aug  1 17:41:37 2026
 -- Host        : DESKTOP-KD2H86C running 64-bit major release  (build 9200)
--- Command     : write_vhdl -force -mode funcsim
---               d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/vivado_proj/ccd_controller_hardware.srcs/sources_1/bd/mb_subsystem/ip/mb_subsystem_axi_bram_ctrl_0_bram_0/mb_subsystem_axi_bram_ctrl_0_bram_0_sim_netlist.vhdl
+-- Command     : write_vhdl -force -mode funcsim -rename_top mb_subsystem_axi_bram_ctrl_0_bram_0 -prefix
+--               mb_subsystem_axi_bram_ctrl_0_bram_0_ mb_subsystem_axi_bram_ctrl_0_bram_0_sim_netlist.vhdl
 -- Design      : mb_subsystem_axi_bram_ctrl_0_bram_0
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -31,8 +31,6 @@ entity mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_prim_wrapper is
     wea : in STD_LOGIC_VECTOR ( 0 to 0 );
     web : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_prim_wrapper : entity is "blk_mem_gen_prim_wrapper";
 end mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_prim_wrapper;
 
 architecture STRUCTURE of mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_prim_wrapper is
@@ -1175,8 +1173,6 @@ entity mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_prim_width is
     wea : in STD_LOGIC_VECTOR ( 0 to 0 );
     web : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_prim_width : entity is "blk_mem_gen_prim_width";
 end mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_prim_width;
 
 architecture STRUCTURE of mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_prim_width is
@@ -1591,8 +1587,6 @@ entity mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_generic_cstr is
     rstb : in STD_LOGIC;
     enb : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_generic_cstr : entity is "blk_mem_gen_generic_cstr";
 end mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_generic_cstr;
 
 architecture STRUCTURE of mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_generic_cstr is
@@ -1699,8 +1693,6 @@ entity mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_top is
     rstb : in STD_LOGIC;
     enb : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_top : entity is "blk_mem_gen_top";
 end mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_top;
 
 architecture STRUCTURE of mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_top is
@@ -1748,8 +1740,6 @@ entity mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_v8_4_4_synth is
     rstb : in STD_LOGIC;
     enb : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_v8_4_4_synth : entity is "blk_mem_gen_v8_4_4_synth";
 end mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_v8_4_4_synth;
 
 architecture STRUCTURE of mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_v8_4_4_synth is
@@ -1994,8 +1984,6 @@ entity mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_v8_4_4 is
   attribute C_WRITE_WIDTH_B of mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_v8_4_4 : entity is 32;
   attribute C_XDEVICEFAMILY : string;
   attribute C_XDEVICEFAMILY of mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_v8_4_4 : entity is "artix7";
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_v8_4_4 : entity is "blk_mem_gen_v8_4_4";
   attribute downgradeipidentifiedwarnings : string;
   attribute downgradeipidentifiedwarnings of mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_v8_4_4 : entity is "yes";
 end mb_subsystem_axi_bram_ctrl_0_bram_0_blk_mem_gen_v8_4_4;

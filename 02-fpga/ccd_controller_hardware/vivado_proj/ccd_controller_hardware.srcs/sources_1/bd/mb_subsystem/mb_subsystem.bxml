@@ -2,10 +2,10 @@
 <Root MajorVersion="0" MinorVersion="39">
   <CompositeFile CompositeFileTopName="mb_subsystem" CanBeSetAsTop="false" CanDisplayChildGraph="true">
     <Description>Composite Fileset</Description>
-    <Generation Name="SYNTHESIS" State="GENERATED" Timestamp="1785728468"/>
-    <Generation Name="IMPLEMENTATION" State="GENERATED" Timestamp="1785728468"/>
-    <Generation Name="SIMULATION" State="GENERATED" Timestamp="1785728468"/>
-    <Generation Name="HW_HANDOFF" State="GENERATED" Timestamp="1785728468"/>
+    <Generation Name="SYNTHESIS" State="GENERATED" Timestamp="1786027913"/>
+    <Generation Name="IMPLEMENTATION" State="GENERATED" Timestamp="1786027913"/>
+    <Generation Name="SIMULATION" State="GENERATED" Timestamp="1786027913"/>
+    <Generation Name="HW_HANDOFF" State="GENERATED" Timestamp="1786027913"/>
     <FileCollection Name="SOURCES" Type="SOURCES">
       <File Name="ip\mb_subsystem_axi_uartlite_0_0\mb_subsystem_axi_uartlite_0_0.xci" Type="IP">
         <Instance HierarchyPath="axi_uartlite_0"/>
@@ -143,22 +143,6 @@
         <UsedIn Val="IMPLEMENTATION"/>
         <UsedIn Val="SIMULATION"/>
       </File>
-      <File Name="ip\mb_subsystem_xbar_2\mb_subsystem_xbar_2.xci" Type="IP">
-        <Instance HierarchyPath="microblaze_0_axi_periph/xbar"/>
-        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
-        <Library Name="xil_defaultlib"/>
-        <UsedIn Val="SYNTHESIS"/>
-        <UsedIn Val="IMPLEMENTATION"/>
-        <UsedIn Val="SIMULATION"/>
-      </File>
-      <File Name="ip\mb_subsystem_microblaze_0_axi_periph_5\mb_subsystem_microblaze_0_axi_periph_5.xci" Type="IP">
-        <Instance HierarchyPath="microblaze_0_axi_periph"/>
-        <Properties IsEditable="false" IsVisible="false" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
-        <Library Name="xil_defaultlib"/>
-        <UsedIn Val="SYNTHESIS"/>
-        <UsedIn Val="IMPLEMENTATION"/>
-        <UsedIn Val="SIMULATION"/>
-      </File>
       <File Name="ip\mb_subsystem_ccd_controller_v1_0_0_0\mb_subsystem_ccd_controller_v1_0_0_0.xci" Type="IP">
         <Instance HierarchyPath="ccd_controller_v1_0_0"/>
         <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
@@ -207,14 +191,6 @@
         <UsedIn Val="IMPLEMENTATION"/>
         <UsedIn Val="SIMULATION"/>
       </File>
-      <File Name="ip\mb_subsystem_proc_sys_reset_0_0\mb_subsystem_proc_sys_reset_0_0.xci" Type="IP">
-        <Instance HierarchyPath="proc_sys_reset_0"/>
-        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
-        <Library Name="xil_defaultlib"/>
-        <UsedIn Val="SYNTHESIS"/>
-        <UsedIn Val="IMPLEMENTATION"/>
-        <UsedIn Val="SIMULATION"/>
-      </File>
       <File Name="ip\mb_subsystem_system_ila_22\mb_subsystem_system_ila_22.xci" Type="IP">
         <Instance HierarchyPath="system_ila"/>
         <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
@@ -241,6 +217,30 @@
       </File>
       <File Name="ip\mb_subsystem_axi_gpio_0_2\mb_subsystem_axi_gpio_0_2.xci" Type="IP">
         <Instance HierarchyPath="axi_gpio_key"/>
+        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
+        <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SYNTHESIS"/>
+        <UsedIn Val="IMPLEMENTATION"/>
+        <UsedIn Val="SIMULATION"/>
+      </File>
+      <File Name="ip\mb_subsystem_xbar_3\mb_subsystem_xbar_3.xci" Type="IP">
+        <Instance HierarchyPath="microblaze_0_axi_periph/xbar"/>
+        <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
+        <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SYNTHESIS"/>
+        <UsedIn Val="IMPLEMENTATION"/>
+        <UsedIn Val="SIMULATION"/>
+      </File>
+      <File Name="ip\mb_subsystem_microblaze_0_axi_periph_6\mb_subsystem_microblaze_0_axi_periph_6.xci" Type="IP">
+        <Instance HierarchyPath="microblaze_0_axi_periph"/>
+        <Properties IsEditable="false" IsVisible="false" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
+        <Library Name="xil_defaultlib"/>
+        <UsedIn Val="SYNTHESIS"/>
+        <UsedIn Val="IMPLEMENTATION"/>
+        <UsedIn Val="SIMULATION"/>
+      </File>
+      <File Name="ip\mb_subsystem_system_ila_0_0\mb_subsystem_system_ila_0_0.xci" Type="IP">
+        <Instance HierarchyPath="system_ila_0"/>
         <Properties IsEditable="false" IsVisible="true" Timestamp="0" IsTrackable="true" IsStatusTracked="true"/>
         <Library Name="xil_defaultlib"/>
         <UsedIn Val="SYNTHESIS"/>

@@ -1,7 +1,7 @@
 -- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
--- Date        : Mon Aug  3 11:42:27 2026
+-- Date        : Thu Aug  6 22:53:21 2026
 -- Host        : DESKTOP-KD2H86C running 64-bit major release  (build 9200)
 -- Command     : write_vhdl -force -mode funcsim
 --               d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/vivado_proj/ccd_controller_hardware.srcs/sources_1/bd/mb_subsystem/ip/mb_subsystem_ccd_controller_v1_0_0_0/mb_subsystem_ccd_controller_v1_0_0_0_sim_netlist.vhdl
@@ -36,7 +36,6 @@ entity mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen is
     p1v_enable : in STD_LOGIC;
     p3h_enable : in STD_LOGIC;
     s00_axi_aresetn : in STD_LOGIC;
-    ddr3_init_done_s2 : in STD_LOGIC;
     p2v_tg_enable : in STD_LOGIC
   );
   attribute ORIG_REF_NAME : string;
@@ -908,8 +907,8 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen is
   attribute SOFT_HLUTNM of \p_2_out__1_carry__0_i_14\ : label is "soft_lutpair3";
   attribute SOFT_HLUTNM of \p_2_out__1_carry__0_i_9\ : label is "soft_lutpair0";
   attribute ADDER_THRESHOLD of \p_2_out__1_carry__1\ : label is 35;
-  attribute SOFT_HLUTNM of \p_2_out__1_carry__1_i_10\ : label is "soft_lutpair2";
-  attribute SOFT_HLUTNM of \p_2_out__1_carry__1_i_9\ : label is "soft_lutpair1";
+  attribute SOFT_HLUTNM of \p_2_out__1_carry__1_i_10\ : label is "soft_lutpair1";
+  attribute SOFT_HLUTNM of \p_2_out__1_carry__1_i_9\ : label is "soft_lutpair2";
   attribute ADDER_THRESHOLD of \p_2_out__1_carry__2\ : label is 35;
   attribute ADDER_THRESHOLD of \p_2_out__1_carry__3\ : label is 35;
   attribute ADDER_THRESHOLD of \p_2_out__1_carry__4\ : label is 35;
@@ -4458,13 +4457,12 @@ o_rg_p90_reg: unisim.vcomponents.FDPE
       PRE => \^s00_axi_aresetn_0\,
       Q => rg_p90_w
     );
-o_sclk_p0_i_1: unisim.vcomponents.LUT2
+o_sclk_p0_i_1: unisim.vcomponents.LUT1
     generic map(
-      INIT => X"7"
+      INIT => X"1"
     )
         port map (
       I0 => s00_axi_aresetn,
-      I1 => ddr3_init_done_s2,
       O => \^s00_axi_aresetn_0\
     );
 o_sclk_p0_reg: unisim.vcomponents.FDCE
@@ -6795,7 +6793,7 @@ entity mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr_axi_adapter is
     M_AXI_AWLEN : out STD_LOGIC_VECTOR ( 7 downto 0 );
     ctrl_wr_req : in STD_LOGIC;
     i_ui_clk : in STD_LOGIC;
-    \FSM_sequential_wr_state_reg[0]_0\ : in STD_LOGIC;
+    rst : in STD_LOGIC;
     ctrl_rd_req : in STD_LOGIC;
     Q : in STD_LOGIC_VECTOR ( 7 downto 0 );
     S : in STD_LOGIC_VECTOR ( 3 downto 0 );
@@ -7088,19 +7086,19 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr
   attribute FSM_ENCODED_STATES of \FSM_sequential_wr_state_reg[0]\ : label is "S_WR_IDLE:000,S_WR_ADDR:001,S_WR_DATA:011,S_WR_DATA_PRE:010,S_WR_RESP:100";
   attribute FSM_ENCODED_STATES of \FSM_sequential_wr_state_reg[1]\ : label is "S_WR_IDLE:000,S_WR_ADDR:001,S_WR_DATA:011,S_WR_DATA_PRE:010,S_WR_RESP:100";
   attribute FSM_ENCODED_STATES of \FSM_sequential_wr_state_reg[2]\ : label is "S_WR_IDLE:000,S_WR_ADDR:001,S_WR_DATA:011,S_WR_DATA_PRE:010,S_WR_RESP:100";
-  attribute SOFT_HLUTNM of \M_AXI_AWLEN[0]_INST_0\ : label is "soft_lutpair53";
-  attribute SOFT_HLUTNM of \M_AXI_AWLEN[1]_INST_0\ : label is "soft_lutpair57";
-  attribute SOFT_HLUTNM of \M_AXI_AWLEN[2]_INST_0\ : label is "soft_lutpair50";
-  attribute SOFT_HLUTNM of \M_AXI_AWLEN[3]_INST_0\ : label is "soft_lutpair50";
-  attribute SOFT_HLUTNM of \M_AXI_AWLEN[5]_INST_0\ : label is "soft_lutpair57";
-  attribute SOFT_HLUTNM of \M_AXI_AWLEN[6]_INST_0\ : label is "soft_lutpair52";
-  attribute SOFT_HLUTNM of \M_AXI_AWLEN[7]_INST_0\ : label is "soft_lutpair52";
-  attribute SOFT_HLUTNM of \M_AXI_AWLEN[7]_INST_0_i_3\ : label is "soft_lutpair53";
-  attribute SOFT_HLUTNM of m_axi_rready_i_1 : label is "soft_lutpair48";
-  attribute SOFT_HLUTNM of m_axi_wlast0_carry_i_5 : label is "soft_lutpair49";
-  attribute SOFT_HLUTNM of m_axi_wlast0_carry_i_6 : label is "soft_lutpair49";
-  attribute SOFT_HLUTNM of m_axi_wlast_i_2 : label is "soft_lutpair47";
-  attribute SOFT_HLUTNM of m_axi_wvalid_i_1 : label is "soft_lutpair47";
+  attribute SOFT_HLUTNM of \M_AXI_AWLEN[0]_INST_0\ : label is "soft_lutpair54";
+  attribute SOFT_HLUTNM of \M_AXI_AWLEN[1]_INST_0\ : label is "soft_lutpair58";
+  attribute SOFT_HLUTNM of \M_AXI_AWLEN[2]_INST_0\ : label is "soft_lutpair51";
+  attribute SOFT_HLUTNM of \M_AXI_AWLEN[3]_INST_0\ : label is "soft_lutpair51";
+  attribute SOFT_HLUTNM of \M_AXI_AWLEN[5]_INST_0\ : label is "soft_lutpair58";
+  attribute SOFT_HLUTNM of \M_AXI_AWLEN[6]_INST_0\ : label is "soft_lutpair53";
+  attribute SOFT_HLUTNM of \M_AXI_AWLEN[7]_INST_0\ : label is "soft_lutpair53";
+  attribute SOFT_HLUTNM of \M_AXI_AWLEN[7]_INST_0_i_3\ : label is "soft_lutpair54";
+  attribute SOFT_HLUTNM of m_axi_rready_i_1 : label is "soft_lutpair50";
+  attribute SOFT_HLUTNM of m_axi_wlast0_carry_i_5 : label is "soft_lutpair47";
+  attribute SOFT_HLUTNM of m_axi_wlast0_carry_i_6 : label is "soft_lutpair47";
+  attribute SOFT_HLUTNM of m_axi_wlast_i_2 : label is "soft_lutpair49";
+  attribute SOFT_HLUTNM of m_axi_wvalid_i_1 : label is "soft_lutpair49";
   attribute SOFT_HLUTNM of \o_rdfifo_din[0]_i_1\ : label is "soft_lutpair59";
   attribute SOFT_HLUTNM of \o_rdfifo_din[100]_i_1\ : label is "soft_lutpair109";
   attribute SOFT_HLUTNM of \o_rdfifo_din[101]_i_1\ : label is "soft_lutpair109";
@@ -7229,19 +7227,19 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr
   attribute SOFT_HLUTNM of \o_rdfifo_din[98]_i_1\ : label is "soft_lutpair108";
   attribute SOFT_HLUTNM of \o_rdfifo_din[99]_i_1\ : label is "soft_lutpair108";
   attribute SOFT_HLUTNM of \o_rdfifo_din[9]_i_1\ : label is "soft_lutpair63";
-  attribute SOFT_HLUTNM of o_rdfifo_wren_i_1 : label is "soft_lutpair48";
+  attribute SOFT_HLUTNM of o_rdfifo_wren_i_1 : label is "soft_lutpair50";
   attribute COMPARATOR_THRESHOLD : integer;
   attribute COMPARATOR_THRESHOLD of o_wrfifo_rden0_carry : label is 11;
   attribute ADDER_THRESHOLD : integer;
   attribute ADDER_THRESHOLD of rd_beats1_carry : label is 35;
   attribute ADDER_THRESHOLD of \rd_beats1_carry__0\ : label is 35;
   attribute ADDER_THRESHOLD of \rd_beats1_carry__1\ : label is 35;
-  attribute SOFT_HLUTNM of \wr_beat_cnt[1]_i_1\ : label is "soft_lutpair58";
-  attribute SOFT_HLUTNM of \wr_beat_cnt[2]_i_1\ : label is "soft_lutpair51";
-  attribute SOFT_HLUTNM of \wr_beat_cnt[3]_i_1\ : label is "soft_lutpair51";
-  attribute SOFT_HLUTNM of \wr_beat_cnt[5]_i_1\ : label is "soft_lutpair58";
-  attribute SOFT_HLUTNM of \wr_beat_cnt[6]_i_1\ : label is "soft_lutpair54";
-  attribute SOFT_HLUTNM of \wr_beat_cnt[7]_i_2\ : label is "soft_lutpair54";
+  attribute SOFT_HLUTNM of \wr_beat_cnt[1]_i_1\ : label is "soft_lutpair57";
+  attribute SOFT_HLUTNM of \wr_beat_cnt[2]_i_1\ : label is "soft_lutpair48";
+  attribute SOFT_HLUTNM of \wr_beat_cnt[3]_i_1\ : label is "soft_lutpair48";
+  attribute SOFT_HLUTNM of \wr_beat_cnt[5]_i_1\ : label is "soft_lutpair57";
+  attribute SOFT_HLUTNM of \wr_beat_cnt[6]_i_1\ : label is "soft_lutpair52";
+  attribute SOFT_HLUTNM of \wr_beat_cnt[7]_i_2\ : label is "soft_lutpair52";
   attribute ADDER_THRESHOLD of wr_beats1_carry : label is 35;
   attribute ADDER_THRESHOLD of \wr_beats1_carry__0\ : label is 35;
   attribute ADDER_THRESHOLD of \wr_beats1_carry__1\ : label is 35;
@@ -7305,7 +7303,7 @@ begin
       C => i_ui_clk,
       CE => '1',
       D => \FSM_onehot_rd_state[0]_i_1_n_0\,
-      PRE => \FSM_sequential_wr_state_reg[0]_0\,
+      PRE => rst,
       Q => \FSM_onehot_rd_state_reg_n_0_[0]\
     );
 \FSM_onehot_rd_state_reg[1]\: unisim.vcomponents.FDCE
@@ -7315,7 +7313,7 @@ begin
         port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \FSM_onehot_rd_state[1]_i_1_n_0\,
       Q => \FSM_onehot_rd_state_reg_n_0_[1]\
     );
@@ -7326,7 +7324,7 @@ begin
         port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \FSM_onehot_rd_state[2]_i_1_n_0\,
       Q => \FSM_onehot_rd_state_reg_n_0_[2]\
     );
@@ -7393,7 +7391,7 @@ begin
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \FSM_sequential_wr_state[0]_i_1_n_0\,
       Q => wr_state(0)
     );
@@ -7401,7 +7399,7 @@ begin
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \FSM_sequential_wr_state[1]_i_1_n_0\,
       Q => wr_state(1)
     );
@@ -7409,7 +7407,7 @@ begin
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \FSM_sequential_wr_state[2]_i_1_n_0\,
       Q => wr_state(2)
     );
@@ -7702,7 +7700,7 @@ i_axi_wr_req_d_reg: unisim.vcomponents.FDRE
      port map (
       C => i_ui_clk,
       CE => \m_axi_araddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_araddr_reg[21]_0\(2),
       Q => M_AXI_ARADDR(2)
     );
@@ -7710,7 +7708,7 @@ i_axi_wr_req_d_reg: unisim.vcomponents.FDRE
      port map (
       C => i_ui_clk,
       CE => \m_axi_araddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_araddr_reg[21]_0\(3),
       Q => M_AXI_ARADDR(3)
     );
@@ -7718,7 +7716,7 @@ i_axi_wr_req_d_reg: unisim.vcomponents.FDRE
      port map (
       C => i_ui_clk,
       CE => \m_axi_araddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_araddr_reg[21]_0\(4),
       Q => M_AXI_ARADDR(4)
     );
@@ -7726,7 +7724,7 @@ i_axi_wr_req_d_reg: unisim.vcomponents.FDRE
      port map (
       C => i_ui_clk,
       CE => \m_axi_araddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_araddr_reg[21]_0\(5),
       Q => M_AXI_ARADDR(5)
     );
@@ -7734,7 +7732,7 @@ i_axi_wr_req_d_reg: unisim.vcomponents.FDRE
      port map (
       C => i_ui_clk,
       CE => \m_axi_araddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_araddr_reg[21]_0\(6),
       Q => M_AXI_ARADDR(6)
     );
@@ -7742,7 +7740,7 @@ i_axi_wr_req_d_reg: unisim.vcomponents.FDRE
      port map (
       C => i_ui_clk,
       CE => \m_axi_araddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_araddr_reg[21]_0\(7),
       Q => M_AXI_ARADDR(7)
     );
@@ -7750,7 +7748,7 @@ i_axi_wr_req_d_reg: unisim.vcomponents.FDRE
      port map (
       C => i_ui_clk,
       CE => \m_axi_araddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_araddr_reg[21]_0\(8),
       Q => M_AXI_ARADDR(8)
     );
@@ -7758,7 +7756,7 @@ i_axi_wr_req_d_reg: unisim.vcomponents.FDRE
      port map (
       C => i_ui_clk,
       CE => \m_axi_araddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_araddr_reg[21]_0\(9),
       Q => M_AXI_ARADDR(9)
     );
@@ -7766,7 +7764,7 @@ i_axi_wr_req_d_reg: unisim.vcomponents.FDRE
      port map (
       C => i_ui_clk,
       CE => \m_axi_araddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_araddr_reg[21]_0\(10),
       Q => M_AXI_ARADDR(10)
     );
@@ -7774,7 +7772,7 @@ i_axi_wr_req_d_reg: unisim.vcomponents.FDRE
      port map (
       C => i_ui_clk,
       CE => \m_axi_araddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_araddr_reg[21]_0\(11),
       Q => M_AXI_ARADDR(11)
     );
@@ -7782,7 +7780,7 @@ i_axi_wr_req_d_reg: unisim.vcomponents.FDRE
      port map (
       C => i_ui_clk,
       CE => \m_axi_araddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_araddr_reg[21]_0\(12),
       Q => M_AXI_ARADDR(12)
     );
@@ -7790,7 +7788,7 @@ i_axi_wr_req_d_reg: unisim.vcomponents.FDRE
      port map (
       C => i_ui_clk,
       CE => \m_axi_araddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_araddr_reg[21]_0\(13),
       Q => M_AXI_ARADDR(13)
     );
@@ -7798,7 +7796,7 @@ i_axi_wr_req_d_reg: unisim.vcomponents.FDRE
      port map (
       C => i_ui_clk,
       CE => \m_axi_araddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_araddr_reg[21]_0\(0),
       Q => M_AXI_ARADDR(0)
     );
@@ -7806,7 +7804,7 @@ i_axi_wr_req_d_reg: unisim.vcomponents.FDRE
      port map (
       C => i_ui_clk,
       CE => \m_axi_araddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_araddr_reg[21]_0\(1),
       Q => M_AXI_ARADDR(1)
     );
@@ -7826,7 +7824,7 @@ m_axi_arvalid_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => m_axi_arvalid_i_1_n_0,
       Q => \^m_axi_arvalid\
     );
@@ -7847,7 +7845,7 @@ m_axi_arvalid_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_awaddr_reg[21]_0\(6),
       Q => M_AXI_AWADDR(6)
     );
@@ -7855,7 +7853,7 @@ m_axi_arvalid_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_awaddr_reg[21]_0\(7),
       Q => M_AXI_AWADDR(7)
     );
@@ -7863,7 +7861,7 @@ m_axi_arvalid_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_awaddr_reg[21]_0\(8),
       Q => M_AXI_AWADDR(8)
     );
@@ -7871,7 +7869,7 @@ m_axi_arvalid_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_awaddr_reg[21]_0\(9),
       Q => M_AXI_AWADDR(9)
     );
@@ -7879,7 +7877,7 @@ m_axi_arvalid_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_awaddr_reg[21]_0\(10),
       Q => M_AXI_AWADDR(10)
     );
@@ -7887,7 +7885,7 @@ m_axi_arvalid_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_awaddr_reg[21]_0\(11),
       Q => M_AXI_AWADDR(11)
     );
@@ -7895,7 +7893,7 @@ m_axi_arvalid_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_awaddr_reg[21]_0\(12),
       Q => M_AXI_AWADDR(12)
     );
@@ -7903,7 +7901,7 @@ m_axi_arvalid_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_awaddr_reg[21]_0\(13),
       Q => M_AXI_AWADDR(13)
     );
@@ -7911,7 +7909,7 @@ m_axi_arvalid_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_awaddr_reg[21]_0\(14),
       Q => M_AXI_AWADDR(14)
     );
@@ -7919,7 +7917,7 @@ m_axi_arvalid_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_awaddr_reg[21]_0\(15),
       Q => M_AXI_AWADDR(15)
     );
@@ -7927,7 +7925,7 @@ m_axi_arvalid_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_awaddr_reg[21]_0\(16),
       Q => M_AXI_AWADDR(16)
     );
@@ -7935,7 +7933,7 @@ m_axi_arvalid_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_awaddr_reg[21]_0\(17),
       Q => M_AXI_AWADDR(17)
     );
@@ -7943,7 +7941,7 @@ m_axi_arvalid_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_awaddr_reg[21]_0\(0),
       Q => M_AXI_AWADDR(0)
     );
@@ -7951,7 +7949,7 @@ m_axi_arvalid_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_awaddr_reg[21]_0\(1),
       Q => M_AXI_AWADDR(1)
     );
@@ -7959,7 +7957,7 @@ m_axi_arvalid_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_awaddr_reg[21]_0\(2),
       Q => M_AXI_AWADDR(2)
     );
@@ -7967,7 +7965,7 @@ m_axi_arvalid_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_awaddr_reg[21]_0\(3),
       Q => M_AXI_AWADDR(3)
     );
@@ -7975,7 +7973,7 @@ m_axi_arvalid_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_awaddr_reg[21]_0\(4),
       Q => M_AXI_AWADDR(4)
     );
@@ -7983,7 +7981,7 @@ m_axi_arvalid_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \m_axi_awaddr_reg[21]_0\(5),
       Q => M_AXI_AWADDR(5)
     );
@@ -8014,7 +8012,7 @@ m_axi_awvalid_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => m_axi_awvalid_i_1_n_0,
       Q => \^m_axi_awvalid_reg_0\
     );
@@ -8056,7 +8054,7 @@ m_axi_bready_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => m_axi_bready_i_1_n_0,
       Q => \^m_axi_bready\
     );
@@ -8076,7 +8074,7 @@ m_axi_rready_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => m_axi_rready_i_1_n_0,
       Q => \^m_axi_rready_reg_0\
     );
@@ -8292,7 +8290,7 @@ m_axi_wlast_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => m_axi_wlast_i_1_n_0,
       Q => \^m_axi_wlast_reg_0\
     );
@@ -8312,7 +8310,7 @@ m_axi_wvalid_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => m_axi_wvalid_i_1_n_0,
       Q => \^m_axi_wvalid_reg_0\
     );
@@ -8344,7 +8342,7 @@ o_axi_rd_idle_reg: unisim.vcomponents.FDPE
       C => i_ui_clk,
       CE => '1',
       D => o_axi_rd_idle_i_1_n_0,
-      PRE => \FSM_sequential_wr_state_reg[0]_0\,
+      PRE => rst,
       Q => \^ctrl_rd_idle\
     );
 o_axi_wr_idle_i_1: unisim.vcomponents.LUT6
@@ -8365,7 +8363,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
       C => i_ui_clk,
       CE => '1',
       D => o_axi_wr_idle_i_1_n_0,
-      PRE => \FSM_sequential_wr_state_reg[0]_0\,
+      PRE => rst,
       Q => \^ctrl_wr_idle\
     );
 \o_rdfifo_din[0]_i_1\: unisim.vcomponents.LUT2
@@ -9524,7 +9522,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[0]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(0)
     );
@@ -9532,7 +9530,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[100]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(100)
     );
@@ -9540,7 +9538,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[101]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(101)
     );
@@ -9548,7 +9546,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[102]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(102)
     );
@@ -9556,7 +9554,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[103]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(103)
     );
@@ -9564,7 +9562,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[104]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(104)
     );
@@ -9572,7 +9570,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[105]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(105)
     );
@@ -9580,7 +9578,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[106]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(106)
     );
@@ -9588,7 +9586,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[107]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(107)
     );
@@ -9596,7 +9594,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[108]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(108)
     );
@@ -9604,7 +9602,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[109]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(109)
     );
@@ -9612,7 +9610,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[10]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(10)
     );
@@ -9620,7 +9618,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[110]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(110)
     );
@@ -9628,7 +9626,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[111]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(111)
     );
@@ -9636,7 +9634,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[112]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(112)
     );
@@ -9644,7 +9642,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[113]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(113)
     );
@@ -9652,7 +9650,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[114]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(114)
     );
@@ -9660,7 +9658,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[115]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(115)
     );
@@ -9668,7 +9666,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[116]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(116)
     );
@@ -9676,7 +9674,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[117]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(117)
     );
@@ -9684,7 +9682,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[118]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(118)
     );
@@ -9692,7 +9690,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[119]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(119)
     );
@@ -9700,7 +9698,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[11]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(11)
     );
@@ -9708,7 +9706,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[120]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(120)
     );
@@ -9716,7 +9714,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[121]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(121)
     );
@@ -9724,7 +9722,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[122]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(122)
     );
@@ -9732,7 +9730,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[123]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(123)
     );
@@ -9740,7 +9738,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[124]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(124)
     );
@@ -9748,7 +9746,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[125]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(125)
     );
@@ -9756,7 +9754,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[126]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(126)
     );
@@ -9764,7 +9762,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[127]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(127)
     );
@@ -9772,7 +9770,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[12]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(12)
     );
@@ -9780,7 +9778,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[13]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(13)
     );
@@ -9788,7 +9786,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[14]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(14)
     );
@@ -9796,7 +9794,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[15]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(15)
     );
@@ -9804,7 +9802,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[16]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(16)
     );
@@ -9812,7 +9810,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[17]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(17)
     );
@@ -9820,7 +9818,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[18]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(18)
     );
@@ -9828,7 +9826,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[19]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(19)
     );
@@ -9836,7 +9834,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[1]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(1)
     );
@@ -9844,7 +9842,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[20]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(20)
     );
@@ -9852,7 +9850,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[21]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(21)
     );
@@ -9860,7 +9858,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[22]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(22)
     );
@@ -9868,7 +9866,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[23]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(23)
     );
@@ -9876,7 +9874,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[24]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(24)
     );
@@ -9884,7 +9882,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[25]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(25)
     );
@@ -9892,7 +9890,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[26]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(26)
     );
@@ -9900,7 +9898,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[27]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(27)
     );
@@ -9908,7 +9906,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[28]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(28)
     );
@@ -9916,7 +9914,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[29]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(29)
     );
@@ -9924,7 +9922,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[2]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(2)
     );
@@ -9932,7 +9930,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[30]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(30)
     );
@@ -9940,7 +9938,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[31]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(31)
     );
@@ -9948,7 +9946,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[32]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(32)
     );
@@ -9956,7 +9954,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[33]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(33)
     );
@@ -9964,7 +9962,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[34]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(34)
     );
@@ -9972,7 +9970,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[35]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(35)
     );
@@ -9980,7 +9978,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[36]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(36)
     );
@@ -9988,7 +9986,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[37]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(37)
     );
@@ -9996,7 +9994,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[38]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(38)
     );
@@ -10004,7 +10002,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[39]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(39)
     );
@@ -10012,7 +10010,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[3]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(3)
     );
@@ -10020,7 +10018,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[40]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(40)
     );
@@ -10028,7 +10026,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[41]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(41)
     );
@@ -10036,7 +10034,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[42]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(42)
     );
@@ -10044,7 +10042,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[43]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(43)
     );
@@ -10052,7 +10050,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[44]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(44)
     );
@@ -10060,7 +10058,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[45]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(45)
     );
@@ -10068,7 +10066,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[46]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(46)
     );
@@ -10076,7 +10074,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[47]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(47)
     );
@@ -10084,7 +10082,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[48]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(48)
     );
@@ -10092,7 +10090,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[49]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(49)
     );
@@ -10100,7 +10098,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[4]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(4)
     );
@@ -10108,7 +10106,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[50]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(50)
     );
@@ -10116,7 +10114,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[51]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(51)
     );
@@ -10124,7 +10122,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[52]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(52)
     );
@@ -10132,7 +10130,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[53]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(53)
     );
@@ -10140,7 +10138,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[54]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(54)
     );
@@ -10148,7 +10146,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[55]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(55)
     );
@@ -10156,7 +10154,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[56]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(56)
     );
@@ -10164,7 +10162,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[57]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(57)
     );
@@ -10172,7 +10170,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[58]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(58)
     );
@@ -10180,7 +10178,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[59]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(59)
     );
@@ -10188,7 +10186,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[5]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(5)
     );
@@ -10196,7 +10194,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[60]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(60)
     );
@@ -10204,7 +10202,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[61]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(61)
     );
@@ -10212,7 +10210,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[62]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(62)
     );
@@ -10220,7 +10218,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[63]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(63)
     );
@@ -10228,7 +10226,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[64]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(64)
     );
@@ -10236,7 +10234,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[65]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(65)
     );
@@ -10244,7 +10242,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[66]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(66)
     );
@@ -10252,7 +10250,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[67]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(67)
     );
@@ -10260,7 +10258,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[68]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(68)
     );
@@ -10268,7 +10266,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[69]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(69)
     );
@@ -10276,7 +10274,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[6]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(6)
     );
@@ -10284,7 +10282,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[70]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(70)
     );
@@ -10292,7 +10290,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[71]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(71)
     );
@@ -10300,7 +10298,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[72]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(72)
     );
@@ -10308,7 +10306,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[73]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(73)
     );
@@ -10316,7 +10314,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[74]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(74)
     );
@@ -10324,7 +10322,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[75]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(75)
     );
@@ -10332,7 +10330,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[76]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(76)
     );
@@ -10340,7 +10338,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[77]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(77)
     );
@@ -10348,7 +10346,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[78]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(78)
     );
@@ -10356,7 +10354,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[79]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(79)
     );
@@ -10364,7 +10362,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[7]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(7)
     );
@@ -10372,7 +10370,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[80]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(80)
     );
@@ -10380,7 +10378,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[81]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(81)
     );
@@ -10388,7 +10386,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[82]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(82)
     );
@@ -10396,7 +10394,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[83]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(83)
     );
@@ -10404,7 +10402,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[84]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(84)
     );
@@ -10412,7 +10410,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[85]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(85)
     );
@@ -10420,7 +10418,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[86]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(86)
     );
@@ -10428,7 +10426,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[87]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(87)
     );
@@ -10436,7 +10434,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[88]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(88)
     );
@@ -10444,7 +10442,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[89]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(89)
     );
@@ -10452,7 +10450,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[8]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(8)
     );
@@ -10460,7 +10458,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[90]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(90)
     );
@@ -10468,7 +10466,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[91]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(91)
     );
@@ -10476,7 +10474,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[92]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(92)
     );
@@ -10484,7 +10482,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[93]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(93)
     );
@@ -10492,7 +10490,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[94]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(94)
     );
@@ -10500,7 +10498,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[95]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(95)
     );
@@ -10508,7 +10506,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[96]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(96)
     );
@@ -10516,7 +10514,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[97]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(97)
     );
@@ -10524,7 +10522,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[98]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(98)
     );
@@ -10532,7 +10530,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[99]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(99)
     );
@@ -10540,7 +10538,7 @@ o_axi_wr_idle_reg: unisim.vcomponents.FDPE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => \o_rdfifo_din[9]_i_1_n_0\,
       Q => \o_rdfifo_din_reg[127]_0\(9)
     );
@@ -10558,7 +10556,7 @@ o_rdfifo_wren_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => o_rdfifo_wren_i_1_n_0,
       Q => wr_en
     );
@@ -10696,7 +10694,7 @@ o_wrfifo_rden_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => o_wrfifo_rden_i_1_n_0,
       Q => rd_en
     );
@@ -10740,7 +10738,7 @@ rd_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \m_axi_araddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => rd_beats10_out(4),
       Q => rd_beats(0)
     );
@@ -10748,7 +10746,7 @@ rd_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \m_axi_araddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => rd_beats10_out(5),
       Q => rd_beats(1)
     );
@@ -10756,7 +10754,7 @@ rd_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \m_axi_araddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => rd_beats10_out(6),
       Q => rd_beats(2)
     );
@@ -10764,7 +10762,7 @@ rd_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \m_axi_araddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => rd_beats10_out(7),
       Q => rd_beats(3)
     );
@@ -10772,7 +10770,7 @@ rd_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \m_axi_araddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => rd_beats10_out(8),
       Q => rd_beats(4)
     );
@@ -10780,7 +10778,7 @@ rd_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \m_axi_araddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => rd_beats10_out(9),
       Q => rd_beats(5)
     );
@@ -10788,7 +10786,7 @@ rd_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \m_axi_araddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => rd_beats10_out(10),
       Q => rd_beats(6)
     );
@@ -10796,7 +10794,7 @@ rd_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \m_axi_araddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => rd_beats10_out(11),
       Q => rd_beats(7)
     );
@@ -10928,7 +10926,7 @@ rd_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \wr_beat_cnt[7]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => wr_beat_cnt(0),
       Q => \wr_beat_cnt_reg_n_0_[0]\
     );
@@ -10936,7 +10934,7 @@ rd_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \wr_beat_cnt[7]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => wr_beat_cnt(1),
       Q => \wr_beat_cnt_reg_n_0_[1]\
     );
@@ -10944,7 +10942,7 @@ rd_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \wr_beat_cnt[7]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => wr_beat_cnt(2),
       Q => \wr_beat_cnt_reg_n_0_[2]\
     );
@@ -10952,7 +10950,7 @@ rd_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \wr_beat_cnt[7]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => wr_beat_cnt(3),
       Q => \wr_beat_cnt_reg_n_0_[3]\
     );
@@ -10960,7 +10958,7 @@ rd_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \wr_beat_cnt[7]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => wr_beat_cnt(4),
       Q => \wr_beat_cnt_reg_n_0_[4]\
     );
@@ -10968,7 +10966,7 @@ rd_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \wr_beat_cnt[7]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => wr_beat_cnt(5),
       Q => \wr_beat_cnt_reg_n_0_[5]\
     );
@@ -10976,7 +10974,7 @@ rd_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \wr_beat_cnt[7]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => wr_beat_cnt(6),
       Q => \wr_beat_cnt_reg_n_0_[6]\
     );
@@ -10984,7 +10982,7 @@ rd_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \wr_beat_cnt[7]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => wr_beat_cnt(7),
       Q => \wr_beat_cnt_reg_n_0_[7]\
     );
@@ -11030,7 +11028,7 @@ wr_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => p_0_in(0),
       Q => wr_beats(0)
     );
@@ -11038,7 +11036,7 @@ wr_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => p_0_in(1),
       Q => wr_beats(1)
     );
@@ -11046,7 +11044,7 @@ wr_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => p_0_in(2),
       Q => wr_beats(2)
     );
@@ -11054,7 +11052,7 @@ wr_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => p_0_in(3),
       Q => wr_beats(3)
     );
@@ -11062,7 +11060,7 @@ wr_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => p_0_in(4),
       Q => wr_beats(4)
     );
@@ -11070,7 +11068,7 @@ wr_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => p_0_in(5),
       Q => wr_beats(5)
     );
@@ -11078,7 +11076,7 @@ wr_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => p_0_in(6),
       Q => wr_beats(6)
     );
@@ -11086,7 +11084,7 @@ wr_beats1_carry: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => \m_axi_awaddr[21]_i_1_n_0\,
-      CLR => \FSM_sequential_wr_state_reg[0]_0\,
+      CLR => rst,
       D => p_0_in(7),
       Q => wr_beats(7)
     );
@@ -11104,7 +11102,7 @@ entity mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_tx is
     o_slave_fifo_data : out STD_LOGIC_VECTOR ( 15 downto 0 );
     tx_frame_start_reg : in STD_LOGIC;
     i_rd_clk : in STD_LOGIC;
-    frame_done_n_reg_reg_0 : in STD_LOGIC;
+    \FSM_onehot_state_reg[0]_0\ : in STD_LOGIC;
     fifo_prelast_w : in STD_LOGIC;
     i_rd_clk_n : in STD_LOGIC;
     \frames_in_fifo_reg[0]\ : in STD_LOGIC_VECTOR ( 0 to 0 );
@@ -11197,7 +11195,7 @@ begin
       C => i_rd_clk,
       CE => '1',
       D => \FSM_onehot_state[0]_i_1_n_0\,
-      PRE => frame_done_n_reg_reg_0,
+      PRE => \FSM_onehot_state_reg[0]_0\,
       Q => \FSM_onehot_state_reg_n_0_[0]\
     );
 \FSM_onehot_state_reg[1]\: unisim.vcomponents.FDCE
@@ -11207,7 +11205,7 @@ begin
         port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => frame_done_n_reg_reg_0,
+      CLR => \FSM_onehot_state_reg[0]_0\,
       D => \FSM_onehot_state[1]_i_1_n_0\,
       Q => state_reg(0)
     );
@@ -11218,7 +11216,7 @@ begin
         port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => frame_done_n_reg_reg_0,
+      CLR => \FSM_onehot_state_reg[0]_0\,
       D => \FSM_onehot_state[2]_i_1_n_0\,
       Q => state_reg(1)
     );
@@ -11239,7 +11237,7 @@ fifo_pipe_valid_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => frame_done_n_reg_reg_0,
+      CLR => \FSM_onehot_state_reg[0]_0\,
       D => fifo_pipe_valid0,
       Q => fifo_pipe_valid
     );
@@ -11247,7 +11245,7 @@ fifo_prelast_pipe_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => frame_done_n_reg_reg_0,
+      CLR => \FSM_onehot_state_reg[0]_0\,
       D => fifo_prelast_w,
       Q => fifo_prelast_pipe
     );
@@ -11265,14 +11263,14 @@ frame_done_n_reg_reg: unisim.vcomponents.FDPE
       C => i_rd_clk_n,
       CE => '1',
       D => frame_done_n_reg_i_1_n_0,
-      PRE => frame_done_n_reg_reg_0,
+      PRE => \FSM_onehot_state_reg[0]_0\,
       Q => o_slave_fifo_data_last_n
     );
 frame_start_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => frame_done_n_reg_reg_0,
+      CLR => \FSM_onehot_state_reg[0]_0\,
       D => tx_frame_start_reg,
       Q => frame_start_d
     );
@@ -11304,7 +11302,7 @@ rd_en_reg_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => frame_done_n_reg_reg_0,
+      CLR => \FSM_onehot_state_reg[0]_0\,
       D => rd_en_reg0,
       Q => \^fifo_rd_en_w\
     );
@@ -11321,7 +11319,7 @@ rd_en_reg_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk_n,
       CE => fifo_pipe_valid,
-      CLR => frame_done_n_reg_reg_0,
+      CLR => \FSM_onehot_state_reg[0]_0\,
       D => D(0),
       Q => o_slave_fifo_data(0)
     );
@@ -11329,7 +11327,7 @@ rd_en_reg_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk_n,
       CE => fifo_pipe_valid,
-      CLR => frame_done_n_reg_reg_0,
+      CLR => \FSM_onehot_state_reg[0]_0\,
       D => D(10),
       Q => o_slave_fifo_data(10)
     );
@@ -11337,7 +11335,7 @@ rd_en_reg_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk_n,
       CE => fifo_pipe_valid,
-      CLR => frame_done_n_reg_reg_0,
+      CLR => \FSM_onehot_state_reg[0]_0\,
       D => D(11),
       Q => o_slave_fifo_data(11)
     );
@@ -11345,7 +11343,7 @@ rd_en_reg_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk_n,
       CE => fifo_pipe_valid,
-      CLR => frame_done_n_reg_reg_0,
+      CLR => \FSM_onehot_state_reg[0]_0\,
       D => D(12),
       Q => o_slave_fifo_data(12)
     );
@@ -11353,7 +11351,7 @@ rd_en_reg_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk_n,
       CE => fifo_pipe_valid,
-      CLR => frame_done_n_reg_reg_0,
+      CLR => \FSM_onehot_state_reg[0]_0\,
       D => D(13),
       Q => o_slave_fifo_data(13)
     );
@@ -11361,7 +11359,7 @@ rd_en_reg_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk_n,
       CE => fifo_pipe_valid,
-      CLR => frame_done_n_reg_reg_0,
+      CLR => \FSM_onehot_state_reg[0]_0\,
       D => D(14),
       Q => o_slave_fifo_data(14)
     );
@@ -11369,7 +11367,7 @@ rd_en_reg_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk_n,
       CE => fifo_pipe_valid,
-      CLR => frame_done_n_reg_reg_0,
+      CLR => \FSM_onehot_state_reg[0]_0\,
       D => D(15),
       Q => o_slave_fifo_data(15)
     );
@@ -11377,7 +11375,7 @@ rd_en_reg_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk_n,
       CE => fifo_pipe_valid,
-      CLR => frame_done_n_reg_reg_0,
+      CLR => \FSM_onehot_state_reg[0]_0\,
       D => D(1),
       Q => o_slave_fifo_data(1)
     );
@@ -11385,7 +11383,7 @@ rd_en_reg_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk_n,
       CE => fifo_pipe_valid,
-      CLR => frame_done_n_reg_reg_0,
+      CLR => \FSM_onehot_state_reg[0]_0\,
       D => D(2),
       Q => o_slave_fifo_data(2)
     );
@@ -11393,7 +11391,7 @@ rd_en_reg_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk_n,
       CE => fifo_pipe_valid,
-      CLR => frame_done_n_reg_reg_0,
+      CLR => \FSM_onehot_state_reg[0]_0\,
       D => D(3),
       Q => o_slave_fifo_data(3)
     );
@@ -11401,7 +11399,7 @@ rd_en_reg_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk_n,
       CE => fifo_pipe_valid,
-      CLR => frame_done_n_reg_reg_0,
+      CLR => \FSM_onehot_state_reg[0]_0\,
       D => D(4),
       Q => o_slave_fifo_data(4)
     );
@@ -11409,7 +11407,7 @@ rd_en_reg_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk_n,
       CE => fifo_pipe_valid,
-      CLR => frame_done_n_reg_reg_0,
+      CLR => \FSM_onehot_state_reg[0]_0\,
       D => D(5),
       Q => o_slave_fifo_data(5)
     );
@@ -11417,7 +11415,7 @@ rd_en_reg_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk_n,
       CE => fifo_pipe_valid,
-      CLR => frame_done_n_reg_reg_0,
+      CLR => \FSM_onehot_state_reg[0]_0\,
       D => D(6),
       Q => o_slave_fifo_data(6)
     );
@@ -11425,7 +11423,7 @@ rd_en_reg_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk_n,
       CE => fifo_pipe_valid,
-      CLR => frame_done_n_reg_reg_0,
+      CLR => \FSM_onehot_state_reg[0]_0\,
       D => D(7),
       Q => o_slave_fifo_data(7)
     );
@@ -11433,7 +11431,7 @@ rd_en_reg_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk_n,
       CE => fifo_pipe_valid,
-      CLR => frame_done_n_reg_reg_0,
+      CLR => \FSM_onehot_state_reg[0]_0\,
       D => D(8),
       Q => o_slave_fifo_data(8)
     );
@@ -11441,7 +11439,7 @@ rd_en_reg_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk_n,
       CE => fifo_pipe_valid,
-      CLR => frame_done_n_reg_reg_0,
+      CLR => \FSM_onehot_state_reg[0]_0\,
       D => D(9),
       Q => o_slave_fifo_data(9)
     );
@@ -11458,7 +11456,7 @@ slave_valid_n_reg_reg: unisim.vcomponents.FDPE
       C => i_rd_clk_n,
       CE => '1',
       D => slave_valid_n_reg_i_1_n_0,
-      PRE => frame_done_n_reg_reg_0,
+      PRE => \FSM_onehot_state_reg[0]_0\,
       Q => o_slave_fifo_data_wr_en_n
     );
 end STRUCTURE;
@@ -17958,14 +17956,14 @@ entity mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver is
     frame_start_w : out STD_LOGIC;
     frame_end_w : out STD_LOGIC;
     O : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    \pixel_cnt_adc_reg[7]\ : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    \pixel_cnt_adc_reg[11]\ : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    \pixel_cnt_adc_reg[15]\ : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    \pixel_cnt_adc_reg[19]\ : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    \pixel_cnt_adc_reg[23]\ : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    \pixel_cnt_adc_reg[27]\ : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    \pixel_cnt_adc_reg[31]\ : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    frame_start_rise_adc_reg : out STD_LOGIC;
+    \pixel_cnt_wr_reg[7]\ : out STD_LOGIC_VECTOR ( 3 downto 0 );
+    \pixel_cnt_wr_reg[11]\ : out STD_LOGIC_VECTOR ( 3 downto 0 );
+    \pixel_cnt_wr_reg[15]\ : out STD_LOGIC_VECTOR ( 3 downto 0 );
+    \pixel_cnt_wr_reg[19]\ : out STD_LOGIC_VECTOR ( 3 downto 0 );
+    \pixel_cnt_wr_reg[23]\ : out STD_LOGIC_VECTOR ( 3 downto 0 );
+    \pixel_cnt_wr_reg[27]\ : out STD_LOGIC_VECTOR ( 3 downto 0 );
+    \pixel_cnt_wr_reg[31]\ : out STD_LOGIC_VECTOR ( 3 downto 0 );
+    frame_start_rise_wr_reg : out STD_LOGIC;
     wr_en : out STD_LOGIC;
     o_rg : out STD_LOGIC;
     o_p1v : out STD_LOGIC;
@@ -17979,10 +17977,11 @@ entity mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver is
     o_cdsclk1 : out STD_LOGIC;
     o_cdsclk2 : out STD_LOGIC;
     s00_axi_aclk : in STD_LOGIC;
+    p1v_enable_reg_0 : in STD_LOGIC;
     cdsclk2_end_carry_i_2 : in STD_LOGIC_VECTOR ( 11 downto 0 );
-    frame_start_rise_adc : in STD_LOGIC;
-    \pixel_cnt_adc_reg[31]_0\ : in STD_LOGIC;
-    pixel_cnt_adc_reg : in STD_LOGIC_VECTOR ( 31 downto 0 );
+    frame_start_rise_wr : in STD_LOGIC;
+    \pixel_cnt_wr_reg[31]_0\ : in STD_LOGIC;
+    pixel_cnt_wr_reg : in STD_LOGIC_VECTOR ( 31 downto 0 );
     p1v_enable_reg_i_41_0 : in STD_LOGIC_VECTOR ( 3 downto 0 );
     \FSM_onehot_state_reg[0]_i_16_0\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
     S : in STD_LOGIC_VECTOR ( 2 downto 0 );
@@ -18008,8 +18007,9 @@ entity mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver is
     \pixel_type_reg[0]_i_19_0\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
     \pixel_type_reg[0]_i_21_0\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
     \pixel_type_reg[0]_i_10_0\ : in STD_LOGIC_VECTOR ( 1 downto 0 );
-    ddr3_init_done_s2 : in STD_LOGIC;
-    s00_axi_aresetn : in STD_LOGIC
+    s00_axi_aresetn : in STD_LOGIC;
+    i_init_calib_complete : in STD_LOGIC;
+    i_mmcm_locked : in STD_LOGIC
   );
   attribute ORIG_REF_NAME : string;
   attribute ORIG_REF_NAME of mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver : entity is "ccd_driver";
@@ -18681,70 +18681,70 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver is
   signal p_0_in : STD_LOGIC;
   signal p_1_in : STD_LOGIC_VECTOR ( 31 downto 0 );
   signal p_2_in : STD_LOGIC_VECTOR ( 31 downto 0 );
-  signal \pixel_cnt_adc[0]_i_3_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[0]_i_4_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[0]_i_5_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[0]_i_6_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[0]_i_7_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[12]_i_2_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[12]_i_3_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[12]_i_4_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[12]_i_5_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[16]_i_2_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[16]_i_3_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[16]_i_4_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[16]_i_5_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[20]_i_2_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[20]_i_3_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[20]_i_4_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[20]_i_5_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[24]_i_2_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[24]_i_3_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[24]_i_4_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[24]_i_5_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[28]_i_2_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[28]_i_3_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[28]_i_4_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[28]_i_5_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[4]_i_2_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[4]_i_3_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[4]_i_4_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[4]_i_5_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[8]_i_2_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[8]_i_3_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[8]_i_4_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc[8]_i_5_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[0]_i_2_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[0]_i_2_n_1\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[0]_i_2_n_2\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[0]_i_2_n_3\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[12]_i_1_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[12]_i_1_n_1\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[12]_i_1_n_2\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[12]_i_1_n_3\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[16]_i_1_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[16]_i_1_n_1\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[16]_i_1_n_2\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[16]_i_1_n_3\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[20]_i_1_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[20]_i_1_n_1\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[20]_i_1_n_2\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[20]_i_1_n_3\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[24]_i_1_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[24]_i_1_n_1\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[24]_i_1_n_2\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[24]_i_1_n_3\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[28]_i_1_n_1\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[28]_i_1_n_2\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[28]_i_1_n_3\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[4]_i_1_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[4]_i_1_n_1\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[4]_i_1_n_2\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[4]_i_1_n_3\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[8]_i_1_n_0\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[8]_i_1_n_1\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[8]_i_1_n_2\ : STD_LOGIC;
-  signal \pixel_cnt_adc_reg[8]_i_1_n_3\ : STD_LOGIC;
+  signal \pixel_cnt_wr[0]_i_3_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[0]_i_4_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[0]_i_5_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[0]_i_6_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[0]_i_7_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[12]_i_2_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[12]_i_3_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[12]_i_4_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[12]_i_5_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[16]_i_2_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[16]_i_3_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[16]_i_4_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[16]_i_5_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[20]_i_2_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[20]_i_3_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[20]_i_4_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[20]_i_5_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[24]_i_2_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[24]_i_3_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[24]_i_4_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[24]_i_5_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[28]_i_2_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[28]_i_3_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[28]_i_4_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[28]_i_5_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[4]_i_2_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[4]_i_3_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[4]_i_4_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[4]_i_5_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[8]_i_2_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[8]_i_3_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[8]_i_4_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr[8]_i_5_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[0]_i_2_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[0]_i_2_n_1\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[0]_i_2_n_2\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[0]_i_2_n_3\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[12]_i_1_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[12]_i_1_n_1\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[12]_i_1_n_2\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[12]_i_1_n_3\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[16]_i_1_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[16]_i_1_n_1\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[16]_i_1_n_2\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[16]_i_1_n_3\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[20]_i_1_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[20]_i_1_n_1\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[20]_i_1_n_2\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[20]_i_1_n_3\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[24]_i_1_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[24]_i_1_n_1\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[24]_i_1_n_2\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[24]_i_1_n_3\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[28]_i_1_n_1\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[28]_i_1_n_2\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[28]_i_1_n_3\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[4]_i_1_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[4]_i_1_n_1\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[4]_i_1_n_2\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[4]_i_1_n_3\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[8]_i_1_n_0\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[8]_i_1_n_1\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[8]_i_1_n_2\ : STD_LOGIC;
+  signal \pixel_cnt_wr_reg[8]_i_1_n_3\ : STD_LOGIC;
   signal \pixel_data_reg[0]_i_1_n_0\ : STD_LOGIC;
   signal \pixel_data_reg[10]_i_1_n_0\ : STD_LOGIC;
   signal \pixel_data_reg[11]_i_1_n_0\ : STD_LOGIC;
@@ -18991,7 +18991,6 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver is
   signal \pixel_type_reg_reg[1]_i_88_n_6\ : STD_LOGIC;
   signal \pixel_type_reg_reg[1]_i_88_n_7\ : STD_LOGIC;
   signal pixel_type_w : STD_LOGIC_VECTOR ( 1 downto 0 );
-  signal \^s00_axi_aresetn_0\ : STD_LOGIC;
   signal sclk_p180_w : STD_LOGIC;
   signal sclk_p270_w : STD_LOGIC;
   signal sclk_p90_w : STD_LOGIC;
@@ -19112,7 +19111,7 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver is
   signal NLW_p1v_enable_reg_i_36_O_UNCONNECTED : STD_LOGIC_VECTOR ( 3 downto 0 );
   signal NLW_p1v_enable_reg_i_41_O_UNCONNECTED : STD_LOGIC_VECTOR ( 3 downto 0 );
   signal NLW_p1v_enable_reg_i_5_O_UNCONNECTED : STD_LOGIC_VECTOR ( 3 downto 0 );
-  signal \NLW_pixel_cnt_adc_reg[28]_i_1_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 to 3 );
+  signal \NLW_pixel_cnt_wr_reg[28]_i_1_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 to 3 );
   signal \NLW_pixel_type_reg_reg[0]_i_15_O_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 downto 0 );
   signal \NLW_pixel_type_reg_reg[0]_i_2_O_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 downto 0 );
   signal \NLW_pixel_type_reg_reg[0]_i_24_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 downto 0 );
@@ -19136,11 +19135,11 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver is
   signal \NLW_v_counter_reg[31]_i_2_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 downto 2 );
   signal \NLW_v_counter_reg[31]_i_2_O_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 to 3 );
   attribute SOFT_HLUTNM : string;
-  attribute SOFT_HLUTNM of \FSM_onehot_state_reg[1]_i_20\ : label is "soft_lutpair46";
-  attribute SOFT_HLUTNM of \FSM_onehot_state_reg[1]_i_4\ : label is "soft_lutpair11";
-  attribute SOFT_HLUTNM of \FSM_onehot_state_reg[1]_i_5\ : label is "soft_lutpair13";
-  attribute SOFT_HLUTNM of \FSM_onehot_state_reg[2]_i_24\ : label is "soft_lutpair46";
-  attribute SOFT_HLUTNM of \FSM_onehot_state_reg[2]_i_4\ : label is "soft_lutpair13";
+  attribute SOFT_HLUTNM of \FSM_onehot_state_reg[1]_i_20\ : label is "soft_lutpair16";
+  attribute SOFT_HLUTNM of \FSM_onehot_state_reg[1]_i_4\ : label is "soft_lutpair9";
+  attribute SOFT_HLUTNM of \FSM_onehot_state_reg[1]_i_5\ : label is "soft_lutpair24";
+  attribute SOFT_HLUTNM of \FSM_onehot_state_reg[2]_i_24\ : label is "soft_lutpair16";
+  attribute SOFT_HLUTNM of \FSM_onehot_state_reg[2]_i_4\ : label is "soft_lutpair24";
   attribute FSM_ENCODED_STATES : string;
   attribute FSM_ENCODED_STATES of \FSM_onehot_state_reg_reg[0]\ : label is "STATE_HORIZONTAL_SHIFT:100,STATE_IDLE:001,STATE_VERTICAL_SHIFT:010";
   attribute FSM_ENCODED_STATES of \FSM_onehot_state_reg_reg[1]\ : label is "STATE_HORIZONTAL_SHIFT:100,STATE_IDLE:001,STATE_VERTICAL_SHIFT:010";
@@ -19160,41 +19159,41 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver is
   attribute ADDER_THRESHOLD of \exp_stretch_cnt_reg[28]_i_1\ : label is 11;
   attribute ADDER_THRESHOLD of \exp_stretch_cnt_reg[4]_i_1\ : label is 11;
   attribute ADDER_THRESHOLD of \exp_stretch_cnt_reg[8]_i_1\ : label is 11;
-  attribute SOFT_HLUTNM of frame_end_reg_i_1 : label is "soft_lutpair12";
-  attribute SOFT_HLUTNM of frame_start_reg_i_1 : label is "soft_lutpair12";
-  attribute SOFT_HLUTNM of frame_start_reg_i_6 : label is "soft_lutpair9";
-  attribute SOFT_HLUTNM of \h_counter[0]_i_1\ : label is "soft_lutpair14";
-  attribute SOFT_HLUTNM of \h_counter[10]_i_1\ : label is "soft_lutpair19";
-  attribute SOFT_HLUTNM of \h_counter[11]_i_1\ : label is "soft_lutpair19";
-  attribute SOFT_HLUTNM of \h_counter[12]_i_1\ : label is "soft_lutpair20";
-  attribute SOFT_HLUTNM of \h_counter[13]_i_1\ : label is "soft_lutpair20";
-  attribute SOFT_HLUTNM of \h_counter[14]_i_1\ : label is "soft_lutpair21";
-  attribute SOFT_HLUTNM of \h_counter[15]_i_1\ : label is "soft_lutpair21";
-  attribute SOFT_HLUTNM of \h_counter[16]_i_1\ : label is "soft_lutpair22";
-  attribute SOFT_HLUTNM of \h_counter[17]_i_1\ : label is "soft_lutpair22";
-  attribute SOFT_HLUTNM of \h_counter[18]_i_1\ : label is "soft_lutpair23";
-  attribute SOFT_HLUTNM of \h_counter[19]_i_1\ : label is "soft_lutpair23";
-  attribute SOFT_HLUTNM of \h_counter[1]_i_1\ : label is "soft_lutpair14";
-  attribute SOFT_HLUTNM of \h_counter[20]_i_1\ : label is "soft_lutpair24";
-  attribute SOFT_HLUTNM of \h_counter[21]_i_1\ : label is "soft_lutpair24";
-  attribute SOFT_HLUTNM of \h_counter[22]_i_1\ : label is "soft_lutpair25";
-  attribute SOFT_HLUTNM of \h_counter[23]_i_1\ : label is "soft_lutpair25";
-  attribute SOFT_HLUTNM of \h_counter[24]_i_1\ : label is "soft_lutpair26";
-  attribute SOFT_HLUTNM of \h_counter[25]_i_1\ : label is "soft_lutpair26";
-  attribute SOFT_HLUTNM of \h_counter[26]_i_1\ : label is "soft_lutpair27";
-  attribute SOFT_HLUTNM of \h_counter[27]_i_1\ : label is "soft_lutpair27";
-  attribute SOFT_HLUTNM of \h_counter[28]_i_1\ : label is "soft_lutpair28";
-  attribute SOFT_HLUTNM of \h_counter[29]_i_1\ : label is "soft_lutpair28";
-  attribute SOFT_HLUTNM of \h_counter[2]_i_1\ : label is "soft_lutpair15";
-  attribute SOFT_HLUTNM of \h_counter[30]_i_1\ : label is "soft_lutpair29";
-  attribute SOFT_HLUTNM of \h_counter[31]_i_1\ : label is "soft_lutpair29";
-  attribute SOFT_HLUTNM of \h_counter[3]_i_1\ : label is "soft_lutpair15";
-  attribute SOFT_HLUTNM of \h_counter[4]_i_1\ : label is "soft_lutpair16";
-  attribute SOFT_HLUTNM of \h_counter[5]_i_1\ : label is "soft_lutpair16";
-  attribute SOFT_HLUTNM of \h_counter[6]_i_1\ : label is "soft_lutpair17";
-  attribute SOFT_HLUTNM of \h_counter[7]_i_1\ : label is "soft_lutpair17";
-  attribute SOFT_HLUTNM of \h_counter[8]_i_1\ : label is "soft_lutpair18";
-  attribute SOFT_HLUTNM of \h_counter[9]_i_1\ : label is "soft_lutpair18";
+  attribute SOFT_HLUTNM of frame_end_reg_i_1 : label is "soft_lutpair13";
+  attribute SOFT_HLUTNM of frame_start_reg_i_1 : label is "soft_lutpair13";
+  attribute SOFT_HLUTNM of frame_start_reg_i_6 : label is "soft_lutpair8";
+  attribute SOFT_HLUTNM of \h_counter[0]_i_1\ : label is "soft_lutpair46";
+  attribute SOFT_HLUTNM of \h_counter[10]_i_1\ : label is "soft_lutpair38";
+  attribute SOFT_HLUTNM of \h_counter[11]_i_1\ : label is "soft_lutpair39";
+  attribute SOFT_HLUTNM of \h_counter[12]_i_1\ : label is "soft_lutpair39";
+  attribute SOFT_HLUTNM of \h_counter[13]_i_1\ : label is "soft_lutpair38";
+  attribute SOFT_HLUTNM of \h_counter[14]_i_1\ : label is "soft_lutpair35";
+  attribute SOFT_HLUTNM of \h_counter[15]_i_1\ : label is "soft_lutpair36";
+  attribute SOFT_HLUTNM of \h_counter[16]_i_1\ : label is "soft_lutpair36";
+  attribute SOFT_HLUTNM of \h_counter[17]_i_1\ : label is "soft_lutpair35";
+  attribute SOFT_HLUTNM of \h_counter[18]_i_1\ : label is "soft_lutpair31";
+  attribute SOFT_HLUTNM of \h_counter[19]_i_1\ : label is "soft_lutpair32";
+  attribute SOFT_HLUTNM of \h_counter[1]_i_1\ : label is "soft_lutpair46";
+  attribute SOFT_HLUTNM of \h_counter[20]_i_1\ : label is "soft_lutpair32";
+  attribute SOFT_HLUTNM of \h_counter[21]_i_1\ : label is "soft_lutpair31";
+  attribute SOFT_HLUTNM of \h_counter[22]_i_1\ : label is "soft_lutpair27";
+  attribute SOFT_HLUTNM of \h_counter[23]_i_1\ : label is "soft_lutpair28";
+  attribute SOFT_HLUTNM of \h_counter[24]_i_1\ : label is "soft_lutpair28";
+  attribute SOFT_HLUTNM of \h_counter[25]_i_1\ : label is "soft_lutpair27";
+  attribute SOFT_HLUTNM of \h_counter[26]_i_1\ : label is "soft_lutpair22";
+  attribute SOFT_HLUTNM of \h_counter[27]_i_1\ : label is "soft_lutpair23";
+  attribute SOFT_HLUTNM of \h_counter[28]_i_1\ : label is "soft_lutpair23";
+  attribute SOFT_HLUTNM of \h_counter[29]_i_1\ : label is "soft_lutpair22";
+  attribute SOFT_HLUTNM of \h_counter[2]_i_1\ : label is "soft_lutpair45";
+  attribute SOFT_HLUTNM of \h_counter[30]_i_1\ : label is "soft_lutpair19";
+  attribute SOFT_HLUTNM of \h_counter[31]_i_1\ : label is "soft_lutpair19";
+  attribute SOFT_HLUTNM of \h_counter[3]_i_1\ : label is "soft_lutpair45";
+  attribute SOFT_HLUTNM of \h_counter[4]_i_1\ : label is "soft_lutpair43";
+  attribute SOFT_HLUTNM of \h_counter[5]_i_1\ : label is "soft_lutpair43";
+  attribute SOFT_HLUTNM of \h_counter[6]_i_1\ : label is "soft_lutpair40";
+  attribute SOFT_HLUTNM of \h_counter[7]_i_1\ : label is "soft_lutpair41";
+  attribute SOFT_HLUTNM of \h_counter[8]_i_1\ : label is "soft_lutpair41";
+  attribute SOFT_HLUTNM of \h_counter[9]_i_1\ : label is "soft_lutpair40";
   attribute ADDER_THRESHOLD of \h_counter_reg[12]_i_2\ : label is 35;
   attribute ADDER_THRESHOLD of \h_counter_reg[16]_i_2\ : label is 35;
   attribute ADDER_THRESHOLD of \h_counter_reg[20]_i_2\ : label is 35;
@@ -19203,38 +19202,38 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver is
   attribute ADDER_THRESHOLD of \h_counter_reg[31]_i_2\ : label is 35;
   attribute ADDER_THRESHOLD of \h_counter_reg[4]_i_2\ : label is 35;
   attribute ADDER_THRESHOLD of \h_counter_reg[8]_i_2\ : label is 35;
-  attribute SOFT_HLUTNM of \l_counter[0]_i_1\ : label is "soft_lutpair30";
-  attribute SOFT_HLUTNM of \l_counter[10]_i_1\ : label is "soft_lutpair35";
-  attribute SOFT_HLUTNM of \l_counter[11]_i_1\ : label is "soft_lutpair35";
-  attribute SOFT_HLUTNM of \l_counter[12]_i_1\ : label is "soft_lutpair36";
-  attribute SOFT_HLUTNM of \l_counter[13]_i_1\ : label is "soft_lutpair36";
-  attribute SOFT_HLUTNM of \l_counter[14]_i_1\ : label is "soft_lutpair37";
-  attribute SOFT_HLUTNM of \l_counter[15]_i_1\ : label is "soft_lutpair37";
-  attribute SOFT_HLUTNM of \l_counter[16]_i_1\ : label is "soft_lutpair38";
-  attribute SOFT_HLUTNM of \l_counter[17]_i_1\ : label is "soft_lutpair38";
-  attribute SOFT_HLUTNM of \l_counter[18]_i_1\ : label is "soft_lutpair39";
-  attribute SOFT_HLUTNM of \l_counter[19]_i_1\ : label is "soft_lutpair39";
-  attribute SOFT_HLUTNM of \l_counter[1]_i_1\ : label is "soft_lutpair30";
-  attribute SOFT_HLUTNM of \l_counter[20]_i_1\ : label is "soft_lutpair40";
-  attribute SOFT_HLUTNM of \l_counter[21]_i_1\ : label is "soft_lutpair40";
-  attribute SOFT_HLUTNM of \l_counter[22]_i_1\ : label is "soft_lutpair41";
-  attribute SOFT_HLUTNM of \l_counter[23]_i_1\ : label is "soft_lutpair41";
-  attribute SOFT_HLUTNM of \l_counter[24]_i_1\ : label is "soft_lutpair42";
-  attribute SOFT_HLUTNM of \l_counter[25]_i_1\ : label is "soft_lutpair42";
-  attribute SOFT_HLUTNM of \l_counter[26]_i_1\ : label is "soft_lutpair43";
-  attribute SOFT_HLUTNM of \l_counter[27]_i_1\ : label is "soft_lutpair43";
-  attribute SOFT_HLUTNM of \l_counter[28]_i_1\ : label is "soft_lutpair44";
-  attribute SOFT_HLUTNM of \l_counter[29]_i_1\ : label is "soft_lutpair44";
-  attribute SOFT_HLUTNM of \l_counter[2]_i_1\ : label is "soft_lutpair31";
-  attribute SOFT_HLUTNM of \l_counter[30]_i_1\ : label is "soft_lutpair45";
-  attribute SOFT_HLUTNM of \l_counter[31]_i_2\ : label is "soft_lutpair45";
-  attribute SOFT_HLUTNM of \l_counter[3]_i_1\ : label is "soft_lutpair31";
-  attribute SOFT_HLUTNM of \l_counter[4]_i_1\ : label is "soft_lutpair32";
-  attribute SOFT_HLUTNM of \l_counter[5]_i_1\ : label is "soft_lutpair32";
+  attribute SOFT_HLUTNM of \l_counter[0]_i_1\ : label is "soft_lutpair44";
+  attribute SOFT_HLUTNM of \l_counter[10]_i_1\ : label is "soft_lutpair29";
+  attribute SOFT_HLUTNM of \l_counter[11]_i_1\ : label is "soft_lutpair30";
+  attribute SOFT_HLUTNM of \l_counter[12]_i_1\ : label is "soft_lutpair30";
+  attribute SOFT_HLUTNM of \l_counter[13]_i_1\ : label is "soft_lutpair29";
+  attribute SOFT_HLUTNM of \l_counter[14]_i_1\ : label is "soft_lutpair25";
+  attribute SOFT_HLUTNM of \l_counter[15]_i_1\ : label is "soft_lutpair26";
+  attribute SOFT_HLUTNM of \l_counter[16]_i_1\ : label is "soft_lutpair26";
+  attribute SOFT_HLUTNM of \l_counter[17]_i_1\ : label is "soft_lutpair25";
+  attribute SOFT_HLUTNM of \l_counter[18]_i_1\ : label is "soft_lutpair20";
+  attribute SOFT_HLUTNM of \l_counter[19]_i_1\ : label is "soft_lutpair21";
+  attribute SOFT_HLUTNM of \l_counter[1]_i_1\ : label is "soft_lutpair44";
+  attribute SOFT_HLUTNM of \l_counter[20]_i_1\ : label is "soft_lutpair21";
+  attribute SOFT_HLUTNM of \l_counter[21]_i_1\ : label is "soft_lutpair20";
+  attribute SOFT_HLUTNM of \l_counter[22]_i_1\ : label is "soft_lutpair17";
+  attribute SOFT_HLUTNM of \l_counter[23]_i_1\ : label is "soft_lutpair18";
+  attribute SOFT_HLUTNM of \l_counter[24]_i_1\ : label is "soft_lutpair18";
+  attribute SOFT_HLUTNM of \l_counter[25]_i_1\ : label is "soft_lutpair17";
+  attribute SOFT_HLUTNM of \l_counter[26]_i_1\ : label is "soft_lutpair14";
+  attribute SOFT_HLUTNM of \l_counter[27]_i_1\ : label is "soft_lutpair15";
+  attribute SOFT_HLUTNM of \l_counter[28]_i_1\ : label is "soft_lutpair15";
+  attribute SOFT_HLUTNM of \l_counter[29]_i_1\ : label is "soft_lutpair14";
+  attribute SOFT_HLUTNM of \l_counter[2]_i_1\ : label is "soft_lutpair42";
+  attribute SOFT_HLUTNM of \l_counter[30]_i_1\ : label is "soft_lutpair12";
+  attribute SOFT_HLUTNM of \l_counter[31]_i_2\ : label is "soft_lutpair12";
+  attribute SOFT_HLUTNM of \l_counter[3]_i_1\ : label is "soft_lutpair42";
+  attribute SOFT_HLUTNM of \l_counter[4]_i_1\ : label is "soft_lutpair37";
+  attribute SOFT_HLUTNM of \l_counter[5]_i_1\ : label is "soft_lutpair37";
   attribute SOFT_HLUTNM of \l_counter[6]_i_1\ : label is "soft_lutpair33";
-  attribute SOFT_HLUTNM of \l_counter[7]_i_1\ : label is "soft_lutpair33";
+  attribute SOFT_HLUTNM of \l_counter[7]_i_1\ : label is "soft_lutpair34";
   attribute SOFT_HLUTNM of \l_counter[8]_i_1\ : label is "soft_lutpair34";
-  attribute SOFT_HLUTNM of \l_counter[9]_i_1\ : label is "soft_lutpair34";
+  attribute SOFT_HLUTNM of \l_counter[9]_i_1\ : label is "soft_lutpair33";
   attribute ADDER_THRESHOLD of \l_counter_reg[12]_i_2\ : label is 35;
   attribute ADDER_THRESHOLD of \l_counter_reg[16]_i_2\ : label is 35;
   attribute ADDER_THRESHOLD of \l_counter_reg[20]_i_2\ : label is 35;
@@ -19247,16 +19246,16 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver is
   attribute ADDER_THRESHOLD of \mock_pixel_cnt_reg[12]_i_1\ : label is 11;
   attribute ADDER_THRESHOLD of \mock_pixel_cnt_reg[4]_i_1\ : label is 11;
   attribute ADDER_THRESHOLD of \mock_pixel_cnt_reg[8]_i_1\ : label is 11;
-  attribute SOFT_HLUTNM of p1v_enable_i_1 : label is "soft_lutpair11";
-  attribute SOFT_HLUTNM of \pixel_cnt_adc[0]_i_1\ : label is "soft_lutpair8";
-  attribute ADDER_THRESHOLD of \pixel_cnt_adc_reg[0]_i_2\ : label is 11;
-  attribute ADDER_THRESHOLD of \pixel_cnt_adc_reg[12]_i_1\ : label is 11;
-  attribute ADDER_THRESHOLD of \pixel_cnt_adc_reg[16]_i_1\ : label is 11;
-  attribute ADDER_THRESHOLD of \pixel_cnt_adc_reg[20]_i_1\ : label is 11;
-  attribute ADDER_THRESHOLD of \pixel_cnt_adc_reg[24]_i_1\ : label is 11;
-  attribute ADDER_THRESHOLD of \pixel_cnt_adc_reg[28]_i_1\ : label is 11;
-  attribute ADDER_THRESHOLD of \pixel_cnt_adc_reg[4]_i_1\ : label is 11;
-  attribute ADDER_THRESHOLD of \pixel_cnt_adc_reg[8]_i_1\ : label is 11;
+  attribute SOFT_HLUTNM of p1v_enable_i_1 : label is "soft_lutpair9";
+  attribute SOFT_HLUTNM of \pixel_cnt_wr[0]_i_1\ : label is "soft_lutpair11";
+  attribute ADDER_THRESHOLD of \pixel_cnt_wr_reg[0]_i_2\ : label is 11;
+  attribute ADDER_THRESHOLD of \pixel_cnt_wr_reg[12]_i_1\ : label is 11;
+  attribute ADDER_THRESHOLD of \pixel_cnt_wr_reg[16]_i_1\ : label is 11;
+  attribute ADDER_THRESHOLD of \pixel_cnt_wr_reg[20]_i_1\ : label is 11;
+  attribute ADDER_THRESHOLD of \pixel_cnt_wr_reg[24]_i_1\ : label is 11;
+  attribute ADDER_THRESHOLD of \pixel_cnt_wr_reg[28]_i_1\ : label is 11;
+  attribute ADDER_THRESHOLD of \pixel_cnt_wr_reg[4]_i_1\ : label is 11;
+  attribute ADDER_THRESHOLD of \pixel_cnt_wr_reg[8]_i_1\ : label is 11;
   attribute SOFT_HLUTNM of \pixel_type_reg[1]_i_5\ : label is "soft_lutpair10";
   attribute COMPARATOR_THRESHOLD of \pixel_type_reg_reg[0]_i_15\ : label is 11;
   attribute COMPARATOR_THRESHOLD of \pixel_type_reg_reg[0]_i_2\ : label is 11;
@@ -19274,8 +19273,8 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver is
   attribute COMPARATOR_THRESHOLD of \pixel_type_reg_reg[1]_i_42\ : label is 11;
   attribute COMPARATOR_THRESHOLD of \pixel_type_reg_reg[1]_i_47\ : label is 11;
   attribute COMPARATOR_THRESHOLD of \pixel_type_reg_reg[1]_i_6\ : label is 11;
-  attribute SOFT_HLUTNM of u_wrfifo_i_1 : label is "soft_lutpair8";
-  attribute SOFT_HLUTNM of \v_counter[31]_i_1\ : label is "soft_lutpair9";
+  attribute SOFT_HLUTNM of u_wrfifo_i_1 : label is "soft_lutpair11";
+  attribute SOFT_HLUTNM of \v_counter[30]_i_1\ : label is "soft_lutpair8";
   attribute ADDER_THRESHOLD of \v_counter_reg[12]_i_2\ : label is 35;
   attribute ADDER_THRESHOLD of \v_counter_reg[16]_i_2\ : label is 35;
   attribute ADDER_THRESHOLD of \v_counter_reg[20]_i_2\ : label is 35;
@@ -19287,7 +19286,6 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver is
 begin
   frame_start_w <= \^frame_start_w\;
   o_sclk_p0_reg <= \^o_sclk_p0_reg\;
-  s00_axi_aresetn_0 <= \^s00_axi_aresetn_0\;
   \slv_reg2_reg[1]\ <= \^slv_reg2_reg[1]\;
 \FSM_onehot_state_reg[0]_i_1\: unisim.vcomponents.LUT6
     generic map(
@@ -19888,7 +19886,7 @@ begin
       C => \^o_sclk_p0_reg\,
       CE => '1',
       D => \FSM_onehot_state_reg[0]_i_1_n_0\,
-      PRE => \^s00_axi_aresetn_0\,
+      PRE => p1v_enable_reg_0,
       Q => p_0_in
     );
 \FSM_onehot_state_reg_reg[0]_i_17\: unisim.vcomponents.CARRY4
@@ -20013,7 +20011,7 @@ begin
         port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \FSM_onehot_state_reg[1]_i_1_n_0\,
       Q => \FSM_onehot_state_reg_reg_n_0_[1]\
     );
@@ -20069,7 +20067,7 @@ begin
         port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \FSM_onehot_state_reg[2]_i_1_n_0\,
       Q => hstate
     );
@@ -20122,7 +20120,7 @@ begin
      port map (
       C => sclk_p90_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => i_adc_data(0),
       Q => adc_data_rise(0)
     );
@@ -20130,7 +20128,7 @@ begin
      port map (
       C => sclk_p90_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => i_adc_data(1),
       Q => adc_data_rise(1)
     );
@@ -20138,7 +20136,7 @@ begin
      port map (
       C => sclk_p90_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => i_adc_data(2),
       Q => adc_data_rise(2)
     );
@@ -20146,7 +20144,7 @@ begin
      port map (
       C => sclk_p90_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => i_adc_data(3),
       Q => adc_data_rise(3)
     );
@@ -20154,7 +20152,7 @@ begin
      port map (
       C => sclk_p90_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => i_adc_data(4),
       Q => adc_data_rise(4)
     );
@@ -20162,7 +20160,7 @@ begin
      port map (
       C => sclk_p90_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => i_adc_data(5),
       Q => adc_data_rise(5)
     );
@@ -20170,7 +20168,7 @@ begin
      port map (
       C => sclk_p90_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => i_adc_data(6),
       Q => adc_data_rise(6)
     );
@@ -20178,7 +20176,7 @@ begin
      port map (
       C => sclk_p90_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => i_adc_data(7),
       Q => adc_data_rise(7)
     );
@@ -20513,7 +20511,7 @@ data_valid_reg_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p180_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => data_valid_reg0,
       Q => data_valid_w
     );
@@ -20652,15 +20650,16 @@ data_valid_reg_reg_i_4: unisim.vcomponents.CARRY4
       S(1) => data_valid_reg_i_15_n_0,
       S(0) => data_valid_reg_i_16_n_0
     );
-exp_fall_stretched_i_1: unisim.vcomponents.LUT4
+exp_fall_stretched_i_1: unisim.vcomponents.LUT5
     generic map(
-      INIT => X"BF80"
+      INIT => X"BFFF8000"
     )
         port map (
       I0 => \exp_stretch_cnt[0]_i_3_n_0\,
-      I1 => ddr3_init_done_s2,
-      I2 => s00_axi_aresetn,
-      I3 => exp_fall_stretched,
+      I1 => s00_axi_aresetn,
+      I2 => i_init_calib_complete,
+      I3 => i_mmcm_locked,
+      I4 => exp_fall_stretched,
       O => exp_fall_stretched_i_1_n_0
     );
 exp_fall_stretched_reg: unisim.vcomponents.FDRE
@@ -20675,7 +20674,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => exp_fall_stretched,
       Q => \exp_fall_sync_reg_n_0_[0]\
     );
@@ -20683,7 +20682,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_fall_sync_reg_n_0_[0]\,
       Q => exposure_falling
     );
@@ -21084,7 +21083,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[0]_i_2_n_7\,
       Q => exp_stretch_cnt_reg(0)
     );
@@ -21113,7 +21112,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[8]_i_1_n_5\,
       Q => exp_stretch_cnt_reg(10)
     );
@@ -21121,7 +21120,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[8]_i_1_n_4\,
       Q => exp_stretch_cnt_reg(11)
     );
@@ -21129,7 +21128,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[12]_i_1_n_7\,
       Q => exp_stretch_cnt_reg(12)
     );
@@ -21158,7 +21157,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[12]_i_1_n_6\,
       Q => exp_stretch_cnt_reg(13)
     );
@@ -21166,7 +21165,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[12]_i_1_n_5\,
       Q => exp_stretch_cnt_reg(14)
     );
@@ -21174,7 +21173,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[12]_i_1_n_4\,
       Q => exp_stretch_cnt_reg(15)
     );
@@ -21182,7 +21181,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[16]_i_1_n_7\,
       Q => exp_stretch_cnt_reg(16)
     );
@@ -21211,7 +21210,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[16]_i_1_n_6\,
       Q => exp_stretch_cnt_reg(17)
     );
@@ -21219,7 +21218,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[16]_i_1_n_5\,
       Q => exp_stretch_cnt_reg(18)
     );
@@ -21227,7 +21226,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[16]_i_1_n_4\,
       Q => exp_stretch_cnt_reg(19)
     );
@@ -21235,7 +21234,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[0]_i_2_n_6\,
       Q => exp_stretch_cnt_reg(1)
     );
@@ -21243,7 +21242,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[20]_i_1_n_7\,
       Q => exp_stretch_cnt_reg(20)
     );
@@ -21272,7 +21271,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[20]_i_1_n_6\,
       Q => exp_stretch_cnt_reg(21)
     );
@@ -21280,7 +21279,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[20]_i_1_n_5\,
       Q => exp_stretch_cnt_reg(22)
     );
@@ -21288,7 +21287,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[20]_i_1_n_4\,
       Q => exp_stretch_cnt_reg(23)
     );
@@ -21296,7 +21295,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[24]_i_1_n_7\,
       Q => exp_stretch_cnt_reg(24)
     );
@@ -21325,7 +21324,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[24]_i_1_n_6\,
       Q => exp_stretch_cnt_reg(25)
     );
@@ -21333,7 +21332,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[24]_i_1_n_5\,
       Q => exp_stretch_cnt_reg(26)
     );
@@ -21341,7 +21340,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[24]_i_1_n_4\,
       Q => exp_stretch_cnt_reg(27)
     );
@@ -21349,7 +21348,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[28]_i_1_n_7\,
       Q => exp_stretch_cnt_reg(28)
     );
@@ -21378,7 +21377,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[28]_i_1_n_6\,
       Q => exp_stretch_cnt_reg(29)
     );
@@ -21386,7 +21385,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[0]_i_2_n_5\,
       Q => exp_stretch_cnt_reg(2)
     );
@@ -21394,7 +21393,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[28]_i_1_n_5\,
       Q => exp_stretch_cnt_reg(30)
     );
@@ -21402,7 +21401,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[28]_i_1_n_4\,
       Q => exp_stretch_cnt_reg(31)
     );
@@ -21410,7 +21409,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[0]_i_2_n_4\,
       Q => exp_stretch_cnt_reg(3)
     );
@@ -21418,7 +21417,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[4]_i_1_n_7\,
       Q => exp_stretch_cnt_reg(4)
     );
@@ -21447,7 +21446,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[4]_i_1_n_6\,
       Q => exp_stretch_cnt_reg(5)
     );
@@ -21455,7 +21454,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[4]_i_1_n_5\,
       Q => exp_stretch_cnt_reg(6)
     );
@@ -21463,7 +21462,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[4]_i_1_n_4\,
       Q => exp_stretch_cnt_reg(7)
     );
@@ -21471,7 +21470,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[8]_i_1_n_7\,
       Q => exp_stretch_cnt_reg(8)
     );
@@ -21500,7 +21499,7 @@ exp_fall_stretched_reg: unisim.vcomponents.FDRE
      port map (
       C => s00_axi_aclk,
       CE => \exp_stretch_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \exp_stretch_cnt_reg[8]_i_1_n_6\,
       Q => exp_stretch_cnt_reg(9)
     );
@@ -21509,7 +21508,7 @@ exp_sync_d1_reg: unisim.vcomponents.FDPE
       C => s00_axi_aclk,
       CE => '1',
       D => exp_sync(1),
-      PRE => \^s00_axi_aresetn_0\,
+      PRE => p1v_enable_reg_0,
       Q => exp_sync_d1
     );
 \exp_sync_reg[0]\: unisim.vcomponents.FDPE
@@ -21517,7 +21516,7 @@ exp_sync_d1_reg: unisim.vcomponents.FDPE
       C => s00_axi_aclk,
       CE => '1',
       D => cdsclk2_end_carry_i_2(0),
-      PRE => \^s00_axi_aresetn_0\,
+      PRE => p1v_enable_reg_0,
       Q => \exp_sync__0\(0)
     );
 \exp_sync_reg[1]\: unisim.vcomponents.FDPE
@@ -21525,7 +21524,7 @@ exp_sync_d1_reg: unisim.vcomponents.FDPE
       C => s00_axi_aclk,
       CE => '1',
       D => \exp_sync__0\(0),
-      PRE => \^s00_axi_aresetn_0\,
+      PRE => p1v_enable_reg_0,
       Q => exp_sync(1)
     );
 frame_end_reg_i_1: unisim.vcomponents.LUT4
@@ -21543,7 +21542,7 @@ frame_end_reg_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => frame_end_reg0,
       Q => frame_end_w
     );
@@ -21622,7 +21621,7 @@ frame_start_reg_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => frame_start_reg0,
       Q => \^frame_start_w\
     );
@@ -21630,7 +21629,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => cdsclk2_end_carry_i_2(1),
       Q => freq_sel_prev
     );
@@ -21990,7 +21989,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(0),
       Q => \h_counter_reg_n_0_[0]\
     );
@@ -21998,7 +21997,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(10),
       Q => \h_counter_reg_n_0_[10]\
     );
@@ -22006,7 +22005,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(11),
       Q => \h_counter_reg_n_0_[11]\
     );
@@ -22014,7 +22013,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(12),
       Q => \h_counter_reg_n_0_[12]\
     );
@@ -22037,7 +22036,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(13),
       Q => \h_counter_reg_n_0_[13]\
     );
@@ -22045,7 +22044,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(14),
       Q => \h_counter_reg_n_0_[14]\
     );
@@ -22053,7 +22052,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(15),
       Q => \h_counter_reg_n_0_[15]\
     );
@@ -22061,7 +22060,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(16),
       Q => \h_counter_reg_n_0_[16]\
     );
@@ -22084,7 +22083,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(17),
       Q => \h_counter_reg_n_0_[17]\
     );
@@ -22092,7 +22091,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(18),
       Q => \h_counter_reg_n_0_[18]\
     );
@@ -22100,7 +22099,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(19),
       Q => \h_counter_reg_n_0_[19]\
     );
@@ -22108,7 +22107,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(1),
       Q => \h_counter_reg_n_0_[1]\
     );
@@ -22116,7 +22115,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(20),
       Q => \h_counter_reg_n_0_[20]\
     );
@@ -22139,7 +22138,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(21),
       Q => \h_counter_reg_n_0_[21]\
     );
@@ -22147,7 +22146,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(22),
       Q => \h_counter_reg_n_0_[22]\
     );
@@ -22155,7 +22154,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(23),
       Q => \h_counter_reg_n_0_[23]\
     );
@@ -22163,7 +22162,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(24),
       Q => \h_counter_reg_n_0_[24]\
     );
@@ -22186,7 +22185,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(25),
       Q => \h_counter_reg_n_0_[25]\
     );
@@ -22194,7 +22193,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(26),
       Q => \h_counter_reg_n_0_[26]\
     );
@@ -22202,7 +22201,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(27),
       Q => \h_counter_reg_n_0_[27]\
     );
@@ -22210,7 +22209,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(28),
       Q => \h_counter_reg_n_0_[28]\
     );
@@ -22233,7 +22232,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(29),
       Q => \h_counter_reg_n_0_[29]\
     );
@@ -22241,7 +22240,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(2),
       Q => \h_counter_reg_n_0_[2]\
     );
@@ -22249,7 +22248,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(30),
       Q => \h_counter_reg_n_0_[30]\
     );
@@ -22257,7 +22256,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(31),
       Q => \h_counter_reg_n_0_[31]\
     );
@@ -22280,7 +22279,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(3),
       Q => \h_counter_reg_n_0_[3]\
     );
@@ -22288,7 +22287,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(4),
       Q => \h_counter_reg_n_0_[4]\
     );
@@ -22311,7 +22310,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(5),
       Q => \h_counter_reg_n_0_[5]\
     );
@@ -22319,7 +22318,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(6),
       Q => \h_counter_reg_n_0_[6]\
     );
@@ -22327,7 +22326,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(7),
       Q => \h_counter_reg_n_0_[7]\
     );
@@ -22335,7 +22334,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(8),
       Q => \h_counter_reg_n_0_[8]\
     );
@@ -22358,7 +22357,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_1_in(9),
       Q => \h_counter_reg_n_0_[9]\
     );
@@ -22866,7 +22865,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(0),
       Q => \l_counter_reg_n_0_[0]\
     );
@@ -22874,7 +22873,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(10),
       Q => \l_counter_reg_n_0_[10]\
     );
@@ -22882,7 +22881,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(11),
       Q => \l_counter_reg_n_0_[11]\
     );
@@ -22890,7 +22889,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(12),
       Q => \l_counter_reg_n_0_[12]\
     );
@@ -22913,7 +22912,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(13),
       Q => \l_counter_reg_n_0_[13]\
     );
@@ -22921,7 +22920,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(14),
       Q => \l_counter_reg_n_0_[14]\
     );
@@ -22929,7 +22928,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(15),
       Q => \l_counter_reg_n_0_[15]\
     );
@@ -22937,7 +22936,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(16),
       Q => \l_counter_reg_n_0_[16]\
     );
@@ -22960,7 +22959,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(17),
       Q => \l_counter_reg_n_0_[17]\
     );
@@ -22968,7 +22967,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(18),
       Q => \l_counter_reg_n_0_[18]\
     );
@@ -22976,7 +22975,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(19),
       Q => \l_counter_reg_n_0_[19]\
     );
@@ -22984,7 +22983,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(1),
       Q => \l_counter_reg_n_0_[1]\
     );
@@ -22992,7 +22991,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(20),
       Q => \l_counter_reg_n_0_[20]\
     );
@@ -23015,7 +23014,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(21),
       Q => \l_counter_reg_n_0_[21]\
     );
@@ -23023,7 +23022,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(22),
       Q => \l_counter_reg_n_0_[22]\
     );
@@ -23031,7 +23030,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(23),
       Q => \l_counter_reg_n_0_[23]\
     );
@@ -23039,7 +23038,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(24),
       Q => \l_counter_reg_n_0_[24]\
     );
@@ -23062,7 +23061,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(25),
       Q => \l_counter_reg_n_0_[25]\
     );
@@ -23070,7 +23069,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(26),
       Q => \l_counter_reg_n_0_[26]\
     );
@@ -23078,7 +23077,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(27),
       Q => \l_counter_reg_n_0_[27]\
     );
@@ -23086,7 +23085,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(28),
       Q => \l_counter_reg_n_0_[28]\
     );
@@ -23109,7 +23108,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(29),
       Q => \l_counter_reg_n_0_[29]\
     );
@@ -23117,7 +23116,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(2),
       Q => \l_counter_reg_n_0_[2]\
     );
@@ -23125,7 +23124,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(30),
       Q => \l_counter_reg_n_0_[30]\
     );
@@ -23133,7 +23132,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(31),
       Q => \l_counter_reg_n_0_[31]\
     );
@@ -23271,7 +23270,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(3),
       Q => \l_counter_reg_n_0_[3]\
     );
@@ -23279,7 +23278,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(4),
       Q => \l_counter_reg_n_0_[4]\
     );
@@ -23302,7 +23301,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(5),
       Q => \l_counter_reg_n_0_[5]\
     );
@@ -23310,7 +23309,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(6),
       Q => \l_counter_reg_n_0_[6]\
     );
@@ -23318,7 +23317,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(7),
       Q => \l_counter_reg_n_0_[7]\
     );
@@ -23326,7 +23325,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(8),
       Q => \l_counter_reg_n_0_[8]\
     );
@@ -23349,7 +23348,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => \l_counter[31]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p_2_in(9),
       Q => \l_counter_reg_n_0_[9]\
     );
@@ -23540,7 +23539,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
       C => sclk_p270_w,
       CE => \mock_pixel_cnt[0]_i_1_n_0\,
       D => \mock_pixel_cnt_reg[0]_i_2_n_7\,
-      PRE => \^s00_axi_aresetn_0\,
+      PRE => p1v_enable_reg_0,
       Q => mock_pixel_cnt_reg(0)
     );
 \mock_pixel_cnt_reg[0]_i_2\: unisim.vcomponents.CARRY4
@@ -23566,7 +23565,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => \mock_pixel_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \mock_pixel_cnt_reg[8]_i_1_n_5\,
       Q => mock_pixel_cnt_reg(10)
     );
@@ -23574,7 +23573,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => \mock_pixel_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \mock_pixel_cnt_reg[8]_i_1_n_4\,
       Q => mock_pixel_cnt_reg(11)
     );
@@ -23582,7 +23581,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => \mock_pixel_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \mock_pixel_cnt_reg[12]_i_1_n_7\,
       Q => mock_pixel_cnt_reg(12)
     );
@@ -23608,7 +23607,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => \mock_pixel_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \mock_pixel_cnt_reg[12]_i_1_n_6\,
       Q => mock_pixel_cnt_reg(13)
     );
@@ -23616,7 +23615,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => \mock_pixel_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \mock_pixel_cnt_reg[12]_i_1_n_5\,
       Q => mock_pixel_cnt_reg(14)
     );
@@ -23624,7 +23623,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => \mock_pixel_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \mock_pixel_cnt_reg[12]_i_1_n_4\,
       Q => mock_pixel_cnt_reg(15)
     );
@@ -23632,7 +23631,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => \mock_pixel_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \mock_pixel_cnt_reg[0]_i_2_n_6\,
       Q => mock_pixel_cnt_reg(1)
     );
@@ -23640,7 +23639,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => \mock_pixel_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \mock_pixel_cnt_reg[0]_i_2_n_5\,
       Q => mock_pixel_cnt_reg(2)
     );
@@ -23648,7 +23647,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => \mock_pixel_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \mock_pixel_cnt_reg[0]_i_2_n_4\,
       Q => mock_pixel_cnt_reg(3)
     );
@@ -23656,7 +23655,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => \mock_pixel_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \mock_pixel_cnt_reg[4]_i_1_n_7\,
       Q => mock_pixel_cnt_reg(4)
     );
@@ -23682,7 +23681,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => \mock_pixel_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \mock_pixel_cnt_reg[4]_i_1_n_6\,
       Q => mock_pixel_cnt_reg(5)
     );
@@ -23690,7 +23689,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => \mock_pixel_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \mock_pixel_cnt_reg[4]_i_1_n_5\,
       Q => mock_pixel_cnt_reg(6)
     );
@@ -23698,7 +23697,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => \mock_pixel_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \mock_pixel_cnt_reg[4]_i_1_n_4\,
       Q => mock_pixel_cnt_reg(7)
     );
@@ -23706,7 +23705,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => \mock_pixel_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \mock_pixel_cnt_reg[8]_i_1_n_7\,
       Q => mock_pixel_cnt_reg(8)
     );
@@ -23732,7 +23731,7 @@ freq_sel_prev_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => \mock_pixel_cnt[0]_i_1_n_0\,
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \mock_pixel_cnt_reg[8]_i_1_n_6\,
       Q => mock_pixel_cnt_reg(9)
     );
@@ -24152,7 +24151,7 @@ p1h_enable_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p180_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p1h_enable0,
       Q => p3h_enable
     );
@@ -24717,7 +24716,7 @@ p1v_enable_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p180_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p1v_enable0,
       Q => p1v_enable
     );
@@ -24845,7 +24844,7 @@ p2v_tg_enable_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p1v_enable0,
       Q => p2v_tg_enable
     );
@@ -24853,23 +24852,23 @@ p4h_sg_enable_reg: unisim.vcomponents.FDCE
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => p1h_enable0,
       Q => cdsclk_enable
     );
-\pixel_cnt_adc[0]_i_1\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[0]_i_1\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"AAAAEAAA"
     )
         port map (
-      I0 => frame_start_rise_adc,
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => frame_start_rise_wr,
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => frame_start_rise_adc_reg
+      O => frame_start_rise_wr_reg
     );
-\pixel_cnt_adc[0]_i_3\: unisim.vcomponents.LUT4
+\pixel_cnt_wr[0]_i_3\: unisim.vcomponents.LUT4
     generic map(
       INIT => X"4000"
     )
@@ -24877,513 +24876,513 @@ p4h_sg_enable_reg: unisim.vcomponents.FDCE
       I0 => pixel_type_w(0),
       I1 => data_valid_w,
       I2 => pixel_type_w(1),
-      I3 => \pixel_cnt_adc_reg[31]_0\,
-      O => \pixel_cnt_adc[0]_i_3_n_0\
+      I3 => \pixel_cnt_wr_reg[31]_0\,
+      O => \pixel_cnt_wr[0]_i_3_n_0\
     );
-\pixel_cnt_adc[0]_i_4\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[0]_i_4\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00008000"
     )
         port map (
-      I0 => pixel_cnt_adc_reg(3),
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => pixel_cnt_wr_reg(3),
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => \pixel_cnt_adc[0]_i_4_n_0\
+      O => \pixel_cnt_wr[0]_i_4_n_0\
     );
-\pixel_cnt_adc[0]_i_5\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[0]_i_5\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00800000"
     )
         port map (
-      I0 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => \pixel_cnt_wr_reg[31]_0\,
       I1 => pixel_type_w(1),
       I2 => data_valid_w,
       I3 => pixel_type_w(0),
-      I4 => pixel_cnt_adc_reg(2),
-      O => \pixel_cnt_adc[0]_i_5_n_0\
+      I4 => pixel_cnt_wr_reg(2),
+      O => \pixel_cnt_wr[0]_i_5_n_0\
     );
-\pixel_cnt_adc[0]_i_6\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[0]_i_6\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00008000"
     )
         port map (
-      I0 => pixel_cnt_adc_reg(1),
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => pixel_cnt_wr_reg(1),
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => \pixel_cnt_adc[0]_i_6_n_0\
+      O => \pixel_cnt_wr[0]_i_6_n_0\
     );
-\pixel_cnt_adc[0]_i_7\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[0]_i_7\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00004000"
     )
         port map (
-      I0 => pixel_cnt_adc_reg(0),
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => pixel_cnt_wr_reg(0),
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => \pixel_cnt_adc[0]_i_7_n_0\
+      O => \pixel_cnt_wr[0]_i_7_n_0\
     );
-\pixel_cnt_adc[12]_i_2\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[12]_i_2\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00008000"
     )
         port map (
-      I0 => pixel_cnt_adc_reg(15),
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => pixel_cnt_wr_reg(15),
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => \pixel_cnt_adc[12]_i_2_n_0\
+      O => \pixel_cnt_wr[12]_i_2_n_0\
     );
-\pixel_cnt_adc[12]_i_3\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[12]_i_3\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00800000"
     )
         port map (
-      I0 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => \pixel_cnt_wr_reg[31]_0\,
       I1 => pixel_type_w(1),
       I2 => data_valid_w,
       I3 => pixel_type_w(0),
-      I4 => pixel_cnt_adc_reg(14),
-      O => \pixel_cnt_adc[12]_i_3_n_0\
+      I4 => pixel_cnt_wr_reg(14),
+      O => \pixel_cnt_wr[12]_i_3_n_0\
     );
-\pixel_cnt_adc[12]_i_4\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[12]_i_4\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00008000"
     )
         port map (
-      I0 => pixel_cnt_adc_reg(13),
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => pixel_cnt_wr_reg(13),
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => \pixel_cnt_adc[12]_i_4_n_0\
+      O => \pixel_cnt_wr[12]_i_4_n_0\
     );
-\pixel_cnt_adc[12]_i_5\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[12]_i_5\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00008000"
     )
         port map (
-      I0 => pixel_cnt_adc_reg(12),
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => pixel_cnt_wr_reg(12),
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => \pixel_cnt_adc[12]_i_5_n_0\
+      O => \pixel_cnt_wr[12]_i_5_n_0\
     );
-\pixel_cnt_adc[16]_i_2\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[16]_i_2\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00008000"
     )
         port map (
-      I0 => pixel_cnt_adc_reg(19),
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => pixel_cnt_wr_reg(19),
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => \pixel_cnt_adc[16]_i_2_n_0\
+      O => \pixel_cnt_wr[16]_i_2_n_0\
     );
-\pixel_cnt_adc[16]_i_3\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[16]_i_3\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00008000"
     )
         port map (
-      I0 => pixel_cnt_adc_reg(18),
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => pixel_cnt_wr_reg(18),
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => \pixel_cnt_adc[16]_i_3_n_0\
+      O => \pixel_cnt_wr[16]_i_3_n_0\
     );
-\pixel_cnt_adc[16]_i_4\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[16]_i_4\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00008000"
     )
         port map (
-      I0 => pixel_cnt_adc_reg(17),
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => pixel_cnt_wr_reg(17),
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => \pixel_cnt_adc[16]_i_4_n_0\
+      O => \pixel_cnt_wr[16]_i_4_n_0\
     );
-\pixel_cnt_adc[16]_i_5\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[16]_i_5\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00800000"
     )
         port map (
-      I0 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => \pixel_cnt_wr_reg[31]_0\,
       I1 => pixel_type_w(1),
       I2 => data_valid_w,
       I3 => pixel_type_w(0),
-      I4 => pixel_cnt_adc_reg(16),
-      O => \pixel_cnt_adc[16]_i_5_n_0\
+      I4 => pixel_cnt_wr_reg(16),
+      O => \pixel_cnt_wr[16]_i_5_n_0\
     );
-\pixel_cnt_adc[20]_i_2\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[20]_i_2\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00008000"
     )
         port map (
-      I0 => pixel_cnt_adc_reg(23),
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => pixel_cnt_wr_reg(23),
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => \pixel_cnt_adc[20]_i_2_n_0\
+      O => \pixel_cnt_wr[20]_i_2_n_0\
     );
-\pixel_cnt_adc[20]_i_3\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[20]_i_3\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00800000"
     )
         port map (
-      I0 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => \pixel_cnt_wr_reg[31]_0\,
       I1 => pixel_type_w(1),
       I2 => data_valid_w,
       I3 => pixel_type_w(0),
-      I4 => pixel_cnt_adc_reg(22),
-      O => \pixel_cnt_adc[20]_i_3_n_0\
+      I4 => pixel_cnt_wr_reg(22),
+      O => \pixel_cnt_wr[20]_i_3_n_0\
     );
-\pixel_cnt_adc[20]_i_4\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[20]_i_4\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00008000"
     )
         port map (
-      I0 => pixel_cnt_adc_reg(21),
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => pixel_cnt_wr_reg(21),
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => \pixel_cnt_adc[20]_i_4_n_0\
+      O => \pixel_cnt_wr[20]_i_4_n_0\
     );
-\pixel_cnt_adc[20]_i_5\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[20]_i_5\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00800000"
     )
         port map (
-      I0 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => \pixel_cnt_wr_reg[31]_0\,
       I1 => pixel_type_w(1),
       I2 => data_valid_w,
       I3 => pixel_type_w(0),
-      I4 => pixel_cnt_adc_reg(20),
-      O => \pixel_cnt_adc[20]_i_5_n_0\
+      I4 => pixel_cnt_wr_reg(20),
+      O => \pixel_cnt_wr[20]_i_5_n_0\
     );
-\pixel_cnt_adc[24]_i_2\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[24]_i_2\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00008000"
     )
         port map (
-      I0 => pixel_cnt_adc_reg(27),
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => pixel_cnt_wr_reg(27),
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => \pixel_cnt_adc[24]_i_2_n_0\
+      O => \pixel_cnt_wr[24]_i_2_n_0\
     );
-\pixel_cnt_adc[24]_i_3\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[24]_i_3\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00800000"
     )
         port map (
-      I0 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => \pixel_cnt_wr_reg[31]_0\,
       I1 => pixel_type_w(1),
       I2 => data_valid_w,
       I3 => pixel_type_w(0),
-      I4 => pixel_cnt_adc_reg(26),
-      O => \pixel_cnt_adc[24]_i_3_n_0\
+      I4 => pixel_cnt_wr_reg(26),
+      O => \pixel_cnt_wr[24]_i_3_n_0\
     );
-\pixel_cnt_adc[24]_i_4\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[24]_i_4\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00008000"
     )
         port map (
-      I0 => pixel_cnt_adc_reg(25),
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => pixel_cnt_wr_reg(25),
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => \pixel_cnt_adc[24]_i_4_n_0\
+      O => \pixel_cnt_wr[24]_i_4_n_0\
     );
-\pixel_cnt_adc[24]_i_5\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[24]_i_5\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00008000"
     )
         port map (
-      I0 => pixel_cnt_adc_reg(24),
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => pixel_cnt_wr_reg(24),
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => \pixel_cnt_adc[24]_i_5_n_0\
+      O => \pixel_cnt_wr[24]_i_5_n_0\
     );
-\pixel_cnt_adc[28]_i_2\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[28]_i_2\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00008000"
     )
         port map (
-      I0 => pixel_cnt_adc_reg(31),
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => pixel_cnt_wr_reg(31),
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => \pixel_cnt_adc[28]_i_2_n_0\
+      O => \pixel_cnt_wr[28]_i_2_n_0\
     );
-\pixel_cnt_adc[28]_i_3\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[28]_i_3\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00008000"
     )
         port map (
-      I0 => pixel_cnt_adc_reg(30),
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => pixel_cnt_wr_reg(30),
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => \pixel_cnt_adc[28]_i_3_n_0\
+      O => \pixel_cnt_wr[28]_i_3_n_0\
     );
-\pixel_cnt_adc[28]_i_4\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[28]_i_4\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00008000"
     )
         port map (
-      I0 => pixel_cnt_adc_reg(29),
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => pixel_cnt_wr_reg(29),
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => \pixel_cnt_adc[28]_i_4_n_0\
+      O => \pixel_cnt_wr[28]_i_4_n_0\
     );
-\pixel_cnt_adc[28]_i_5\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[28]_i_5\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00800000"
     )
         port map (
-      I0 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => \pixel_cnt_wr_reg[31]_0\,
       I1 => pixel_type_w(1),
       I2 => data_valid_w,
       I3 => pixel_type_w(0),
-      I4 => pixel_cnt_adc_reg(28),
-      O => \pixel_cnt_adc[28]_i_5_n_0\
+      I4 => pixel_cnt_wr_reg(28),
+      O => \pixel_cnt_wr[28]_i_5_n_0\
     );
-\pixel_cnt_adc[4]_i_2\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[4]_i_2\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00008000"
     )
         port map (
-      I0 => pixel_cnt_adc_reg(7),
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => pixel_cnt_wr_reg(7),
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => \pixel_cnt_adc[4]_i_2_n_0\
+      O => \pixel_cnt_wr[4]_i_2_n_0\
     );
-\pixel_cnt_adc[4]_i_3\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[4]_i_3\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00008000"
     )
         port map (
-      I0 => pixel_cnt_adc_reg(6),
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => pixel_cnt_wr_reg(6),
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => \pixel_cnt_adc[4]_i_3_n_0\
+      O => \pixel_cnt_wr[4]_i_3_n_0\
     );
-\pixel_cnt_adc[4]_i_4\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[4]_i_4\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00800000"
     )
         port map (
-      I0 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => \pixel_cnt_wr_reg[31]_0\,
       I1 => pixel_type_w(1),
       I2 => data_valid_w,
       I3 => pixel_type_w(0),
-      I4 => pixel_cnt_adc_reg(5),
-      O => \pixel_cnt_adc[4]_i_4_n_0\
+      I4 => pixel_cnt_wr_reg(5),
+      O => \pixel_cnt_wr[4]_i_4_n_0\
     );
-\pixel_cnt_adc[4]_i_5\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[4]_i_5\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00008000"
     )
         port map (
-      I0 => pixel_cnt_adc_reg(4),
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => pixel_cnt_wr_reg(4),
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => \pixel_cnt_adc[4]_i_5_n_0\
+      O => \pixel_cnt_wr[4]_i_5_n_0\
     );
-\pixel_cnt_adc[8]_i_2\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[8]_i_2\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00008000"
     )
         port map (
-      I0 => pixel_cnt_adc_reg(11),
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => pixel_cnt_wr_reg(11),
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => \pixel_cnt_adc[8]_i_2_n_0\
+      O => \pixel_cnt_wr[8]_i_2_n_0\
     );
-\pixel_cnt_adc[8]_i_3\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[8]_i_3\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00800000"
     )
         port map (
-      I0 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => \pixel_cnt_wr_reg[31]_0\,
       I1 => pixel_type_w(1),
       I2 => data_valid_w,
       I3 => pixel_type_w(0),
-      I4 => pixel_cnt_adc_reg(10),
-      O => \pixel_cnt_adc[8]_i_3_n_0\
+      I4 => pixel_cnt_wr_reg(10),
+      O => \pixel_cnt_wr[8]_i_3_n_0\
     );
-\pixel_cnt_adc[8]_i_4\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[8]_i_4\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00008000"
     )
         port map (
-      I0 => pixel_cnt_adc_reg(9),
-      I1 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => pixel_cnt_wr_reg(9),
+      I1 => \pixel_cnt_wr_reg[31]_0\,
       I2 => pixel_type_w(1),
       I3 => data_valid_w,
       I4 => pixel_type_w(0),
-      O => \pixel_cnt_adc[8]_i_4_n_0\
+      O => \pixel_cnt_wr[8]_i_4_n_0\
     );
-\pixel_cnt_adc[8]_i_5\: unisim.vcomponents.LUT5
+\pixel_cnt_wr[8]_i_5\: unisim.vcomponents.LUT5
     generic map(
       INIT => X"00800000"
     )
         port map (
-      I0 => \pixel_cnt_adc_reg[31]_0\,
+      I0 => \pixel_cnt_wr_reg[31]_0\,
       I1 => pixel_type_w(1),
       I2 => data_valid_w,
       I3 => pixel_type_w(0),
-      I4 => pixel_cnt_adc_reg(8),
-      O => \pixel_cnt_adc[8]_i_5_n_0\
+      I4 => pixel_cnt_wr_reg(8),
+      O => \pixel_cnt_wr[8]_i_5_n_0\
     );
-\pixel_cnt_adc_reg[0]_i_2\: unisim.vcomponents.CARRY4
+\pixel_cnt_wr_reg[0]_i_2\: unisim.vcomponents.CARRY4
      port map (
       CI => '0',
-      CO(3) => \pixel_cnt_adc_reg[0]_i_2_n_0\,
-      CO(2) => \pixel_cnt_adc_reg[0]_i_2_n_1\,
-      CO(1) => \pixel_cnt_adc_reg[0]_i_2_n_2\,
-      CO(0) => \pixel_cnt_adc_reg[0]_i_2_n_3\,
+      CO(3) => \pixel_cnt_wr_reg[0]_i_2_n_0\,
+      CO(2) => \pixel_cnt_wr_reg[0]_i_2_n_1\,
+      CO(1) => \pixel_cnt_wr_reg[0]_i_2_n_2\,
+      CO(0) => \pixel_cnt_wr_reg[0]_i_2_n_3\,
       CYINIT => '0',
       DI(3 downto 1) => B"000",
-      DI(0) => \pixel_cnt_adc[0]_i_3_n_0\,
+      DI(0) => \pixel_cnt_wr[0]_i_3_n_0\,
       O(3 downto 0) => O(3 downto 0),
-      S(3) => \pixel_cnt_adc[0]_i_4_n_0\,
-      S(2) => \pixel_cnt_adc[0]_i_5_n_0\,
-      S(1) => \pixel_cnt_adc[0]_i_6_n_0\,
-      S(0) => \pixel_cnt_adc[0]_i_7_n_0\
+      S(3) => \pixel_cnt_wr[0]_i_4_n_0\,
+      S(2) => \pixel_cnt_wr[0]_i_5_n_0\,
+      S(1) => \pixel_cnt_wr[0]_i_6_n_0\,
+      S(0) => \pixel_cnt_wr[0]_i_7_n_0\
     );
-\pixel_cnt_adc_reg[12]_i_1\: unisim.vcomponents.CARRY4
+\pixel_cnt_wr_reg[12]_i_1\: unisim.vcomponents.CARRY4
      port map (
-      CI => \pixel_cnt_adc_reg[8]_i_1_n_0\,
-      CO(3) => \pixel_cnt_adc_reg[12]_i_1_n_0\,
-      CO(2) => \pixel_cnt_adc_reg[12]_i_1_n_1\,
-      CO(1) => \pixel_cnt_adc_reg[12]_i_1_n_2\,
-      CO(0) => \pixel_cnt_adc_reg[12]_i_1_n_3\,
+      CI => \pixel_cnt_wr_reg[8]_i_1_n_0\,
+      CO(3) => \pixel_cnt_wr_reg[12]_i_1_n_0\,
+      CO(2) => \pixel_cnt_wr_reg[12]_i_1_n_1\,
+      CO(1) => \pixel_cnt_wr_reg[12]_i_1_n_2\,
+      CO(0) => \pixel_cnt_wr_reg[12]_i_1_n_3\,
       CYINIT => '0',
       DI(3 downto 0) => B"0000",
-      O(3 downto 0) => \pixel_cnt_adc_reg[15]\(3 downto 0),
-      S(3) => \pixel_cnt_adc[12]_i_2_n_0\,
-      S(2) => \pixel_cnt_adc[12]_i_3_n_0\,
-      S(1) => \pixel_cnt_adc[12]_i_4_n_0\,
-      S(0) => \pixel_cnt_adc[12]_i_5_n_0\
+      O(3 downto 0) => \pixel_cnt_wr_reg[15]\(3 downto 0),
+      S(3) => \pixel_cnt_wr[12]_i_2_n_0\,
+      S(2) => \pixel_cnt_wr[12]_i_3_n_0\,
+      S(1) => \pixel_cnt_wr[12]_i_4_n_0\,
+      S(0) => \pixel_cnt_wr[12]_i_5_n_0\
     );
-\pixel_cnt_adc_reg[16]_i_1\: unisim.vcomponents.CARRY4
+\pixel_cnt_wr_reg[16]_i_1\: unisim.vcomponents.CARRY4
      port map (
-      CI => \pixel_cnt_adc_reg[12]_i_1_n_0\,
-      CO(3) => \pixel_cnt_adc_reg[16]_i_1_n_0\,
-      CO(2) => \pixel_cnt_adc_reg[16]_i_1_n_1\,
-      CO(1) => \pixel_cnt_adc_reg[16]_i_1_n_2\,
-      CO(0) => \pixel_cnt_adc_reg[16]_i_1_n_3\,
+      CI => \pixel_cnt_wr_reg[12]_i_1_n_0\,
+      CO(3) => \pixel_cnt_wr_reg[16]_i_1_n_0\,
+      CO(2) => \pixel_cnt_wr_reg[16]_i_1_n_1\,
+      CO(1) => \pixel_cnt_wr_reg[16]_i_1_n_2\,
+      CO(0) => \pixel_cnt_wr_reg[16]_i_1_n_3\,
       CYINIT => '0',
       DI(3 downto 0) => B"0000",
-      O(3 downto 0) => \pixel_cnt_adc_reg[19]\(3 downto 0),
-      S(3) => \pixel_cnt_adc[16]_i_2_n_0\,
-      S(2) => \pixel_cnt_adc[16]_i_3_n_0\,
-      S(1) => \pixel_cnt_adc[16]_i_4_n_0\,
-      S(0) => \pixel_cnt_adc[16]_i_5_n_0\
+      O(3 downto 0) => \pixel_cnt_wr_reg[19]\(3 downto 0),
+      S(3) => \pixel_cnt_wr[16]_i_2_n_0\,
+      S(2) => \pixel_cnt_wr[16]_i_3_n_0\,
+      S(1) => \pixel_cnt_wr[16]_i_4_n_0\,
+      S(0) => \pixel_cnt_wr[16]_i_5_n_0\
     );
-\pixel_cnt_adc_reg[20]_i_1\: unisim.vcomponents.CARRY4
+\pixel_cnt_wr_reg[20]_i_1\: unisim.vcomponents.CARRY4
      port map (
-      CI => \pixel_cnt_adc_reg[16]_i_1_n_0\,
-      CO(3) => \pixel_cnt_adc_reg[20]_i_1_n_0\,
-      CO(2) => \pixel_cnt_adc_reg[20]_i_1_n_1\,
-      CO(1) => \pixel_cnt_adc_reg[20]_i_1_n_2\,
-      CO(0) => \pixel_cnt_adc_reg[20]_i_1_n_3\,
+      CI => \pixel_cnt_wr_reg[16]_i_1_n_0\,
+      CO(3) => \pixel_cnt_wr_reg[20]_i_1_n_0\,
+      CO(2) => \pixel_cnt_wr_reg[20]_i_1_n_1\,
+      CO(1) => \pixel_cnt_wr_reg[20]_i_1_n_2\,
+      CO(0) => \pixel_cnt_wr_reg[20]_i_1_n_3\,
       CYINIT => '0',
       DI(3 downto 0) => B"0000",
-      O(3 downto 0) => \pixel_cnt_adc_reg[23]\(3 downto 0),
-      S(3) => \pixel_cnt_adc[20]_i_2_n_0\,
-      S(2) => \pixel_cnt_adc[20]_i_3_n_0\,
-      S(1) => \pixel_cnt_adc[20]_i_4_n_0\,
-      S(0) => \pixel_cnt_adc[20]_i_5_n_0\
+      O(3 downto 0) => \pixel_cnt_wr_reg[23]\(3 downto 0),
+      S(3) => \pixel_cnt_wr[20]_i_2_n_0\,
+      S(2) => \pixel_cnt_wr[20]_i_3_n_0\,
+      S(1) => \pixel_cnt_wr[20]_i_4_n_0\,
+      S(0) => \pixel_cnt_wr[20]_i_5_n_0\
     );
-\pixel_cnt_adc_reg[24]_i_1\: unisim.vcomponents.CARRY4
+\pixel_cnt_wr_reg[24]_i_1\: unisim.vcomponents.CARRY4
      port map (
-      CI => \pixel_cnt_adc_reg[20]_i_1_n_0\,
-      CO(3) => \pixel_cnt_adc_reg[24]_i_1_n_0\,
-      CO(2) => \pixel_cnt_adc_reg[24]_i_1_n_1\,
-      CO(1) => \pixel_cnt_adc_reg[24]_i_1_n_2\,
-      CO(0) => \pixel_cnt_adc_reg[24]_i_1_n_3\,
+      CI => \pixel_cnt_wr_reg[20]_i_1_n_0\,
+      CO(3) => \pixel_cnt_wr_reg[24]_i_1_n_0\,
+      CO(2) => \pixel_cnt_wr_reg[24]_i_1_n_1\,
+      CO(1) => \pixel_cnt_wr_reg[24]_i_1_n_2\,
+      CO(0) => \pixel_cnt_wr_reg[24]_i_1_n_3\,
       CYINIT => '0',
       DI(3 downto 0) => B"0000",
-      O(3 downto 0) => \pixel_cnt_adc_reg[27]\(3 downto 0),
-      S(3) => \pixel_cnt_adc[24]_i_2_n_0\,
-      S(2) => \pixel_cnt_adc[24]_i_3_n_0\,
-      S(1) => \pixel_cnt_adc[24]_i_4_n_0\,
-      S(0) => \pixel_cnt_adc[24]_i_5_n_0\
+      O(3 downto 0) => \pixel_cnt_wr_reg[27]\(3 downto 0),
+      S(3) => \pixel_cnt_wr[24]_i_2_n_0\,
+      S(2) => \pixel_cnt_wr[24]_i_3_n_0\,
+      S(1) => \pixel_cnt_wr[24]_i_4_n_0\,
+      S(0) => \pixel_cnt_wr[24]_i_5_n_0\
     );
-\pixel_cnt_adc_reg[28]_i_1\: unisim.vcomponents.CARRY4
+\pixel_cnt_wr_reg[28]_i_1\: unisim.vcomponents.CARRY4
      port map (
-      CI => \pixel_cnt_adc_reg[24]_i_1_n_0\,
-      CO(3) => \NLW_pixel_cnt_adc_reg[28]_i_1_CO_UNCONNECTED\(3),
-      CO(2) => \pixel_cnt_adc_reg[28]_i_1_n_1\,
-      CO(1) => \pixel_cnt_adc_reg[28]_i_1_n_2\,
-      CO(0) => \pixel_cnt_adc_reg[28]_i_1_n_3\,
+      CI => \pixel_cnt_wr_reg[24]_i_1_n_0\,
+      CO(3) => \NLW_pixel_cnt_wr_reg[28]_i_1_CO_UNCONNECTED\(3),
+      CO(2) => \pixel_cnt_wr_reg[28]_i_1_n_1\,
+      CO(1) => \pixel_cnt_wr_reg[28]_i_1_n_2\,
+      CO(0) => \pixel_cnt_wr_reg[28]_i_1_n_3\,
       CYINIT => '0',
       DI(3 downto 0) => B"0000",
-      O(3 downto 0) => \pixel_cnt_adc_reg[31]\(3 downto 0),
-      S(3) => \pixel_cnt_adc[28]_i_2_n_0\,
-      S(2) => \pixel_cnt_adc[28]_i_3_n_0\,
-      S(1) => \pixel_cnt_adc[28]_i_4_n_0\,
-      S(0) => \pixel_cnt_adc[28]_i_5_n_0\
+      O(3 downto 0) => \pixel_cnt_wr_reg[31]\(3 downto 0),
+      S(3) => \pixel_cnt_wr[28]_i_2_n_0\,
+      S(2) => \pixel_cnt_wr[28]_i_3_n_0\,
+      S(1) => \pixel_cnt_wr[28]_i_4_n_0\,
+      S(0) => \pixel_cnt_wr[28]_i_5_n_0\
     );
-\pixel_cnt_adc_reg[4]_i_1\: unisim.vcomponents.CARRY4
+\pixel_cnt_wr_reg[4]_i_1\: unisim.vcomponents.CARRY4
      port map (
-      CI => \pixel_cnt_adc_reg[0]_i_2_n_0\,
-      CO(3) => \pixel_cnt_adc_reg[4]_i_1_n_0\,
-      CO(2) => \pixel_cnt_adc_reg[4]_i_1_n_1\,
-      CO(1) => \pixel_cnt_adc_reg[4]_i_1_n_2\,
-      CO(0) => \pixel_cnt_adc_reg[4]_i_1_n_3\,
+      CI => \pixel_cnt_wr_reg[0]_i_2_n_0\,
+      CO(3) => \pixel_cnt_wr_reg[4]_i_1_n_0\,
+      CO(2) => \pixel_cnt_wr_reg[4]_i_1_n_1\,
+      CO(1) => \pixel_cnt_wr_reg[4]_i_1_n_2\,
+      CO(0) => \pixel_cnt_wr_reg[4]_i_1_n_3\,
       CYINIT => '0',
       DI(3 downto 0) => B"0000",
-      O(3 downto 0) => \pixel_cnt_adc_reg[7]\(3 downto 0),
-      S(3) => \pixel_cnt_adc[4]_i_2_n_0\,
-      S(2) => \pixel_cnt_adc[4]_i_3_n_0\,
-      S(1) => \pixel_cnt_adc[4]_i_4_n_0\,
-      S(0) => \pixel_cnt_adc[4]_i_5_n_0\
+      O(3 downto 0) => \pixel_cnt_wr_reg[7]\(3 downto 0),
+      S(3) => \pixel_cnt_wr[4]_i_2_n_0\,
+      S(2) => \pixel_cnt_wr[4]_i_3_n_0\,
+      S(1) => \pixel_cnt_wr[4]_i_4_n_0\,
+      S(0) => \pixel_cnt_wr[4]_i_5_n_0\
     );
-\pixel_cnt_adc_reg[8]_i_1\: unisim.vcomponents.CARRY4
+\pixel_cnt_wr_reg[8]_i_1\: unisim.vcomponents.CARRY4
      port map (
-      CI => \pixel_cnt_adc_reg[4]_i_1_n_0\,
-      CO(3) => \pixel_cnt_adc_reg[8]_i_1_n_0\,
-      CO(2) => \pixel_cnt_adc_reg[8]_i_1_n_1\,
-      CO(1) => \pixel_cnt_adc_reg[8]_i_1_n_2\,
-      CO(0) => \pixel_cnt_adc_reg[8]_i_1_n_3\,
+      CI => \pixel_cnt_wr_reg[4]_i_1_n_0\,
+      CO(3) => \pixel_cnt_wr_reg[8]_i_1_n_0\,
+      CO(2) => \pixel_cnt_wr_reg[8]_i_1_n_1\,
+      CO(1) => \pixel_cnt_wr_reg[8]_i_1_n_2\,
+      CO(0) => \pixel_cnt_wr_reg[8]_i_1_n_3\,
       CYINIT => '0',
       DI(3 downto 0) => B"0000",
-      O(3 downto 0) => \pixel_cnt_adc_reg[11]\(3 downto 0),
-      S(3) => \pixel_cnt_adc[8]_i_2_n_0\,
-      S(2) => \pixel_cnt_adc[8]_i_3_n_0\,
-      S(1) => \pixel_cnt_adc[8]_i_4_n_0\,
-      S(0) => \pixel_cnt_adc[8]_i_5_n_0\
+      O(3 downto 0) => \pixel_cnt_wr_reg[11]\(3 downto 0),
+      S(3) => \pixel_cnt_wr[8]_i_2_n_0\,
+      S(2) => \pixel_cnt_wr[8]_i_3_n_0\,
+      S(1) => \pixel_cnt_wr[8]_i_4_n_0\,
+      S(0) => \pixel_cnt_wr[8]_i_5_n_0\
     );
 \pixel_data_reg[0]_i_1\: unisim.vcomponents.LUT6
     generic map(
@@ -25597,7 +25596,7 @@ p4h_sg_enable_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \pixel_data_reg[0]_i_1_n_0\,
       Q => Q(0)
     );
@@ -25605,7 +25604,7 @@ p4h_sg_enable_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \pixel_data_reg[10]_i_1_n_0\,
       Q => Q(10)
     );
@@ -25613,7 +25612,7 @@ p4h_sg_enable_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \pixel_data_reg[11]_i_1_n_0\,
       Q => Q(11)
     );
@@ -25621,7 +25620,7 @@ p4h_sg_enable_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \pixel_data_reg[12]_i_1_n_0\,
       Q => Q(12)
     );
@@ -25629,7 +25628,7 @@ p4h_sg_enable_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \pixel_data_reg[13]_i_1_n_0\,
       Q => Q(13)
     );
@@ -25637,7 +25636,7 @@ p4h_sg_enable_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \pixel_data_reg[14]_i_1_n_0\,
       Q => Q(14)
     );
@@ -25645,7 +25644,7 @@ p4h_sg_enable_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \pixel_data_reg[15]_i_1_n_0\,
       Q => Q(15)
     );
@@ -25653,7 +25652,7 @@ p4h_sg_enable_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \pixel_data_reg[1]_i_1_n_0\,
       Q => Q(1)
     );
@@ -25661,7 +25660,7 @@ p4h_sg_enable_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \pixel_data_reg[2]_i_1_n_0\,
       Q => Q(2)
     );
@@ -25669,7 +25668,7 @@ p4h_sg_enable_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \pixel_data_reg[3]_i_1_n_0\,
       Q => Q(3)
     );
@@ -25677,7 +25676,7 @@ p4h_sg_enable_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \pixel_data_reg[4]_i_1_n_0\,
       Q => Q(4)
     );
@@ -25685,7 +25684,7 @@ p4h_sg_enable_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \pixel_data_reg[5]_i_1_n_0\,
       Q => Q(5)
     );
@@ -25693,7 +25692,7 @@ p4h_sg_enable_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \pixel_data_reg[6]_i_1_n_0\,
       Q => Q(6)
     );
@@ -25701,7 +25700,7 @@ p4h_sg_enable_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \pixel_data_reg[7]_i_1_n_0\,
       Q => Q(7)
     );
@@ -25709,7 +25708,7 @@ p4h_sg_enable_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \pixel_data_reg[8]_i_1_n_0\,
       Q => Q(8)
     );
@@ -25717,7 +25716,7 @@ p4h_sg_enable_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p270_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \pixel_data_reg[9]_i_1_n_0\,
       Q => Q(9)
     );
@@ -26756,7 +26755,7 @@ p4h_sg_enable_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p180_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \pixel_type_reg[0]_i_1_n_0\,
       Q => pixel_type_w(0)
     );
@@ -26913,7 +26912,7 @@ p4h_sg_enable_reg: unisim.vcomponents.FDCE
      port map (
       C => sclk_p180_w,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \pixel_type_reg[1]_i_1_n_0\,
       Q => pixel_type_w(1)
     );
@@ -27194,7 +27193,6 @@ u_ccd_clk_gen: entity work.mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
       cdsclk2_end_carry_i_2_0(7 downto 1) => cdsclk2_end_carry_i_2(11 downto 5),
       cdsclk2_end_carry_i_2_0(0) => cdsclk2_end_carry_i_2(1),
       cdsclk_enable => cdsclk_enable,
-      ddr3_init_done_s2 => ddr3_init_done_s2,
       o_cdsclk1 => o_cdsclk1,
       o_cdsclk2 => o_cdsclk2,
       o_p1h => o_p1h,
@@ -27211,7 +27209,7 @@ u_ccd_clk_gen: entity work.mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
       p3h_enable => p3h_enable,
       s00_axi_aclk => s00_axi_aclk,
       s00_axi_aresetn => s00_axi_aresetn,
-      s00_axi_aresetn_0 => \^s00_axi_aresetn_0\,
+      s00_axi_aresetn_0 => s00_axi_aresetn_0,
       sclk_p270_w => sclk_p270_w
     );
 u_wrfifo_i_1: unisim.vcomponents.LUT4
@@ -27222,7 +27220,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
       I0 => pixel_type_w(0),
       I1 => data_valid_w,
       I2 => pixel_type_w(1),
-      I3 => \pixel_cnt_adc_reg[31]_0\,
+      I3 => \pixel_cnt_wr_reg[31]_0\,
       O => wr_en
     );
 \v_counter[0]_i_1\: unisim.vcomponents.LUT5
@@ -27613,7 +27611,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[0]_i_1_n_0\,
       Q => v_counter(0)
     );
@@ -27621,7 +27619,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[10]_i_1_n_0\,
       Q => v_counter(10)
     );
@@ -27629,7 +27627,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[11]_i_1_n_0\,
       Q => v_counter(11)
     );
@@ -27637,7 +27635,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[12]_i_1_n_0\,
       Q => v_counter(12)
     );
@@ -27657,7 +27655,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[13]_i_1_n_0\,
       Q => v_counter(13)
     );
@@ -27665,7 +27663,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[14]_i_1_n_0\,
       Q => v_counter(14)
     );
@@ -27673,7 +27671,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[15]_i_1_n_0\,
       Q => v_counter(15)
     );
@@ -27681,7 +27679,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[16]_i_1_n_0\,
       Q => v_counter(16)
     );
@@ -27701,7 +27699,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[17]_i_1_n_0\,
       Q => v_counter(17)
     );
@@ -27709,7 +27707,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[18]_i_1_n_0\,
       Q => v_counter(18)
     );
@@ -27717,7 +27715,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[19]_i_1_n_0\,
       Q => v_counter(19)
     );
@@ -27725,7 +27723,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[1]_i_1_n_0\,
       Q => v_counter(1)
     );
@@ -27733,7 +27731,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[20]_i_1_n_0\,
       Q => v_counter(20)
     );
@@ -27753,7 +27751,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[21]_i_1_n_0\,
       Q => v_counter(21)
     );
@@ -27761,7 +27759,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[22]_i_1_n_0\,
       Q => v_counter(22)
     );
@@ -27769,7 +27767,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[23]_i_1_n_0\,
       Q => v_counter(23)
     );
@@ -27777,7 +27775,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[24]_i_1_n_0\,
       Q => v_counter(24)
     );
@@ -27797,7 +27795,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[25]_i_1_n_0\,
       Q => v_counter(25)
     );
@@ -27805,7 +27803,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[26]_i_1_n_0\,
       Q => v_counter(26)
     );
@@ -27813,7 +27811,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[27]_i_1_n_0\,
       Q => v_counter(27)
     );
@@ -27821,7 +27819,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[28]_i_1_n_0\,
       Q => v_counter(28)
     );
@@ -27841,7 +27839,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[29]_i_1_n_0\,
       Q => v_counter(29)
     );
@@ -27849,7 +27847,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[2]_i_1_n_0\,
       Q => v_counter(2)
     );
@@ -27857,7 +27855,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[30]_i_1_n_0\,
       Q => v_counter(30)
     );
@@ -27865,7 +27863,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[31]_i_1_n_0\,
       Q => v_counter(31)
     );
@@ -27886,7 +27884,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[3]_i_1_n_0\,
       Q => v_counter(3)
     );
@@ -27894,7 +27892,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[4]_i_1_n_0\,
       Q => v_counter(4)
     );
@@ -27914,7 +27912,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[5]_i_1_n_0\,
       Q => v_counter(5)
     );
@@ -27922,7 +27920,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[6]_i_1_n_0\,
       Q => v_counter(6)
     );
@@ -27930,7 +27928,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[7]_i_1_n_0\,
       Q => v_counter(7)
     );
@@ -27938,7 +27936,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[8]_i_1_n_0\,
       Q => v_counter(8)
     );
@@ -27958,7 +27956,7 @@ u_wrfifo_i_1: unisim.vcomponents.LUT4
      port map (
       C => \^o_sclk_p0_reg\,
       CE => '1',
-      CLR => \^s00_axi_aresetn_0\,
+      CLR => p1v_enable_reg_0,
       D => \v_counter[9]_i_1_n_0\,
       Q => v_counter(9)
     );
@@ -35362,17 +35360,17 @@ use UNISIM.VCOMPONENTS.ALL;
 entity mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr_ctrl is
   port (
     M_AXI_WDATA : out STD_LOGIC_VECTOR ( 127 downto 0 );
-    ctrl_rst_n_reg : out STD_LOGIC;
+    rst : out STD_LOGIC;
     D : out STD_LOGIC_VECTOR ( 15 downto 0 );
-    frame_start_d_adc : out STD_LOGIC;
-    frame_end_d_adc : out STD_LOGIC;
+    frame_start_d_wr : out STD_LOGIC;
+    frame_end_d_wr : out STD_LOGIC;
     fifo_prelast_w : out STD_LOGIC;
     ccd_frame_exception : out STD_LOGIC;
     ctrl_wr_req : out STD_LOGIC;
     ctrl_rd_req : out STD_LOGIC;
-    pixel_cnt_adc_reg : out STD_LOGIC_VECTOR ( 31 downto 0 );
-    frame_start_rise_adc_reg_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    frame_end_rise_adc : out STD_LOGIC;
+    pixel_cnt_wr_reg : out STD_LOGIC_VECTOR ( 31 downto 0 );
+    frame_start_rise_wr_reg_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    frame_end_rise_wr : out STD_LOGIC;
     o_axi_rd_req_i_54_0 : out STD_LOGIC_VECTOR ( 17 downto 0 );
     \rd_pixel_cnt_reg[31]_0\ : out STD_LOGIC_VECTOR ( 0 to 0 );
     \o_axi_wr_end_addr_reg[6]_0\ : out STD_LOGIC_VECTOR ( 2 downto 0 );
@@ -35387,7 +35385,7 @@ entity mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr_ctrl is
     \slv_reg7_reg[3]\ : out STD_LOGIC_VECTOR ( 3 downto 0 );
     \state_next1__3\ : out STD_LOGIC;
     S : out STD_LOGIC_VECTOR ( 3 downto 0 );
-    frame_active_adc_reg_0 : out STD_LOGIC;
+    frame_active_wr_reg_0 : out STD_LOGIC;
     CLK : in STD_LOGIC;
     i_ui_clk : in STD_LOGIC;
     Q : in STD_LOGIC_VECTOR ( 15 downto 0 );
@@ -35402,28 +35400,31 @@ entity mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr_ctrl is
     frame_end_w : in STD_LOGIC;
     ctrl_rd_idle : in STD_LOGIC;
     frame_depth_w0_0 : in STD_LOGIC_VECTOR ( 31 downto 0 );
-    \pixel_cnt_adc_reg[31]_0\ : in STD_LOGIC;
+    \pixel_cnt_wr_reg[31]_0\ : in STD_LOGIC;
     O : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    \pixel_cnt_adc_reg[7]_0\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    \pixel_cnt_adc_reg[11]_0\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    \pixel_cnt_adc_reg[15]_0\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    \pixel_cnt_adc_reg[19]_0\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    \pixel_cnt_adc_reg[23]_0\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    \pixel_cnt_adc_reg[27]_0\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    \pixel_cnt_adc_reg[31]_1\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    frame_start_rise_adc_reg_1 : in STD_LOGIC;
-    frame_end_rise_adc_reg_0 : in STD_LOGIC;
+    \pixel_cnt_wr_reg[7]_0\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    \pixel_cnt_wr_reg[11]_0\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    \pixel_cnt_wr_reg[15]_0\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    \pixel_cnt_wr_reg[19]_0\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    \pixel_cnt_wr_reg[23]_0\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    \pixel_cnt_wr_reg[27]_0\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    \pixel_cnt_wr_reg[31]_1\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    frame_start_rise_wr_reg_1 : in STD_LOGIC;
+    frame_end_rise_wr_reg_0 : in STD_LOGIC;
     CO : in STD_LOGIC_VECTOR ( 0 to 0 );
-    ctrl_rst_n : in STD_LOGIC;
     \frames_in_fifo_reg[0]_0\ : in STD_LOGIC;
     o_axi_rd_req_reg_i_4_0 : in STD_LOGIC_VECTOR ( 17 downto 0 );
+    i_mmcm_locked : in STD_LOGIC;
+    i_init_calib_complete : in STD_LOGIC;
+    s00_axi_aresetn : in STD_LOGIC;
+    ctrl_rst_n : in STD_LOGIC;
     \axi_rdata_reg[3]\ : in STD_LOGIC;
     \axi_rdata_reg[3]_0\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
     \axi_rdata_reg[3]_1\ : in STD_LOGIC;
     \axi_rdata_reg[3]_2\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
     \axi_rdata_reg[3]_3\ : in STD_LOGIC;
     \axi_rdata_reg[3]_4\ : in STD_LOGIC;
-    \frame_depth_reg_adc_reg[30]_0\ : in STD_LOGIC_VECTOR ( 4 downto 0 );
+    \frame_depth_reg_wr_reg[30]_0\ : in STD_LOGIC_VECTOR ( 4 downto 0 );
     \axi_rdata_reg[3]_5\ : in STD_LOGIC;
     \axi_rdata_reg[3]_6\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
     \axi_rdata_reg[3]_7\ : in STD_LOGIC;
@@ -35445,7 +35446,6 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr
   signal axi_wr_idle_d1 : STD_LOGIC;
   signal ccd_frame_num : STD_LOGIC_VECTOR ( 3 downto 0 );
   signal ctrl_rd_end : STD_LOGIC_VECTOR ( 11 to 11 );
-  signal \^ctrl_rst_n_reg\ : STD_LOGIC;
   signal ctrl_wr_end : STD_LOGIC_VECTOR ( 11 to 11 );
   signal ddr_block_end_ptr : STD_LOGIC_VECTOR ( 10 downto 3 );
   signal \ddr_block_end_ptr[0][12]_i_2_n_0\ : STD_LOGIC;
@@ -35720,10 +35720,10 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr
   signal \ddr_wr_byte_count_reg_n_0_[7]\ : STD_LOGIC;
   signal \ddr_wr_byte_count_reg_n_0_[8]\ : STD_LOGIC;
   signal \ddr_wr_byte_count_reg_n_0_[9]\ : STD_LOGIC;
-  signal frame_active_adc_i_1_n_0 : STD_LOGIC;
-  signal \^frame_active_adc_reg_0\ : STD_LOGIC;
   signal frame_active_ui : STD_LOGIC;
   signal frame_active_ui_i_1_n_0 : STD_LOGIC;
+  signal frame_active_wr_i_1_n_0 : STD_LOGIC;
+  signal \^frame_active_wr_reg_0\ : STD_LOGIC;
   signal frame_depth_fifo : STD_LOGIC;
   signal \frame_depth_fifo[0][31]_i_1_n_0\ : STD_LOGIC;
   signal \frame_depth_fifo[1][31]_i_1_n_0\ : STD_LOGIC;
@@ -35990,7 +35990,7 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr
   signal \frame_depth_fifo_reg_n_0_[7][7]\ : STD_LOGIC;
   signal \frame_depth_fifo_reg_n_0_[7][8]\ : STD_LOGIC;
   signal \frame_depth_fifo_reg_n_0_[7][9]\ : STD_LOGIC;
-  signal frame_depth_reg_adc : STD_LOGIC_VECTOR ( 31 downto 0 );
+  signal frame_depth_reg_wr : STD_LOGIC_VECTOR ( 31 downto 0 );
   signal \frame_depth_ui_reg_n_0_[31]\ : STD_LOGIC;
   signal frame_depth_w : STD_LOGIC_VECTOR ( 31 downto 0 );
   signal frame_depth_w0_n_100 : STD_LOGIC;
@@ -36025,35 +36025,35 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr
   signal frame_depth_w0_n_97 : STD_LOGIC;
   signal frame_depth_w0_n_98 : STD_LOGIC;
   signal frame_depth_w0_n_99 : STD_LOGIC;
-  signal \^frame_end_rise_adc\ : STD_LOGIC;
+  signal \^frame_end_rise_wr\ : STD_LOGIC;
   signal frame_end_sync_d : STD_LOGIC;
   signal \frame_end_sync_reg_n_0_[0]\ : STD_LOGIC;
   signal \frame_end_sync_reg_n_0_[1]\ : STD_LOGIC;
-  signal frame_exception_adcclk0 : STD_LOGIC;
-  signal frame_exception_adcclk1 : STD_LOGIC;
-  signal frame_exception_adcclk_i_10_n_0 : STD_LOGIC;
-  signal frame_exception_adcclk_i_11_n_0 : STD_LOGIC;
-  signal frame_exception_adcclk_i_12_n_0 : STD_LOGIC;
-  signal frame_exception_adcclk_i_13_n_0 : STD_LOGIC;
-  signal frame_exception_adcclk_i_14_n_0 : STD_LOGIC;
-  signal frame_exception_adcclk_i_15_n_0 : STD_LOGIC;
-  signal frame_exception_adcclk_i_4_n_0 : STD_LOGIC;
-  signal frame_exception_adcclk_i_5_n_0 : STD_LOGIC;
-  signal frame_exception_adcclk_i_6_n_0 : STD_LOGIC;
-  signal frame_exception_adcclk_i_8_n_0 : STD_LOGIC;
-  signal frame_exception_adcclk_i_9_n_0 : STD_LOGIC;
-  signal frame_exception_adcclk_reg_i_2_n_2 : STD_LOGIC;
-  signal frame_exception_adcclk_reg_i_2_n_3 : STD_LOGIC;
-  signal frame_exception_adcclk_reg_i_3_n_0 : STD_LOGIC;
-  signal frame_exception_adcclk_reg_i_3_n_1 : STD_LOGIC;
-  signal frame_exception_adcclk_reg_i_3_n_2 : STD_LOGIC;
-  signal frame_exception_adcclk_reg_i_3_n_3 : STD_LOGIC;
-  signal frame_exception_adcclk_reg_i_7_n_0 : STD_LOGIC;
-  signal frame_exception_adcclk_reg_i_7_n_1 : STD_LOGIC;
-  signal frame_exception_adcclk_reg_i_7_n_2 : STD_LOGIC;
-  signal frame_exception_adcclk_reg_i_7_n_3 : STD_LOGIC;
-  signal \^frame_start_rise_adc_reg_0\ : STD_LOGIC_VECTOR ( 0 to 0 );
+  signal frame_exception_wrclk0 : STD_LOGIC;
+  signal frame_exception_wrclk1 : STD_LOGIC;
+  signal frame_exception_wrclk_i_10_n_0 : STD_LOGIC;
+  signal frame_exception_wrclk_i_11_n_0 : STD_LOGIC;
+  signal frame_exception_wrclk_i_12_n_0 : STD_LOGIC;
+  signal frame_exception_wrclk_i_13_n_0 : STD_LOGIC;
+  signal frame_exception_wrclk_i_14_n_0 : STD_LOGIC;
+  signal frame_exception_wrclk_i_15_n_0 : STD_LOGIC;
+  signal frame_exception_wrclk_i_4_n_0 : STD_LOGIC;
+  signal frame_exception_wrclk_i_5_n_0 : STD_LOGIC;
+  signal frame_exception_wrclk_i_6_n_0 : STD_LOGIC;
+  signal frame_exception_wrclk_i_8_n_0 : STD_LOGIC;
+  signal frame_exception_wrclk_i_9_n_0 : STD_LOGIC;
+  signal frame_exception_wrclk_reg_i_2_n_2 : STD_LOGIC;
+  signal frame_exception_wrclk_reg_i_2_n_3 : STD_LOGIC;
+  signal frame_exception_wrclk_reg_i_3_n_0 : STD_LOGIC;
+  signal frame_exception_wrclk_reg_i_3_n_1 : STD_LOGIC;
+  signal frame_exception_wrclk_reg_i_3_n_2 : STD_LOGIC;
+  signal frame_exception_wrclk_reg_i_3_n_3 : STD_LOGIC;
+  signal frame_exception_wrclk_reg_i_7_n_0 : STD_LOGIC;
+  signal frame_exception_wrclk_reg_i_7_n_1 : STD_LOGIC;
+  signal frame_exception_wrclk_reg_i_7_n_2 : STD_LOGIC;
+  signal frame_exception_wrclk_reg_i_7_n_3 : STD_LOGIC;
   signal frame_start_rise_ui : STD_LOGIC;
+  signal \^frame_start_rise_wr_reg_0\ : STD_LOGIC_VECTOR ( 0 to 0 );
   signal frame_start_sync_d : STD_LOGIC;
   signal \frame_start_sync_reg_n_0_[0]\ : STD_LOGIC;
   signal \frame_start_sync_reg_n_0_[1]\ : STD_LOGIC;
@@ -36234,7 +36234,7 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr
   signal \p_0_in__0\ : STD_LOGIC_VECTOR ( 3 downto 0 );
   signal \p_0_in__1\ : STD_LOGIC_VECTOR ( 3 downto 0 );
   signal p_1_in : STD_LOGIC;
-  signal \^pixel_cnt_adc_reg\ : STD_LOGIC_VECTOR ( 31 downto 0 );
+  signal \^pixel_cnt_wr_reg\ : STD_LOGIC_VECTOR ( 31 downto 0 );
   signal prelast_reg2_out : STD_LOGIC;
   signal rd_block_base : STD_LOGIC_VECTOR ( 20 downto 18 );
   signal rd_fifo_has_space_partial : STD_LOGIC;
@@ -36625,6 +36625,7 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr
   signal rd_state_i_5_n_0 : STD_LOGIC;
   signal rd_state_i_6_n_0 : STD_LOGIC;
   signal rdfifo_wrcnt : STD_LOGIC_VECTOR ( 5 downto 0 );
+  signal \^rst\ : STD_LOGIC;
   signal u_rdfifo_n_17 : STD_LOGIC;
   signal u_wrfifo_n_130 : STD_LOGIC;
   signal u_wrfifo_n_131 : STD_LOGIC;
@@ -36678,10 +36679,10 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr
   signal NLW_frame_depth_w0_CARRYOUT_UNCONNECTED : STD_LOGIC_VECTOR ( 3 downto 0 );
   signal NLW_frame_depth_w0_P_UNCONNECTED : STD_LOGIC_VECTOR ( 47 downto 32 );
   signal NLW_frame_depth_w0_PCOUT_UNCONNECTED : STD_LOGIC_VECTOR ( 47 downto 0 );
-  signal NLW_frame_exception_adcclk_reg_i_2_CO_UNCONNECTED : STD_LOGIC_VECTOR ( 3 to 3 );
-  signal NLW_frame_exception_adcclk_reg_i_2_O_UNCONNECTED : STD_LOGIC_VECTOR ( 3 downto 0 );
-  signal NLW_frame_exception_adcclk_reg_i_3_O_UNCONNECTED : STD_LOGIC_VECTOR ( 3 downto 0 );
-  signal NLW_frame_exception_adcclk_reg_i_7_O_UNCONNECTED : STD_LOGIC_VECTOR ( 3 downto 0 );
+  signal NLW_frame_exception_wrclk_reg_i_2_CO_UNCONNECTED : STD_LOGIC_VECTOR ( 3 to 3 );
+  signal NLW_frame_exception_wrclk_reg_i_2_O_UNCONNECTED : STD_LOGIC_VECTOR ( 3 downto 0 );
+  signal NLW_frame_exception_wrclk_reg_i_3_O_UNCONNECTED : STD_LOGIC_VECTOR ( 3 downto 0 );
+  signal NLW_frame_exception_wrclk_reg_i_7_O_UNCONNECTED : STD_LOGIC_VECTOR ( 3 downto 0 );
   signal \NLW_o_axi_rd_end_addr_reg[11]_i_2_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 to 3 );
   signal \NLW_o_axi_rd_end_addr_reg[11]_i_3_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 to 3 );
   signal \NLW_o_axi_rd_end_addr_reg[11]_i_3_O_UNCONNECTED\ : STD_LOGIC_VECTOR ( 0 to 0 );
@@ -36720,53 +36721,53 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr
   signal NLW_u_wrfifo_wr_rst_busy_UNCONNECTED : STD_LOGIC;
   signal NLW_u_wrfifo_wr_data_count_UNCONNECTED : STD_LOGIC_VECTOR ( 8 downto 0 );
   attribute SOFT_HLUTNM : string;
-  attribute SOFT_HLUTNM of \axi_rdata[0]_i_4\ : label is "soft_lutpair207";
-  attribute SOFT_HLUTNM of \axi_rdata[1]_i_4\ : label is "soft_lutpair207";
-  attribute SOFT_HLUTNM of \axi_rdata[2]_i_4\ : label is "soft_lutpair206";
-  attribute SOFT_HLUTNM of \axi_rdata[3]_i_4\ : label is "soft_lutpair206";
-  attribute SOFT_HLUTNM of \ddr_rd_block_id[0]_i_1\ : label is "soft_lutpair205";
-  attribute SOFT_HLUTNM of \ddr_rd_block_id[1]_i_1\ : label is "soft_lutpair205";
-  attribute SOFT_HLUTNM of \ddr_rd_block_id[2]_i_1\ : label is "soft_lutpair172";
-  attribute SOFT_HLUTNM of \ddr_rd_block_id[3]_i_2\ : label is "soft_lutpair172";
-  attribute SOFT_HLUTNM of \ddr_rd_byte_count[10]_i_1\ : label is "soft_lutpair166";
-  attribute SOFT_HLUTNM of \ddr_rd_byte_count[11]_i_1\ : label is "soft_lutpair166";
-  attribute SOFT_HLUTNM of \ddr_rd_byte_count[12]_i_1\ : label is "soft_lutpair167";
-  attribute SOFT_HLUTNM of \ddr_rd_byte_count[13]_i_1\ : label is "soft_lutpair167";
-  attribute SOFT_HLUTNM of \ddr_rd_byte_count[14]_i_1\ : label is "soft_lutpair168";
-  attribute SOFT_HLUTNM of \ddr_rd_byte_count[15]_i_1\ : label is "soft_lutpair168";
-  attribute SOFT_HLUTNM of \ddr_rd_byte_count[16]_i_1\ : label is "soft_lutpair169";
-  attribute SOFT_HLUTNM of \ddr_rd_byte_count[17]_i_1\ : label is "soft_lutpair169";
-  attribute SOFT_HLUTNM of \ddr_rd_byte_count[18]_i_29\ : label is "soft_lutpair202";
-  attribute SOFT_HLUTNM of \ddr_rd_byte_count[18]_i_30\ : label is "soft_lutpair202";
-  attribute SOFT_HLUTNM of \ddr_rd_byte_count[8]_i_1\ : label is "soft_lutpair165";
-  attribute SOFT_HLUTNM of \ddr_rd_byte_count[9]_i_1\ : label is "soft_lutpair165";
+  attribute SOFT_HLUTNM of \axi_rdata[0]_i_4\ : label is "soft_lutpair213";
+  attribute SOFT_HLUTNM of \axi_rdata[1]_i_4\ : label is "soft_lutpair213";
+  attribute SOFT_HLUTNM of \axi_rdata[2]_i_4\ : label is "soft_lutpair212";
+  attribute SOFT_HLUTNM of \axi_rdata[3]_i_4\ : label is "soft_lutpair212";
+  attribute SOFT_HLUTNM of \ddr_rd_block_id[0]_i_1\ : label is "soft_lutpair211";
+  attribute SOFT_HLUTNM of \ddr_rd_block_id[1]_i_1\ : label is "soft_lutpair211";
+  attribute SOFT_HLUTNM of \ddr_rd_block_id[2]_i_1\ : label is "soft_lutpair156";
+  attribute SOFT_HLUTNM of \ddr_rd_block_id[3]_i_2\ : label is "soft_lutpair156";
+  attribute SOFT_HLUTNM of \ddr_rd_byte_count[10]_i_1\ : label is "soft_lutpair149";
+  attribute SOFT_HLUTNM of \ddr_rd_byte_count[11]_i_1\ : label is "soft_lutpair149";
+  attribute SOFT_HLUTNM of \ddr_rd_byte_count[12]_i_1\ : label is "soft_lutpair150";
+  attribute SOFT_HLUTNM of \ddr_rd_byte_count[13]_i_1\ : label is "soft_lutpair150";
+  attribute SOFT_HLUTNM of \ddr_rd_byte_count[14]_i_1\ : label is "soft_lutpair151";
+  attribute SOFT_HLUTNM of \ddr_rd_byte_count[15]_i_1\ : label is "soft_lutpair151";
+  attribute SOFT_HLUTNM of \ddr_rd_byte_count[16]_i_1\ : label is "soft_lutpair152";
+  attribute SOFT_HLUTNM of \ddr_rd_byte_count[17]_i_1\ : label is "soft_lutpair152";
+  attribute SOFT_HLUTNM of \ddr_rd_byte_count[18]_i_29\ : label is "soft_lutpair189";
+  attribute SOFT_HLUTNM of \ddr_rd_byte_count[18]_i_30\ : label is "soft_lutpair189";
+  attribute SOFT_HLUTNM of \ddr_rd_byte_count[8]_i_1\ : label is "soft_lutpair148";
+  attribute SOFT_HLUTNM of \ddr_rd_byte_count[9]_i_1\ : label is "soft_lutpair148";
   attribute ADDER_THRESHOLD : integer;
   attribute ADDER_THRESHOLD of \ddr_rd_byte_count_reg[11]_i_2\ : label is 35;
   attribute ADDER_THRESHOLD of \ddr_rd_byte_count_reg[15]_i_2\ : label is 35;
   attribute ADDER_THRESHOLD of \ddr_rd_byte_count_reg[18]_i_3\ : label is 35;
-  attribute SOFT_HLUTNM of \ddr_wr_block_id[0]_i_1\ : label is "soft_lutpair204";
-  attribute SOFT_HLUTNM of \ddr_wr_block_id[1]_i_1\ : label is "soft_lutpair204";
-  attribute SOFT_HLUTNM of \ddr_wr_block_id[2]_i_1\ : label is "soft_lutpair171";
-  attribute SOFT_HLUTNM of \ddr_wr_block_id[3]_i_1\ : label is "soft_lutpair171";
-  attribute SOFT_HLUTNM of \ddr_wr_byte_count[10]_i_1\ : label is "soft_lutpair211";
-  attribute SOFT_HLUTNM of \ddr_wr_byte_count[11]_i_1\ : label is "soft_lutpair211";
-  attribute SOFT_HLUTNM of \ddr_wr_byte_count[12]_i_1\ : label is "soft_lutpair210";
-  attribute SOFT_HLUTNM of \ddr_wr_byte_count[13]_i_1\ : label is "soft_lutpair210";
-  attribute SOFT_HLUTNM of \ddr_wr_byte_count[14]_i_1\ : label is "soft_lutpair209";
-  attribute SOFT_HLUTNM of \ddr_wr_byte_count[15]_i_1\ : label is "soft_lutpair209";
-  attribute SOFT_HLUTNM of \ddr_wr_byte_count[16]_i_1\ : label is "soft_lutpair208";
-  attribute SOFT_HLUTNM of \ddr_wr_byte_count[17]_i_1\ : label is "soft_lutpair208";
-  attribute SOFT_HLUTNM of \ddr_wr_byte_count[18]_i_2\ : label is "soft_lutpair164";
-  attribute SOFT_HLUTNM of \ddr_wr_byte_count[4]_i_1\ : label is "soft_lutpair164";
-  attribute SOFT_HLUTNM of \ddr_wr_byte_count[6]_i_1\ : label is "soft_lutpair213";
-  attribute SOFT_HLUTNM of \ddr_wr_byte_count[7]_i_1\ : label is "soft_lutpair213";
-  attribute SOFT_HLUTNM of \ddr_wr_byte_count[8]_i_1\ : label is "soft_lutpair212";
-  attribute SOFT_HLUTNM of \ddr_wr_byte_count[9]_i_1\ : label is "soft_lutpair212";
+  attribute SOFT_HLUTNM of \ddr_wr_block_id[0]_i_1\ : label is "soft_lutpair210";
+  attribute SOFT_HLUTNM of \ddr_wr_block_id[1]_i_1\ : label is "soft_lutpair210";
+  attribute SOFT_HLUTNM of \ddr_wr_block_id[2]_i_1\ : label is "soft_lutpair155";
+  attribute SOFT_HLUTNM of \ddr_wr_block_id[3]_i_1\ : label is "soft_lutpair155";
+  attribute SOFT_HLUTNM of \ddr_wr_byte_count[10]_i_1\ : label is "soft_lutpair208";
+  attribute SOFT_HLUTNM of \ddr_wr_byte_count[11]_i_1\ : label is "soft_lutpair207";
+  attribute SOFT_HLUTNM of \ddr_wr_byte_count[12]_i_1\ : label is "soft_lutpair206";
+  attribute SOFT_HLUTNM of \ddr_wr_byte_count[13]_i_1\ : label is "soft_lutpair205";
+  attribute SOFT_HLUTNM of \ddr_wr_byte_count[14]_i_1\ : label is "soft_lutpair206";
+  attribute SOFT_HLUTNM of \ddr_wr_byte_count[15]_i_1\ : label is "soft_lutpair205";
+  attribute SOFT_HLUTNM of \ddr_wr_byte_count[16]_i_1\ : label is "soft_lutpair204";
+  attribute SOFT_HLUTNM of \ddr_wr_byte_count[17]_i_1\ : label is "soft_lutpair154";
+  attribute SOFT_HLUTNM of \ddr_wr_byte_count[18]_i_2\ : label is "soft_lutpair204";
+  attribute SOFT_HLUTNM of \ddr_wr_byte_count[4]_i_1\ : label is "soft_lutpair154";
+  attribute SOFT_HLUTNM of \ddr_wr_byte_count[6]_i_1\ : label is "soft_lutpair209";
+  attribute SOFT_HLUTNM of \ddr_wr_byte_count[7]_i_1\ : label is "soft_lutpair209";
+  attribute SOFT_HLUTNM of \ddr_wr_byte_count[8]_i_1\ : label is "soft_lutpair208";
+  attribute SOFT_HLUTNM of \ddr_wr_byte_count[9]_i_1\ : label is "soft_lutpair207";
   attribute ADDER_THRESHOLD of \ddr_wr_byte_count_reg[11]_i_2\ : label is 35;
   attribute ADDER_THRESHOLD of \ddr_wr_byte_count_reg[15]_i_2\ : label is 35;
   attribute ADDER_THRESHOLD of \ddr_wr_byte_count_reg[18]_i_4\ : label is 35;
   attribute ADDER_THRESHOLD of \ddr_wr_byte_count_reg[7]_i_2\ : label is 35;
-  attribute SOFT_HLUTNM of frame_active_adc_i_1 : label is "soft_lutpair203";
+  attribute SOFT_HLUTNM of frame_active_wr_i_1 : label is "soft_lutpair201";
   attribute SOFT_HLUTNM of \frame_depth_ui[0]_i_1\ : label is "soft_lutpair188";
   attribute SOFT_HLUTNM of \frame_depth_ui[10]_i_1\ : label is "soft_lutpair178";
   attribute SOFT_HLUTNM of \frame_depth_ui[11]_i_1\ : label is "soft_lutpair177";
@@ -36801,43 +36802,43 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr
   attribute SOFT_HLUTNM of \frame_depth_ui[9]_i_1\ : label is "soft_lutpair179";
   attribute METHODOLOGY_DRC_VIOS : string;
   attribute METHODOLOGY_DRC_VIOS of frame_depth_w0 : label is "{SYNTH-13 {cell *THIS*}}";
-  attribute SOFT_HLUTNM of frame_exception_adcclk_i_1 : label is "soft_lutpair203";
-  attribute SOFT_HLUTNM of \frames_in_fifo[1]_i_1\ : label is "soft_lutpair146";
-  attribute SOFT_HLUTNM of \frames_in_fifo[3]_i_3\ : label is "soft_lutpair146";
-  attribute SOFT_HLUTNM of \o_axi_rd_end_addr[0]_i_1\ : label is "soft_lutpair198";
-  attribute SOFT_HLUTNM of \o_axi_rd_end_addr[10]_i_1\ : label is "soft_lutpair200";
-  attribute SOFT_HLUTNM of \o_axi_rd_end_addr[11]_i_1\ : label is "soft_lutpair201";
-  attribute SOFT_HLUTNM of \o_axi_rd_end_addr[4]_i_1\ : label is "soft_lutpair199";
-  attribute SOFT_HLUTNM of \o_axi_rd_end_addr[5]_i_1\ : label is "soft_lutpair200";
-  attribute SOFT_HLUTNM of \o_axi_rd_end_addr[6]_i_1\ : label is "soft_lutpair201";
-  attribute SOFT_HLUTNM of \o_axi_rd_end_addr[8]_i_1\ : label is "soft_lutpair198";
-  attribute SOFT_HLUTNM of \o_axi_rd_end_addr[9]_i_1\ : label is "soft_lutpair199";
-  attribute SOFT_HLUTNM of o_axi_rd_req_i_3 : label is "soft_lutpair147";
+  attribute SOFT_HLUTNM of frame_exception_wrclk_i_1 : label is "soft_lutpair201";
+  attribute SOFT_HLUTNM of \frames_in_fifo[1]_i_1\ : label is "soft_lutpair147";
+  attribute SOFT_HLUTNM of \frames_in_fifo[3]_i_3\ : label is "soft_lutpair147";
+  attribute SOFT_HLUTNM of \o_axi_rd_end_addr[0]_i_1\ : label is "soft_lutpair202";
+  attribute SOFT_HLUTNM of \o_axi_rd_end_addr[10]_i_1\ : label is "soft_lutpair191";
+  attribute SOFT_HLUTNM of \o_axi_rd_end_addr[11]_i_1\ : label is "soft_lutpair191";
+  attribute SOFT_HLUTNM of \o_axi_rd_end_addr[4]_i_1\ : label is "soft_lutpair202";
+  attribute SOFT_HLUTNM of \o_axi_rd_end_addr[5]_i_1\ : label is "soft_lutpair203";
+  attribute SOFT_HLUTNM of \o_axi_rd_end_addr[6]_i_1\ : label is "soft_lutpair203";
+  attribute SOFT_HLUTNM of \o_axi_rd_end_addr[8]_i_1\ : label is "soft_lutpair190";
+  attribute SOFT_HLUTNM of \o_axi_rd_end_addr[9]_i_1\ : label is "soft_lutpair190";
+  attribute SOFT_HLUTNM of o_axi_rd_req_i_3 : label is "soft_lutpair145";
   attribute COMPARATOR_THRESHOLD : integer;
   attribute COMPARATOR_THRESHOLD of o_axi_rd_req_reg_i_10 : label is 11;
   attribute COMPARATOR_THRESHOLD of o_axi_rd_req_reg_i_2 : label is 11;
   attribute COMPARATOR_THRESHOLD of o_axi_rd_req_reg_i_22 : label is 11;
   attribute COMPARATOR_THRESHOLD of o_axi_rd_req_reg_i_4 : label is 11;
-  attribute SOFT_HLUTNM of prelast_reg_i_1 : label is "soft_lutpair145";
-  attribute SOFT_HLUTNM of \rd_frame_idx[0]_i_1\ : label is "soft_lutpair145";
-  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_15\ : label is "soft_lutpair196";
-  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_17\ : label is "soft_lutpair196";
-  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_18\ : label is "soft_lutpair197";
-  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_23\ : label is "soft_lutpair194";
-  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_24\ : label is "soft_lutpair193";
-  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_25\ : label is "soft_lutpair193";
-  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_28\ : label is "soft_lutpair192";
-  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_29\ : label is "soft_lutpair192";
-  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_30\ : label is "soft_lutpair191";
-  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_31\ : label is "soft_lutpair194";
-  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_32\ : label is "soft_lutpair197";
-  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_33\ : label is "soft_lutpair195";
-  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_34\ : label is "soft_lutpair195";
-  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_40\ : label is "soft_lutpair189";
-  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_41\ : label is "soft_lutpair189";
-  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_44\ : label is "soft_lutpair191";
-  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_45\ : label is "soft_lutpair190";
-  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_46\ : label is "soft_lutpair190";
+  attribute SOFT_HLUTNM of prelast_reg_i_1 : label is "soft_lutpair146";
+  attribute SOFT_HLUTNM of \rd_frame_idx[0]_i_1\ : label is "soft_lutpair146";
+  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_15\ : label is "soft_lutpair199";
+  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_17\ : label is "soft_lutpair199";
+  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_18\ : label is "soft_lutpair200";
+  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_23\ : label is "soft_lutpair197";
+  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_24\ : label is "soft_lutpair196";
+  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_25\ : label is "soft_lutpair196";
+  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_28\ : label is "soft_lutpair195";
+  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_29\ : label is "soft_lutpair195";
+  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_30\ : label is "soft_lutpair194";
+  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_31\ : label is "soft_lutpair197";
+  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_32\ : label is "soft_lutpair200";
+  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_33\ : label is "soft_lutpair198";
+  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_34\ : label is "soft_lutpair198";
+  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_40\ : label is "soft_lutpair192";
+  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_41\ : label is "soft_lutpair192";
+  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_44\ : label is "soft_lutpair194";
+  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_45\ : label is "soft_lutpair193";
+  attribute SOFT_HLUTNM of \rd_frame_idx[2]_i_46\ : label is "soft_lutpair193";
   attribute ADDER_THRESHOLD of \rd_frame_idx_reg[1]_i_12\ : label is 35;
   attribute ADDER_THRESHOLD of \rd_frame_idx_reg[1]_i_13\ : label is 35;
   attribute ADDER_THRESHOLD of \rd_frame_idx_reg[1]_i_14\ : label is 35;
@@ -36854,38 +36855,38 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr
   attribute ADDER_THRESHOLD of \rd_frame_idx_reg[2]_i_134\ : label is 35;
   attribute ADDER_THRESHOLD of \rd_frame_idx_reg[2]_i_52\ : label is 35;
   attribute ADDER_THRESHOLD of \rd_frame_idx_reg[2]_i_53\ : label is 35;
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[0]_i_1\ : label is "soft_lutpair148";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[10]_i_1\ : label is "soft_lutpair153";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[11]_i_1\ : label is "soft_lutpair153";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[12]_i_1\ : label is "soft_lutpair154";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[13]_i_1\ : label is "soft_lutpair154";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[14]_i_1\ : label is "soft_lutpair155";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[15]_i_1\ : label is "soft_lutpair155";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[16]_i_1\ : label is "soft_lutpair156";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[17]_i_1\ : label is "soft_lutpair156";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[18]_i_1\ : label is "soft_lutpair157";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[19]_i_1\ : label is "soft_lutpair157";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[1]_i_1\ : label is "soft_lutpair148";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[20]_i_1\ : label is "soft_lutpair158";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[21]_i_1\ : label is "soft_lutpair158";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[22]_i_1\ : label is "soft_lutpair159";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[23]_i_1\ : label is "soft_lutpair159";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[24]_i_1\ : label is "soft_lutpair160";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[25]_i_1\ : label is "soft_lutpair160";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[26]_i_1\ : label is "soft_lutpair161";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[27]_i_1\ : label is "soft_lutpair161";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[28]_i_1\ : label is "soft_lutpair162";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[29]_i_1\ : label is "soft_lutpair162";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[2]_i_1\ : label is "soft_lutpair149";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[30]_i_1\ : label is "soft_lutpair163";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[31]_i_1\ : label is "soft_lutpair163";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[3]_i_1\ : label is "soft_lutpair149";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[4]_i_1\ : label is "soft_lutpair150";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[5]_i_1\ : label is "soft_lutpair150";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[6]_i_1\ : label is "soft_lutpair151";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[7]_i_1\ : label is "soft_lutpair151";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[8]_i_1\ : label is "soft_lutpair152";
-  attribute SOFT_HLUTNM of \rd_pixel_cnt[9]_i_1\ : label is "soft_lutpair152";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[0]_i_1\ : label is "soft_lutpair157";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[10]_i_1\ : label is "soft_lutpair162";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[11]_i_1\ : label is "soft_lutpair162";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[12]_i_1\ : label is "soft_lutpair163";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[13]_i_1\ : label is "soft_lutpair163";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[14]_i_1\ : label is "soft_lutpair164";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[15]_i_1\ : label is "soft_lutpair164";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[16]_i_1\ : label is "soft_lutpair165";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[17]_i_1\ : label is "soft_lutpair165";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[18]_i_1\ : label is "soft_lutpair166";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[19]_i_1\ : label is "soft_lutpair166";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[1]_i_1\ : label is "soft_lutpair157";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[20]_i_1\ : label is "soft_lutpair167";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[21]_i_1\ : label is "soft_lutpair167";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[22]_i_1\ : label is "soft_lutpair168";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[23]_i_1\ : label is "soft_lutpair168";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[24]_i_1\ : label is "soft_lutpair169";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[25]_i_1\ : label is "soft_lutpair169";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[26]_i_1\ : label is "soft_lutpair170";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[27]_i_1\ : label is "soft_lutpair170";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[28]_i_1\ : label is "soft_lutpair171";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[29]_i_1\ : label is "soft_lutpair171";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[2]_i_1\ : label is "soft_lutpair158";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[30]_i_1\ : label is "soft_lutpair172";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[31]_i_1\ : label is "soft_lutpair172";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[3]_i_1\ : label is "soft_lutpair158";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[4]_i_1\ : label is "soft_lutpair159";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[5]_i_1\ : label is "soft_lutpair159";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[6]_i_1\ : label is "soft_lutpair160";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[7]_i_1\ : label is "soft_lutpair160";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[8]_i_1\ : label is "soft_lutpair161";
+  attribute SOFT_HLUTNM of \rd_pixel_cnt[9]_i_1\ : label is "soft_lutpair161";
   attribute ADDER_THRESHOLD of \rd_pixel_cnt_reg[12]_i_2\ : label is 35;
   attribute ADDER_THRESHOLD of \rd_pixel_cnt_reg[16]_i_2\ : label is 35;
   attribute ADDER_THRESHOLD of \rd_pixel_cnt_reg[20]_i_2\ : label is 35;
@@ -36894,8 +36895,8 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr
   attribute ADDER_THRESHOLD of \rd_pixel_cnt_reg[31]_i_2\ : label is 35;
   attribute ADDER_THRESHOLD of \rd_pixel_cnt_reg[4]_i_2\ : label is 35;
   attribute ADDER_THRESHOLD of \rd_pixel_cnt_reg[8]_i_2\ : label is 35;
-  attribute SOFT_HLUTNM of rd_state_i_2 : label is "soft_lutpair170";
-  attribute SOFT_HLUTNM of rd_state_i_4 : label is "soft_lutpair147";
+  attribute SOFT_HLUTNM of rd_state_i_2 : label is "soft_lutpair153";
+  attribute SOFT_HLUTNM of rd_state_i_4 : label is "soft_lutpair145";
   attribute CHECK_LICENSE_TYPE : string;
   attribute CHECK_LICENSE_TYPE of u_rdfifo : label is "rd_ddr3_fifo,fifo_generator_v13_2_5,{}";
   attribute downgradeipidentifiedwarnings : string;
@@ -36905,18 +36906,18 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr
   attribute CHECK_LICENSE_TYPE of u_wrfifo : label is "wr_ddr3_fifo,fifo_generator_v13_2_5,{}";
   attribute downgradeipidentifiedwarnings of u_wrfifo : label is "yes";
   attribute x_core_info of u_wrfifo : label is "fifo_generator_v13_2_5,Vivado 2020.1";
-  attribute SOFT_HLUTNM of \wr_state[1]_i_4\ : label is "soft_lutpair170";
+  attribute SOFT_HLUTNM of \wr_state[1]_i_4\ : label is "soft_lutpair153";
 begin
-  ctrl_rst_n_reg <= \^ctrl_rst_n_reg\;
-  frame_active_adc_reg_0 <= \^frame_active_adc_reg_0\;
-  frame_end_rise_adc <= \^frame_end_rise_adc\;
-  frame_start_rise_adc_reg_0(0) <= \^frame_start_rise_adc_reg_0\(0);
+  frame_active_wr_reg_0 <= \^frame_active_wr_reg_0\;
+  frame_end_rise_wr <= \^frame_end_rise_wr\;
+  frame_start_rise_wr_reg_0(0) <= \^frame_start_rise_wr_reg_0\(0);
   \o_axi_rd_end_addr_reg[10]_1\(7 downto 0) <= \^o_axi_rd_end_addr_reg[10]_1\(7 downto 0);
   \o_axi_rd_start_addr_reg[21]_0\(13 downto 0) <= \^o_axi_rd_start_addr_reg[21]_0\(13 downto 0);
   \o_axi_wr_end_addr_reg[10]_0\(6 downto 0) <= \^o_axi_wr_end_addr_reg[10]_0\(6 downto 0);
   \o_axi_wr_start_addr_reg[21]_0\(17 downto 0) <= \^o_axi_wr_start_addr_reg[21]_0\(17 downto 0);
-  pixel_cnt_adc_reg(31 downto 0) <= \^pixel_cnt_adc_reg\(31 downto 0);
+  pixel_cnt_wr_reg(31 downto 0) <= \^pixel_cnt_wr_reg\(31 downto 0);
   \rd_pixel_cnt_reg[31]_0\(0) <= \^rd_pixel_cnt_reg[31]_0\(0);
+  rst <= \^rst\;
 \FSM_onehot_state[2]_i_2\: unisim.vcomponents.LUT6
     generic map(
       INIT => X"00F000F000F000E0"
@@ -36934,7 +36935,7 @@ axi_rd_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => ctrl_rd_idle,
       Q => axi_rd_idle_d1
     );
@@ -36957,7 +36958,7 @@ axi_rd_idle_d1_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => \axi_rdata_reg[3]_4\,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(0),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(0),
       I2 => \axi_rdata_reg[3]_5\,
       I3 => ccd_frame_num(0),
       I4 => \axi_rdata_reg[3]_6\(0),
@@ -36992,7 +36993,7 @@ axi_rd_idle_d1_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => \axi_rdata_reg[3]_4\,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(1),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(1),
       I2 => \axi_rdata_reg[3]_5\,
       I3 => ccd_frame_num(1),
       I4 => \axi_rdata_reg[3]_6\(1),
@@ -37027,7 +37028,7 @@ axi_rd_idle_d1_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => \axi_rdata_reg[3]_4\,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(2),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(2),
       I2 => \axi_rdata_reg[3]_5\,
       I3 => ccd_frame_num(2),
       I4 => \axi_rdata_reg[3]_6\(2),
@@ -37062,7 +37063,7 @@ axi_rd_idle_d1_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => \axi_rdata_reg[3]_4\,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(3),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(3),
       I2 => \axi_rdata_reg[3]_5\,
       I3 => ccd_frame_num(3),
       I4 => \axi_rdata_reg[3]_6\(3),
@@ -37082,7 +37083,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => ctrl_wr_idle,
       Q => axi_wr_idle_d1
     );
@@ -37453,7 +37454,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_depth_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[0]_0\(10)
     );
@@ -37461,7 +37462,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_depth_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[0]_0\(11)
     );
@@ -37469,7 +37470,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_depth_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[0]_0\(12)
     );
@@ -37498,7 +37499,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_depth_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[0]_0\(13)
     );
@@ -37506,7 +37507,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_depth_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[0]_0\(14)
     );
@@ -37514,7 +37515,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_depth_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[0]_0\(15)
     );
@@ -37522,7 +37523,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_depth_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[0]_0\(16)
     );
@@ -37551,7 +37552,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_depth_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[0]_0\(17)
     );
@@ -37559,7 +37560,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_depth_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[0]_0\(18)
     );
@@ -37567,7 +37568,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_depth_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[0]_0\(19)
     );
@@ -37575,7 +37576,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_depth_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[0]_0\(20)
     );
@@ -37601,7 +37602,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_depth_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][29]_i_2_n_7\,
       Q => \ddr_block_end_ptr_reg[0]_0\(21)
     );
@@ -37609,7 +37610,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_depth_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][29]_i_2_n_6\,
       Q => \ddr_block_end_ptr_reg[0]_0\(29)
     );
@@ -37676,7 +37677,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_depth_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => '1',
       Q => \ddr_block_end_ptr_reg[0]_0\(3)
     );
@@ -37684,7 +37685,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_depth_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr[0][4]_i_1_n_0\,
       Q => \ddr_block_end_ptr_reg[0]_0\(4)
     );
@@ -37692,7 +37693,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_depth_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[0]_0\(5)
     );
@@ -37700,7 +37701,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_depth_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[0]_0\(6)
     );
@@ -37708,7 +37709,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_depth_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[0]_0\(7)
     );
@@ -37716,7 +37717,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_depth_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[0]_0\(8)
     );
@@ -37745,7 +37746,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_depth_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[0]_0\(9)
     );
@@ -37753,7 +37754,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[1][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[1]_1\(10)
     );
@@ -37761,7 +37762,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[1][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[1]_1\(11)
     );
@@ -37769,7 +37770,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[1][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[1]_1\(12)
     );
@@ -37777,7 +37778,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[1][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[1]_1\(13)
     );
@@ -37785,7 +37786,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[1][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[1]_1\(14)
     );
@@ -37793,7 +37794,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[1][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[1]_1\(15)
     );
@@ -37801,7 +37802,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[1][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[1]_1\(16)
     );
@@ -37809,7 +37810,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[1][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[1]_1\(17)
     );
@@ -37817,7 +37818,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[1][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[1]_1\(18)
     );
@@ -37825,7 +37826,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[1][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[1]_1\(19)
     );
@@ -37833,7 +37834,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[1][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[1]_1\(20)
     );
@@ -37841,7 +37842,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[1][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][29]_i_2_n_7\,
       Q => \ddr_block_end_ptr_reg[1]_1\(21)
     );
@@ -37849,7 +37850,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[1][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][29]_i_2_n_6\,
       Q => \ddr_block_end_ptr_reg[1]_1\(29)
     );
@@ -37857,7 +37858,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[1][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => '1',
       Q => \ddr_block_end_ptr_reg[1]_1\(3)
     );
@@ -37865,7 +37866,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[1][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr[0][4]_i_1_n_0\,
       Q => \ddr_block_end_ptr_reg[1]_1\(4)
     );
@@ -37873,7 +37874,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[1][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[1]_1\(5)
     );
@@ -37881,7 +37882,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[1][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[1]_1\(6)
     );
@@ -37889,7 +37890,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[1][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[1]_1\(7)
     );
@@ -37897,7 +37898,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[1][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[1]_1\(8)
     );
@@ -37905,7 +37906,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[1][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[1]_1\(9)
     );
@@ -37913,7 +37914,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[2][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[2]_2\(10)
     );
@@ -37921,7 +37922,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[2][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[2]_2\(11)
     );
@@ -37929,7 +37930,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[2][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[2]_2\(12)
     );
@@ -37937,7 +37938,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[2][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[2]_2\(13)
     );
@@ -37945,7 +37946,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[2][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[2]_2\(14)
     );
@@ -37953,7 +37954,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[2][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[2]_2\(15)
     );
@@ -37961,7 +37962,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[2][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[2]_2\(16)
     );
@@ -37969,7 +37970,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[2][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[2]_2\(17)
     );
@@ -37977,7 +37978,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[2][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[2]_2\(18)
     );
@@ -37985,7 +37986,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[2][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[2]_2\(19)
     );
@@ -37993,7 +37994,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[2][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[2]_2\(20)
     );
@@ -38001,7 +38002,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[2][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][29]_i_2_n_7\,
       Q => \ddr_block_end_ptr_reg[2]_2\(21)
     );
@@ -38009,7 +38010,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[2][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][29]_i_2_n_6\,
       Q => \ddr_block_end_ptr_reg[2]_2\(29)
     );
@@ -38017,7 +38018,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[2][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => '1',
       Q => \ddr_block_end_ptr_reg[2]_2\(3)
     );
@@ -38025,7 +38026,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[2][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr[0][4]_i_1_n_0\,
       Q => \ddr_block_end_ptr_reg[2]_2\(4)
     );
@@ -38033,7 +38034,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[2][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[2]_2\(5)
     );
@@ -38041,7 +38042,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[2][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[2]_2\(6)
     );
@@ -38049,7 +38050,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[2][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[2]_2\(7)
     );
@@ -38057,7 +38058,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[2][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[2]_2\(8)
     );
@@ -38065,7 +38066,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[2][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[2]_2\(9)
     );
@@ -38073,7 +38074,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[3][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[3]_3\(10)
     );
@@ -38081,7 +38082,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[3][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[3]_3\(11)
     );
@@ -38089,7 +38090,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[3][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[3]_3\(12)
     );
@@ -38097,7 +38098,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[3][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[3]_3\(13)
     );
@@ -38105,7 +38106,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[3][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[3]_3\(14)
     );
@@ -38113,7 +38114,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[3][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[3]_3\(15)
     );
@@ -38121,7 +38122,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[3][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[3]_3\(16)
     );
@@ -38129,7 +38130,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[3][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[3]_3\(17)
     );
@@ -38137,7 +38138,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[3][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[3]_3\(18)
     );
@@ -38145,7 +38146,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[3][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[3]_3\(19)
     );
@@ -38153,7 +38154,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[3][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[3]_3\(20)
     );
@@ -38161,7 +38162,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[3][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][29]_i_2_n_7\,
       Q => \ddr_block_end_ptr_reg[3]_3\(21)
     );
@@ -38169,7 +38170,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[3][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][29]_i_2_n_6\,
       Q => \ddr_block_end_ptr_reg[3]_3\(29)
     );
@@ -38177,7 +38178,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[3][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => '1',
       Q => \ddr_block_end_ptr_reg[3]_3\(3)
     );
@@ -38185,7 +38186,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[3][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr[0][4]_i_1_n_0\,
       Q => \ddr_block_end_ptr_reg[3]_3\(4)
     );
@@ -38193,7 +38194,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[3][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[3]_3\(5)
     );
@@ -38201,7 +38202,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[3][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[3]_3\(6)
     );
@@ -38209,7 +38210,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[3][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[3]_3\(7)
     );
@@ -38217,7 +38218,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[3][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[3]_3\(8)
     );
@@ -38225,7 +38226,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[3][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[3]_3\(9)
     );
@@ -38233,7 +38234,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[4][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[4]_4\(10)
     );
@@ -38241,7 +38242,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[4][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[4]_4\(11)
     );
@@ -38249,7 +38250,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[4][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[4]_4\(12)
     );
@@ -38257,7 +38258,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[4][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[4]_4\(13)
     );
@@ -38265,7 +38266,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[4][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[4]_4\(14)
     );
@@ -38273,7 +38274,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[4][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[4]_4\(15)
     );
@@ -38281,7 +38282,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[4][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[4]_4\(16)
     );
@@ -38289,7 +38290,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[4][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[4]_4\(17)
     );
@@ -38297,7 +38298,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[4][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[4]_4\(18)
     );
@@ -38305,7 +38306,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[4][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[4]_4\(19)
     );
@@ -38313,7 +38314,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[4][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[4]_4\(20)
     );
@@ -38321,7 +38322,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[4][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][29]_i_2_n_7\,
       Q => \ddr_block_end_ptr_reg[4]_4\(21)
     );
@@ -38329,7 +38330,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[4][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][29]_i_2_n_6\,
       Q => \ddr_block_end_ptr_reg[4]_4\(29)
     );
@@ -38337,7 +38338,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[4][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => '1',
       Q => \ddr_block_end_ptr_reg[4]_4\(3)
     );
@@ -38345,7 +38346,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[4][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr[0][4]_i_1_n_0\,
       Q => \ddr_block_end_ptr_reg[4]_4\(4)
     );
@@ -38353,7 +38354,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[4][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[4]_4\(5)
     );
@@ -38361,7 +38362,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[4][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[4]_4\(6)
     );
@@ -38369,7 +38370,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[4][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[4]_4\(7)
     );
@@ -38377,7 +38378,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[4][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[4]_4\(8)
     );
@@ -38385,7 +38386,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[4][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[4]_4\(9)
     );
@@ -38393,7 +38394,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[5][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[5]_5\(10)
     );
@@ -38401,7 +38402,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[5][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[5]_5\(11)
     );
@@ -38409,7 +38410,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[5][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[5]_5\(12)
     );
@@ -38417,7 +38418,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[5][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[5]_5\(13)
     );
@@ -38425,7 +38426,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[5][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[5]_5\(14)
     );
@@ -38433,7 +38434,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[5][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[5]_5\(15)
     );
@@ -38441,7 +38442,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[5][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[5]_5\(16)
     );
@@ -38449,7 +38450,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[5][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[5]_5\(17)
     );
@@ -38457,7 +38458,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[5][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[5]_5\(18)
     );
@@ -38465,7 +38466,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[5][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[5]_5\(19)
     );
@@ -38473,7 +38474,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[5][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[5]_5\(20)
     );
@@ -38481,7 +38482,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[5][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][29]_i_2_n_7\,
       Q => \ddr_block_end_ptr_reg[5]_5\(21)
     );
@@ -38489,7 +38490,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[5][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][29]_i_2_n_6\,
       Q => \ddr_block_end_ptr_reg[5]_5\(29)
     );
@@ -38497,7 +38498,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[5][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => '1',
       Q => \ddr_block_end_ptr_reg[5]_5\(3)
     );
@@ -38505,7 +38506,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[5][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr[0][4]_i_1_n_0\,
       Q => \ddr_block_end_ptr_reg[5]_5\(4)
     );
@@ -38513,7 +38514,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[5][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[5]_5\(5)
     );
@@ -38521,7 +38522,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[5][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[5]_5\(6)
     );
@@ -38529,7 +38530,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[5][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[5]_5\(7)
     );
@@ -38537,7 +38538,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[5][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[5]_5\(8)
     );
@@ -38545,7 +38546,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[5][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[5]_5\(9)
     );
@@ -38553,7 +38554,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[6][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[6]_6\(10)
     );
@@ -38561,7 +38562,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[6][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[6]_6\(11)
     );
@@ -38569,7 +38570,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[6][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[6]_6\(12)
     );
@@ -38577,7 +38578,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[6][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[6]_6\(13)
     );
@@ -38585,7 +38586,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[6][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[6]_6\(14)
     );
@@ -38593,7 +38594,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[6][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[6]_6\(15)
     );
@@ -38601,7 +38602,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[6][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[6]_6\(16)
     );
@@ -38609,7 +38610,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[6][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[6]_6\(17)
     );
@@ -38617,7 +38618,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[6][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[6]_6\(18)
     );
@@ -38625,7 +38626,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[6][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[6]_6\(19)
     );
@@ -38633,7 +38634,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[6][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[6]_6\(20)
     );
@@ -38641,7 +38642,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[6][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][29]_i_2_n_7\,
       Q => \ddr_block_end_ptr_reg[6]_6\(21)
     );
@@ -38649,7 +38650,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[6][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][29]_i_2_n_6\,
       Q => \ddr_block_end_ptr_reg[6]_6\(29)
     );
@@ -38657,7 +38658,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[6][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => '1',
       Q => \ddr_block_end_ptr_reg[6]_6\(3)
     );
@@ -38665,7 +38666,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[6][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr[0][4]_i_1_n_0\,
       Q => \ddr_block_end_ptr_reg[6]_6\(4)
     );
@@ -38673,7 +38674,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[6][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[6]_6\(5)
     );
@@ -38681,7 +38682,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[6][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[6]_6\(6)
     );
@@ -38689,7 +38690,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[6][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[6]_6\(7)
     );
@@ -38697,7 +38698,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[6][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[6]_6\(8)
     );
@@ -38705,7 +38706,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[6][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[6]_6\(9)
     );
@@ -38713,7 +38714,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[7][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[7]_7\(10)
     );
@@ -38721,7 +38722,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[7][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[7]_7\(11)
     );
@@ -38729,7 +38730,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[7][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[7]_7\(12)
     );
@@ -38737,7 +38738,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[7][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[7]_7\(13)
     );
@@ -38745,7 +38746,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[7][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[7]_7\(14)
     );
@@ -38753,7 +38754,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[7][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[7]_7\(15)
     );
@@ -38761,7 +38762,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[7][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][16]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[7]_7\(16)
     );
@@ -38769,7 +38770,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[7][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[7]_7\(17)
     );
@@ -38777,7 +38778,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[7][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[7]_7\(18)
     );
@@ -38785,7 +38786,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[7][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[7]_7\(19)
     );
@@ -38793,7 +38794,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[7][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][20]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[7]_7\(20)
     );
@@ -38801,7 +38802,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[7][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][29]_i_2_n_7\,
       Q => \ddr_block_end_ptr_reg[7]_7\(21)
     );
@@ -38809,7 +38810,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[7][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][29]_i_2_n_6\,
       Q => \ddr_block_end_ptr_reg[7]_7\(29)
     );
@@ -38817,7 +38818,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[7][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => '1',
       Q => \ddr_block_end_ptr_reg[7]_7\(3)
     );
@@ -38825,7 +38826,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[7][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr[0][4]_i_1_n_0\,
       Q => \ddr_block_end_ptr_reg[7]_7\(4)
     );
@@ -38833,7 +38834,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[7][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[7]_7\(5)
     );
@@ -38841,7 +38842,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[7][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_6\,
       Q => \ddr_block_end_ptr_reg[7]_7\(6)
     );
@@ -38849,7 +38850,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[7][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_5\,
       Q => \ddr_block_end_ptr_reg[7]_7\(7)
     );
@@ -38857,7 +38858,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[7][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][8]_i_1_n_4\,
       Q => \ddr_block_end_ptr_reg[7]_7\(8)
     );
@@ -38865,7 +38866,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_block_end_ptr[7][29]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_block_end_ptr_reg[0][12]_i_1_n_7\,
       Q => \ddr_block_end_ptr_reg[7]_7\(9)
     );
@@ -38924,7 +38925,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_rd_block_id[3]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \p_0_in__1\(0),
       Q => rd_block_base(18)
     );
@@ -38932,7 +38933,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_rd_block_id[3]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \p_0_in__1\(1),
       Q => rd_block_base(19)
     );
@@ -38940,7 +38941,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_rd_block_id[3]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_rd_block_id[2]_i_1_n_0\,
       Q => rd_block_base(20)
     );
@@ -38948,7 +38949,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_rd_block_id[3]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \p_0_in__1\(3),
       Q => p_0_in
     );
@@ -39953,7 +39954,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_rd_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_rd_byte_count[10]_i_1_n_0\,
       Q => ddr_rd_byte_count(10)
     );
@@ -39961,7 +39962,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_rd_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_rd_byte_count[11]_i_1_n_0\,
       Q => ddr_rd_byte_count(11)
     );
@@ -39985,7 +39986,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_rd_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_rd_byte_count[12]_i_1_n_0\,
       Q => ddr_rd_byte_count(12)
     );
@@ -39993,7 +39994,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_rd_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_rd_byte_count[13]_i_1_n_0\,
       Q => ddr_rd_byte_count(13)
     );
@@ -40001,7 +40002,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_rd_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_rd_byte_count[14]_i_1_n_0\,
       Q => ddr_rd_byte_count(14)
     );
@@ -40009,7 +40010,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_rd_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_rd_byte_count[15]_i_1_n_0\,
       Q => ddr_rd_byte_count(15)
     );
@@ -40029,7 +40030,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_rd_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_rd_byte_count[16]_i_1_n_0\,
       Q => ddr_rd_byte_count(16)
     );
@@ -40037,7 +40038,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_rd_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_rd_byte_count[17]_i_1_n_0\,
       Q => ddr_rd_byte_count(17)
     );
@@ -40045,7 +40046,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_rd_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_rd_byte_count[18]_i_2_n_0\,
       Q => ddr_rd_byte_count(18)
     );
@@ -40235,7 +40236,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_rd_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_rd_byte_count[8]_i_1_n_0\,
       Q => o_axi_rd_end_addr00_in(8)
     );
@@ -40243,7 +40244,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_rd_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_rd_byte_count[9]_i_1_n_0\,
       Q => ddr_rd_byte_count(9)
     );
@@ -40289,7 +40290,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_frame_inc_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \p_0_in__0\(0),
       Q => wr_block_base(18)
     );
@@ -40297,7 +40298,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_frame_inc_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \p_0_in__0\(1),
       Q => wr_block_base(19)
     );
@@ -40305,7 +40306,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_frame_inc_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \p_0_in__0\(2),
       Q => wr_block_base(20)
     );
@@ -40313,7 +40314,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_frame_inc_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \p_0_in__0\(3),
       Q => p_1_in
     );
@@ -40543,7 +40544,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_wr_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count[10]_i_1_n_0\,
       Q => \ddr_wr_byte_count_reg_n_0_[10]\
     );
@@ -40551,7 +40552,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_wr_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count[11]_i_1_n_0\,
       Q => \ddr_wr_byte_count_reg_n_0_[11]\
     );
@@ -40577,7 +40578,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_wr_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count[12]_i_1_n_0\,
       Q => \ddr_wr_byte_count_reg_n_0_[12]\
     );
@@ -40585,7 +40586,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_wr_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count[13]_i_1_n_0\,
       Q => \ddr_wr_byte_count_reg_n_0_[13]\
     );
@@ -40593,7 +40594,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_wr_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count[14]_i_1_n_0\,
       Q => \ddr_wr_byte_count_reg_n_0_[14]\
     );
@@ -40601,7 +40602,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_wr_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count[15]_i_1_n_0\,
       Q => \ddr_wr_byte_count_reg_n_0_[15]\
     );
@@ -40627,7 +40628,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_wr_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count[16]_i_1_n_0\,
       Q => \ddr_wr_byte_count_reg_n_0_[16]\
     );
@@ -40635,7 +40636,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_wr_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count[17]_i_1_n_0\,
       Q => \ddr_wr_byte_count_reg_n_0_[17]\
     );
@@ -40643,7 +40644,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_wr_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count[18]_i_2_n_0\,
       Q => \ddr_wr_byte_count_reg_n_0_[18]\
     );
@@ -40668,7 +40669,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_wr_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count[4]_i_1_n_0\,
       Q => \ddr_wr_byte_count_reg_n_0_[4]\
     );
@@ -40676,7 +40677,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_wr_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count[5]_i_1_n_0\,
       Q => \ddr_wr_byte_count_reg_n_0_[5]\
     );
@@ -40684,7 +40685,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_wr_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count[6]_i_1_n_0\,
       Q => \ddr_wr_byte_count_reg_n_0_[6]\
     );
@@ -40692,7 +40693,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_wr_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count[7]_i_1_n_0\,
       Q => \ddr_wr_byte_count_reg_n_0_[7]\
     );
@@ -40719,7 +40720,7 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_wr_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count[8]_i_1_n_0\,
       Q => \ddr_wr_byte_count_reg_n_0_[8]\
     );
@@ -40727,27 +40728,9 @@ axi_wr_idle_d1_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \ddr_wr_byte_count[18]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count[9]_i_1_n_0\,
       Q => \ddr_wr_byte_count_reg_n_0_[9]\
-    );
-frame_active_adc_i_1: unisim.vcomponents.LUT3
-    generic map(
-      INIT => X"32"
-    )
-        port map (
-      I0 => \^frame_start_rise_adc_reg_0\(0),
-      I1 => \^frame_end_rise_adc\,
-      I2 => \^frame_active_adc_reg_0\,
-      O => frame_active_adc_i_1_n_0
-    );
-frame_active_adc_reg: unisim.vcomponents.FDCE
-     port map (
-      C => CLK,
-      CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
-      D => frame_active_adc_i_1_n_0,
-      Q => \^frame_active_adc_reg_0\
     );
 frame_active_ui_i_1: unisim.vcomponents.LUT5
     generic map(
@@ -40765,9 +40748,27 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_active_ui_i_1_n_0,
       Q => frame_active_ui
+    );
+frame_active_wr_i_1: unisim.vcomponents.LUT3
+    generic map(
+      INIT => X"32"
+    )
+        port map (
+      I0 => \^frame_start_rise_wr_reg_0\(0),
+      I1 => \^frame_end_rise_wr\,
+      I2 => \^frame_active_wr_reg_0\,
+      O => frame_active_wr_i_1_n_0
+    );
+frame_active_wr_reg: unisim.vcomponents.FDCE
+     port map (
+      C => CLK,
+      CE => '1',
+      CLR => \^rst\,
+      D => frame_active_wr_i_1_n_0,
+      Q => \^frame_active_wr_reg_0\
     );
 \frame_depth_fifo[0][31]_i_1\: unisim.vcomponents.LUT6
     generic map(
@@ -40860,17 +40861,15 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
       I5 => wr_block_base(19),
       O => \frame_depth_fifo[6][31]_i_1_n_0\
     );
-\frame_depth_fifo[7][31]_i_1\: unisim.vcomponents.LUT6
+\frame_depth_fifo[7][31]_i_1\: unisim.vcomponents.LUT4
     generic map(
-      INIT => X"2000000000000000"
+      INIT => X"8000"
     )
         port map (
-      I0 => ddr_wr_block_id0,
-      I1 => \ddr_wr_byte_count[18]_i_3_n_0\,
-      I2 => wr_block_base(20),
-      I3 => wr_block_base(18),
-      I4 => wr_block_base(19),
-      I5 => ctrl_rst_n,
+      I0 => \ddr_block_end_ptr[7][29]_i_1_n_0\,
+      I1 => i_mmcm_locked,
+      I2 => i_init_calib_complete,
+      I3 => s00_axi_aresetn,
       O => \frame_depth_fifo[7][31]_i_1_n_0\
     );
 \frame_depth_fifo_reg[0][0]\: unisim.vcomponents.FDRE
@@ -42921,261 +42920,261 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
       Q => \frame_depth_fifo_reg_n_0_[7][9]\,
       R => '0'
     );
-\frame_depth_reg_adc_reg[0]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[0]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(0),
-      Q => frame_depth_reg_adc(0)
+      Q => frame_depth_reg_wr(0)
     );
-\frame_depth_reg_adc_reg[10]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[10]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(10),
-      Q => frame_depth_reg_adc(10)
+      Q => frame_depth_reg_wr(10)
     );
-\frame_depth_reg_adc_reg[11]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[11]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(11),
-      Q => frame_depth_reg_adc(11)
+      Q => frame_depth_reg_wr(11)
     );
-\frame_depth_reg_adc_reg[12]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[12]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(12),
-      Q => frame_depth_reg_adc(12)
+      Q => frame_depth_reg_wr(12)
     );
-\frame_depth_reg_adc_reg[13]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[13]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(13),
-      Q => frame_depth_reg_adc(13)
+      Q => frame_depth_reg_wr(13)
     );
-\frame_depth_reg_adc_reg[14]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[14]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(14),
-      Q => frame_depth_reg_adc(14)
+      Q => frame_depth_reg_wr(14)
     );
-\frame_depth_reg_adc_reg[15]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[15]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(15),
-      Q => frame_depth_reg_adc(15)
+      Q => frame_depth_reg_wr(15)
     );
-\frame_depth_reg_adc_reg[16]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[16]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(16),
-      Q => frame_depth_reg_adc(16)
+      Q => frame_depth_reg_wr(16)
     );
-\frame_depth_reg_adc_reg[17]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[17]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(17),
-      Q => frame_depth_reg_adc(17)
+      Q => frame_depth_reg_wr(17)
     );
-\frame_depth_reg_adc_reg[18]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[18]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(18),
-      Q => frame_depth_reg_adc(18)
+      Q => frame_depth_reg_wr(18)
     );
-\frame_depth_reg_adc_reg[19]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[19]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(19),
-      Q => frame_depth_reg_adc(19)
+      Q => frame_depth_reg_wr(19)
     );
-\frame_depth_reg_adc_reg[1]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[1]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(1),
-      Q => frame_depth_reg_adc(1)
+      Q => frame_depth_reg_wr(1)
     );
-\frame_depth_reg_adc_reg[20]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[20]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(20),
-      Q => frame_depth_reg_adc(20)
+      Q => frame_depth_reg_wr(20)
     );
-\frame_depth_reg_adc_reg[21]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[21]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(21),
-      Q => frame_depth_reg_adc(21)
+      Q => frame_depth_reg_wr(21)
     );
-\frame_depth_reg_adc_reg[22]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[22]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(22),
-      Q => frame_depth_reg_adc(22)
+      Q => frame_depth_reg_wr(22)
     );
-\frame_depth_reg_adc_reg[23]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[23]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(23),
-      Q => frame_depth_reg_adc(23)
+      Q => frame_depth_reg_wr(23)
     );
-\frame_depth_reg_adc_reg[24]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[24]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(24),
-      Q => frame_depth_reg_adc(24)
+      Q => frame_depth_reg_wr(24)
     );
-\frame_depth_reg_adc_reg[25]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[25]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(25),
-      Q => frame_depth_reg_adc(25)
+      Q => frame_depth_reg_wr(25)
     );
-\frame_depth_reg_adc_reg[26]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[26]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(26),
-      Q => frame_depth_reg_adc(26)
+      Q => frame_depth_reg_wr(26)
     );
-\frame_depth_reg_adc_reg[27]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[27]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(27),
-      Q => frame_depth_reg_adc(27)
+      Q => frame_depth_reg_wr(27)
     );
-\frame_depth_reg_adc_reg[28]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[28]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(28),
-      Q => frame_depth_reg_adc(28)
+      Q => frame_depth_reg_wr(28)
     );
-\frame_depth_reg_adc_reg[29]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[29]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(29),
-      Q => frame_depth_reg_adc(29)
+      Q => frame_depth_reg_wr(29)
     );
-\frame_depth_reg_adc_reg[2]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[2]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(2),
-      Q => frame_depth_reg_adc(2)
+      Q => frame_depth_reg_wr(2)
     );
-\frame_depth_reg_adc_reg[30]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[30]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(30),
-      Q => frame_depth_reg_adc(30)
+      Q => frame_depth_reg_wr(30)
     );
-\frame_depth_reg_adc_reg[31]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[31]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(31),
-      Q => frame_depth_reg_adc(31)
+      Q => frame_depth_reg_wr(31)
     );
-\frame_depth_reg_adc_reg[3]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[3]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(3),
-      Q => frame_depth_reg_adc(3)
+      Q => frame_depth_reg_wr(3)
     );
-\frame_depth_reg_adc_reg[4]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[4]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(4),
-      Q => frame_depth_reg_adc(4)
+      Q => frame_depth_reg_wr(4)
     );
-\frame_depth_reg_adc_reg[5]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[5]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(5),
-      Q => frame_depth_reg_adc(5)
+      Q => frame_depth_reg_wr(5)
     );
-\frame_depth_reg_adc_reg[6]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[6]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(6),
-      Q => frame_depth_reg_adc(6)
+      Q => frame_depth_reg_wr(6)
     );
-\frame_depth_reg_adc_reg[7]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[7]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(7),
-      Q => frame_depth_reg_adc(7)
+      Q => frame_depth_reg_wr(7)
     );
-\frame_depth_reg_adc_reg[8]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[8]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(8),
-      Q => frame_depth_reg_adc(8)
+      Q => frame_depth_reg_wr(8)
     );
-\frame_depth_reg_adc_reg[9]\: unisim.vcomponents.FDCE
+\frame_depth_reg_wr_reg[9]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \^frame_start_rise_adc_reg_0\(0),
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \^frame_start_rise_wr_reg_0\(0),
+      CLR => \^rst\,
       D => frame_depth_w(9),
-      Q => frame_depth_reg_adc(9)
+      Q => frame_depth_reg_wr(9)
     );
 \frame_depth_ui[0]_i_1\: unisim.vcomponents.LUT4
     generic map(
@@ -43183,8 +43182,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_105,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(3),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(4),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(3),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(4),
       I3 => frame_depth_w0_0(0),
       O => frame_depth_w(0)
     );
@@ -43194,8 +43193,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_95,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(3),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(4),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(3),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(4),
       I3 => frame_depth_w0_0(10),
       O => frame_depth_w(10)
     );
@@ -43205,8 +43204,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_94,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(3),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(4),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(3),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(4),
       I3 => frame_depth_w0_0(11),
       O => frame_depth_w(11)
     );
@@ -43216,8 +43215,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_93,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(3),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(4),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(3),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(4),
       I3 => frame_depth_w0_0(12),
       O => frame_depth_w(12)
     );
@@ -43227,8 +43226,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_92,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(3),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(4),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(3),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(4),
       I3 => frame_depth_w0_0(13),
       O => frame_depth_w(13)
     );
@@ -43238,8 +43237,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_91,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(3),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(4),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(3),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(4),
       I3 => frame_depth_w0_0(14),
       O => frame_depth_w(14)
     );
@@ -43249,8 +43248,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_90,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(3),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(4),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(3),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(4),
       I3 => frame_depth_w0_0(15),
       O => frame_depth_w(15)
     );
@@ -43260,8 +43259,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_89,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(4),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(3),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(4),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(3),
       O => frame_depth_w(16)
     );
 \frame_depth_ui[17]_i_1\: unisim.vcomponents.LUT3
@@ -43270,8 +43269,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_88,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(4),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(3),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(4),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(3),
       O => frame_depth_w(17)
     );
 \frame_depth_ui[18]_i_1\: unisim.vcomponents.LUT3
@@ -43280,8 +43279,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_87,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(4),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(3),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(4),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(3),
       O => frame_depth_w(18)
     );
 \frame_depth_ui[19]_i_1\: unisim.vcomponents.LUT3
@@ -43290,8 +43289,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_86,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(4),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(3),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(4),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(3),
       O => frame_depth_w(19)
     );
 \frame_depth_ui[1]_i_1\: unisim.vcomponents.LUT4
@@ -43300,8 +43299,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_104,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(3),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(4),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(3),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(4),
       I3 => frame_depth_w0_0(1),
       O => frame_depth_w(1)
     );
@@ -43311,8 +43310,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_85,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(4),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(3),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(4),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(3),
       O => frame_depth_w(20)
     );
 \frame_depth_ui[21]_i_1\: unisim.vcomponents.LUT3
@@ -43321,8 +43320,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_84,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(4),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(3),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(4),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(3),
       O => frame_depth_w(21)
     );
 \frame_depth_ui[22]_i_1\: unisim.vcomponents.LUT3
@@ -43331,8 +43330,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_83,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(4),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(3),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(4),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(3),
       O => frame_depth_w(22)
     );
 \frame_depth_ui[23]_i_1\: unisim.vcomponents.LUT3
@@ -43341,8 +43340,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_82,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(4),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(3),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(4),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(3),
       O => frame_depth_w(23)
     );
 \frame_depth_ui[24]_i_1\: unisim.vcomponents.LUT3
@@ -43351,8 +43350,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_81,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(4),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(3),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(4),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(3),
       O => frame_depth_w(24)
     );
 \frame_depth_ui[25]_i_1\: unisim.vcomponents.LUT3
@@ -43361,8 +43360,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_80,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(4),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(3),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(4),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(3),
       O => frame_depth_w(25)
     );
 \frame_depth_ui[26]_i_1\: unisim.vcomponents.LUT3
@@ -43371,8 +43370,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_79,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(4),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(3),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(4),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(3),
       O => frame_depth_w(26)
     );
 \frame_depth_ui[27]_i_1\: unisim.vcomponents.LUT3
@@ -43381,8 +43380,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_78,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(4),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(3),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(4),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(3),
       O => frame_depth_w(27)
     );
 \frame_depth_ui[28]_i_1\: unisim.vcomponents.LUT3
@@ -43391,8 +43390,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_77,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(4),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(3),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(4),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(3),
       O => frame_depth_w(28)
     );
 \frame_depth_ui[29]_i_1\: unisim.vcomponents.LUT3
@@ -43401,8 +43400,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_76,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(4),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(3),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(4),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(3),
       O => frame_depth_w(29)
     );
 \frame_depth_ui[2]_i_1\: unisim.vcomponents.LUT4
@@ -43411,8 +43410,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_103,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(3),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(4),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(3),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(4),
       I3 => frame_depth_w0_0(2),
       O => frame_depth_w(2)
     );
@@ -43422,8 +43421,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_75,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(4),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(3),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(4),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(3),
       O => frame_depth_w(30)
     );
 \frame_depth_ui[31]_i_1\: unisim.vcomponents.LUT2
@@ -43441,8 +43440,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_74,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(4),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(3),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(4),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(3),
       O => frame_depth_w(31)
     );
 \frame_depth_ui[3]_i_1\: unisim.vcomponents.LUT4
@@ -43451,8 +43450,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_102,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(3),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(4),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(3),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(4),
       I3 => frame_depth_w0_0(3),
       O => frame_depth_w(3)
     );
@@ -43462,8 +43461,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_101,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(3),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(4),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(3),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(4),
       I3 => frame_depth_w0_0(4),
       O => frame_depth_w(4)
     );
@@ -43473,8 +43472,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_100,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(3),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(4),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(3),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(4),
       I3 => frame_depth_w0_0(5),
       O => frame_depth_w(5)
     );
@@ -43484,8 +43483,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_99,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(3),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(4),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(3),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(4),
       I3 => frame_depth_w0_0(6),
       O => frame_depth_w(6)
     );
@@ -43495,8 +43494,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_98,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(3),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(4),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(3),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(4),
       I3 => frame_depth_w0_0(7),
       O => frame_depth_w(7)
     );
@@ -43506,8 +43505,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_97,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(3),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(4),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(3),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(4),
       I3 => frame_depth_w0_0(8),
       O => frame_depth_w(8)
     );
@@ -43517,8 +43516,8 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
     )
         port map (
       I0 => frame_depth_w0_n_96,
-      I1 => \frame_depth_reg_adc_reg[30]_0\(3),
-      I2 => \frame_depth_reg_adc_reg[30]_0\(4),
+      I1 => \frame_depth_reg_wr_reg[30]_0\(3),
+      I2 => \frame_depth_reg_wr_reg[30]_0\(4),
       I3 => frame_depth_w0_0(9),
       O => frame_depth_w(9)
     );
@@ -43526,7 +43525,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(0),
       Q => ddr_wr_block_id1(1)
     );
@@ -43534,7 +43533,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(10),
       Q => ddr_wr_block_id1(11)
     );
@@ -43542,7 +43541,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(11),
       Q => ddr_wr_block_id1(12)
     );
@@ -43550,7 +43549,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(12),
       Q => ddr_wr_block_id1(13)
     );
@@ -43558,7 +43557,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(13),
       Q => ddr_wr_block_id1(14)
     );
@@ -43566,7 +43565,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(14),
       Q => ddr_wr_block_id1(15)
     );
@@ -43574,7 +43573,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(15),
       Q => ddr_wr_block_id1(16)
     );
@@ -43582,7 +43581,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(16),
       Q => ddr_wr_block_id1(17)
     );
@@ -43590,7 +43589,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(17),
       Q => ddr_wr_block_id1(18)
     );
@@ -43598,7 +43597,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(18),
       Q => ddr_wr_block_id1(19)
     );
@@ -43606,7 +43605,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(19),
       Q => ddr_wr_block_id1(20)
     );
@@ -43614,7 +43613,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(1),
       Q => ddr_wr_block_id1(2)
     );
@@ -43622,7 +43621,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(20),
       Q => ddr_wr_block_id1(21)
     );
@@ -43630,7 +43629,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(21),
       Q => ddr_wr_block_id1(22)
     );
@@ -43638,7 +43637,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(22),
       Q => ddr_wr_block_id1(23)
     );
@@ -43646,7 +43645,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(23),
       Q => ddr_wr_block_id1(24)
     );
@@ -43654,7 +43653,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(24),
       Q => ddr_wr_block_id1(25)
     );
@@ -43662,7 +43661,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(25),
       Q => ddr_wr_block_id1(26)
     );
@@ -43670,7 +43669,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(26),
       Q => ddr_wr_block_id1(27)
     );
@@ -43678,7 +43677,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(27),
       Q => ddr_wr_block_id1(28)
     );
@@ -43686,7 +43685,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(28),
       Q => ddr_wr_block_id1(29)
     );
@@ -43694,7 +43693,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(29),
       Q => ddr_wr_block_id1(30)
     );
@@ -43702,7 +43701,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(2),
       Q => ddr_wr_block_id1(3)
     );
@@ -43710,7 +43709,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(30),
       Q => ddr_wr_block_id1(31)
     );
@@ -43718,7 +43717,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(31),
       Q => \frame_depth_ui_reg_n_0_[31]\
     );
@@ -43726,7 +43725,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(3),
       Q => ddr_wr_block_id1(4)
     );
@@ -43734,7 +43733,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(4),
       Q => ddr_wr_block_id1(5)
     );
@@ -43742,7 +43741,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(5),
       Q => ddr_wr_block_id1(6)
     );
@@ -43750,7 +43749,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(6),
       Q => ddr_wr_block_id1(7)
     );
@@ -43758,7 +43757,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(7),
       Q => ddr_wr_block_id1(8)
     );
@@ -43766,7 +43765,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(8),
       Q => ddr_wr_block_id1(9)
     );
@@ -43774,7 +43773,7 @@ frame_active_ui_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => frame_start_rise_ui,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_depth_w(9),
       Q => ddr_wr_block_id1(10)
     );
@@ -43891,27 +43890,27 @@ frame_depth_w0: unisim.vcomponents.DSP48E1
       RSTP => '0',
       UNDERFLOW => NLW_frame_depth_w0_UNDERFLOW_UNCONNECTED
     );
-frame_end_d_adc_reg: unisim.vcomponents.FDCE
+frame_end_d_wr_reg: unisim.vcomponents.FDCE
      port map (
       C => CLK,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_end_w,
-      Q => frame_end_d_adc
+      Q => frame_end_d_wr
     );
-frame_end_rise_adc_reg: unisim.vcomponents.FDRE
+frame_end_rise_wr_reg: unisim.vcomponents.FDRE
      port map (
       C => CLK,
       CE => '1',
-      D => frame_end_rise_adc_reg_0,
-      Q => \^frame_end_rise_adc\,
+      D => frame_end_rise_wr_reg_0,
+      Q => \^frame_end_rise_wr\,
       R => '0'
     );
 frame_end_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => p_0_in13_in,
       Q => frame_end_sync_d
     );
@@ -43919,15 +43918,15 @@ frame_end_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
-      D => \^frame_end_rise_adc\,
+      CLR => \^rst\,
+      D => \^frame_end_rise_wr\,
       Q => \frame_end_sync_reg_n_0_[0]\
     );
 \frame_end_sync_reg[1]\: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_end_sync_reg_n_0_[0]\,
       Q => \frame_end_sync_reg_n_0_[1]\
     );
@@ -43935,234 +43934,234 @@ frame_end_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_end_sync_reg_n_0_[1]\,
       Q => p_0_in13_in
     );
-frame_exception_adcclk_i_1: unisim.vcomponents.LUT2
+frame_exception_wrclk_i_1: unisim.vcomponents.LUT2
     generic map(
       INIT => X"8"
     )
         port map (
-      I0 => \^frame_end_rise_adc\,
-      I1 => frame_exception_adcclk1,
-      O => frame_exception_adcclk0
+      I0 => \^frame_end_rise_wr\,
+      I1 => frame_exception_wrclk1,
+      O => frame_exception_wrclk0
     );
-frame_exception_adcclk_i_10: unisim.vcomponents.LUT6
+frame_exception_wrclk_i_10: unisim.vcomponents.LUT6
     generic map(
       INIT => X"9009000000009009"
     )
         port map (
-      I0 => frame_depth_reg_adc(16),
-      I1 => \^pixel_cnt_adc_reg\(16),
-      I2 => \^pixel_cnt_adc_reg\(17),
-      I3 => frame_depth_reg_adc(17),
-      I4 => \^pixel_cnt_adc_reg\(15),
-      I5 => frame_depth_reg_adc(15),
-      O => frame_exception_adcclk_i_10_n_0
+      I0 => frame_depth_reg_wr(16),
+      I1 => \^pixel_cnt_wr_reg\(16),
+      I2 => \^pixel_cnt_wr_reg\(17),
+      I3 => frame_depth_reg_wr(17),
+      I4 => \^pixel_cnt_wr_reg\(15),
+      I5 => frame_depth_reg_wr(15),
+      O => frame_exception_wrclk_i_10_n_0
     );
-frame_exception_adcclk_i_11: unisim.vcomponents.LUT6
+frame_exception_wrclk_i_11: unisim.vcomponents.LUT6
     generic map(
       INIT => X"9009000000009009"
     )
         port map (
-      I0 => frame_depth_reg_adc(14),
-      I1 => \^pixel_cnt_adc_reg\(14),
-      I2 => \^pixel_cnt_adc_reg\(12),
-      I3 => frame_depth_reg_adc(12),
-      I4 => \^pixel_cnt_adc_reg\(13),
-      I5 => frame_depth_reg_adc(13),
-      O => frame_exception_adcclk_i_11_n_0
+      I0 => frame_depth_reg_wr(14),
+      I1 => \^pixel_cnt_wr_reg\(14),
+      I2 => \^pixel_cnt_wr_reg\(12),
+      I3 => frame_depth_reg_wr(12),
+      I4 => \^pixel_cnt_wr_reg\(13),
+      I5 => frame_depth_reg_wr(13),
+      O => frame_exception_wrclk_i_11_n_0
     );
-frame_exception_adcclk_i_12: unisim.vcomponents.LUT6
+frame_exception_wrclk_i_12: unisim.vcomponents.LUT6
     generic map(
       INIT => X"9009000000009009"
     )
         port map (
-      I0 => frame_depth_reg_adc(10),
-      I1 => \^pixel_cnt_adc_reg\(10),
-      I2 => \^pixel_cnt_adc_reg\(11),
-      I3 => frame_depth_reg_adc(11),
-      I4 => \^pixel_cnt_adc_reg\(9),
-      I5 => frame_depth_reg_adc(9),
-      O => frame_exception_adcclk_i_12_n_0
+      I0 => frame_depth_reg_wr(10),
+      I1 => \^pixel_cnt_wr_reg\(10),
+      I2 => \^pixel_cnt_wr_reg\(11),
+      I3 => frame_depth_reg_wr(11),
+      I4 => \^pixel_cnt_wr_reg\(9),
+      I5 => frame_depth_reg_wr(9),
+      O => frame_exception_wrclk_i_12_n_0
     );
-frame_exception_adcclk_i_13: unisim.vcomponents.LUT6
+frame_exception_wrclk_i_13: unisim.vcomponents.LUT6
     generic map(
       INIT => X"9009000000009009"
     )
         port map (
-      I0 => frame_depth_reg_adc(8),
-      I1 => \^pixel_cnt_adc_reg\(8),
-      I2 => \^pixel_cnt_adc_reg\(6),
-      I3 => frame_depth_reg_adc(6),
-      I4 => \^pixel_cnt_adc_reg\(7),
-      I5 => frame_depth_reg_adc(7),
-      O => frame_exception_adcclk_i_13_n_0
+      I0 => frame_depth_reg_wr(8),
+      I1 => \^pixel_cnt_wr_reg\(8),
+      I2 => \^pixel_cnt_wr_reg\(6),
+      I3 => frame_depth_reg_wr(6),
+      I4 => \^pixel_cnt_wr_reg\(7),
+      I5 => frame_depth_reg_wr(7),
+      O => frame_exception_wrclk_i_13_n_0
     );
-frame_exception_adcclk_i_14: unisim.vcomponents.LUT6
+frame_exception_wrclk_i_14: unisim.vcomponents.LUT6
     generic map(
       INIT => X"9009000000009009"
     )
         port map (
-      I0 => frame_depth_reg_adc(5),
-      I1 => \^pixel_cnt_adc_reg\(5),
-      I2 => \^pixel_cnt_adc_reg\(4),
-      I3 => frame_depth_reg_adc(4),
-      I4 => \^pixel_cnt_adc_reg\(3),
-      I5 => frame_depth_reg_adc(3),
-      O => frame_exception_adcclk_i_14_n_0
+      I0 => frame_depth_reg_wr(5),
+      I1 => \^pixel_cnt_wr_reg\(5),
+      I2 => \^pixel_cnt_wr_reg\(4),
+      I3 => frame_depth_reg_wr(4),
+      I4 => \^pixel_cnt_wr_reg\(3),
+      I5 => frame_depth_reg_wr(3),
+      O => frame_exception_wrclk_i_14_n_0
     );
-frame_exception_adcclk_i_15: unisim.vcomponents.LUT6
+frame_exception_wrclk_i_15: unisim.vcomponents.LUT6
     generic map(
       INIT => X"9009000000009009"
     )
         port map (
-      I0 => frame_depth_reg_adc(2),
-      I1 => \^pixel_cnt_adc_reg\(2),
-      I2 => \^pixel_cnt_adc_reg\(0),
-      I3 => frame_depth_reg_adc(0),
-      I4 => \^pixel_cnt_adc_reg\(1),
-      I5 => frame_depth_reg_adc(1),
-      O => frame_exception_adcclk_i_15_n_0
+      I0 => frame_depth_reg_wr(2),
+      I1 => \^pixel_cnt_wr_reg\(2),
+      I2 => \^pixel_cnt_wr_reg\(0),
+      I3 => frame_depth_reg_wr(0),
+      I4 => \^pixel_cnt_wr_reg\(1),
+      I5 => frame_depth_reg_wr(1),
+      O => frame_exception_wrclk_i_15_n_0
     );
-frame_exception_adcclk_i_4: unisim.vcomponents.LUT4
+frame_exception_wrclk_i_4: unisim.vcomponents.LUT4
     generic map(
       INIT => X"9009"
     )
         port map (
-      I0 => frame_depth_reg_adc(31),
-      I1 => \^pixel_cnt_adc_reg\(31),
-      I2 => frame_depth_reg_adc(30),
-      I3 => \^pixel_cnt_adc_reg\(30),
-      O => frame_exception_adcclk_i_4_n_0
+      I0 => frame_depth_reg_wr(31),
+      I1 => \^pixel_cnt_wr_reg\(31),
+      I2 => frame_depth_reg_wr(30),
+      I3 => \^pixel_cnt_wr_reg\(30),
+      O => frame_exception_wrclk_i_4_n_0
     );
-frame_exception_adcclk_i_5: unisim.vcomponents.LUT6
+frame_exception_wrclk_i_5: unisim.vcomponents.LUT6
     generic map(
       INIT => X"9009000000009009"
     )
         port map (
-      I0 => frame_depth_reg_adc(28),
-      I1 => \^pixel_cnt_adc_reg\(28),
-      I2 => \^pixel_cnt_adc_reg\(29),
-      I3 => frame_depth_reg_adc(29),
-      I4 => \^pixel_cnt_adc_reg\(27),
-      I5 => frame_depth_reg_adc(27),
-      O => frame_exception_adcclk_i_5_n_0
+      I0 => frame_depth_reg_wr(28),
+      I1 => \^pixel_cnt_wr_reg\(28),
+      I2 => \^pixel_cnt_wr_reg\(29),
+      I3 => frame_depth_reg_wr(29),
+      I4 => \^pixel_cnt_wr_reg\(27),
+      I5 => frame_depth_reg_wr(27),
+      O => frame_exception_wrclk_i_5_n_0
     );
-frame_exception_adcclk_i_6: unisim.vcomponents.LUT6
+frame_exception_wrclk_i_6: unisim.vcomponents.LUT6
     generic map(
       INIT => X"9009000000009009"
     )
         port map (
-      I0 => frame_depth_reg_adc(26),
-      I1 => \^pixel_cnt_adc_reg\(26),
-      I2 => \^pixel_cnt_adc_reg\(24),
-      I3 => frame_depth_reg_adc(24),
-      I4 => \^pixel_cnt_adc_reg\(25),
-      I5 => frame_depth_reg_adc(25),
-      O => frame_exception_adcclk_i_6_n_0
+      I0 => frame_depth_reg_wr(26),
+      I1 => \^pixel_cnt_wr_reg\(26),
+      I2 => \^pixel_cnt_wr_reg\(24),
+      I3 => frame_depth_reg_wr(24),
+      I4 => \^pixel_cnt_wr_reg\(25),
+      I5 => frame_depth_reg_wr(25),
+      O => frame_exception_wrclk_i_6_n_0
     );
-frame_exception_adcclk_i_8: unisim.vcomponents.LUT6
+frame_exception_wrclk_i_8: unisim.vcomponents.LUT6
     generic map(
       INIT => X"9009000000009009"
     )
         port map (
-      I0 => frame_depth_reg_adc(22),
-      I1 => \^pixel_cnt_adc_reg\(22),
-      I2 => \^pixel_cnt_adc_reg\(23),
-      I3 => frame_depth_reg_adc(23),
-      I4 => \^pixel_cnt_adc_reg\(21),
-      I5 => frame_depth_reg_adc(21),
-      O => frame_exception_adcclk_i_8_n_0
+      I0 => frame_depth_reg_wr(22),
+      I1 => \^pixel_cnt_wr_reg\(22),
+      I2 => \^pixel_cnt_wr_reg\(23),
+      I3 => frame_depth_reg_wr(23),
+      I4 => \^pixel_cnt_wr_reg\(21),
+      I5 => frame_depth_reg_wr(21),
+      O => frame_exception_wrclk_i_8_n_0
     );
-frame_exception_adcclk_i_9: unisim.vcomponents.LUT6
+frame_exception_wrclk_i_9: unisim.vcomponents.LUT6
     generic map(
       INIT => X"9009000000009009"
     )
         port map (
-      I0 => frame_depth_reg_adc(20),
-      I1 => \^pixel_cnt_adc_reg\(20),
-      I2 => \^pixel_cnt_adc_reg\(18),
-      I3 => frame_depth_reg_adc(18),
-      I4 => \^pixel_cnt_adc_reg\(19),
-      I5 => frame_depth_reg_adc(19),
-      O => frame_exception_adcclk_i_9_n_0
+      I0 => frame_depth_reg_wr(20),
+      I1 => \^pixel_cnt_wr_reg\(20),
+      I2 => \^pixel_cnt_wr_reg\(18),
+      I3 => frame_depth_reg_wr(18),
+      I4 => \^pixel_cnt_wr_reg\(19),
+      I5 => frame_depth_reg_wr(19),
+      O => frame_exception_wrclk_i_9_n_0
     );
-frame_exception_adcclk_reg: unisim.vcomponents.FDCE
+frame_exception_wrclk_reg: unisim.vcomponents.FDCE
      port map (
       C => CLK,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
-      D => frame_exception_adcclk0,
+      CLR => \^rst\,
+      D => frame_exception_wrclk0,
       Q => ccd_frame_exception
     );
-frame_exception_adcclk_reg_i_2: unisim.vcomponents.CARRY4
+frame_exception_wrclk_reg_i_2: unisim.vcomponents.CARRY4
      port map (
-      CI => frame_exception_adcclk_reg_i_3_n_0,
-      CO(3) => NLW_frame_exception_adcclk_reg_i_2_CO_UNCONNECTED(3),
-      CO(2) => frame_exception_adcclk1,
-      CO(1) => frame_exception_adcclk_reg_i_2_n_2,
-      CO(0) => frame_exception_adcclk_reg_i_2_n_3,
+      CI => frame_exception_wrclk_reg_i_3_n_0,
+      CO(3) => NLW_frame_exception_wrclk_reg_i_2_CO_UNCONNECTED(3),
+      CO(2) => frame_exception_wrclk1,
+      CO(1) => frame_exception_wrclk_reg_i_2_n_2,
+      CO(0) => frame_exception_wrclk_reg_i_2_n_3,
       CYINIT => '0',
       DI(3 downto 0) => B"0111",
-      O(3 downto 0) => NLW_frame_exception_adcclk_reg_i_2_O_UNCONNECTED(3 downto 0),
+      O(3 downto 0) => NLW_frame_exception_wrclk_reg_i_2_O_UNCONNECTED(3 downto 0),
       S(3) => '0',
-      S(2) => frame_exception_adcclk_i_4_n_0,
-      S(1) => frame_exception_adcclk_i_5_n_0,
-      S(0) => frame_exception_adcclk_i_6_n_0
+      S(2) => frame_exception_wrclk_i_4_n_0,
+      S(1) => frame_exception_wrclk_i_5_n_0,
+      S(0) => frame_exception_wrclk_i_6_n_0
     );
-frame_exception_adcclk_reg_i_3: unisim.vcomponents.CARRY4
+frame_exception_wrclk_reg_i_3: unisim.vcomponents.CARRY4
      port map (
-      CI => frame_exception_adcclk_reg_i_7_n_0,
-      CO(3) => frame_exception_adcclk_reg_i_3_n_0,
-      CO(2) => frame_exception_adcclk_reg_i_3_n_1,
-      CO(1) => frame_exception_adcclk_reg_i_3_n_2,
-      CO(0) => frame_exception_adcclk_reg_i_3_n_3,
+      CI => frame_exception_wrclk_reg_i_7_n_0,
+      CO(3) => frame_exception_wrclk_reg_i_3_n_0,
+      CO(2) => frame_exception_wrclk_reg_i_3_n_1,
+      CO(1) => frame_exception_wrclk_reg_i_3_n_2,
+      CO(0) => frame_exception_wrclk_reg_i_3_n_3,
       CYINIT => '0',
       DI(3 downto 0) => B"1111",
-      O(3 downto 0) => NLW_frame_exception_adcclk_reg_i_3_O_UNCONNECTED(3 downto 0),
-      S(3) => frame_exception_adcclk_i_8_n_0,
-      S(2) => frame_exception_adcclk_i_9_n_0,
-      S(1) => frame_exception_adcclk_i_10_n_0,
-      S(0) => frame_exception_adcclk_i_11_n_0
+      O(3 downto 0) => NLW_frame_exception_wrclk_reg_i_3_O_UNCONNECTED(3 downto 0),
+      S(3) => frame_exception_wrclk_i_8_n_0,
+      S(2) => frame_exception_wrclk_i_9_n_0,
+      S(1) => frame_exception_wrclk_i_10_n_0,
+      S(0) => frame_exception_wrclk_i_11_n_0
     );
-frame_exception_adcclk_reg_i_7: unisim.vcomponents.CARRY4
+frame_exception_wrclk_reg_i_7: unisim.vcomponents.CARRY4
      port map (
       CI => '0',
-      CO(3) => frame_exception_adcclk_reg_i_7_n_0,
-      CO(2) => frame_exception_adcclk_reg_i_7_n_1,
-      CO(1) => frame_exception_adcclk_reg_i_7_n_2,
-      CO(0) => frame_exception_adcclk_reg_i_7_n_3,
+      CO(3) => frame_exception_wrclk_reg_i_7_n_0,
+      CO(2) => frame_exception_wrclk_reg_i_7_n_1,
+      CO(1) => frame_exception_wrclk_reg_i_7_n_2,
+      CO(0) => frame_exception_wrclk_reg_i_7_n_3,
       CYINIT => '0',
       DI(3 downto 0) => B"1111",
-      O(3 downto 0) => NLW_frame_exception_adcclk_reg_i_7_O_UNCONNECTED(3 downto 0),
-      S(3) => frame_exception_adcclk_i_12_n_0,
-      S(2) => frame_exception_adcclk_i_13_n_0,
-      S(1) => frame_exception_adcclk_i_14_n_0,
-      S(0) => frame_exception_adcclk_i_15_n_0
+      O(3 downto 0) => NLW_frame_exception_wrclk_reg_i_7_O_UNCONNECTED(3 downto 0),
+      S(3) => frame_exception_wrclk_i_12_n_0,
+      S(2) => frame_exception_wrclk_i_13_n_0,
+      S(1) => frame_exception_wrclk_i_14_n_0,
+      S(0) => frame_exception_wrclk_i_15_n_0
     );
-frame_start_d_adc_reg: unisim.vcomponents.FDCE
+frame_start_d_wr_reg: unisim.vcomponents.FDCE
      port map (
       C => CLK,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => frame_start_w,
-      Q => frame_start_d_adc
+      Q => frame_start_d_wr
     );
-frame_start_rise_adc_reg: unisim.vcomponents.FDRE
+frame_start_rise_wr_reg: unisim.vcomponents.FDRE
      port map (
       C => CLK,
       CE => '1',
-      D => frame_start_rise_adc_reg_1,
-      Q => \^frame_start_rise_adc_reg_0\(0),
+      D => frame_start_rise_wr_reg_1,
+      Q => \^frame_start_rise_wr_reg_0\(0),
       R => '0'
     );
 frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => p_0_in14_in,
       Q => frame_start_sync_d
     );
@@ -44170,15 +44169,15 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
-      D => \^frame_start_rise_adc_reg_0\(0),
+      CLR => \^rst\,
+      D => \^frame_start_rise_wr_reg_0\(0),
       Q => \frame_start_sync_reg_n_0_[0]\
     );
 \frame_start_sync_reg[1]\: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_start_sync_reg_n_0_[0]\,
       Q => \frame_start_sync_reg_n_0_[1]\
     );
@@ -44186,7 +44185,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_start_sync_reg_n_0_[1]\,
       Q => p_0_in14_in
     );
@@ -44262,7 +44261,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => frames_in_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frames_in_fifo[0]_i_1_n_0\,
       Q => frames_in_fifo_reg(0)
     );
@@ -44270,7 +44269,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => frames_in_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frames_in_fifo[1]_i_1_n_0\,
       Q => frames_in_fifo_reg(1)
     );
@@ -44278,7 +44277,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => frames_in_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frames_in_fifo[2]_i_1_n_0\,
       Q => frames_in_fifo_reg(2)
     );
@@ -44286,7 +44285,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => frames_in_fifo,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frames_in_fifo[3]_i_2_n_0\,
       Q => frames_in_fifo_reg(3)
     );
@@ -44294,7 +44293,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][0]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(0)
     );
@@ -44302,7 +44301,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][10]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(10)
     );
@@ -44310,7 +44309,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][11]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(11)
     );
@@ -44318,7 +44317,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][12]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(12)
     );
@@ -44326,7 +44325,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][13]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(13)
     );
@@ -44334,7 +44333,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][14]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(14)
     );
@@ -44342,7 +44341,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][15]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(15)
     );
@@ -44350,7 +44349,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][16]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(16)
     );
@@ -44358,7 +44357,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][17]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(17)
     );
@@ -44366,7 +44365,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][18]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(18)
     );
@@ -44374,7 +44373,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][19]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(19)
     );
@@ -44382,7 +44381,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][1]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(1)
     );
@@ -44390,7 +44389,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][20]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(20)
     );
@@ -44398,7 +44397,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][21]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(21)
     );
@@ -44406,7 +44405,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][22]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(22)
     );
@@ -44414,7 +44413,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][23]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(23)
     );
@@ -44422,7 +44421,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][24]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(24)
     );
@@ -44430,7 +44429,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][25]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(25)
     );
@@ -44438,7 +44437,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][26]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(26)
     );
@@ -44446,7 +44445,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][27]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(27)
     );
@@ -44454,7 +44453,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][28]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(28)
     );
@@ -44462,7 +44461,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][29]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(29)
     );
@@ -44470,7 +44469,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][2]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(2)
     );
@@ -44478,7 +44477,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][30]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(30)
     );
@@ -44486,7 +44485,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][31]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(31)
     );
@@ -44494,7 +44493,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][3]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(3)
     );
@@ -44502,7 +44501,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][4]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(4)
     );
@@ -44510,7 +44509,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][5]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(5)
     );
@@ -44518,7 +44517,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][6]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(6)
     );
@@ -44526,7 +44525,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][7]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(7)
     );
@@ -44534,7 +44533,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][8]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(8)
     );
@@ -44542,7 +44541,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[0][9]\,
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(9)
     );
@@ -44550,7 +44549,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(0),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(0)
     );
@@ -44558,7 +44557,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(10),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(10)
     );
@@ -44566,7 +44565,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(11),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(11)
     );
@@ -44574,7 +44573,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(12),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(12)
     );
@@ -44582,7 +44581,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(13),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(13)
     );
@@ -44590,7 +44589,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(14),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(14)
     );
@@ -44598,7 +44597,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(15),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(15)
     );
@@ -44606,7 +44605,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(16),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(16)
     );
@@ -44614,7 +44613,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(17),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(17)
     );
@@ -44622,7 +44621,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(18),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(18)
     );
@@ -44630,7 +44629,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(19),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(19)
     );
@@ -44638,7 +44637,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(1),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(1)
     );
@@ -44646,7 +44645,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(20),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(20)
     );
@@ -44654,7 +44653,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(21),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(21)
     );
@@ -44662,7 +44661,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(22),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(22)
     );
@@ -44670,7 +44669,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(23),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(23)
     );
@@ -44678,7 +44677,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(24),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(24)
     );
@@ -44686,7 +44685,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(25),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(25)
     );
@@ -44694,7 +44693,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(26),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(26)
     );
@@ -44702,7 +44701,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(27),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(27)
     );
@@ -44710,7 +44709,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(28),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(28)
     );
@@ -44718,7 +44717,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(29),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(29)
     );
@@ -44726,7 +44725,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(2),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(2)
     );
@@ -44734,7 +44733,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(30),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(30)
     );
@@ -44742,7 +44741,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(31),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(31)
     );
@@ -44750,7 +44749,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(3),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(3)
     );
@@ -44758,7 +44757,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(4),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(4)
     );
@@ -44766,7 +44765,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(5),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(5)
     );
@@ -44774,7 +44773,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(6),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(6)
     );
@@ -44782,7 +44781,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(7),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(7)
     );
@@ -44790,7 +44789,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(8),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(8)
     );
@@ -44798,7 +44797,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][0]_8\(9),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(9)
     );
@@ -44806,7 +44805,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(0),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(0)
     );
@@ -44814,7 +44813,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(10),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(10)
     );
@@ -44822,7 +44821,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(11),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(11)
     );
@@ -44830,7 +44829,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(12),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(12)
     );
@@ -44838,7 +44837,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(13),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(13)
     );
@@ -44846,7 +44845,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(14),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(14)
     );
@@ -44854,7 +44853,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(15),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(15)
     );
@@ -44862,7 +44861,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(16),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(16)
     );
@@ -44870,7 +44869,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(17),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(17)
     );
@@ -44878,7 +44877,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(18),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(18)
     );
@@ -44886,7 +44885,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(19),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(19)
     );
@@ -44894,7 +44893,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(1),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(1)
     );
@@ -44902,7 +44901,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(20),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(20)
     );
@@ -44910,7 +44909,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(21),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(21)
     );
@@ -44918,7 +44917,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(22),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(22)
     );
@@ -44926,7 +44925,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(23),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(23)
     );
@@ -44934,7 +44933,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(24),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(24)
     );
@@ -44942,7 +44941,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(25),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(25)
     );
@@ -44950,7 +44949,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(26),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(26)
     );
@@ -44958,7 +44957,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(27),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(27)
     );
@@ -44966,7 +44965,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(28),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(28)
     );
@@ -44974,7 +44973,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(29),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(29)
     );
@@ -44982,7 +44981,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(2),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(2)
     );
@@ -44990,7 +44989,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(30),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(30)
     );
@@ -44998,7 +44997,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(31),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(31)
     );
@@ -45006,7 +45005,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(3),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(3)
     );
@@ -45014,7 +45013,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(4),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(4)
     );
@@ -45022,7 +45021,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(5),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(5)
     );
@@ -45030,7 +45029,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(6),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(6)
     );
@@ -45038,7 +45037,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(7),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(7)
     );
@@ -45046,7 +45045,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(8),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(8)
     );
@@ -45054,7 +45053,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][1]_9\(9),
       Q => \gen_depth_sync[0].frame_depth_fifo_sync_reg[0][2]_10\(9)
     );
@@ -45062,7 +45061,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][0]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(0)
     );
@@ -45070,7 +45069,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][10]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(10)
     );
@@ -45078,7 +45077,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][11]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(11)
     );
@@ -45086,7 +45085,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][12]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(12)
     );
@@ -45094,7 +45093,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][13]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(13)
     );
@@ -45102,7 +45101,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][14]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(14)
     );
@@ -45110,7 +45109,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][15]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(15)
     );
@@ -45118,7 +45117,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][16]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(16)
     );
@@ -45126,7 +45125,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][17]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(17)
     );
@@ -45134,7 +45133,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][18]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(18)
     );
@@ -45142,7 +45141,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][19]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(19)
     );
@@ -45150,7 +45149,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][1]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(1)
     );
@@ -45158,7 +45157,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][20]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(20)
     );
@@ -45166,7 +45165,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][21]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(21)
     );
@@ -45174,7 +45173,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][22]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(22)
     );
@@ -45182,7 +45181,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][23]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(23)
     );
@@ -45190,7 +45189,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][24]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(24)
     );
@@ -45198,7 +45197,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][25]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(25)
     );
@@ -45206,7 +45205,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][26]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(26)
     );
@@ -45214,7 +45213,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][27]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(27)
     );
@@ -45222,7 +45221,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][28]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(28)
     );
@@ -45230,7 +45229,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][29]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(29)
     );
@@ -45238,7 +45237,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][2]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(2)
     );
@@ -45246,7 +45245,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][30]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(30)
     );
@@ -45254,7 +45253,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][31]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(31)
     );
@@ -45262,7 +45261,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][3]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(3)
     );
@@ -45270,7 +45269,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][4]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(4)
     );
@@ -45278,7 +45277,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][5]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(5)
     );
@@ -45286,7 +45285,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][6]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(6)
     );
@@ -45294,7 +45293,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][7]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(7)
     );
@@ -45302,7 +45301,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][8]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(8)
     );
@@ -45310,7 +45309,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[1][9]\,
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(9)
     );
@@ -45318,7 +45317,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(0),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(0)
     );
@@ -45326,7 +45325,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(10),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(10)
     );
@@ -45334,7 +45333,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(11),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(11)
     );
@@ -45342,7 +45341,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(12),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(12)
     );
@@ -45350,7 +45349,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(13),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(13)
     );
@@ -45358,7 +45357,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(14),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(14)
     );
@@ -45366,7 +45365,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(15),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(15)
     );
@@ -45374,7 +45373,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(16),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(16)
     );
@@ -45382,7 +45381,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(17),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(17)
     );
@@ -45390,7 +45389,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(18),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(18)
     );
@@ -45398,7 +45397,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(19),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(19)
     );
@@ -45406,7 +45405,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(1),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(1)
     );
@@ -45414,7 +45413,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(20),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(20)
     );
@@ -45422,7 +45421,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(21),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(21)
     );
@@ -45430,7 +45429,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(22),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(22)
     );
@@ -45438,7 +45437,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(23),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(23)
     );
@@ -45446,7 +45445,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(24),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(24)
     );
@@ -45454,7 +45453,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(25),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(25)
     );
@@ -45462,7 +45461,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(26),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(26)
     );
@@ -45470,7 +45469,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(27),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(27)
     );
@@ -45478,7 +45477,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(28),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(28)
     );
@@ -45486,7 +45485,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(29),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(29)
     );
@@ -45494,7 +45493,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(2),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(2)
     );
@@ -45502,7 +45501,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(30),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(30)
     );
@@ -45510,7 +45509,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(31),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(31)
     );
@@ -45518,7 +45517,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(3),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(3)
     );
@@ -45526,7 +45525,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(4),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(4)
     );
@@ -45534,7 +45533,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(5),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(5)
     );
@@ -45542,7 +45541,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(6),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(6)
     );
@@ -45550,7 +45549,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(7),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(7)
     );
@@ -45558,7 +45557,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(8),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(8)
     );
@@ -45566,7 +45565,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][0]_11\(9),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(9)
     );
@@ -45574,7 +45573,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(0),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(0)
     );
@@ -45582,7 +45581,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(10),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(10)
     );
@@ -45590,7 +45589,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(11),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(11)
     );
@@ -45598,7 +45597,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(12),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(12)
     );
@@ -45606,7 +45605,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(13),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(13)
     );
@@ -45614,7 +45613,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(14),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(14)
     );
@@ -45622,7 +45621,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(15),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(15)
     );
@@ -45630,7 +45629,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(16),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(16)
     );
@@ -45638,7 +45637,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(17),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(17)
     );
@@ -45646,7 +45645,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(18),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(18)
     );
@@ -45654,7 +45653,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(19),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(19)
     );
@@ -45662,7 +45661,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(1),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(1)
     );
@@ -45670,7 +45669,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(20),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(20)
     );
@@ -45678,7 +45677,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(21),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(21)
     );
@@ -45686,7 +45685,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(22),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(22)
     );
@@ -45694,7 +45693,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(23),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(23)
     );
@@ -45702,7 +45701,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(24),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(24)
     );
@@ -45710,7 +45709,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(25),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(25)
     );
@@ -45718,7 +45717,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(26),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(26)
     );
@@ -45726,7 +45725,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(27),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(27)
     );
@@ -45734,7 +45733,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(28),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(28)
     );
@@ -45742,7 +45741,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(29),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(29)
     );
@@ -45750,7 +45749,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(2),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(2)
     );
@@ -45758,7 +45757,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(30),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(30)
     );
@@ -45766,7 +45765,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(31),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(31)
     );
@@ -45774,7 +45773,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(3),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(3)
     );
@@ -45782,7 +45781,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(4),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(4)
     );
@@ -45790,7 +45789,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(5),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(5)
     );
@@ -45798,7 +45797,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(6),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(6)
     );
@@ -45806,7 +45805,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(7),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(7)
     );
@@ -45814,7 +45813,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(8),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(8)
     );
@@ -45822,7 +45821,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][1]_12\(9),
       Q => \gen_depth_sync[1].frame_depth_fifo_sync_reg[1][2]_13\(9)
     );
@@ -45830,7 +45829,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][0]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(0)
     );
@@ -45838,7 +45837,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][10]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(10)
     );
@@ -45846,7 +45845,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][11]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(11)
     );
@@ -45854,7 +45853,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][12]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(12)
     );
@@ -45862,7 +45861,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][13]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(13)
     );
@@ -45870,7 +45869,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][14]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(14)
     );
@@ -45878,7 +45877,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][15]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(15)
     );
@@ -45886,7 +45885,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][16]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(16)
     );
@@ -45894,7 +45893,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][17]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(17)
     );
@@ -45902,7 +45901,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][18]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(18)
     );
@@ -45910,7 +45909,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][19]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(19)
     );
@@ -45918,7 +45917,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][1]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(1)
     );
@@ -45926,7 +45925,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][20]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(20)
     );
@@ -45934,7 +45933,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][21]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(21)
     );
@@ -45942,7 +45941,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][22]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(22)
     );
@@ -45950,7 +45949,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][23]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(23)
     );
@@ -45958,7 +45957,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][24]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(24)
     );
@@ -45966,7 +45965,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][25]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(25)
     );
@@ -45974,7 +45973,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][26]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(26)
     );
@@ -45982,7 +45981,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][27]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(27)
     );
@@ -45990,7 +45989,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][28]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(28)
     );
@@ -45998,7 +45997,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][29]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(29)
     );
@@ -46006,7 +46005,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][2]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(2)
     );
@@ -46014,7 +46013,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][30]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(30)
     );
@@ -46022,7 +46021,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][31]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(31)
     );
@@ -46030,7 +46029,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][3]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(3)
     );
@@ -46038,7 +46037,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][4]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(4)
     );
@@ -46046,7 +46045,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][5]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(5)
     );
@@ -46054,7 +46053,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][6]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(6)
     );
@@ -46062,7 +46061,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][7]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(7)
     );
@@ -46070,7 +46069,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][8]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(8)
     );
@@ -46078,7 +46077,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[2][9]\,
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(9)
     );
@@ -46086,7 +46085,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(0),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(0)
     );
@@ -46094,7 +46093,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(10),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(10)
     );
@@ -46102,7 +46101,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(11),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(11)
     );
@@ -46110,7 +46109,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(12),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(12)
     );
@@ -46118,7 +46117,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(13),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(13)
     );
@@ -46126,7 +46125,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(14),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(14)
     );
@@ -46134,7 +46133,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(15),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(15)
     );
@@ -46142,7 +46141,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(16),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(16)
     );
@@ -46150,7 +46149,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(17),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(17)
     );
@@ -46158,7 +46157,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(18),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(18)
     );
@@ -46166,7 +46165,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(19),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(19)
     );
@@ -46174,7 +46173,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(1),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(1)
     );
@@ -46182,7 +46181,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(20),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(20)
     );
@@ -46190,7 +46189,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(21),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(21)
     );
@@ -46198,7 +46197,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(22),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(22)
     );
@@ -46206,7 +46205,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(23),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(23)
     );
@@ -46214,7 +46213,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(24),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(24)
     );
@@ -46222,7 +46221,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(25),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(25)
     );
@@ -46230,7 +46229,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(26),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(26)
     );
@@ -46238,7 +46237,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(27),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(27)
     );
@@ -46246,7 +46245,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(28),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(28)
     );
@@ -46254,7 +46253,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(29),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(29)
     );
@@ -46262,7 +46261,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(2),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(2)
     );
@@ -46270,7 +46269,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(30),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(30)
     );
@@ -46278,7 +46277,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(31),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(31)
     );
@@ -46286,7 +46285,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(3),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(3)
     );
@@ -46294,7 +46293,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(4),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(4)
     );
@@ -46302,7 +46301,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(5),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(5)
     );
@@ -46310,7 +46309,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(6),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(6)
     );
@@ -46318,7 +46317,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(7),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(7)
     );
@@ -46326,7 +46325,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(8),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(8)
     );
@@ -46334,7 +46333,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][0]_14\(9),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(9)
     );
@@ -46342,7 +46341,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(0),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(0)
     );
@@ -46350,7 +46349,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(10),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(10)
     );
@@ -46358,7 +46357,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(11),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(11)
     );
@@ -46366,7 +46365,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(12),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(12)
     );
@@ -46374,7 +46373,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(13),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(13)
     );
@@ -46382,7 +46381,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(14),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(14)
     );
@@ -46390,7 +46389,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(15),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(15)
     );
@@ -46398,7 +46397,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(16),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(16)
     );
@@ -46406,7 +46405,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(17),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(17)
     );
@@ -46414,7 +46413,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(18),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(18)
     );
@@ -46422,7 +46421,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(19),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(19)
     );
@@ -46430,7 +46429,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(1),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(1)
     );
@@ -46438,7 +46437,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(20),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(20)
     );
@@ -46446,7 +46445,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(21),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(21)
     );
@@ -46454,7 +46453,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(22),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(22)
     );
@@ -46462,7 +46461,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(23),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(23)
     );
@@ -46470,7 +46469,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(24),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(24)
     );
@@ -46478,7 +46477,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(25),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(25)
     );
@@ -46486,7 +46485,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(26),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(26)
     );
@@ -46494,7 +46493,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(27),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(27)
     );
@@ -46502,7 +46501,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(28),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(28)
     );
@@ -46510,7 +46509,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(29),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(29)
     );
@@ -46518,7 +46517,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(2),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(2)
     );
@@ -46526,7 +46525,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(30),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(30)
     );
@@ -46534,7 +46533,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(31),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(31)
     );
@@ -46542,7 +46541,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(3),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(3)
     );
@@ -46550,7 +46549,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(4),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(4)
     );
@@ -46558,7 +46557,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(5),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(5)
     );
@@ -46566,7 +46565,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(6),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(6)
     );
@@ -46574,7 +46573,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(7),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(7)
     );
@@ -46582,7 +46581,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(8),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(8)
     );
@@ -46590,7 +46589,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][1]_15\(9),
       Q => \gen_depth_sync[2].frame_depth_fifo_sync_reg[2][2]_16\(9)
     );
@@ -46598,7 +46597,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][0]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(0)
     );
@@ -46606,7 +46605,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][10]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(10)
     );
@@ -46614,7 +46613,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][11]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(11)
     );
@@ -46622,7 +46621,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][12]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(12)
     );
@@ -46630,7 +46629,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][13]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(13)
     );
@@ -46638,7 +46637,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][14]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(14)
     );
@@ -46646,7 +46645,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][15]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(15)
     );
@@ -46654,7 +46653,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][16]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(16)
     );
@@ -46662,7 +46661,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][17]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(17)
     );
@@ -46670,7 +46669,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][18]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(18)
     );
@@ -46678,7 +46677,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][19]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(19)
     );
@@ -46686,7 +46685,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][1]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(1)
     );
@@ -46694,7 +46693,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][20]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(20)
     );
@@ -46702,7 +46701,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][21]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(21)
     );
@@ -46710,7 +46709,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][22]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(22)
     );
@@ -46718,7 +46717,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][23]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(23)
     );
@@ -46726,7 +46725,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][24]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(24)
     );
@@ -46734,7 +46733,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][25]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(25)
     );
@@ -46742,7 +46741,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][26]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(26)
     );
@@ -46750,7 +46749,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][27]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(27)
     );
@@ -46758,7 +46757,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][28]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(28)
     );
@@ -46766,7 +46765,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][29]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(29)
     );
@@ -46774,7 +46773,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][2]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(2)
     );
@@ -46782,7 +46781,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][30]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(30)
     );
@@ -46790,7 +46789,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][31]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(31)
     );
@@ -46798,7 +46797,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][3]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(3)
     );
@@ -46806,7 +46805,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][4]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(4)
     );
@@ -46814,7 +46813,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][5]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(5)
     );
@@ -46822,7 +46821,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][6]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(6)
     );
@@ -46830,7 +46829,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][7]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(7)
     );
@@ -46838,7 +46837,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][8]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(8)
     );
@@ -46846,7 +46845,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[3][9]\,
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(9)
     );
@@ -46854,7 +46853,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(0),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(0)
     );
@@ -46862,7 +46861,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(10),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(10)
     );
@@ -46870,7 +46869,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(11),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(11)
     );
@@ -46878,7 +46877,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(12),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(12)
     );
@@ -46886,7 +46885,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(13),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(13)
     );
@@ -46894,7 +46893,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(14),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(14)
     );
@@ -46902,7 +46901,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(15),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(15)
     );
@@ -46910,7 +46909,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(16),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(16)
     );
@@ -46918,7 +46917,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(17),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(17)
     );
@@ -46926,7 +46925,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(18),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(18)
     );
@@ -46934,7 +46933,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(19),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(19)
     );
@@ -46942,7 +46941,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(1),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(1)
     );
@@ -46950,7 +46949,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(20),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(20)
     );
@@ -46958,7 +46957,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(21),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(21)
     );
@@ -46966,7 +46965,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(22),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(22)
     );
@@ -46974,7 +46973,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(23),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(23)
     );
@@ -46982,7 +46981,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(24),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(24)
     );
@@ -46990,7 +46989,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(25),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(25)
     );
@@ -46998,7 +46997,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(26),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(26)
     );
@@ -47006,7 +47005,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(27),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(27)
     );
@@ -47014,7 +47013,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(28),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(28)
     );
@@ -47022,7 +47021,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(29),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(29)
     );
@@ -47030,7 +47029,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(2),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(2)
     );
@@ -47038,7 +47037,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(30),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(30)
     );
@@ -47046,7 +47045,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(31),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(31)
     );
@@ -47054,7 +47053,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(3),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(3)
     );
@@ -47062,7 +47061,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(4),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(4)
     );
@@ -47070,7 +47069,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(5),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(5)
     );
@@ -47078,7 +47077,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(6),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(6)
     );
@@ -47086,7 +47085,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(7),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(7)
     );
@@ -47094,7 +47093,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(8),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(8)
     );
@@ -47102,7 +47101,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][0]_17\(9),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(9)
     );
@@ -47110,7 +47109,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(0),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(0)
     );
@@ -47118,7 +47117,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(10),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(10)
     );
@@ -47126,7 +47125,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(11),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(11)
     );
@@ -47134,7 +47133,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(12),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(12)
     );
@@ -47142,7 +47141,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(13),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(13)
     );
@@ -47150,7 +47149,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(14),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(14)
     );
@@ -47158,7 +47157,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(15),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(15)
     );
@@ -47166,7 +47165,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(16),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(16)
     );
@@ -47174,7 +47173,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(17),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(17)
     );
@@ -47182,7 +47181,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(18),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(18)
     );
@@ -47190,7 +47189,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(19),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(19)
     );
@@ -47198,7 +47197,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(1),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(1)
     );
@@ -47206,7 +47205,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(20),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(20)
     );
@@ -47214,7 +47213,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(21),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(21)
     );
@@ -47222,7 +47221,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(22),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(22)
     );
@@ -47230,7 +47229,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(23),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(23)
     );
@@ -47238,7 +47237,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(24),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(24)
     );
@@ -47246,7 +47245,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(25),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(25)
     );
@@ -47254,7 +47253,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(26),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(26)
     );
@@ -47262,7 +47261,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(27),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(27)
     );
@@ -47270,7 +47269,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(28),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(28)
     );
@@ -47278,7 +47277,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(29),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(29)
     );
@@ -47286,7 +47285,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(2),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(2)
     );
@@ -47294,7 +47293,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(30),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(30)
     );
@@ -47302,7 +47301,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(31),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(31)
     );
@@ -47310,7 +47309,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(3),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(3)
     );
@@ -47318,7 +47317,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(4),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(4)
     );
@@ -47326,7 +47325,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(5),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(5)
     );
@@ -47334,7 +47333,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(6),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(6)
     );
@@ -47342,7 +47341,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(7),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(7)
     );
@@ -47350,7 +47349,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(8),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(8)
     );
@@ -47358,7 +47357,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][1]_18\(9),
       Q => \gen_depth_sync[3].frame_depth_fifo_sync_reg[3][2]_19\(9)
     );
@@ -47366,7 +47365,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][0]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(0)
     );
@@ -47374,7 +47373,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][10]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(10)
     );
@@ -47382,7 +47381,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][11]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(11)
     );
@@ -47390,7 +47389,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][12]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(12)
     );
@@ -47398,7 +47397,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][13]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(13)
     );
@@ -47406,7 +47405,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][14]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(14)
     );
@@ -47414,7 +47413,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][15]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(15)
     );
@@ -47422,7 +47421,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][16]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(16)
     );
@@ -47430,7 +47429,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][17]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(17)
     );
@@ -47438,7 +47437,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][18]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(18)
     );
@@ -47446,7 +47445,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][19]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(19)
     );
@@ -47454,7 +47453,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][1]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(1)
     );
@@ -47462,7 +47461,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][20]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(20)
     );
@@ -47470,7 +47469,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][21]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(21)
     );
@@ -47478,7 +47477,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][22]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(22)
     );
@@ -47486,7 +47485,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][23]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(23)
     );
@@ -47494,7 +47493,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][24]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(24)
     );
@@ -47502,7 +47501,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][25]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(25)
     );
@@ -47510,7 +47509,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][26]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(26)
     );
@@ -47518,7 +47517,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][27]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(27)
     );
@@ -47526,7 +47525,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][28]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(28)
     );
@@ -47534,7 +47533,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][29]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(29)
     );
@@ -47542,7 +47541,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][2]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(2)
     );
@@ -47550,7 +47549,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][30]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(30)
     );
@@ -47558,7 +47557,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][31]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(31)
     );
@@ -47566,7 +47565,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][3]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(3)
     );
@@ -47574,7 +47573,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][4]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(4)
     );
@@ -47582,7 +47581,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][5]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(5)
     );
@@ -47590,7 +47589,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][6]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(6)
     );
@@ -47598,7 +47597,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][7]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(7)
     );
@@ -47606,7 +47605,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][8]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(8)
     );
@@ -47614,7 +47613,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[4][9]\,
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(9)
     );
@@ -47622,7 +47621,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(0),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(0)
     );
@@ -47630,7 +47629,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(10),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(10)
     );
@@ -47638,7 +47637,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(11),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(11)
     );
@@ -47646,7 +47645,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(12),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(12)
     );
@@ -47654,7 +47653,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(13),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(13)
     );
@@ -47662,7 +47661,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(14),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(14)
     );
@@ -47670,7 +47669,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(15),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(15)
     );
@@ -47678,7 +47677,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(16),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(16)
     );
@@ -47686,7 +47685,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(17),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(17)
     );
@@ -47694,7 +47693,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(18),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(18)
     );
@@ -47702,7 +47701,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(19),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(19)
     );
@@ -47710,7 +47709,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(1),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(1)
     );
@@ -47718,7 +47717,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(20),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(20)
     );
@@ -47726,7 +47725,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(21),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(21)
     );
@@ -47734,7 +47733,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(22),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(22)
     );
@@ -47742,7 +47741,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(23),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(23)
     );
@@ -47750,7 +47749,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(24),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(24)
     );
@@ -47758,7 +47757,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(25),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(25)
     );
@@ -47766,7 +47765,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(26),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(26)
     );
@@ -47774,7 +47773,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(27),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(27)
     );
@@ -47782,7 +47781,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(28),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(28)
     );
@@ -47790,7 +47789,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(29),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(29)
     );
@@ -47798,7 +47797,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(2),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(2)
     );
@@ -47806,7 +47805,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(30),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(30)
     );
@@ -47814,7 +47813,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(31),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(31)
     );
@@ -47822,7 +47821,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(3),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(3)
     );
@@ -47830,7 +47829,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(4),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(4)
     );
@@ -47838,7 +47837,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(5),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(5)
     );
@@ -47846,7 +47845,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(6),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(6)
     );
@@ -47854,7 +47853,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(7),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(7)
     );
@@ -47862,7 +47861,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(8),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(8)
     );
@@ -47870,7 +47869,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][0]_20\(9),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(9)
     );
@@ -47878,7 +47877,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(0),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(0)
     );
@@ -47886,7 +47885,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(10),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(10)
     );
@@ -47894,7 +47893,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(11),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(11)
     );
@@ -47902,7 +47901,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(12),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(12)
     );
@@ -47910,7 +47909,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(13),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(13)
     );
@@ -47918,7 +47917,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(14),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(14)
     );
@@ -47926,7 +47925,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(15),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(15)
     );
@@ -47934,7 +47933,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(16),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(16)
     );
@@ -47942,7 +47941,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(17),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(17)
     );
@@ -47950,7 +47949,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(18),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(18)
     );
@@ -47958,7 +47957,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(19),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(19)
     );
@@ -47966,7 +47965,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(1),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(1)
     );
@@ -47974,7 +47973,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(20),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(20)
     );
@@ -47982,7 +47981,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(21),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(21)
     );
@@ -47990,7 +47989,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(22),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(22)
     );
@@ -47998,7 +47997,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(23),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(23)
     );
@@ -48006,7 +48005,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(24),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(24)
     );
@@ -48014,7 +48013,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(25),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(25)
     );
@@ -48022,7 +48021,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(26),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(26)
     );
@@ -48030,7 +48029,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(27),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(27)
     );
@@ -48038,7 +48037,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(28),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(28)
     );
@@ -48046,7 +48045,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(29),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(29)
     );
@@ -48054,7 +48053,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(2),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(2)
     );
@@ -48062,7 +48061,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(30),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(30)
     );
@@ -48070,7 +48069,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(31),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(31)
     );
@@ -48078,7 +48077,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(3),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(3)
     );
@@ -48086,7 +48085,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(4),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(4)
     );
@@ -48094,7 +48093,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(5),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(5)
     );
@@ -48102,7 +48101,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(6),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(6)
     );
@@ -48110,7 +48109,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(7),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(7)
     );
@@ -48118,7 +48117,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(8),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(8)
     );
@@ -48126,7 +48125,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][1]_21\(9),
       Q => \gen_depth_sync[4].frame_depth_fifo_sync_reg[4][2]_22\(9)
     );
@@ -48134,7 +48133,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][0]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(0)
     );
@@ -48142,7 +48141,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][10]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(10)
     );
@@ -48150,7 +48149,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][11]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(11)
     );
@@ -48158,7 +48157,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][12]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(12)
     );
@@ -48166,7 +48165,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][13]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(13)
     );
@@ -48174,7 +48173,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][14]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(14)
     );
@@ -48182,7 +48181,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][15]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(15)
     );
@@ -48190,7 +48189,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][16]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(16)
     );
@@ -48198,7 +48197,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][17]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(17)
     );
@@ -48206,7 +48205,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][18]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(18)
     );
@@ -48214,7 +48213,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][19]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(19)
     );
@@ -48222,7 +48221,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][1]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(1)
     );
@@ -48230,7 +48229,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][20]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(20)
     );
@@ -48238,7 +48237,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][21]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(21)
     );
@@ -48246,7 +48245,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][22]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(22)
     );
@@ -48254,7 +48253,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][23]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(23)
     );
@@ -48262,7 +48261,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][24]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(24)
     );
@@ -48270,7 +48269,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][25]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(25)
     );
@@ -48278,7 +48277,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][26]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(26)
     );
@@ -48286,7 +48285,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][27]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(27)
     );
@@ -48294,7 +48293,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][28]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(28)
     );
@@ -48302,7 +48301,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][29]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(29)
     );
@@ -48310,7 +48309,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][2]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(2)
     );
@@ -48318,7 +48317,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][30]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(30)
     );
@@ -48326,7 +48325,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][31]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(31)
     );
@@ -48334,7 +48333,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][3]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(3)
     );
@@ -48342,7 +48341,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][4]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(4)
     );
@@ -48350,7 +48349,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][5]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(5)
     );
@@ -48358,7 +48357,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][6]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(6)
     );
@@ -48366,7 +48365,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][7]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(7)
     );
@@ -48374,7 +48373,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][8]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(8)
     );
@@ -48382,7 +48381,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[5][9]\,
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(9)
     );
@@ -48390,7 +48389,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(0),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(0)
     );
@@ -48398,7 +48397,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(10),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(10)
     );
@@ -48406,7 +48405,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(11),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(11)
     );
@@ -48414,7 +48413,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(12),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(12)
     );
@@ -48422,7 +48421,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(13),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(13)
     );
@@ -48430,7 +48429,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(14),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(14)
     );
@@ -48438,7 +48437,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(15),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(15)
     );
@@ -48446,7 +48445,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(16),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(16)
     );
@@ -48454,7 +48453,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(17),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(17)
     );
@@ -48462,7 +48461,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(18),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(18)
     );
@@ -48470,7 +48469,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(19),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(19)
     );
@@ -48478,7 +48477,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(1),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(1)
     );
@@ -48486,7 +48485,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(20),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(20)
     );
@@ -48494,7 +48493,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(21),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(21)
     );
@@ -48502,7 +48501,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(22),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(22)
     );
@@ -48510,7 +48509,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(23),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(23)
     );
@@ -48518,7 +48517,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(24),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(24)
     );
@@ -48526,7 +48525,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(25),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(25)
     );
@@ -48534,7 +48533,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(26),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(26)
     );
@@ -48542,7 +48541,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(27),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(27)
     );
@@ -48550,7 +48549,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(28),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(28)
     );
@@ -48558,7 +48557,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(29),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(29)
     );
@@ -48566,7 +48565,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(2),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(2)
     );
@@ -48574,7 +48573,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(30),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(30)
     );
@@ -48582,7 +48581,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(31),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(31)
     );
@@ -48590,7 +48589,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(3),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(3)
     );
@@ -48598,7 +48597,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(4),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(4)
     );
@@ -48606,7 +48605,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(5),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(5)
     );
@@ -48614,7 +48613,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(6),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(6)
     );
@@ -48622,7 +48621,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(7),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(7)
     );
@@ -48630,7 +48629,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(8),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(8)
     );
@@ -48638,7 +48637,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][0]_23\(9),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(9)
     );
@@ -48646,7 +48645,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(0),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(0)
     );
@@ -48654,7 +48653,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(10),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(10)
     );
@@ -48662,7 +48661,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(11),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(11)
     );
@@ -48670,7 +48669,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(12),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(12)
     );
@@ -48678,7 +48677,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(13),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(13)
     );
@@ -48686,7 +48685,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(14),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(14)
     );
@@ -48694,7 +48693,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(15),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(15)
     );
@@ -48702,7 +48701,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(16),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(16)
     );
@@ -48710,7 +48709,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(17),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(17)
     );
@@ -48718,7 +48717,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(18),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(18)
     );
@@ -48726,7 +48725,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(19),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(19)
     );
@@ -48734,7 +48733,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(1),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(1)
     );
@@ -48742,7 +48741,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(20),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(20)
     );
@@ -48750,7 +48749,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(21),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(21)
     );
@@ -48758,7 +48757,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(22),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(22)
     );
@@ -48766,7 +48765,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(23),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(23)
     );
@@ -48774,7 +48773,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(24),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(24)
     );
@@ -48782,7 +48781,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(25),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(25)
     );
@@ -48790,7 +48789,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(26),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(26)
     );
@@ -48798,7 +48797,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(27),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(27)
     );
@@ -48806,7 +48805,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(28),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(28)
     );
@@ -48814,7 +48813,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(29),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(29)
     );
@@ -48822,7 +48821,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(2),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(2)
     );
@@ -48830,7 +48829,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(30),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(30)
     );
@@ -48838,7 +48837,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(31),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(31)
     );
@@ -48846,7 +48845,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(3),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(3)
     );
@@ -48854,7 +48853,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(4),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(4)
     );
@@ -48862,7 +48861,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(5),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(5)
     );
@@ -48870,7 +48869,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(6),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(6)
     );
@@ -48878,7 +48877,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(7),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(7)
     );
@@ -48886,7 +48885,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(8),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(8)
     );
@@ -48894,7 +48893,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][1]_24\(9),
       Q => \gen_depth_sync[5].frame_depth_fifo_sync_reg[5][2]_25\(9)
     );
@@ -48902,7 +48901,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][0]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(0)
     );
@@ -48910,7 +48909,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][10]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(10)
     );
@@ -48918,7 +48917,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][11]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(11)
     );
@@ -48926,7 +48925,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][12]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(12)
     );
@@ -48934,7 +48933,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][13]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(13)
     );
@@ -48942,7 +48941,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][14]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(14)
     );
@@ -48950,7 +48949,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][15]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(15)
     );
@@ -48958,7 +48957,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][16]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(16)
     );
@@ -48966,7 +48965,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][17]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(17)
     );
@@ -48974,7 +48973,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][18]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(18)
     );
@@ -48982,7 +48981,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][19]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(19)
     );
@@ -48990,7 +48989,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][1]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(1)
     );
@@ -48998,7 +48997,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][20]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(20)
     );
@@ -49006,7 +49005,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][21]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(21)
     );
@@ -49014,7 +49013,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][22]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(22)
     );
@@ -49022,7 +49021,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][23]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(23)
     );
@@ -49030,7 +49029,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][24]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(24)
     );
@@ -49038,7 +49037,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][25]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(25)
     );
@@ -49046,7 +49045,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][26]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(26)
     );
@@ -49054,7 +49053,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][27]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(27)
     );
@@ -49062,7 +49061,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][28]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(28)
     );
@@ -49070,7 +49069,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][29]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(29)
     );
@@ -49078,7 +49077,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][2]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(2)
     );
@@ -49086,7 +49085,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][30]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(30)
     );
@@ -49094,7 +49093,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][31]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(31)
     );
@@ -49102,7 +49101,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][3]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(3)
     );
@@ -49110,7 +49109,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][4]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(4)
     );
@@ -49118,7 +49117,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][5]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(5)
     );
@@ -49126,7 +49125,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][6]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(6)
     );
@@ -49134,7 +49133,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][7]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(7)
     );
@@ -49142,7 +49141,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][8]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(8)
     );
@@ -49150,7 +49149,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[6][9]\,
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(9)
     );
@@ -49158,7 +49157,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(0),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(0)
     );
@@ -49166,7 +49165,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(10),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(10)
     );
@@ -49174,7 +49173,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(11),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(11)
     );
@@ -49182,7 +49181,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(12),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(12)
     );
@@ -49190,7 +49189,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(13),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(13)
     );
@@ -49198,7 +49197,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(14),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(14)
     );
@@ -49206,7 +49205,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(15),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(15)
     );
@@ -49214,7 +49213,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(16),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(16)
     );
@@ -49222,7 +49221,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(17),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(17)
     );
@@ -49230,7 +49229,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(18),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(18)
     );
@@ -49238,7 +49237,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(19),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(19)
     );
@@ -49246,7 +49245,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(1),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(1)
     );
@@ -49254,7 +49253,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(20),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(20)
     );
@@ -49262,7 +49261,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(21),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(21)
     );
@@ -49270,7 +49269,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(22),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(22)
     );
@@ -49278,7 +49277,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(23),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(23)
     );
@@ -49286,7 +49285,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(24),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(24)
     );
@@ -49294,7 +49293,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(25),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(25)
     );
@@ -49302,7 +49301,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(26),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(26)
     );
@@ -49310,7 +49309,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(27),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(27)
     );
@@ -49318,7 +49317,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(28),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(28)
     );
@@ -49326,7 +49325,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(29),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(29)
     );
@@ -49334,7 +49333,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(2),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(2)
     );
@@ -49342,7 +49341,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(30),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(30)
     );
@@ -49350,7 +49349,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(31),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(31)
     );
@@ -49358,7 +49357,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(3),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(3)
     );
@@ -49366,7 +49365,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(4),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(4)
     );
@@ -49374,7 +49373,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(5),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(5)
     );
@@ -49382,7 +49381,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(6),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(6)
     );
@@ -49390,7 +49389,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(7),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(7)
     );
@@ -49398,7 +49397,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(8),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(8)
     );
@@ -49406,7 +49405,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][0]_26\(9),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(9)
     );
@@ -49414,7 +49413,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(0),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(0)
     );
@@ -49422,7 +49421,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(10),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(10)
     );
@@ -49430,7 +49429,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(11),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(11)
     );
@@ -49438,7 +49437,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(12),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(12)
     );
@@ -49446,7 +49445,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(13),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(13)
     );
@@ -49454,7 +49453,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(14),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(14)
     );
@@ -49462,7 +49461,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(15),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(15)
     );
@@ -49470,7 +49469,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(16),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(16)
     );
@@ -49478,7 +49477,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(17),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(17)
     );
@@ -49486,7 +49485,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(18),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(18)
     );
@@ -49494,7 +49493,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(19),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(19)
     );
@@ -49502,7 +49501,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(1),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(1)
     );
@@ -49510,7 +49509,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(20),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(20)
     );
@@ -49518,7 +49517,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(21),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(21)
     );
@@ -49526,7 +49525,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(22),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(22)
     );
@@ -49534,7 +49533,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(23),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(23)
     );
@@ -49542,7 +49541,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(24),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(24)
     );
@@ -49550,7 +49549,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(25),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(25)
     );
@@ -49558,7 +49557,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(26),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(26)
     );
@@ -49566,7 +49565,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(27),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(27)
     );
@@ -49574,7 +49573,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(28),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(28)
     );
@@ -49582,7 +49581,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(29),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(29)
     );
@@ -49590,7 +49589,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(2),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(2)
     );
@@ -49598,7 +49597,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(30),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(30)
     );
@@ -49606,7 +49605,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(31),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(31)
     );
@@ -49614,7 +49613,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(3),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(3)
     );
@@ -49622,7 +49621,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(4),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(4)
     );
@@ -49630,7 +49629,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(5),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(5)
     );
@@ -49638,7 +49637,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(6),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(6)
     );
@@ -49646,7 +49645,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(7),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(7)
     );
@@ -49654,7 +49653,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(8),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(8)
     );
@@ -49662,7 +49661,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][1]_27\(9),
       Q => \gen_depth_sync[6].frame_depth_fifo_sync_reg[6][2]_28\(9)
     );
@@ -49670,7 +49669,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][0]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(0)
     );
@@ -49678,7 +49677,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][10]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(10)
     );
@@ -49686,7 +49685,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][11]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(11)
     );
@@ -49694,7 +49693,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][12]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(12)
     );
@@ -49702,7 +49701,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][13]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(13)
     );
@@ -49710,7 +49709,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][14]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(14)
     );
@@ -49718,7 +49717,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][15]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(15)
     );
@@ -49726,7 +49725,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][16]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(16)
     );
@@ -49734,7 +49733,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][17]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(17)
     );
@@ -49742,7 +49741,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][18]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(18)
     );
@@ -49750,7 +49749,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][19]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(19)
     );
@@ -49758,7 +49757,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][1]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(1)
     );
@@ -49766,7 +49765,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][20]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(20)
     );
@@ -49774,7 +49773,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][21]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(21)
     );
@@ -49782,7 +49781,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][22]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(22)
     );
@@ -49790,7 +49789,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][23]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(23)
     );
@@ -49798,7 +49797,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][24]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(24)
     );
@@ -49806,7 +49805,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][25]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(25)
     );
@@ -49814,7 +49813,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][26]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(26)
     );
@@ -49822,7 +49821,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][27]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(27)
     );
@@ -49830,7 +49829,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][28]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(28)
     );
@@ -49838,7 +49837,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][29]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(29)
     );
@@ -49846,7 +49845,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][2]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(2)
     );
@@ -49854,7 +49853,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][30]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(30)
     );
@@ -49862,7 +49861,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][31]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(31)
     );
@@ -49870,7 +49869,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][3]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(3)
     );
@@ -49878,7 +49877,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][4]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(4)
     );
@@ -49886,7 +49885,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][5]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(5)
     );
@@ -49894,7 +49893,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][6]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(6)
     );
@@ -49902,7 +49901,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][7]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(7)
     );
@@ -49910,7 +49909,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][8]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(8)
     );
@@ -49918,7 +49917,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \frame_depth_fifo_reg_n_0_[7][9]\,
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(9)
     );
@@ -49926,7 +49925,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(0),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(0)
     );
@@ -49934,7 +49933,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(10),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(10)
     );
@@ -49942,7 +49941,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(11),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(11)
     );
@@ -49950,7 +49949,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(12),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(12)
     );
@@ -49958,7 +49957,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(13),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(13)
     );
@@ -49966,7 +49965,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(14),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(14)
     );
@@ -49974,7 +49973,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(15),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(15)
     );
@@ -49982,7 +49981,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(16),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(16)
     );
@@ -49990,7 +49989,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(17),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(17)
     );
@@ -49998,7 +49997,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(18),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(18)
     );
@@ -50006,7 +50005,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(19),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(19)
     );
@@ -50014,7 +50013,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(1),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(1)
     );
@@ -50022,7 +50021,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(20),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(20)
     );
@@ -50030,7 +50029,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(21),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(21)
     );
@@ -50038,7 +50037,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(22),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(22)
     );
@@ -50046,7 +50045,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(23),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(23)
     );
@@ -50054,7 +50053,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(24),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(24)
     );
@@ -50062,7 +50061,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(25),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(25)
     );
@@ -50070,7 +50069,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(26),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(26)
     );
@@ -50078,7 +50077,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(27),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(27)
     );
@@ -50086,7 +50085,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(28),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(28)
     );
@@ -50094,7 +50093,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(29),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(29)
     );
@@ -50102,7 +50101,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(2),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(2)
     );
@@ -50110,7 +50109,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(30),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(30)
     );
@@ -50118,7 +50117,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(31),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(31)
     );
@@ -50126,7 +50125,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(3),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(3)
     );
@@ -50134,7 +50133,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(4),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(4)
     );
@@ -50142,7 +50141,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(5),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(5)
     );
@@ -50150,7 +50149,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(6),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(6)
     );
@@ -50158,7 +50157,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(7),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(7)
     );
@@ -50166,7 +50165,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(8),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(8)
     );
@@ -50174,7 +50173,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][0]_29\(9),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(9)
     );
@@ -50182,7 +50181,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(0),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(0)
     );
@@ -50190,7 +50189,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(10),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(10)
     );
@@ -50198,7 +50197,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(11),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(11)
     );
@@ -50206,7 +50205,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(12),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(12)
     );
@@ -50214,7 +50213,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(13),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(13)
     );
@@ -50222,7 +50221,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(14),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(14)
     );
@@ -50230,7 +50229,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(15),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(15)
     );
@@ -50238,7 +50237,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(16),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(16)
     );
@@ -50246,7 +50245,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(17),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(17)
     );
@@ -50254,7 +50253,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(18),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(18)
     );
@@ -50262,7 +50261,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(19),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(19)
     );
@@ -50270,7 +50269,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(1),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(1)
     );
@@ -50278,7 +50277,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(20),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(20)
     );
@@ -50286,7 +50285,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(21),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(21)
     );
@@ -50294,7 +50293,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(22),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(22)
     );
@@ -50302,7 +50301,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(23),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(23)
     );
@@ -50310,7 +50309,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(24),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(24)
     );
@@ -50318,7 +50317,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(25),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(25)
     );
@@ -50326,7 +50325,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(26),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(26)
     );
@@ -50334,7 +50333,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(27),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(27)
     );
@@ -50342,7 +50341,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(28),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(28)
     );
@@ -50350,7 +50349,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(29),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(29)
     );
@@ -50358,7 +50357,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(2),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(2)
     );
@@ -50366,7 +50365,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(30),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(30)
     );
@@ -50374,7 +50373,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(31),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(31)
     );
@@ -50382,7 +50381,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(3),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(3)
     );
@@ -50390,7 +50389,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(4),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(4)
     );
@@ -50398,7 +50397,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(5),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(5)
     );
@@ -50406,7 +50405,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(6),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(6)
     );
@@ -50414,7 +50413,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(7),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(7)
     );
@@ -50422,7 +50421,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(8),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(8)
     );
@@ -50430,17 +50429,9 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][1]_30\(9),
       Q => \gen_depth_sync[7].frame_depth_fifo_sync_reg[7][2]_31\(9)
-    );
-\m_axi_awaddr[21]_i_2\: unisim.vcomponents.LUT1
-    generic map(
-      INIT => X"1"
-    )
-        port map (
-      I0 => ctrl_rst_n,
-      O => \^ctrl_rst_n_reg\
     );
 \o_axi_rd_end_addr[0]_i_1\: unisim.vcomponents.LUT2
     generic map(
@@ -50757,7 +50748,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \o_axi_rd_end_addr[0]_i_1_n_0\,
       Q => \^o_axi_rd_end_addr_reg[10]_1\(0)
     );
@@ -50765,7 +50756,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \o_axi_rd_end_addr[10]_i_1_n_0\,
       Q => \^o_axi_rd_end_addr_reg[10]_1\(7)
     );
@@ -50773,7 +50764,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \o_axi_rd_end_addr[11]_i_1_n_0\,
       Q => ctrl_rd_end(11)
     );
@@ -50813,7 +50804,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \o_axi_rd_end_addr[4]_i_1_n_0\,
       Q => \^o_axi_rd_end_addr_reg[10]_1\(1)
     );
@@ -50821,7 +50812,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \o_axi_rd_end_addr[5]_i_1_n_0\,
       Q => \^o_axi_rd_end_addr_reg[10]_1\(2)
     );
@@ -50829,7 +50820,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \o_axi_rd_end_addr[6]_i_1_n_0\,
       Q => \^o_axi_rd_end_addr_reg[10]_1\(3)
     );
@@ -50837,7 +50828,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \o_axi_rd_end_addr[7]_i_1_n_0\,
       Q => \^o_axi_rd_end_addr_reg[10]_1\(4)
     );
@@ -50857,7 +50848,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \o_axi_rd_end_addr[8]_i_1_n_0\,
       Q => \^o_axi_rd_end_addr_reg[10]_1\(5)
     );
@@ -50865,7 +50856,7 @@ frame_start_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \o_axi_rd_end_addr[9]_i_1_n_0\,
       Q => \^o_axi_rd_end_addr_reg[10]_1\(6)
     );
@@ -51206,7 +51197,7 @@ o_axi_rd_req_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => o_axi_rd_req_i_1_n_0,
       Q => ctrl_rd_req
     );
@@ -51372,7 +51363,7 @@ o_axi_rd_req_reg_i_69: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => ddr_rd_byte_count(10),
       Q => \^o_axi_rd_start_addr_reg[21]_0\(2)
     );
@@ -51380,7 +51371,7 @@ o_axi_rd_req_reg_i_69: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => ddr_rd_byte_count(11),
       Q => \^o_axi_rd_start_addr_reg[21]_0\(3)
     );
@@ -51388,7 +51379,7 @@ o_axi_rd_req_reg_i_69: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => ddr_rd_byte_count(12),
       Q => \^o_axi_rd_start_addr_reg[21]_0\(4)
     );
@@ -51396,7 +51387,7 @@ o_axi_rd_req_reg_i_69: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => ddr_rd_byte_count(13),
       Q => \^o_axi_rd_start_addr_reg[21]_0\(5)
     );
@@ -51404,7 +51395,7 @@ o_axi_rd_req_reg_i_69: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => ddr_rd_byte_count(14),
       Q => \^o_axi_rd_start_addr_reg[21]_0\(6)
     );
@@ -51412,7 +51403,7 @@ o_axi_rd_req_reg_i_69: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => ddr_rd_byte_count(15),
       Q => \^o_axi_rd_start_addr_reg[21]_0\(7)
     );
@@ -51420,7 +51411,7 @@ o_axi_rd_req_reg_i_69: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => ddr_rd_byte_count(16),
       Q => \^o_axi_rd_start_addr_reg[21]_0\(8)
     );
@@ -51428,7 +51419,7 @@ o_axi_rd_req_reg_i_69: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \o_axi_rd_start_addr_reg[20]_i_1_n_7\,
       Q => \^o_axi_rd_start_addr_reg[21]_0\(9)
     );
@@ -51436,7 +51427,7 @@ o_axi_rd_req_reg_i_69: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \o_axi_rd_start_addr_reg[20]_i_1_n_6\,
       Q => \^o_axi_rd_start_addr_reg[21]_0\(10)
     );
@@ -51444,7 +51435,7 @@ o_axi_rd_req_reg_i_69: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \o_axi_rd_start_addr_reg[20]_i_1_n_5\,
       Q => \^o_axi_rd_start_addr_reg[21]_0\(11)
     );
@@ -51452,7 +51443,7 @@ o_axi_rd_req_reg_i_69: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \o_axi_rd_start_addr_reg[20]_i_1_n_4\,
       Q => \^o_axi_rd_start_addr_reg[21]_0\(12)
     );
@@ -51479,7 +51470,7 @@ o_axi_rd_req_reg_i_69: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \o_axi_rd_start_addr_reg[21]_i_1_n_3\,
       Q => \^o_axi_rd_start_addr_reg[21]_0\(13)
     );
@@ -51497,7 +51488,7 @@ o_axi_rd_req_reg_i_69: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => o_axi_rd_end_addr00_in(8),
       Q => \^o_axi_rd_start_addr_reg[21]_0\(0)
     );
@@ -51505,7 +51496,7 @@ o_axi_rd_req_reg_i_69: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => o_axi_rd_req_i_1_n_0,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => ddr_rd_byte_count(9),
       Q => \^o_axi_rd_start_addr_reg[21]_0\(1)
     );
@@ -51572,7 +51563,7 @@ o_axi_rd_req_reg_i_69: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => o_axi_wr_end_addr0_in(10),
       Q => \^o_axi_wr_end_addr_reg[10]_0\(6)
     );
@@ -51598,7 +51589,7 @@ o_axi_rd_req_reg_i_69: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => o_axi_wr_end_addr0_in(11),
       Q => ctrl_wr_end(11)
     );
@@ -51617,7 +51608,7 @@ o_axi_rd_req_reg_i_69: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => o_axi_wr_end_addr0_in(4),
       Q => \^o_axi_wr_end_addr_reg[10]_0\(0)
     );
@@ -51625,7 +51616,7 @@ o_axi_rd_req_reg_i_69: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => o_axi_wr_end_addr0_in(5),
       Q => \^o_axi_wr_end_addr_reg[10]_0\(1)
     );
@@ -51633,7 +51624,7 @@ o_axi_rd_req_reg_i_69: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => o_axi_wr_end_addr0_in(6),
       Q => \^o_axi_wr_end_addr_reg[10]_0\(2)
     );
@@ -51660,7 +51651,7 @@ o_axi_rd_req_reg_i_69: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => o_axi_wr_end_addr0_in(7),
       Q => \^o_axi_wr_end_addr_reg[10]_0\(3)
     );
@@ -51668,7 +51659,7 @@ o_axi_rd_req_reg_i_69: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => o_axi_wr_end_addr0_in(8),
       Q => \^o_axi_wr_end_addr_reg[10]_0\(4)
     );
@@ -51676,7 +51667,7 @@ o_axi_rd_req_reg_i_69: unisim.vcomponents.CARRY4
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => o_axi_wr_end_addr0_in(9),
       Q => \^o_axi_wr_end_addr_reg[10]_0\(5)
     );
@@ -51684,7 +51675,7 @@ o_axi_wr_req_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => wr_burst_is_partial,
       Q => ctrl_wr_req
     );
@@ -51701,7 +51692,7 @@ o_axi_wr_req_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count_reg_n_0_[10]\,
       Q => \^o_axi_wr_start_addr_reg[21]_0\(6)
     );
@@ -51709,7 +51700,7 @@ o_axi_wr_req_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count_reg_n_0_[11]\,
       Q => \^o_axi_wr_start_addr_reg[21]_0\(7)
     );
@@ -51717,7 +51708,7 @@ o_axi_wr_req_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count_reg_n_0_[12]\,
       Q => \^o_axi_wr_start_addr_reg[21]_0\(8)
     );
@@ -51725,7 +51716,7 @@ o_axi_wr_req_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count_reg_n_0_[13]\,
       Q => \^o_axi_wr_start_addr_reg[21]_0\(9)
     );
@@ -51733,7 +51724,7 @@ o_axi_wr_req_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count_reg_n_0_[14]\,
       Q => \^o_axi_wr_start_addr_reg[21]_0\(10)
     );
@@ -51741,7 +51732,7 @@ o_axi_wr_req_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count_reg_n_0_[15]\,
       Q => \^o_axi_wr_start_addr_reg[21]_0\(11)
     );
@@ -51749,7 +51740,7 @@ o_axi_wr_req_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count_reg_n_0_[16]\,
       Q => \^o_axi_wr_start_addr_reg[21]_0\(12)
     );
@@ -51757,7 +51748,7 @@ o_axi_wr_req_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => o_axi_wr_start_addr0(17),
       Q => \^o_axi_wr_start_addr_reg[21]_0\(13)
     );
@@ -51765,7 +51756,7 @@ o_axi_wr_req_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => o_axi_wr_start_addr0(18),
       Q => \^o_axi_wr_start_addr_reg[21]_0\(14)
     );
@@ -51773,7 +51764,7 @@ o_axi_wr_req_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => o_axi_wr_start_addr0(19),
       Q => \^o_axi_wr_start_addr_reg[21]_0\(15)
     );
@@ -51781,7 +51772,7 @@ o_axi_wr_req_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => o_axi_wr_start_addr0(20),
       Q => \^o_axi_wr_start_addr_reg[21]_0\(16)
     );
@@ -51805,7 +51796,7 @@ o_axi_wr_req_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => o_axi_wr_start_addr0(21),
       Q => \^o_axi_wr_start_addr_reg[21]_0\(17)
     );
@@ -51823,7 +51814,7 @@ o_axi_wr_req_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count_reg_n_0_[4]\,
       Q => \^o_axi_wr_start_addr_reg[21]_0\(0)
     );
@@ -51831,7 +51822,7 @@ o_axi_wr_req_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count_reg_n_0_[5]\,
       Q => \^o_axi_wr_start_addr_reg[21]_0\(1)
     );
@@ -51839,7 +51830,7 @@ o_axi_wr_req_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count_reg_n_0_[6]\,
       Q => \^o_axi_wr_start_addr_reg[21]_0\(2)
     );
@@ -51847,7 +51838,7 @@ o_axi_wr_req_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count_reg_n_0_[7]\,
       Q => \^o_axi_wr_start_addr_reg[21]_0\(3)
     );
@@ -51855,7 +51846,7 @@ o_axi_wr_req_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count_reg_n_0_[8]\,
       Q => \^o_axi_wr_start_addr_reg[21]_0\(4)
     );
@@ -51863,265 +51854,265 @@ o_axi_wr_req_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \ddr_wr_byte_count_reg_n_0_[9]\,
       Q => \^o_axi_wr_start_addr_reg[21]_0\(5)
     );
-\pixel_cnt_adc_reg[0]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[0]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
       D => O(0),
-      Q => \^pixel_cnt_adc_reg\(0)
+      Q => \^pixel_cnt_wr_reg\(0)
     );
-\pixel_cnt_adc_reg[10]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[10]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[11]_0\(2),
-      Q => \^pixel_cnt_adc_reg\(10)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[11]_0\(2),
+      Q => \^pixel_cnt_wr_reg\(10)
     );
-\pixel_cnt_adc_reg[11]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[11]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[11]_0\(3),
-      Q => \^pixel_cnt_adc_reg\(11)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[11]_0\(3),
+      Q => \^pixel_cnt_wr_reg\(11)
     );
-\pixel_cnt_adc_reg[12]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[12]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[15]_0\(0),
-      Q => \^pixel_cnt_adc_reg\(12)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[15]_0\(0),
+      Q => \^pixel_cnt_wr_reg\(12)
     );
-\pixel_cnt_adc_reg[13]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[13]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[15]_0\(1),
-      Q => \^pixel_cnt_adc_reg\(13)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[15]_0\(1),
+      Q => \^pixel_cnt_wr_reg\(13)
     );
-\pixel_cnt_adc_reg[14]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[14]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[15]_0\(2),
-      Q => \^pixel_cnt_adc_reg\(14)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[15]_0\(2),
+      Q => \^pixel_cnt_wr_reg\(14)
     );
-\pixel_cnt_adc_reg[15]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[15]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[15]_0\(3),
-      Q => \^pixel_cnt_adc_reg\(15)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[15]_0\(3),
+      Q => \^pixel_cnt_wr_reg\(15)
     );
-\pixel_cnt_adc_reg[16]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[16]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[19]_0\(0),
-      Q => \^pixel_cnt_adc_reg\(16)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[19]_0\(0),
+      Q => \^pixel_cnt_wr_reg\(16)
     );
-\pixel_cnt_adc_reg[17]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[17]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[19]_0\(1),
-      Q => \^pixel_cnt_adc_reg\(17)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[19]_0\(1),
+      Q => \^pixel_cnt_wr_reg\(17)
     );
-\pixel_cnt_adc_reg[18]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[18]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[19]_0\(2),
-      Q => \^pixel_cnt_adc_reg\(18)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[19]_0\(2),
+      Q => \^pixel_cnt_wr_reg\(18)
     );
-\pixel_cnt_adc_reg[19]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[19]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[19]_0\(3),
-      Q => \^pixel_cnt_adc_reg\(19)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[19]_0\(3),
+      Q => \^pixel_cnt_wr_reg\(19)
     );
-\pixel_cnt_adc_reg[1]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[1]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
       D => O(1),
-      Q => \^pixel_cnt_adc_reg\(1)
+      Q => \^pixel_cnt_wr_reg\(1)
     );
-\pixel_cnt_adc_reg[20]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[20]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[23]_0\(0),
-      Q => \^pixel_cnt_adc_reg\(20)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[23]_0\(0),
+      Q => \^pixel_cnt_wr_reg\(20)
     );
-\pixel_cnt_adc_reg[21]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[21]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[23]_0\(1),
-      Q => \^pixel_cnt_adc_reg\(21)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[23]_0\(1),
+      Q => \^pixel_cnt_wr_reg\(21)
     );
-\pixel_cnt_adc_reg[22]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[22]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[23]_0\(2),
-      Q => \^pixel_cnt_adc_reg\(22)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[23]_0\(2),
+      Q => \^pixel_cnt_wr_reg\(22)
     );
-\pixel_cnt_adc_reg[23]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[23]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[23]_0\(3),
-      Q => \^pixel_cnt_adc_reg\(23)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[23]_0\(3),
+      Q => \^pixel_cnt_wr_reg\(23)
     );
-\pixel_cnt_adc_reg[24]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[24]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[27]_0\(0),
-      Q => \^pixel_cnt_adc_reg\(24)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[27]_0\(0),
+      Q => \^pixel_cnt_wr_reg\(24)
     );
-\pixel_cnt_adc_reg[25]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[25]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[27]_0\(1),
-      Q => \^pixel_cnt_adc_reg\(25)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[27]_0\(1),
+      Q => \^pixel_cnt_wr_reg\(25)
     );
-\pixel_cnt_adc_reg[26]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[26]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[27]_0\(2),
-      Q => \^pixel_cnt_adc_reg\(26)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[27]_0\(2),
+      Q => \^pixel_cnt_wr_reg\(26)
     );
-\pixel_cnt_adc_reg[27]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[27]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[27]_0\(3),
-      Q => \^pixel_cnt_adc_reg\(27)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[27]_0\(3),
+      Q => \^pixel_cnt_wr_reg\(27)
     );
-\pixel_cnt_adc_reg[28]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[28]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[31]_1\(0),
-      Q => \^pixel_cnt_adc_reg\(28)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[31]_1\(0),
+      Q => \^pixel_cnt_wr_reg\(28)
     );
-\pixel_cnt_adc_reg[29]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[29]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[31]_1\(1),
-      Q => \^pixel_cnt_adc_reg\(29)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[31]_1\(1),
+      Q => \^pixel_cnt_wr_reg\(29)
     );
-\pixel_cnt_adc_reg[2]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[2]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
       D => O(2),
-      Q => \^pixel_cnt_adc_reg\(2)
+      Q => \^pixel_cnt_wr_reg\(2)
     );
-\pixel_cnt_adc_reg[30]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[30]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[31]_1\(2),
-      Q => \^pixel_cnt_adc_reg\(30)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[31]_1\(2),
+      Q => \^pixel_cnt_wr_reg\(30)
     );
-\pixel_cnt_adc_reg[31]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[31]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[31]_1\(3),
-      Q => \^pixel_cnt_adc_reg\(31)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[31]_1\(3),
+      Q => \^pixel_cnt_wr_reg\(31)
     );
-\pixel_cnt_adc_reg[3]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[3]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
       D => O(3),
-      Q => \^pixel_cnt_adc_reg\(3)
+      Q => \^pixel_cnt_wr_reg\(3)
     );
-\pixel_cnt_adc_reg[4]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[4]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[7]_0\(0),
-      Q => \^pixel_cnt_adc_reg\(4)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[7]_0\(0),
+      Q => \^pixel_cnt_wr_reg\(4)
     );
-\pixel_cnt_adc_reg[5]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[5]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[7]_0\(1),
-      Q => \^pixel_cnt_adc_reg\(5)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[7]_0\(1),
+      Q => \^pixel_cnt_wr_reg\(5)
     );
-\pixel_cnt_adc_reg[6]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[6]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[7]_0\(2),
-      Q => \^pixel_cnt_adc_reg\(6)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[7]_0\(2),
+      Q => \^pixel_cnt_wr_reg\(6)
     );
-\pixel_cnt_adc_reg[7]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[7]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[7]_0\(3),
-      Q => \^pixel_cnt_adc_reg\(7)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[7]_0\(3),
+      Q => \^pixel_cnt_wr_reg\(7)
     );
-\pixel_cnt_adc_reg[8]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[8]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[11]_0\(0),
-      Q => \^pixel_cnt_adc_reg\(8)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[11]_0\(0),
+      Q => \^pixel_cnt_wr_reg\(8)
     );
-\pixel_cnt_adc_reg[9]\: unisim.vcomponents.FDCE
+\pixel_cnt_wr_reg[9]\: unisim.vcomponents.FDCE
      port map (
       C => CLK,
-      CE => \pixel_cnt_adc_reg[31]_0\,
-      CLR => \^ctrl_rst_n_reg\,
-      D => \pixel_cnt_adc_reg[11]_0\(1),
-      Q => \^pixel_cnt_adc_reg\(9)
+      CE => \pixel_cnt_wr_reg[31]_0\,
+      CLR => \^rst\,
+      D => \pixel_cnt_wr_reg[11]_0\(1),
+      Q => \^pixel_cnt_wr_reg\(9)
     );
 prelast_reg_i_1: unisim.vcomponents.LUT3
     generic map(
@@ -52137,7 +52128,7 @@ prelast_reg_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => prelast_reg2_out,
       Q => fifo_prelast_w
     );
@@ -54862,7 +54853,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \rd_frame_idx[0]_i_1_n_0\,
       Q => \rd_frame_idx_reg_n_0_[0]\
     );
@@ -54870,7 +54861,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \rd_frame_idx[1]_i_1_n_0\,
       Q => \rd_frame_idx_reg_n_0_[1]\
     );
@@ -55066,7 +55057,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \rd_frame_idx[2]_i_1_n_0\,
       Q => \rd_frame_idx_reg_n_0_[2]\
     );
@@ -55622,7 +55613,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(0),
       Q => \rd_pixel_cnt_reg_n_0_[0]\
     );
@@ -55630,7 +55621,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(10),
       Q => \rd_pixel_cnt_reg_n_0_[10]\
     );
@@ -55638,7 +55629,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(11),
       Q => \rd_pixel_cnt_reg_n_0_[11]\
     );
@@ -55646,7 +55637,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(12),
       Q => \rd_pixel_cnt_reg_n_0_[12]\
     );
@@ -55669,7 +55660,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(13),
       Q => \rd_pixel_cnt_reg_n_0_[13]\
     );
@@ -55677,7 +55668,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(14),
       Q => \rd_pixel_cnt_reg_n_0_[14]\
     );
@@ -55685,7 +55676,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(15),
       Q => \rd_pixel_cnt_reg_n_0_[15]\
     );
@@ -55693,7 +55684,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(16),
       Q => \rd_pixel_cnt_reg_n_0_[16]\
     );
@@ -55716,7 +55707,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(17),
       Q => \rd_pixel_cnt_reg_n_0_[17]\
     );
@@ -55724,7 +55715,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(18),
       Q => \rd_pixel_cnt_reg_n_0_[18]\
     );
@@ -55732,7 +55723,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(19),
       Q => \rd_pixel_cnt_reg_n_0_[19]\
     );
@@ -55740,7 +55731,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(1),
       Q => \rd_pixel_cnt_reg_n_0_[1]\
     );
@@ -55748,7 +55739,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(20),
       Q => \rd_pixel_cnt_reg_n_0_[20]\
     );
@@ -55771,7 +55762,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(21),
       Q => \rd_pixel_cnt_reg_n_0_[21]\
     );
@@ -55779,7 +55770,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(22),
       Q => \rd_pixel_cnt_reg_n_0_[22]\
     );
@@ -55787,7 +55778,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(23),
       Q => \rd_pixel_cnt_reg_n_0_[23]\
     );
@@ -55795,7 +55786,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(24),
       Q => \rd_pixel_cnt_reg_n_0_[24]\
     );
@@ -55818,7 +55809,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(25),
       Q => \rd_pixel_cnt_reg_n_0_[25]\
     );
@@ -55826,7 +55817,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(26),
       Q => \rd_pixel_cnt_reg_n_0_[26]\
     );
@@ -55834,7 +55825,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(27),
       Q => \rd_pixel_cnt_reg_n_0_[27]\
     );
@@ -55842,7 +55833,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(28),
       Q => \rd_pixel_cnt_reg_n_0_[28]\
     );
@@ -55865,7 +55856,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(29),
       Q => \rd_pixel_cnt_reg_n_0_[29]\
     );
@@ -55873,7 +55864,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(2),
       Q => \rd_pixel_cnt_reg_n_0_[2]\
     );
@@ -55881,7 +55872,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(30),
       Q => \rd_pixel_cnt_reg_n_0_[30]\
     );
@@ -55889,7 +55880,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(31),
       Q => \rd_pixel_cnt_reg_n_0_[31]\
     );
@@ -55912,7 +55903,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(3),
       Q => \rd_pixel_cnt_reg_n_0_[3]\
     );
@@ -55920,7 +55911,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(4),
       Q => \rd_pixel_cnt_reg_n_0_[4]\
     );
@@ -55943,7 +55934,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(5),
       Q => \rd_pixel_cnt_reg_n_0_[5]\
     );
@@ -55951,7 +55942,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(6),
       Q => \rd_pixel_cnt_reg_n_0_[6]\
     );
@@ -55959,7 +55950,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(7),
       Q => \rd_pixel_cnt_reg_n_0_[7]\
     );
@@ -55967,7 +55958,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(8),
       Q => \rd_pixel_cnt_reg_n_0_[8]\
     );
@@ -55990,7 +55981,7 @@ rd_beats1_carry_i_4: unisim.vcomponents.LUT1
      port map (
       C => i_rd_clk,
       CE => fifo_rd_en_w,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_pixel_cnt(9),
       Q => \rd_pixel_cnt_reg_n_0_[9]\
     );
@@ -56071,9 +56062,19 @@ rd_state_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => rd_state_i_1_n_0,
       Q => rd_state
+    );
+\slave_data_reg[15]_i_1\: unisim.vcomponents.LUT3
+    generic map(
+      INIT => X"7F"
+    )
+        port map (
+      I0 => i_mmcm_locked,
+      I1 => i_init_calib_complete,
+      I2 => s00_axi_aresetn,
+      O => \^rst\
     );
 u_rdfifo: entity work.mb_subsystem_ccd_controller_v1_0_0_0_rd_ddr3_fifo
      port map (
@@ -56085,7 +56086,7 @@ u_rdfifo: entity work.mb_subsystem_ccd_controller_v1_0_0_0_rd_ddr3_fifo
       rd_data_count(8 downto 0) => NLW_u_rdfifo_rd_data_count_UNCONNECTED(8 downto 0),
       rd_en => fifo_rd_en_w,
       rd_rst_busy => NLW_u_rdfifo_rd_rst_busy_UNCONNECTED,
-      rst => \^ctrl_rst_n_reg\,
+      rst => \^rst\,
       wr_clk => i_ui_clk,
       wr_data_count(5 downto 0) => rdfifo_wrcnt(5 downto 0),
       wr_en => \DEVICE_7SERIES.NO_BMM_INFO.SDP.WIDE_PRIM36_NO_ECC.ram_0\,
@@ -56106,7 +56107,7 @@ u_wrfifo: entity work.mb_subsystem_ccd_controller_v1_0_0_0_wr_ddr3_fifo
       rd_data_count(0) => u_wrfifo_n_135,
       rd_en => rd_en,
       rd_rst_busy => NLW_u_wrfifo_rd_rst_busy_UNCONNECTED,
-      rst => \^ctrl_rst_n_reg\,
+      rst => \^rst\,
       wr_clk => CLK,
       wr_data_count(8 downto 0) => NLW_u_wrfifo_wr_data_count_UNCONNECTED(8 downto 0),
       wr_en => wr_en,
@@ -56211,7 +56212,7 @@ wr_burst_is_partial_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => wr_burst_is_partial,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => wr_burst_is_partial_i_2_n_0,
       Q => wr_burst_is_partial_reg_n_0
     );
@@ -56228,7 +56229,7 @@ wr_frame_inc_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => wr_frame_inc_i_1_n_0,
       Q => wr_frame_inc
     );
@@ -56245,7 +56246,7 @@ wr_frame_inc_toggle_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => wr_frame_inc_toggle_i_1_n_0,
       Q => wr_frame_inc_toggle
     );
@@ -56253,7 +56254,7 @@ wr_frame_inc_toggle_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => wr_frame_inc_toggle_sync(2),
       Q => wr_frame_inc_toggle_sync_d
     );
@@ -56261,7 +56262,7 @@ wr_frame_inc_toggle_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => wr_frame_inc_toggle,
       Q => \wr_frame_inc_toggle_sync__0\(0)
     );
@@ -56269,7 +56270,7 @@ wr_frame_inc_toggle_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \wr_frame_inc_toggle_sync__0\(0),
       Q => \wr_frame_inc_toggle_sync__0\(1)
     );
@@ -56277,7 +56278,7 @@ wr_frame_inc_toggle_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_rd_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \wr_frame_inc_toggle_sync__0\(1),
       Q => wr_frame_inc_toggle_sync(2)
     );
@@ -56298,7 +56299,7 @@ wr_frame_inc_toggle_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \wr_partial_bytes_latched[9]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => u_wrfifo_n_135,
       Q => wr_partial_bytes_latched(4)
     );
@@ -56306,7 +56307,7 @@ wr_frame_inc_toggle_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \wr_partial_bytes_latched[9]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => u_wrfifo_n_134,
       Q => wr_partial_bytes_latched(5)
     );
@@ -56314,7 +56315,7 @@ wr_frame_inc_toggle_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \wr_partial_bytes_latched[9]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => u_wrfifo_n_133,
       Q => wr_partial_bytes_latched(6)
     );
@@ -56322,7 +56323,7 @@ wr_frame_inc_toggle_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \wr_partial_bytes_latched[9]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => u_wrfifo_n_132,
       Q => wr_partial_bytes_latched(7)
     );
@@ -56330,7 +56331,7 @@ wr_frame_inc_toggle_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \wr_partial_bytes_latched[9]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => u_wrfifo_n_131,
       Q => wr_partial_bytes_latched(8)
     );
@@ -56338,7 +56339,7 @@ wr_frame_inc_toggle_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => \wr_partial_bytes_latched[9]_i_1_n_0\,
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => u_wrfifo_n_130,
       Q => wr_partial_bytes_latched(9)
     );
@@ -56416,7 +56417,7 @@ wr_frame_inc_toggle_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \wr_state[0]_i_1_n_0\,
       Q => wr_state(0)
     );
@@ -56424,7 +56425,7 @@ wr_frame_inc_toggle_sync_d_reg: unisim.vcomponents.FDCE
      port map (
       C => i_ui_clk,
       CE => '1',
-      CLR => \^ctrl_rst_n_reg\,
+      CLR => \^rst\,
       D => \wr_state[1]_i_1_n_0\,
       Q => wr_state(1)
     );
@@ -56436,17 +56437,18 @@ use UNISIM.VCOMPONENTS.ALL;
 entity mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr is
   port (
     M_AXI_WDATA : out STD_LOGIC_VECTOR ( 127 downto 0 );
+    i_mmcm_locked_0 : out STD_LOGIC;
     D : out STD_LOGIC_VECTOR ( 15 downto 0 );
     fifo_prelast_w : out STD_LOGIC;
     ccd_frame_exception : out STD_LOGIC;
-    pixel_cnt_adc_reg : out STD_LOGIC_VECTOR ( 31 downto 0 );
-    frame_start_rise_adc : out STD_LOGIC;
+    pixel_cnt_wr_reg : out STD_LOGIC_VECTOR ( 31 downto 0 );
+    frame_start_rise_wr : out STD_LOGIC;
     m_axi_awvalid_reg : out STD_LOGIC;
     o_axi_rd_req_i_54 : out STD_LOGIC_VECTOR ( 17 downto 0 );
     \rd_pixel_cnt_reg[31]\ : out STD_LOGIC_VECTOR ( 0 to 0 );
     \slv_reg7_reg[3]\ : out STD_LOGIC_VECTOR ( 3 downto 0 );
     \state_next1__3\ : out STD_LOGIC;
-    frame_active_adc_reg : out STD_LOGIC;
+    frame_active_wr_reg : out STD_LOGIC;
     m_axi_wlast_reg : out STD_LOGIC;
     m_axi_wvalid_reg : out STD_LOGIC;
     M_AXI_ARVALID : out STD_LOGIC;
@@ -56465,19 +56467,22 @@ entity mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr is
     frame_start_w : in STD_LOGIC;
     frame_end_w : in STD_LOGIC;
     frame_depth_w0 : in STD_LOGIC_VECTOR ( 31 downto 0 );
-    pixel_cnt_adc_reg_31_sp_1 : in STD_LOGIC;
+    pixel_cnt_wr_reg_31_sp_1 : in STD_LOGIC;
     O : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    \pixel_cnt_adc_reg[7]\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    \pixel_cnt_adc_reg[11]\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    \pixel_cnt_adc_reg[15]\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    \pixel_cnt_adc_reg[19]\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    \pixel_cnt_adc_reg[23]\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    \pixel_cnt_adc_reg[27]\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    \pixel_cnt_adc_reg[31]_0\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
-    ctrl_rst_n_reg_0 : in STD_LOGIC;
+    \pixel_cnt_wr_reg[7]\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    \pixel_cnt_wr_reg[11]\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    \pixel_cnt_wr_reg[15]\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    \pixel_cnt_wr_reg[19]\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    \pixel_cnt_wr_reg[23]\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    \pixel_cnt_wr_reg[27]\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    \pixel_cnt_wr_reg[31]_0\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    s00_axi_aresetn : in STD_LOGIC;
+    i_init_calib_complete : in STD_LOGIC;
+    i_mmcm_locked : in STD_LOGIC;
     CO : in STD_LOGIC_VECTOR ( 0 to 0 );
     \frames_in_fifo_reg[0]\ : in STD_LOGIC;
     o_axi_rd_req_reg_i_4 : in STD_LOGIC_VECTOR ( 17 downto 0 );
+    ctrl_rst_n : in STD_LOGIC;
     M_AXI_AWREADY : in STD_LOGIC;
     \axi_rdata_reg[3]\ : in STD_LOGIC;
     \axi_rdata_reg[3]_0\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
@@ -56485,7 +56490,7 @@ entity mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr is
     \axi_rdata_reg[3]_2\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
     \axi_rdata_reg[3]_3\ : in STD_LOGIC;
     \axi_rdata_reg[3]_4\ : in STD_LOGIC;
-    \frame_depth_reg_adc_reg[30]\ : in STD_LOGIC_VECTOR ( 4 downto 0 );
+    \frame_depth_reg_wr_reg[30]\ : in STD_LOGIC_VECTOR ( 4 downto 0 );
     \axi_rdata_reg[3]_5\ : in STD_LOGIC;
     \axi_rdata_reg[3]_6\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
     \axi_rdata_reg[3]_7\ : in STD_LOGIC;
@@ -56511,21 +56516,20 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr
   signal ctrl_rd_idle : STD_LOGIC;
   signal ctrl_rd_req : STD_LOGIC;
   signal ctrl_rd_start : STD_LOGIC_VECTOR ( 21 downto 8 );
-  signal ctrl_rst_n : STD_LOGIC;
   signal ctrl_wr_end : STD_LOGIC_VECTOR ( 10 downto 4 );
   signal ctrl_wr_idle : STD_LOGIC;
   signal ctrl_wr_req : STD_LOGIC;
   signal ctrl_wr_start : STD_LOGIC_VECTOR ( 21 downto 4 );
-  signal frame_end_d_adc : STD_LOGIC;
-  signal frame_end_rise_adc : STD_LOGIC;
-  signal frame_end_rise_adc_i_1_n_0 : STD_LOGIC;
-  signal frame_start_d_adc : STD_LOGIC;
-  signal \^frame_start_rise_adc\ : STD_LOGIC;
-  signal frame_start_rise_adc_i_1_n_0 : STD_LOGIC;
-  signal pixel_cnt_adc_reg_31_sn_1 : STD_LOGIC;
+  signal frame_end_d_wr : STD_LOGIC;
+  signal frame_end_rise_wr : STD_LOGIC;
+  signal frame_end_rise_wr_i_1_n_0 : STD_LOGIC;
+  signal frame_start_d_wr : STD_LOGIC;
+  signal \^frame_start_rise_wr\ : STD_LOGIC;
+  signal frame_start_rise_wr_i_1_n_0 : STD_LOGIC;
+  signal \^i_mmcm_locked_0\ : STD_LOGIC;
+  signal pixel_cnt_wr_reg_31_sn_1 : STD_LOGIC;
   signal rdfifo_din : STD_LOGIC_VECTOR ( 127 downto 0 );
   signal rdfifo_wren : STD_LOGIC;
-  signal u_ctrl_n_128 : STD_LOGIC;
   signal u_ctrl_n_204 : STD_LOGIC;
   signal u_ctrl_n_205 : STD_LOGIC;
   signal u_ctrl_n_206 : STD_LOGIC;
@@ -56545,41 +56549,37 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr
   signal u_ctrl_n_272 : STD_LOGIC;
   signal wrfifo_rden : STD_LOGIC;
 begin
-  frame_start_rise_adc <= \^frame_start_rise_adc\;
-  pixel_cnt_adc_reg_31_sn_1 <= pixel_cnt_adc_reg_31_sp_1;
-ctrl_rst_n_reg: unisim.vcomponents.FDRE
-     port map (
-      C => i_ui_clk,
-      CE => '1',
-      D => ctrl_rst_n_reg_0,
-      Q => ctrl_rst_n,
-      R => '0'
-    );
-frame_end_rise_adc_i_1: unisim.vcomponents.LUT4
+  frame_start_rise_wr <= \^frame_start_rise_wr\;
+  i_mmcm_locked_0 <= \^i_mmcm_locked_0\;
+  pixel_cnt_wr_reg_31_sn_1 <= pixel_cnt_wr_reg_31_sp_1;
+frame_end_rise_wr_i_1: unisim.vcomponents.LUT6
     generic map(
-      INIT => X"2F20"
+      INIT => X"2FFFFFFF20000000"
     )
         port map (
       I0 => frame_end_w,
-      I1 => frame_end_d_adc,
-      I2 => ctrl_rst_n,
-      I3 => frame_end_rise_adc,
-      O => frame_end_rise_adc_i_1_n_0
+      I1 => frame_end_d_wr,
+      I2 => s00_axi_aresetn,
+      I3 => i_init_calib_complete,
+      I4 => i_mmcm_locked,
+      I5 => frame_end_rise_wr,
+      O => frame_end_rise_wr_i_1_n_0
     );
-frame_start_rise_adc_i_1: unisim.vcomponents.LUT4
+frame_start_rise_wr_i_1: unisim.vcomponents.LUT6
     generic map(
-      INIT => X"2F20"
+      INIT => X"2FFFFFFF20000000"
     )
         port map (
       I0 => frame_start_w,
-      I1 => frame_start_d_adc,
-      I2 => ctrl_rst_n,
-      I3 => \^frame_start_rise_adc\,
-      O => frame_start_rise_adc_i_1_n_0
+      I1 => frame_start_d_wr,
+      I2 => s00_axi_aresetn,
+      I3 => i_init_calib_complete,
+      I4 => i_mmcm_locked,
+      I5 => \^frame_start_rise_wr\,
+      O => frame_start_rise_wr_i_1_n_0
     );
 u_adapter: entity work.mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr_axi_adapter
      port map (
-      \FSM_sequential_wr_state_reg[0]_0\ => u_ctrl_n_128,
       M_AXI_ARADDR(13 downto 0) => M_AXI_ARADDR(13 downto 0),
       M_AXI_ARLEN(7 downto 0) => M_AXI_ARLEN(7 downto 0),
       M_AXI_ARREADY => M_AXI_ARREADY,
@@ -56619,6 +56619,7 @@ u_adapter: entity work.mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr_ax
       \rd_beats_reg[6]_0\(0) => u_ctrl_n_240,
       \rd_beats_reg[7]_0\(0) => u_ctrl_n_263,
       rd_en => wrfifo_rden,
+      rst => \^i_mmcm_locked_0\,
       \wr_beats_reg[2]_0\(2) => u_ctrl_n_204,
       \wr_beats_reg[2]_0\(1) => u_ctrl_n_205,
       \wr_beats_reg[2]_0\(0) => u_ctrl_n_206,
@@ -56660,23 +56661,24 @@ u_ctrl: entity work.mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr_ctrl
       ctrl_rd_idle => ctrl_rd_idle,
       ctrl_rd_req => ctrl_rd_req,
       ctrl_rst_n => ctrl_rst_n,
-      ctrl_rst_n_reg => u_ctrl_n_128,
       ctrl_wr_idle => ctrl_wr_idle,
       ctrl_wr_req => ctrl_wr_req,
       fifo_prelast_w => fifo_prelast_w,
       fifo_rd_en_w => fifo_rd_en_w,
-      frame_active_adc_reg_0 => frame_active_adc_reg,
-      \frame_depth_reg_adc_reg[30]_0\(4 downto 0) => \frame_depth_reg_adc_reg[30]\(4 downto 0),
+      frame_active_wr_reg_0 => frame_active_wr_reg,
+      \frame_depth_reg_wr_reg[30]_0\(4 downto 0) => \frame_depth_reg_wr_reg[30]\(4 downto 0),
       frame_depth_w0_0(31 downto 0) => frame_depth_w0(31 downto 0),
-      frame_end_d_adc => frame_end_d_adc,
-      frame_end_rise_adc => frame_end_rise_adc,
-      frame_end_rise_adc_reg_0 => frame_end_rise_adc_i_1_n_0,
+      frame_end_d_wr => frame_end_d_wr,
+      frame_end_rise_wr => frame_end_rise_wr,
+      frame_end_rise_wr_reg_0 => frame_end_rise_wr_i_1_n_0,
       frame_end_w => frame_end_w,
-      frame_start_d_adc => frame_start_d_adc,
-      frame_start_rise_adc_reg_0(0) => \^frame_start_rise_adc\,
-      frame_start_rise_adc_reg_1 => frame_start_rise_adc_i_1_n_0,
+      frame_start_d_wr => frame_start_d_wr,
+      frame_start_rise_wr_reg_0(0) => \^frame_start_rise_wr\,
+      frame_start_rise_wr_reg_1 => frame_start_rise_wr_i_1_n_0,
       frame_start_w => frame_start_w,
       \frames_in_fifo_reg[0]_0\ => \frames_in_fifo_reg[0]\,
+      i_init_calib_complete => i_init_calib_complete,
+      i_mmcm_locked => i_mmcm_locked,
       i_rd_clk => i_rd_clk,
       i_slave_fifo_full_n => i_slave_fifo_full_n,
       i_ui_clk => i_ui_clk,
@@ -56700,17 +56702,19 @@ u_ctrl: entity work.mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr_ctrl
       \o_axi_wr_end_addr_reg[6]_0\(1) => u_ctrl_n_205,
       \o_axi_wr_end_addr_reg[6]_0\(0) => u_ctrl_n_206,
       \o_axi_wr_start_addr_reg[21]_0\(17 downto 0) => ctrl_wr_start(21 downto 4),
-      pixel_cnt_adc_reg(31 downto 0) => pixel_cnt_adc_reg(31 downto 0),
-      \pixel_cnt_adc_reg[11]_0\(3 downto 0) => \pixel_cnt_adc_reg[11]\(3 downto 0),
-      \pixel_cnt_adc_reg[15]_0\(3 downto 0) => \pixel_cnt_adc_reg[15]\(3 downto 0),
-      \pixel_cnt_adc_reg[19]_0\(3 downto 0) => \pixel_cnt_adc_reg[19]\(3 downto 0),
-      \pixel_cnt_adc_reg[23]_0\(3 downto 0) => \pixel_cnt_adc_reg[23]\(3 downto 0),
-      \pixel_cnt_adc_reg[27]_0\(3 downto 0) => \pixel_cnt_adc_reg[27]\(3 downto 0),
-      \pixel_cnt_adc_reg[31]_0\ => pixel_cnt_adc_reg_31_sn_1,
-      \pixel_cnt_adc_reg[31]_1\(3 downto 0) => \pixel_cnt_adc_reg[31]_0\(3 downto 0),
-      \pixel_cnt_adc_reg[7]_0\(3 downto 0) => \pixel_cnt_adc_reg[7]\(3 downto 0),
+      pixel_cnt_wr_reg(31 downto 0) => pixel_cnt_wr_reg(31 downto 0),
+      \pixel_cnt_wr_reg[11]_0\(3 downto 0) => \pixel_cnt_wr_reg[11]\(3 downto 0),
+      \pixel_cnt_wr_reg[15]_0\(3 downto 0) => \pixel_cnt_wr_reg[15]\(3 downto 0),
+      \pixel_cnt_wr_reg[19]_0\(3 downto 0) => \pixel_cnt_wr_reg[19]\(3 downto 0),
+      \pixel_cnt_wr_reg[23]_0\(3 downto 0) => \pixel_cnt_wr_reg[23]\(3 downto 0),
+      \pixel_cnt_wr_reg[27]_0\(3 downto 0) => \pixel_cnt_wr_reg[27]\(3 downto 0),
+      \pixel_cnt_wr_reg[31]_0\ => pixel_cnt_wr_reg_31_sn_1,
+      \pixel_cnt_wr_reg[31]_1\(3 downto 0) => \pixel_cnt_wr_reg[31]_0\(3 downto 0),
+      \pixel_cnt_wr_reg[7]_0\(3 downto 0) => \pixel_cnt_wr_reg[7]\(3 downto 0),
       rd_en => wrfifo_rden,
       \rd_pixel_cnt_reg[31]_0\(0) => \rd_pixel_cnt_reg[31]\(0),
+      rst => \^i_mmcm_locked_0\,
+      s00_axi_aresetn => s00_axi_aresetn,
       \slv_reg7_reg[3]\(3 downto 0) => \slv_reg7_reg[3]\(3 downto 0),
       \state_next1__3\ => \state_next1__3\,
       wr_en => wr_en
@@ -56728,6 +56732,7 @@ entity mb_subsystem_ccd_controller_v1_0_0_0_ccd_ddr is
     m_axi_awvalid_reg : out STD_LOGIC;
     o_slave_fifo_data_wr_en_n : out STD_LOGIC;
     o_slave_fifo_data_last_n : out STD_LOGIC;
+    SR : out STD_LOGIC_VECTOR ( 0 to 0 );
     o_axi_rd_req_i_54 : out STD_LOGIC_VECTOR ( 17 downto 0 );
     o_rg : out STD_LOGIC;
     D : out STD_LOGIC_VECTOR ( 3 downto 0 );
@@ -56753,7 +56758,9 @@ entity mb_subsystem_ccd_controller_v1_0_0_0_ccd_ddr is
     i_ui_clk : in STD_LOGIC;
     i_rd_clk : in STD_LOGIC;
     Q : in STD_LOGIC_VECTOR ( 31 downto 0 );
-    ctrl_rst_n_reg : in STD_LOGIC;
+    s00_axi_aresetn : in STD_LOGIC;
+    i_init_calib_complete : in STD_LOGIC;
+    i_mmcm_locked : in STD_LOGIC;
     tx_frame_start_reg : in STD_LOGIC;
     i_rd_clk_n : in STD_LOGIC;
     s00_axi_aclk : in STD_LOGIC;
@@ -56798,8 +56805,6 @@ entity mb_subsystem_ccd_controller_v1_0_0_0_ccd_ddr is
     \pixel_type_reg[0]_i_19\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
     \pixel_type_reg[0]_i_21\ : in STD_LOGIC_VECTOR ( 3 downto 0 );
     \pixel_type_reg[0]_i_10\ : in STD_LOGIC_VECTOR ( 1 downto 0 );
-    ddr3_init_done_s2 : in STD_LOGIC;
-    s00_axi_aresetn : in STD_LOGIC;
     M_AXI_WREADY : in STD_LOGIC;
     M_AXI_ARREADY : in STD_LOGIC;
     M_AXI_RVALID : in STD_LOGIC;
@@ -56815,6 +56820,7 @@ entity mb_subsystem_ccd_controller_v1_0_0_0_ccd_ddr is
 end mb_subsystem_ccd_controller_v1_0_0_0_ccd_ddr;
 
 architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_ddr is
+  signal \ctrl_rst_n__0\ : STD_LOGIC;
   signal fifo_data_w : STD_LOGIC_VECTOR ( 15 downto 0 );
   signal fifo_prelast_w : STD_LOGIC;
   signal fifo_rd_en_w : STD_LOGIC;
@@ -56823,7 +56829,6 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_ddr is
   signal \^o_sclk_p0_reg\ : STD_LOGIC;
   signal pixel_data_w : STD_LOGIC_VECTOR ( 15 downto 0 );
   signal \state_next1__3\ : STD_LOGIC;
-  signal u_ccd_driver_n_1 : STD_LOGIC;
   signal u_ccd_driver_n_10 : STD_LOGIC;
   signal u_ccd_driver_n_11 : STD_LOGIC;
   signal u_ccd_driver_n_12 : STD_LOGIC;
@@ -56857,14 +56862,25 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_ddr is
   signal u_ccd_driver_n_7 : STD_LOGIC;
   signal u_ccd_driver_n_8 : STD_LOGIC;
   signal u_ccd_driver_n_9 : STD_LOGIC;
-  signal u_ccd_frame_buf_ddr_n_204 : STD_LOGIC;
+  signal u_ccd_frame_buf_ddr_n_128 : STD_LOGIC;
+  signal u_ccd_frame_buf_ddr_n_205 : STD_LOGIC;
   signal u_ccd_frame_tx_n_3 : STD_LOGIC;
-  signal \u_ctrl/frame_start_rise_adc\ : STD_LOGIC;
-  signal \u_ctrl/pixel_cnt_adc1\ : STD_LOGIC;
-  signal \u_ctrl/pixel_cnt_adc_reg\ : STD_LOGIC_VECTOR ( 31 downto 0 );
+  signal \u_ctrl/frame_start_rise_wr\ : STD_LOGIC;
+  signal \u_ctrl/pixel_cnt_wr1\ : STD_LOGIC;
+  signal \u_ctrl/pixel_cnt_wr_reg\ : STD_LOGIC_VECTOR ( 31 downto 0 );
   signal \u_ctrl/rd_pixel_cnt1\ : STD_LOGIC;
 begin
   o_sclk_p0_reg <= \^o_sclk_p0_reg\;
+ctrl_rst_n: unisim.vcomponents.LUT3
+    generic map(
+      INIT => X"80"
+    )
+        port map (
+      I0 => s00_axi_aresetn,
+      I1 => i_init_calib_complete,
+      I2 => i_mmcm_locked,
+      O => \ctrl_rst_n__0\
+    );
 u_ccd_driver: entity work.mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
      port map (
       \FSM_onehot_state_reg[0]_i_12_0\(3 downto 0) => \FSM_onehot_state_reg[0]_i_12\(3 downto 0),
@@ -56879,12 +56895,13 @@ u_ccd_driver: entity work.mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
       Q(15 downto 0) => pixel_data_w(15 downto 0),
       S(2 downto 0) => S(2 downto 0),
       cdsclk2_end_carry_i_2(11 downto 0) => cdsclk2_end_carry_i_2(11 downto 0),
-      ddr3_init_done_s2 => ddr3_init_done_s2,
       frame_end_w => frame_end_w,
-      frame_start_rise_adc => \u_ctrl/frame_start_rise_adc\,
-      frame_start_rise_adc_reg => u_ccd_driver_n_36,
+      frame_start_rise_wr => \u_ctrl/frame_start_rise_wr\,
+      frame_start_rise_wr_reg => u_ccd_driver_n_36,
       frame_start_w => frame_start_w,
       i_adc_data(7 downto 0) => i_adc_data(7 downto 0),
+      i_init_calib_complete => i_init_calib_complete,
+      i_mmcm_locked => i_mmcm_locked,
       \l_counter_reg[0]_0\ => \l_counter_reg[0]\,
       o_cdsclk1 => o_cdsclk1,
       o_cdsclk2 => o_cdsclk2,
@@ -56896,41 +56913,42 @@ u_ccd_driver: entity work.mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
       o_p4h_sg => o_p4h_sg,
       o_rg => o_rg,
       o_sclk_p0_reg => \^o_sclk_p0_reg\,
+      p1v_enable_reg_0 => u_ccd_frame_buf_ddr_n_128,
       p1v_enable_reg_i_20_0(0) => p1v_enable_reg_i_20(0),
       p1v_enable_reg_i_26_0(3 downto 0) => p1v_enable_reg_i_26(3 downto 0),
       p1v_enable_reg_i_31_0(3 downto 0) => p1v_enable_reg_i_31(3 downto 0),
       p1v_enable_reg_i_36_0(3 downto 0) => p1v_enable_reg_i_36(3 downto 0),
       p1v_enable_reg_i_41_0(3 downto 0) => O(3 downto 0),
-      pixel_cnt_adc_reg(31 downto 0) => \u_ctrl/pixel_cnt_adc_reg\(31 downto 0),
-      \pixel_cnt_adc_reg[11]\(3) => u_ccd_driver_n_12,
-      \pixel_cnt_adc_reg[11]\(2) => u_ccd_driver_n_13,
-      \pixel_cnt_adc_reg[11]\(1) => u_ccd_driver_n_14,
-      \pixel_cnt_adc_reg[11]\(0) => u_ccd_driver_n_15,
-      \pixel_cnt_adc_reg[15]\(3) => u_ccd_driver_n_16,
-      \pixel_cnt_adc_reg[15]\(2) => u_ccd_driver_n_17,
-      \pixel_cnt_adc_reg[15]\(1) => u_ccd_driver_n_18,
-      \pixel_cnt_adc_reg[15]\(0) => u_ccd_driver_n_19,
-      \pixel_cnt_adc_reg[19]\(3) => u_ccd_driver_n_20,
-      \pixel_cnt_adc_reg[19]\(2) => u_ccd_driver_n_21,
-      \pixel_cnt_adc_reg[19]\(1) => u_ccd_driver_n_22,
-      \pixel_cnt_adc_reg[19]\(0) => u_ccd_driver_n_23,
-      \pixel_cnt_adc_reg[23]\(3) => u_ccd_driver_n_24,
-      \pixel_cnt_adc_reg[23]\(2) => u_ccd_driver_n_25,
-      \pixel_cnt_adc_reg[23]\(1) => u_ccd_driver_n_26,
-      \pixel_cnt_adc_reg[23]\(0) => u_ccd_driver_n_27,
-      \pixel_cnt_adc_reg[27]\(3) => u_ccd_driver_n_28,
-      \pixel_cnt_adc_reg[27]\(2) => u_ccd_driver_n_29,
-      \pixel_cnt_adc_reg[27]\(1) => u_ccd_driver_n_30,
-      \pixel_cnt_adc_reg[27]\(0) => u_ccd_driver_n_31,
-      \pixel_cnt_adc_reg[31]\(3) => u_ccd_driver_n_32,
-      \pixel_cnt_adc_reg[31]\(2) => u_ccd_driver_n_33,
-      \pixel_cnt_adc_reg[31]\(1) => u_ccd_driver_n_34,
-      \pixel_cnt_adc_reg[31]\(0) => u_ccd_driver_n_35,
-      \pixel_cnt_adc_reg[31]_0\ => u_ccd_frame_buf_ddr_n_204,
-      \pixel_cnt_adc_reg[7]\(3) => u_ccd_driver_n_8,
-      \pixel_cnt_adc_reg[7]\(2) => u_ccd_driver_n_9,
-      \pixel_cnt_adc_reg[7]\(1) => u_ccd_driver_n_10,
-      \pixel_cnt_adc_reg[7]\(0) => u_ccd_driver_n_11,
+      pixel_cnt_wr_reg(31 downto 0) => \u_ctrl/pixel_cnt_wr_reg\(31 downto 0),
+      \pixel_cnt_wr_reg[11]\(3) => u_ccd_driver_n_12,
+      \pixel_cnt_wr_reg[11]\(2) => u_ccd_driver_n_13,
+      \pixel_cnt_wr_reg[11]\(1) => u_ccd_driver_n_14,
+      \pixel_cnt_wr_reg[11]\(0) => u_ccd_driver_n_15,
+      \pixel_cnt_wr_reg[15]\(3) => u_ccd_driver_n_16,
+      \pixel_cnt_wr_reg[15]\(2) => u_ccd_driver_n_17,
+      \pixel_cnt_wr_reg[15]\(1) => u_ccd_driver_n_18,
+      \pixel_cnt_wr_reg[15]\(0) => u_ccd_driver_n_19,
+      \pixel_cnt_wr_reg[19]\(3) => u_ccd_driver_n_20,
+      \pixel_cnt_wr_reg[19]\(2) => u_ccd_driver_n_21,
+      \pixel_cnt_wr_reg[19]\(1) => u_ccd_driver_n_22,
+      \pixel_cnt_wr_reg[19]\(0) => u_ccd_driver_n_23,
+      \pixel_cnt_wr_reg[23]\(3) => u_ccd_driver_n_24,
+      \pixel_cnt_wr_reg[23]\(2) => u_ccd_driver_n_25,
+      \pixel_cnt_wr_reg[23]\(1) => u_ccd_driver_n_26,
+      \pixel_cnt_wr_reg[23]\(0) => u_ccd_driver_n_27,
+      \pixel_cnt_wr_reg[27]\(3) => u_ccd_driver_n_28,
+      \pixel_cnt_wr_reg[27]\(2) => u_ccd_driver_n_29,
+      \pixel_cnt_wr_reg[27]\(1) => u_ccd_driver_n_30,
+      \pixel_cnt_wr_reg[27]\(0) => u_ccd_driver_n_31,
+      \pixel_cnt_wr_reg[31]\(3) => u_ccd_driver_n_32,
+      \pixel_cnt_wr_reg[31]\(2) => u_ccd_driver_n_33,
+      \pixel_cnt_wr_reg[31]\(1) => u_ccd_driver_n_34,
+      \pixel_cnt_wr_reg[31]\(0) => u_ccd_driver_n_35,
+      \pixel_cnt_wr_reg[31]_0\ => u_ccd_frame_buf_ddr_n_205,
+      \pixel_cnt_wr_reg[7]\(3) => u_ccd_driver_n_8,
+      \pixel_cnt_wr_reg[7]\(2) => u_ccd_driver_n_9,
+      \pixel_cnt_wr_reg[7]\(1) => u_ccd_driver_n_10,
+      \pixel_cnt_wr_reg[7]\(0) => u_ccd_driver_n_11,
       \pixel_type_reg[0]_i_10_0\(1 downto 0) => \pixel_type_reg[0]_i_10\(1 downto 0),
       \pixel_type_reg[0]_i_19_0\(3 downto 0) => \pixel_type_reg[0]_i_19\(3 downto 0),
       \pixel_type_reg[0]_i_21_0\(3 downto 0) => \pixel_type_reg[0]_i_21\(3 downto 0),
@@ -56944,10 +56962,10 @@ u_ccd_driver: entity work.mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
       \pixel_type_reg_reg[1]_i_42_0\(7 downto 0) => \pixel_type_reg_reg[1]_i_42\(7 downto 0),
       s00_axi_aclk => s00_axi_aclk,
       s00_axi_aresetn => s00_axi_aresetn,
-      s00_axi_aresetn_0 => u_ccd_driver_n_1,
+      s00_axi_aresetn_0 => SR(0),
       \slv_reg2_reg[1]\ => \slv_reg2_reg[1]\,
       state_next21_in(15 downto 0) => state_next21_in(15 downto 0),
-      wr_en => \u_ctrl/pixel_cnt_adc1\
+      wr_en => \u_ctrl/pixel_cnt_wr1\
     );
 u_ccd_frame_buf_ddr: entity work.mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_buf_ddr
      port map (
@@ -56988,16 +57006,19 @@ u_ccd_frame_buf_ddr: entity work.mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_
       \axi_rdata_reg[3]_6\(3 downto 0) => \axi_rdata_reg[3]_6\(3 downto 0),
       \axi_rdata_reg[3]_7\ => \axi_rdata_reg[3]_7\,
       ccd_frame_exception => ccd_frame_exception,
-      ctrl_rst_n_reg_0 => ctrl_rst_n_reg,
+      ctrl_rst_n => \ctrl_rst_n__0\,
       fifo_prelast_w => fifo_prelast_w,
       fifo_rd_en_w => fifo_rd_en_w,
-      frame_active_adc_reg => u_ccd_frame_buf_ddr_n_204,
-      \frame_depth_reg_adc_reg[30]\(4 downto 0) => cdsclk2_end_carry_i_2(4 downto 0),
+      frame_active_wr_reg => u_ccd_frame_buf_ddr_n_205,
+      \frame_depth_reg_wr_reg[30]\(4 downto 0) => cdsclk2_end_carry_i_2(4 downto 0),
       frame_depth_w0(31 downto 0) => Q(31 downto 0),
       frame_end_w => frame_end_w,
-      frame_start_rise_adc => \u_ctrl/frame_start_rise_adc\,
+      frame_start_rise_wr => \u_ctrl/frame_start_rise_wr\,
       frame_start_w => frame_start_w,
       \frames_in_fifo_reg[0]\ => u_ccd_frame_tx_n_3,
+      i_init_calib_complete => i_init_calib_complete,
+      i_mmcm_locked => i_mmcm_locked,
+      i_mmcm_locked_0 => u_ccd_frame_buf_ddr_n_128,
       i_rd_clk => i_rd_clk,
       i_slave_fifo_full_n => i_slave_fifo_full_n,
       i_ui_clk => i_ui_clk,
@@ -57007,47 +57028,48 @@ u_ccd_frame_buf_ddr: entity work.mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_
       m_axi_wvalid_reg => m_axi_wvalid_reg,
       o_axi_rd_req_i_54(17 downto 0) => o_axi_rd_req_i_54(17 downto 0),
       o_axi_rd_req_reg_i_4(17 downto 0) => o_axi_rd_req_reg_i_4(17 downto 0),
-      pixel_cnt_adc_reg(31 downto 0) => \u_ctrl/pixel_cnt_adc_reg\(31 downto 0),
-      \pixel_cnt_adc_reg[11]\(3) => u_ccd_driver_n_12,
-      \pixel_cnt_adc_reg[11]\(2) => u_ccd_driver_n_13,
-      \pixel_cnt_adc_reg[11]\(1) => u_ccd_driver_n_14,
-      \pixel_cnt_adc_reg[11]\(0) => u_ccd_driver_n_15,
-      \pixel_cnt_adc_reg[15]\(3) => u_ccd_driver_n_16,
-      \pixel_cnt_adc_reg[15]\(2) => u_ccd_driver_n_17,
-      \pixel_cnt_adc_reg[15]\(1) => u_ccd_driver_n_18,
-      \pixel_cnt_adc_reg[15]\(0) => u_ccd_driver_n_19,
-      \pixel_cnt_adc_reg[19]\(3) => u_ccd_driver_n_20,
-      \pixel_cnt_adc_reg[19]\(2) => u_ccd_driver_n_21,
-      \pixel_cnt_adc_reg[19]\(1) => u_ccd_driver_n_22,
-      \pixel_cnt_adc_reg[19]\(0) => u_ccd_driver_n_23,
-      \pixel_cnt_adc_reg[23]\(3) => u_ccd_driver_n_24,
-      \pixel_cnt_adc_reg[23]\(2) => u_ccd_driver_n_25,
-      \pixel_cnt_adc_reg[23]\(1) => u_ccd_driver_n_26,
-      \pixel_cnt_adc_reg[23]\(0) => u_ccd_driver_n_27,
-      \pixel_cnt_adc_reg[27]\(3) => u_ccd_driver_n_28,
-      \pixel_cnt_adc_reg[27]\(2) => u_ccd_driver_n_29,
-      \pixel_cnt_adc_reg[27]\(1) => u_ccd_driver_n_30,
-      \pixel_cnt_adc_reg[27]\(0) => u_ccd_driver_n_31,
-      \pixel_cnt_adc_reg[31]_0\(3) => u_ccd_driver_n_32,
-      \pixel_cnt_adc_reg[31]_0\(2) => u_ccd_driver_n_33,
-      \pixel_cnt_adc_reg[31]_0\(1) => u_ccd_driver_n_34,
-      \pixel_cnt_adc_reg[31]_0\(0) => u_ccd_driver_n_35,
-      \pixel_cnt_adc_reg[7]\(3) => u_ccd_driver_n_8,
-      \pixel_cnt_adc_reg[7]\(2) => u_ccd_driver_n_9,
-      \pixel_cnt_adc_reg[7]\(1) => u_ccd_driver_n_10,
-      \pixel_cnt_adc_reg[7]\(0) => u_ccd_driver_n_11,
-      pixel_cnt_adc_reg_31_sp_1 => u_ccd_driver_n_36,
+      pixel_cnt_wr_reg(31 downto 0) => \u_ctrl/pixel_cnt_wr_reg\(31 downto 0),
+      \pixel_cnt_wr_reg[11]\(3) => u_ccd_driver_n_12,
+      \pixel_cnt_wr_reg[11]\(2) => u_ccd_driver_n_13,
+      \pixel_cnt_wr_reg[11]\(1) => u_ccd_driver_n_14,
+      \pixel_cnt_wr_reg[11]\(0) => u_ccd_driver_n_15,
+      \pixel_cnt_wr_reg[15]\(3) => u_ccd_driver_n_16,
+      \pixel_cnt_wr_reg[15]\(2) => u_ccd_driver_n_17,
+      \pixel_cnt_wr_reg[15]\(1) => u_ccd_driver_n_18,
+      \pixel_cnt_wr_reg[15]\(0) => u_ccd_driver_n_19,
+      \pixel_cnt_wr_reg[19]\(3) => u_ccd_driver_n_20,
+      \pixel_cnt_wr_reg[19]\(2) => u_ccd_driver_n_21,
+      \pixel_cnt_wr_reg[19]\(1) => u_ccd_driver_n_22,
+      \pixel_cnt_wr_reg[19]\(0) => u_ccd_driver_n_23,
+      \pixel_cnt_wr_reg[23]\(3) => u_ccd_driver_n_24,
+      \pixel_cnt_wr_reg[23]\(2) => u_ccd_driver_n_25,
+      \pixel_cnt_wr_reg[23]\(1) => u_ccd_driver_n_26,
+      \pixel_cnt_wr_reg[23]\(0) => u_ccd_driver_n_27,
+      \pixel_cnt_wr_reg[27]\(3) => u_ccd_driver_n_28,
+      \pixel_cnt_wr_reg[27]\(2) => u_ccd_driver_n_29,
+      \pixel_cnt_wr_reg[27]\(1) => u_ccd_driver_n_30,
+      \pixel_cnt_wr_reg[27]\(0) => u_ccd_driver_n_31,
+      \pixel_cnt_wr_reg[31]_0\(3) => u_ccd_driver_n_32,
+      \pixel_cnt_wr_reg[31]_0\(2) => u_ccd_driver_n_33,
+      \pixel_cnt_wr_reg[31]_0\(1) => u_ccd_driver_n_34,
+      \pixel_cnt_wr_reg[31]_0\(0) => u_ccd_driver_n_35,
+      \pixel_cnt_wr_reg[7]\(3) => u_ccd_driver_n_8,
+      \pixel_cnt_wr_reg[7]\(2) => u_ccd_driver_n_9,
+      \pixel_cnt_wr_reg[7]\(1) => u_ccd_driver_n_10,
+      \pixel_cnt_wr_reg[7]\(0) => u_ccd_driver_n_11,
+      pixel_cnt_wr_reg_31_sp_1 => u_ccd_driver_n_36,
       \rd_pixel_cnt_reg[31]\(0) => \u_ctrl/rd_pixel_cnt1\,
+      s00_axi_aresetn => s00_axi_aresetn,
       \slv_reg7_reg[3]\(3 downto 0) => D(3 downto 0),
       \state_next1__3\ => \state_next1__3\,
-      wr_en => \u_ctrl/pixel_cnt_adc1\
+      wr_en => \u_ctrl/pixel_cnt_wr1\
     );
 u_ccd_frame_tx: entity work.mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_tx
      port map (
       D(15 downto 0) => fifo_data_w(15 downto 0),
+      \FSM_onehot_state_reg[0]_0\ => u_ccd_frame_buf_ddr_n_128,
       fifo_prelast_w => fifo_prelast_w,
       fifo_rd_en_w => fifo_rd_en_w,
-      frame_done_n_reg_reg_0 => u_ccd_driver_n_1,
       \frames_in_fifo_reg[0]\(0) => \u_ctrl/rd_pixel_cnt1\,
       i_rd_clk => i_rd_clk,
       i_rd_clk_n => i_rd_clk_n,
@@ -57100,10 +57122,10 @@ entity mb_subsystem_ccd_controller_v1_0_0_0_ccd_controller_v1_0_S00_AXI is
     o_cdsclk2 : out STD_LOGIC;
     i_ui_clk : in STD_LOGIC;
     i_rd_clk : in STD_LOGIC;
-    i_rd_clk_n : in STD_LOGIC;
     s00_axi_aresetn : in STD_LOGIC;
     i_init_calib_complete : in STD_LOGIC;
     i_mmcm_locked : in STD_LOGIC;
+    i_rd_clk_n : in STD_LOGIC;
     s00_axi_aclk : in STD_LOGIC;
     o_axi_rd_req_reg_i_4 : in STD_LOGIC_VECTOR ( 17 downto 0 );
     CO : in STD_LOGIC_VECTOR ( 0 to 0 );
@@ -57288,7 +57310,6 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_controller_v1
   signal axi_arready0 : STD_LOGIC;
   signal \^axi_arready_reg_0\ : STD_LOGIC;
   signal axi_awready0 : STD_LOGIC;
-  signal axi_awready_i_1_n_0 : STD_LOGIC;
   signal \^axi_awready_reg_0\ : STD_LOGIC;
   signal axi_bvalid_i_1_n_0 : STD_LOGIC;
   signal \axi_rdata[0]_i_2_n_0\ : STD_LOGIC;
@@ -57370,7 +57391,6 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_controller_v1
   signal ccd_tx_last_n_s1 : STD_LOGIC;
   signal ccd_tx_last_n_s2 : STD_LOGIC;
   signal ccd_tx_last_n_s2_d : STD_LOGIC;
-  signal ctrl_rst_n_i_1_n_0 : STD_LOGIC;
   signal ddr3_init_done : STD_LOGIC;
   signal ddr3_init_done_s1 : STD_LOGIC;
   signal ddr3_init_done_s2 : STD_LOGIC;
@@ -57518,7 +57538,8 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_controller_v1
   signal tx_done_pending_latch_i_2_n_0 : STD_LOGIC;
   signal tx_frame_start_reg : STD_LOGIC;
   signal tx_frame_start_reg_i_1_n_0 : STD_LOGIC;
-  signal u_ccd_ddr_n_159 : STD_LOGIC;
+  signal u_ccd_ddr_n_133 : STD_LOGIC;
+  signal u_ccd_ddr_n_160 : STD_LOGIC;
   signal \u_ccd_driver/state_next21_in\ : STD_LOGIC_VECTOR ( 16 downto 1 );
   signal \u_ccd_driver/v_shift_cnt\ : STD_LOGIC_VECTOR ( 0 to 0 );
   signal \NLW_FSM_onehot_state_reg_reg[0]_i_23_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 downto 1 );
@@ -57532,31 +57553,29 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0_ccd_controller_v1
   signal \NLW_pixel_type_reg_reg[1]_i_82_CO_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 downto 1 );
   signal \NLW_pixel_type_reg_reg[1]_i_82_O_UNCONNECTED\ : STD_LOGIC_VECTOR ( 3 downto 0 );
   attribute SOFT_HLUTNM : string;
-  attribute SOFT_HLUTNM of \axi_rdata[16]_i_3\ : label is "soft_lutpair222";
-  attribute SOFT_HLUTNM of \axi_rdata[16]_i_5\ : label is "soft_lutpair223";
-  attribute SOFT_HLUTNM of \axi_rdata[16]_i_6\ : label is "soft_lutpair224";
-  attribute SOFT_HLUTNM of \axi_rdata[31]_i_3\ : label is "soft_lutpair222";
-  attribute SOFT_HLUTNM of \axi_rdata[31]_i_4\ : label is "soft_lutpair224";
-  attribute SOFT_HLUTNM of \axi_rdata[9]_i_3\ : label is "soft_lutpair223";
-  attribute SOFT_HLUTNM of \axi_rdata[9]_i_4\ : label is "soft_lutpair216";
-  attribute SOFT_HLUTNM of axi_wready_i_1 : label is "soft_lutpair219";
-  attribute SOFT_HLUTNM of ctrl_rst_n_i_1 : label is "soft_lutpair218";
-  attribute SOFT_HLUTNM of ddr3_init_done_s1_i_1 : label is "soft_lutpair218";
-  attribute SOFT_HLUTNM of \exception_count[0]_i_1\ : label is "soft_lutpair216";
-  attribute SOFT_HLUTNM of \exception_count[2]_i_1\ : label is "soft_lutpair220";
-  attribute SOFT_HLUTNM of \exception_count[3]_i_1\ : label is "soft_lutpair215";
-  attribute SOFT_HLUTNM of \exception_count[4]_i_1\ : label is "soft_lutpair215";
-  attribute SOFT_HLUTNM of \exception_count[6]_i_3\ : label is "soft_lutpair220";
+  attribute SOFT_HLUTNM of \axi_rdata[16]_i_3\ : label is "soft_lutpair221";
+  attribute SOFT_HLUTNM of \axi_rdata[16]_i_5\ : label is "soft_lutpair220";
+  attribute SOFT_HLUTNM of \axi_rdata[16]_i_6\ : label is "soft_lutpair221";
+  attribute SOFT_HLUTNM of \axi_rdata[31]_i_3\ : label is "soft_lutpair223";
+  attribute SOFT_HLUTNM of \axi_rdata[31]_i_4\ : label is "soft_lutpair223";
+  attribute SOFT_HLUTNM of \axi_rdata[9]_i_3\ : label is "soft_lutpair220";
+  attribute SOFT_HLUTNM of \axi_rdata[9]_i_4\ : label is "soft_lutpair215";
+  attribute SOFT_HLUTNM of axi_wready_i_1 : label is "soft_lutpair218";
+  attribute SOFT_HLUTNM of \exception_count[0]_i_1\ : label is "soft_lutpair215";
+  attribute SOFT_HLUTNM of \exception_count[2]_i_1\ : label is "soft_lutpair224";
+  attribute SOFT_HLUTNM of \exception_count[3]_i_1\ : label is "soft_lutpair224";
+  attribute SOFT_HLUTNM of \exception_count[4]_i_1\ : label is "soft_lutpair217";
+  attribute SOFT_HLUTNM of \exception_count[6]_i_3\ : label is "soft_lutpair217";
   attribute ORIG_CELL_NAME : string;
   attribute ORIG_CELL_NAME of \slv_reg0_reg[1]\ : label is "slv_reg0_reg[1]";
   attribute ORIG_CELL_NAME of \slv_reg0_reg[1]_rep\ : label is "slv_reg0_reg[1]";
-  attribute SOFT_HLUTNM of \slv_reg4[31]_i_2\ : label is "soft_lutpair219";
-  attribute SOFT_HLUTNM of \trigger_stretch_cnt[1]_i_1\ : label is "soft_lutpair225";
-  attribute SOFT_HLUTNM of \trigger_stretch_cnt[2]_i_1\ : label is "soft_lutpair225";
-  attribute SOFT_HLUTNM of \trigger_stretch_cnt[3]_i_2\ : label is "soft_lutpair217";
-  attribute SOFT_HLUTNM of \trigger_stretch_cnt[3]_i_4\ : label is "soft_lutpair221";
-  attribute SOFT_HLUTNM of tx_done_pending_latch_i_2 : label is "soft_lutpair221";
-  attribute SOFT_HLUTNM of tx_frame_start_reg_i_1 : label is "soft_lutpair217";
+  attribute SOFT_HLUTNM of \slv_reg4[31]_i_2\ : label is "soft_lutpair218";
+  attribute SOFT_HLUTNM of \trigger_stretch_cnt[1]_i_1\ : label is "soft_lutpair222";
+  attribute SOFT_HLUTNM of \trigger_stretch_cnt[2]_i_1\ : label is "soft_lutpair222";
+  attribute SOFT_HLUTNM of \trigger_stretch_cnt[3]_i_2\ : label is "soft_lutpair216";
+  attribute SOFT_HLUTNM of \trigger_stretch_cnt[3]_i_4\ : label is "soft_lutpair219";
+  attribute SOFT_HLUTNM of tx_done_pending_latch_i_2 : label is "soft_lutpair219";
+  attribute SOFT_HLUTNM of tx_frame_start_reg_i_1 : label is "soft_lutpair216";
 begin
   axi_arready_reg_0 <= \^axi_arready_reg_0\;
   axi_awready_reg_0 <= \^axi_awready_reg_0\;
@@ -58365,7 +58384,7 @@ aw_en_reg: unisim.vcomponents.FDSE
       CE => '1',
       D => aw_en_i_1_n_0,
       Q => aw_en_reg_n_0,
-      S => axi_awready_i_1_n_0
+      S => u_ccd_ddr_n_133
     );
 \axi_araddr_reg[2]\: unisim.vcomponents.FDRE
      port map (
@@ -58373,7 +58392,7 @@ aw_en_reg: unisim.vcomponents.FDSE
       CE => axi_arready0,
       D => s00_axi_araddr(0),
       Q => sel0(0),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_araddr_reg[3]\: unisim.vcomponents.FDRE
      port map (
@@ -58381,7 +58400,7 @@ aw_en_reg: unisim.vcomponents.FDSE
       CE => axi_arready0,
       D => s00_axi_araddr(1),
       Q => sel0(1),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_araddr_reg[4]\: unisim.vcomponents.FDRE
      port map (
@@ -58389,7 +58408,7 @@ aw_en_reg: unisim.vcomponents.FDSE
       CE => axi_arready0,
       D => s00_axi_araddr(2),
       Q => sel0(2),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_araddr_reg[5]\: unisim.vcomponents.FDRE
      port map (
@@ -58397,7 +58416,7 @@ aw_en_reg: unisim.vcomponents.FDSE
       CE => axi_arready0,
       D => s00_axi_araddr(3),
       Q => sel0(3),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 axi_arready_i_1: unisim.vcomponents.LUT2
     generic map(
@@ -58414,7 +58433,7 @@ axi_arready_reg: unisim.vcomponents.FDRE
       CE => '1',
       D => axi_arready0,
       Q => \^axi_arready_reg_0\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_awaddr_reg[2]\: unisim.vcomponents.FDRE
      port map (
@@ -58422,7 +58441,7 @@ axi_arready_reg: unisim.vcomponents.FDRE
       CE => axi_awready0,
       D => s00_axi_awaddr(0),
       Q => p_0_in_32(0),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_awaddr_reg[3]\: unisim.vcomponents.FDRE
      port map (
@@ -58430,7 +58449,7 @@ axi_arready_reg: unisim.vcomponents.FDRE
       CE => axi_awready0,
       D => s00_axi_awaddr(1),
       Q => p_0_in_32(1),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_awaddr_reg[4]\: unisim.vcomponents.FDRE
      port map (
@@ -58438,7 +58457,7 @@ axi_arready_reg: unisim.vcomponents.FDRE
       CE => axi_awready0,
       D => s00_axi_awaddr(2),
       Q => p_0_in_32(2),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_awaddr_reg[5]\: unisim.vcomponents.FDRE
      port map (
@@ -58446,17 +58465,9 @@ axi_arready_reg: unisim.vcomponents.FDRE
       CE => axi_awready0,
       D => s00_axi_awaddr(3),
       Q => p_0_in_32(3),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
-axi_awready_i_1: unisim.vcomponents.LUT1
-    generic map(
-      INIT => X"1"
-    )
-        port map (
-      I0 => s00_axi_aresetn,
-      O => axi_awready_i_1_n_0
-    );
-axi_awready_i_2: unisim.vcomponents.LUT4
+axi_awready_i_1: unisim.vcomponents.LUT4
     generic map(
       INIT => X"4000"
     )
@@ -58473,7 +58484,7 @@ axi_awready_reg: unisim.vcomponents.FDRE
       CE => '1',
       D => axi_awready0,
       Q => \^axi_awready_reg_0\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 axi_bvalid_i_1: unisim.vcomponents.LUT6
     generic map(
@@ -58494,7 +58505,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => '1',
       D => axi_bvalid_i_1_n_0,
       Q => \^s00_axi_bvalid\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata[0]_i_2\: unisim.vcomponents.LUT6
     generic map(
@@ -59736,7 +59747,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(0),
       Q => s00_axi_rdata(0),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[10]\: unisim.vcomponents.FDRE
      port map (
@@ -59744,7 +59755,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(10),
       Q => s00_axi_rdata(10),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[11]\: unisim.vcomponents.FDRE
      port map (
@@ -59752,7 +59763,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(11),
       Q => s00_axi_rdata(11),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[12]\: unisim.vcomponents.FDRE
      port map (
@@ -59760,7 +59771,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(12),
       Q => s00_axi_rdata(12),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[13]\: unisim.vcomponents.FDRE
      port map (
@@ -59768,7 +59779,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(13),
       Q => s00_axi_rdata(13),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[14]\: unisim.vcomponents.FDRE
      port map (
@@ -59776,7 +59787,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(14),
       Q => s00_axi_rdata(14),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[15]\: unisim.vcomponents.FDRE
      port map (
@@ -59784,7 +59795,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(15),
       Q => s00_axi_rdata(15),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[16]\: unisim.vcomponents.FDRE
      port map (
@@ -59792,7 +59803,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(16),
       Q => s00_axi_rdata(16),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[17]\: unisim.vcomponents.FDRE
      port map (
@@ -59800,7 +59811,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(17),
       Q => s00_axi_rdata(17),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[18]\: unisim.vcomponents.FDRE
      port map (
@@ -59808,7 +59819,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(18),
       Q => s00_axi_rdata(18),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[19]\: unisim.vcomponents.FDRE
      port map (
@@ -59816,7 +59827,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(19),
       Q => s00_axi_rdata(19),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[1]\: unisim.vcomponents.FDRE
      port map (
@@ -59824,7 +59835,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(1),
       Q => s00_axi_rdata(1),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[20]\: unisim.vcomponents.FDRE
      port map (
@@ -59832,7 +59843,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(20),
       Q => s00_axi_rdata(20),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[21]\: unisim.vcomponents.FDRE
      port map (
@@ -59840,7 +59851,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(21),
       Q => s00_axi_rdata(21),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[22]\: unisim.vcomponents.FDRE
      port map (
@@ -59848,7 +59859,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(22),
       Q => s00_axi_rdata(22),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[23]\: unisim.vcomponents.FDRE
      port map (
@@ -59856,7 +59867,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(23),
       Q => s00_axi_rdata(23),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[24]\: unisim.vcomponents.FDRE
      port map (
@@ -59864,7 +59875,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(24),
       Q => s00_axi_rdata(24),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[25]\: unisim.vcomponents.FDRE
      port map (
@@ -59872,7 +59883,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(25),
       Q => s00_axi_rdata(25),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[26]\: unisim.vcomponents.FDRE
      port map (
@@ -59880,7 +59891,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(26),
       Q => s00_axi_rdata(26),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[27]\: unisim.vcomponents.FDRE
      port map (
@@ -59888,7 +59899,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(27),
       Q => s00_axi_rdata(27),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[28]\: unisim.vcomponents.FDRE
      port map (
@@ -59896,7 +59907,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(28),
       Q => s00_axi_rdata(28),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[29]\: unisim.vcomponents.FDRE
      port map (
@@ -59904,7 +59915,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(29),
       Q => s00_axi_rdata(29),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[2]\: unisim.vcomponents.FDRE
      port map (
@@ -59912,7 +59923,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(2),
       Q => s00_axi_rdata(2),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[30]\: unisim.vcomponents.FDRE
      port map (
@@ -59920,7 +59931,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(30),
       Q => s00_axi_rdata(30),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[31]\: unisim.vcomponents.FDRE
      port map (
@@ -59928,7 +59939,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(31),
       Q => s00_axi_rdata(31),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[3]\: unisim.vcomponents.FDRE
      port map (
@@ -59936,7 +59947,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(3),
       Q => s00_axi_rdata(3),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[4]\: unisim.vcomponents.FDRE
      port map (
@@ -59944,7 +59955,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(4),
       Q => s00_axi_rdata(4),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[5]\: unisim.vcomponents.FDRE
      port map (
@@ -59952,7 +59963,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(5),
       Q => s00_axi_rdata(5),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[6]\: unisim.vcomponents.FDRE
      port map (
@@ -59960,7 +59971,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(6),
       Q => s00_axi_rdata(6),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[7]\: unisim.vcomponents.FDRE
      port map (
@@ -59968,7 +59979,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(7),
       Q => s00_axi_rdata(7),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[8]\: unisim.vcomponents.FDRE
      port map (
@@ -59976,7 +59987,7 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(8),
       Q => s00_axi_rdata(8),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \axi_rdata_reg[9]\: unisim.vcomponents.FDRE
      port map (
@@ -59984,15 +59995,15 @@ axi_bvalid_reg: unisim.vcomponents.FDRE
       CE => \slv_reg_rden__0\,
       D => reg_data_out(9),
       Q => s00_axi_rdata(9),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 axi_rvalid_i_1: unisim.vcomponents.LUT4
     generic map(
       INIT => X"08F8"
     )
         port map (
-      I0 => s00_axi_arvalid,
-      I1 => \^axi_arready_reg_0\,
+      I0 => \^axi_arready_reg_0\,
+      I1 => s00_axi_arvalid,
       I2 => \^s00_axi_rvalid\,
       I3 => s00_axi_rready,
       O => axi_rvalid_i_1_n_0
@@ -60003,7 +60014,7 @@ axi_rvalid_reg: unisim.vcomponents.FDRE
       CE => '1',
       D => axi_rvalid_i_1_n_0,
       Q => \^s00_axi_rvalid\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 axi_wready_i_1: unisim.vcomponents.LUT4
     generic map(
@@ -60022,13 +60033,13 @@ axi_wready_reg: unisim.vcomponents.FDRE
       CE => '1',
       D => axi_wready0,
       Q => \^axi_wready_reg_0\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 ccd_frame_exception_s1_reg: unisim.vcomponents.FDCE
      port map (
       C => s00_axi_aclk,
       CE => '1',
-      CLR => axi_awready_i_1_n_0,
+      CLR => u_ccd_ddr_n_133,
       D => ccd_frame_exception,
       Q => ccd_frame_exception_s1
     );
@@ -60036,7 +60047,7 @@ ccd_frame_exception_s2_d_reg: unisim.vcomponents.FDCE
      port map (
       C => s00_axi_aclk,
       CE => '1',
-      CLR => axi_awready_i_1_n_0,
+      CLR => u_ccd_ddr_n_133,
       D => ccd_frame_exception_s2,
       Q => ccd_frame_exception_s2_d
     );
@@ -60044,7 +60055,7 @@ ccd_frame_exception_s2_reg: unisim.vcomponents.FDCE
      port map (
       C => s00_axi_aclk,
       CE => '1',
-      CLR => axi_awready_i_1_n_0,
+      CLR => u_ccd_ddr_n_133,
       D => ccd_frame_exception_s1,
       Q => ccd_frame_exception_s2
     );
@@ -60053,7 +60064,7 @@ ccd_tx_last_n_s1_reg: unisim.vcomponents.FDPE
       C => s00_axi_aclk,
       CE => '1',
       D => \^o_slave_fifo_data_last_n\,
-      PRE => axi_awready_i_1_n_0,
+      PRE => u_ccd_ddr_n_133,
       Q => ccd_tx_last_n_s1
     );
 ccd_tx_last_n_s2_d_reg: unisim.vcomponents.FDPE
@@ -60061,7 +60072,7 @@ ccd_tx_last_n_s2_d_reg: unisim.vcomponents.FDPE
       C => s00_axi_aclk,
       CE => '1',
       D => ccd_tx_last_n_s2,
-      PRE => axi_awready_i_1_n_0,
+      PRE => u_ccd_ddr_n_133,
       Q => ccd_tx_last_n_s2_d
     );
 ccd_tx_last_n_s2_reg: unisim.vcomponents.FDPE
@@ -60069,19 +60080,8 @@ ccd_tx_last_n_s2_reg: unisim.vcomponents.FDPE
       C => s00_axi_aclk,
       CE => '1',
       D => ccd_tx_last_n_s1,
-      PRE => axi_awready_i_1_n_0,
+      PRE => u_ccd_ddr_n_133,
       Q => ccd_tx_last_n_s2
-    );
-ctrl_rst_n_i_1: unisim.vcomponents.LUT4
-    generic map(
-      INIT => X"8000"
-    )
-        port map (
-      I0 => s00_axi_aresetn,
-      I1 => ddr3_init_done_s2,
-      I2 => i_init_calib_complete,
-      I3 => i_mmcm_locked,
-      O => ctrl_rst_n_i_1_n_0
     );
 ddr3_init_done_s1_i_1: unisim.vcomponents.LUT2
     generic map(
@@ -60096,7 +60096,7 @@ ddr3_init_done_s1_reg: unisim.vcomponents.FDCE
      port map (
       C => s00_axi_aclk,
       CE => '1',
-      CLR => axi_awready_i_1_n_0,
+      CLR => u_ccd_ddr_n_133,
       D => ddr3_init_done,
       Q => ddr3_init_done_s1
     );
@@ -60104,7 +60104,7 @@ ddr3_init_done_s2_reg: unisim.vcomponents.FDCE
      port map (
       C => s00_axi_aclk,
       CE => '1',
-      CLR => axi_awready_i_1_n_0,
+      CLR => u_ccd_ddr_n_133,
       D => ddr3_init_done_s1,
       Q => ddr3_init_done_s2
     );
@@ -60210,7 +60210,7 @@ ddr3_init_done_s2_reg: unisim.vcomponents.FDCE
      port map (
       C => s00_axi_aclk,
       CE => exception_count0,
-      CLR => axi_awready_i_1_n_0,
+      CLR => u_ccd_ddr_n_133,
       D => p_0_in(0),
       Q => exception_count_reg(0)
     );
@@ -60218,7 +60218,7 @@ ddr3_init_done_s2_reg: unisim.vcomponents.FDCE
      port map (
       C => s00_axi_aclk,
       CE => exception_count0,
-      CLR => axi_awready_i_1_n_0,
+      CLR => u_ccd_ddr_n_133,
       D => p_0_in(1),
       Q => exception_count_reg(1)
     );
@@ -60226,7 +60226,7 @@ ddr3_init_done_s2_reg: unisim.vcomponents.FDCE
      port map (
       C => s00_axi_aclk,
       CE => exception_count0,
-      CLR => axi_awready_i_1_n_0,
+      CLR => u_ccd_ddr_n_133,
       D => p_0_in(2),
       Q => exception_count_reg(2)
     );
@@ -60234,7 +60234,7 @@ ddr3_init_done_s2_reg: unisim.vcomponents.FDCE
      port map (
       C => s00_axi_aclk,
       CE => exception_count0,
-      CLR => axi_awready_i_1_n_0,
+      CLR => u_ccd_ddr_n_133,
       D => p_0_in(3),
       Q => exception_count_reg(3)
     );
@@ -60242,7 +60242,7 @@ ddr3_init_done_s2_reg: unisim.vcomponents.FDCE
      port map (
       C => s00_axi_aclk,
       CE => exception_count0,
-      CLR => axi_awready_i_1_n_0,
+      CLR => u_ccd_ddr_n_133,
       D => \exception_count[4]_i_1_n_0\,
       Q => exception_count_reg(4)
     );
@@ -60250,7 +60250,7 @@ ddr3_init_done_s2_reg: unisim.vcomponents.FDCE
      port map (
       C => s00_axi_aclk,
       CE => exception_count0,
-      CLR => axi_awready_i_1_n_0,
+      CLR => u_ccd_ddr_n_133,
       D => p_0_in(5),
       Q => exception_count_reg(5)
     );
@@ -60258,7 +60258,7 @@ ddr3_init_done_s2_reg: unisim.vcomponents.FDCE
      port map (
       C => s00_axi_aclk,
       CE => exception_count0,
-      CLR => axi_awready_i_1_n_0,
+      CLR => u_ccd_ddr_n_133,
       D => p_0_in(6),
       Q => exception_count_reg(6)
     );
@@ -60301,7 +60301,7 @@ exception_pending_latch_reg: unisim.vcomponents.FDCE
      port map (
       C => s00_axi_aclk,
       CE => '1',
-      CLR => axi_awready_i_1_n_0,
+      CLR => u_ccd_ddr_n_133,
       D => exception_pending_latch_i_1_n_0,
       Q => intr_sts_reg(8)
     );
@@ -60337,7 +60337,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       I0 => slv_reg2(19),
       I1 => slv_reg2(3),
       I2 => slv_reg2(18),
-      I3 => u_ccd_ddr_n_159,
+      I3 => u_ccd_ddr_n_160,
       I4 => slv_reg2(2),
       I5 => slv_reg1(3),
       O => \pixel_type_reg[1]_i_94_n_0\
@@ -60379,7 +60379,7 @@ intr_INST_0: unisim.vcomponents.LUT4
     )
         port map (
       I0 => slv_reg2(18),
-      I1 => u_ccd_ddr_n_159,
+      I1 => u_ccd_ddr_n_160,
       I2 => slv_reg2(2),
       I3 => slv_reg2(3),
       I4 => slv_reg2(19),
@@ -60393,7 +60393,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       I0 => slv_reg2(19),
       I1 => slv_reg2(3),
       I2 => slv_reg2(2),
-      I3 => u_ccd_ddr_n_159,
+      I3 => u_ccd_ddr_n_160,
       I4 => slv_reg2(18),
       I5 => slv_reg1(4),
       O => \pixel_type_reg[1]_i_99_n_0\
@@ -60580,7 +60580,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[7]_i_1_n_0\,
       D => s00_axi_wdata(0),
       Q => slv_reg0(0),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[10]\: unisim.vcomponents.FDRE
      port map (
@@ -60588,7 +60588,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[15]_i_1_n_0\,
       D => s00_axi_wdata(10),
       Q => slv_reg0(10),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[11]\: unisim.vcomponents.FDRE
      port map (
@@ -60596,7 +60596,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[15]_i_1_n_0\,
       D => s00_axi_wdata(11),
       Q => slv_reg0(11),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[12]\: unisim.vcomponents.FDRE
      port map (
@@ -60604,7 +60604,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[15]_i_1_n_0\,
       D => s00_axi_wdata(12),
       Q => \slv_reg0__0\(12),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[13]\: unisim.vcomponents.FDRE
      port map (
@@ -60612,7 +60612,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[15]_i_1_n_0\,
       D => s00_axi_wdata(13),
       Q => \slv_reg0__0\(13),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[14]\: unisim.vcomponents.FDRE
      port map (
@@ -60620,7 +60620,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[15]_i_1_n_0\,
       D => s00_axi_wdata(14),
       Q => \slv_reg0__0\(14),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[15]\: unisim.vcomponents.FDRE
      port map (
@@ -60628,7 +60628,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[15]_i_1_n_0\,
       D => s00_axi_wdata(15),
       Q => \slv_reg0__0\(15),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[16]\: unisim.vcomponents.FDRE
      port map (
@@ -60636,7 +60636,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[23]_i_1_n_0\,
       D => s00_axi_wdata(16),
       Q => \slv_reg0__0\(16),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[17]\: unisim.vcomponents.FDRE
      port map (
@@ -60644,7 +60644,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[23]_i_1_n_0\,
       D => s00_axi_wdata(17),
       Q => \slv_reg0__0\(17),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[18]\: unisim.vcomponents.FDRE
      port map (
@@ -60652,7 +60652,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[23]_i_1_n_0\,
       D => s00_axi_wdata(18),
       Q => \slv_reg0__0\(18),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[19]\: unisim.vcomponents.FDRE
      port map (
@@ -60660,7 +60660,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[23]_i_1_n_0\,
       D => s00_axi_wdata(19),
       Q => \slv_reg0__0\(19),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[1]\: unisim.vcomponents.FDRE
      port map (
@@ -60668,7 +60668,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[7]_i_1_n_0\,
       D => s00_axi_wdata(1),
       Q => slv_reg0(1),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[1]_rep\: unisim.vcomponents.FDRE
      port map (
@@ -60676,7 +60676,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[7]_i_1_n_0\,
       D => s00_axi_wdata(1),
       Q => \slv_reg0_reg[1]_rep_n_0\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[20]\: unisim.vcomponents.FDRE
      port map (
@@ -60684,7 +60684,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[23]_i_1_n_0\,
       D => s00_axi_wdata(20),
       Q => \slv_reg0__0\(20),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[21]\: unisim.vcomponents.FDRE
      port map (
@@ -60692,7 +60692,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[23]_i_1_n_0\,
       D => s00_axi_wdata(21),
       Q => \slv_reg0__0\(21),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[22]\: unisim.vcomponents.FDRE
      port map (
@@ -60700,7 +60700,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[23]_i_1_n_0\,
       D => s00_axi_wdata(22),
       Q => \slv_reg0__0\(22),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[23]\: unisim.vcomponents.FDRE
      port map (
@@ -60708,7 +60708,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[23]_i_1_n_0\,
       D => s00_axi_wdata(23),
       Q => \slv_reg0__0\(23),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[24]\: unisim.vcomponents.FDRE
      port map (
@@ -60716,7 +60716,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[31]_i_1_n_0\,
       D => s00_axi_wdata(24),
       Q => \slv_reg0__0\(24),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[25]\: unisim.vcomponents.FDRE
      port map (
@@ -60724,7 +60724,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[31]_i_1_n_0\,
       D => s00_axi_wdata(25),
       Q => \slv_reg0__0\(25),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[26]\: unisim.vcomponents.FDRE
      port map (
@@ -60732,7 +60732,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[31]_i_1_n_0\,
       D => s00_axi_wdata(26),
       Q => \slv_reg0__0\(26),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[27]\: unisim.vcomponents.FDRE
      port map (
@@ -60740,7 +60740,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[31]_i_1_n_0\,
       D => s00_axi_wdata(27),
       Q => \slv_reg0__0\(27),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[28]\: unisim.vcomponents.FDRE
      port map (
@@ -60748,7 +60748,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[31]_i_1_n_0\,
       D => s00_axi_wdata(28),
       Q => \slv_reg0__0\(28),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[29]\: unisim.vcomponents.FDRE
      port map (
@@ -60756,7 +60756,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[31]_i_1_n_0\,
       D => s00_axi_wdata(29),
       Q => \slv_reg0__0\(29),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[2]\: unisim.vcomponents.FDRE
      port map (
@@ -60764,7 +60764,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[7]_i_1_n_0\,
       D => s00_axi_wdata(2),
       Q => slv_reg0(2),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[30]\: unisim.vcomponents.FDRE
      port map (
@@ -60772,7 +60772,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[31]_i_1_n_0\,
       D => s00_axi_wdata(30),
       Q => \slv_reg0__0\(30),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[31]\: unisim.vcomponents.FDRE
      port map (
@@ -60780,7 +60780,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[31]_i_1_n_0\,
       D => s00_axi_wdata(31),
       Q => \slv_reg0__0\(31),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[3]\: unisim.vcomponents.FDRE
      port map (
@@ -60788,7 +60788,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[7]_i_1_n_0\,
       D => s00_axi_wdata(3),
       Q => slv_reg0(3),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[4]\: unisim.vcomponents.FDRE
      port map (
@@ -60796,7 +60796,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[7]_i_1_n_0\,
       D => s00_axi_wdata(4),
       Q => slv_reg0(4),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[5]\: unisim.vcomponents.FDRE
      port map (
@@ -60804,7 +60804,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[7]_i_1_n_0\,
       D => s00_axi_wdata(5),
       Q => slv_reg0(5),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[6]\: unisim.vcomponents.FDRE
      port map (
@@ -60812,7 +60812,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[7]_i_1_n_0\,
       D => s00_axi_wdata(6),
       Q => slv_reg0(6),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[7]\: unisim.vcomponents.FDRE
      port map (
@@ -60820,7 +60820,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[7]_i_1_n_0\,
       D => s00_axi_wdata(7),
       Q => slv_reg0(7),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[8]\: unisim.vcomponents.FDRE
      port map (
@@ -60828,7 +60828,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[15]_i_1_n_0\,
       D => s00_axi_wdata(8),
       Q => slv_reg0(8),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg0_reg[9]\: unisim.vcomponents.FDRE
      port map (
@@ -60836,7 +60836,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg0[15]_i_1_n_0\,
       D => s00_axi_wdata(9),
       Q => slv_reg0(9),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1[15]_i_1\: unisim.vcomponents.LUT6
     generic map(
@@ -60896,7 +60896,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[7]_i_1_n_0\,
       D => s00_axi_wdata(0),
       Q => slv_reg1(0),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[10]\: unisim.vcomponents.FDRE
      port map (
@@ -60904,7 +60904,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[15]_i_1_n_0\,
       D => s00_axi_wdata(10),
       Q => slv_reg1(10),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[11]\: unisim.vcomponents.FDRE
      port map (
@@ -60912,7 +60912,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[15]_i_1_n_0\,
       D => s00_axi_wdata(11),
       Q => slv_reg1(11),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[12]\: unisim.vcomponents.FDRE
      port map (
@@ -60920,7 +60920,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[15]_i_1_n_0\,
       D => s00_axi_wdata(12),
       Q => slv_reg1(12),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[13]\: unisim.vcomponents.FDRE
      port map (
@@ -60928,7 +60928,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[15]_i_1_n_0\,
       D => s00_axi_wdata(13),
       Q => slv_reg1(13),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[14]\: unisim.vcomponents.FDRE
      port map (
@@ -60936,7 +60936,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[15]_i_1_n_0\,
       D => s00_axi_wdata(14),
       Q => slv_reg1(14),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[15]\: unisim.vcomponents.FDRE
      port map (
@@ -60944,7 +60944,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[15]_i_1_n_0\,
       D => s00_axi_wdata(15),
       Q => slv_reg1(15),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[16]\: unisim.vcomponents.FDRE
      port map (
@@ -60952,7 +60952,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[23]_i_1_n_0\,
       D => s00_axi_wdata(16),
       Q => slv_reg1(16),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[17]\: unisim.vcomponents.FDRE
      port map (
@@ -60960,7 +60960,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[23]_i_1_n_0\,
       D => s00_axi_wdata(17),
       Q => slv_reg1(17),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[18]\: unisim.vcomponents.FDRE
      port map (
@@ -60968,7 +60968,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[23]_i_1_n_0\,
       D => s00_axi_wdata(18),
       Q => slv_reg1(18),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[19]\: unisim.vcomponents.FDRE
      port map (
@@ -60976,7 +60976,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[23]_i_1_n_0\,
       D => s00_axi_wdata(19),
       Q => slv_reg1(19),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[1]\: unisim.vcomponents.FDRE
      port map (
@@ -60984,7 +60984,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[7]_i_1_n_0\,
       D => s00_axi_wdata(1),
       Q => slv_reg1(1),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[20]\: unisim.vcomponents.FDRE
      port map (
@@ -60992,7 +60992,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[23]_i_1_n_0\,
       D => s00_axi_wdata(20),
       Q => slv_reg1(20),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[21]\: unisim.vcomponents.FDRE
      port map (
@@ -61000,7 +61000,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[23]_i_1_n_0\,
       D => s00_axi_wdata(21),
       Q => slv_reg1(21),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[22]\: unisim.vcomponents.FDRE
      port map (
@@ -61008,7 +61008,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[23]_i_1_n_0\,
       D => s00_axi_wdata(22),
       Q => slv_reg1(22),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[23]\: unisim.vcomponents.FDRE
      port map (
@@ -61016,7 +61016,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[23]_i_1_n_0\,
       D => s00_axi_wdata(23),
       Q => slv_reg1(23),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[24]\: unisim.vcomponents.FDRE
      port map (
@@ -61024,7 +61024,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[31]_i_1_n_0\,
       D => s00_axi_wdata(24),
       Q => slv_reg1(24),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[25]\: unisim.vcomponents.FDRE
      port map (
@@ -61032,7 +61032,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[31]_i_1_n_0\,
       D => s00_axi_wdata(25),
       Q => slv_reg1(25),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[26]\: unisim.vcomponents.FDRE
      port map (
@@ -61040,7 +61040,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[31]_i_1_n_0\,
       D => s00_axi_wdata(26),
       Q => slv_reg1(26),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[27]\: unisim.vcomponents.FDRE
      port map (
@@ -61048,7 +61048,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[31]_i_1_n_0\,
       D => s00_axi_wdata(27),
       Q => slv_reg1(27),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[28]\: unisim.vcomponents.FDRE
      port map (
@@ -61056,7 +61056,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[31]_i_1_n_0\,
       D => s00_axi_wdata(28),
       Q => slv_reg1(28),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[29]\: unisim.vcomponents.FDRE
      port map (
@@ -61064,7 +61064,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[31]_i_1_n_0\,
       D => s00_axi_wdata(29),
       Q => slv_reg1(29),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[2]\: unisim.vcomponents.FDRE
      port map (
@@ -61072,7 +61072,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[7]_i_1_n_0\,
       D => s00_axi_wdata(2),
       Q => slv_reg1(2),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[30]\: unisim.vcomponents.FDRE
      port map (
@@ -61080,7 +61080,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[31]_i_1_n_0\,
       D => s00_axi_wdata(30),
       Q => slv_reg1(30),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[31]\: unisim.vcomponents.FDRE
      port map (
@@ -61088,7 +61088,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[31]_i_1_n_0\,
       D => s00_axi_wdata(31),
       Q => slv_reg1(31),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[3]\: unisim.vcomponents.FDRE
      port map (
@@ -61096,7 +61096,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[7]_i_1_n_0\,
       D => s00_axi_wdata(3),
       Q => slv_reg1(3),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[4]\: unisim.vcomponents.FDRE
      port map (
@@ -61104,7 +61104,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[7]_i_1_n_0\,
       D => s00_axi_wdata(4),
       Q => slv_reg1(4),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[5]\: unisim.vcomponents.FDRE
      port map (
@@ -61112,7 +61112,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[7]_i_1_n_0\,
       D => s00_axi_wdata(5),
       Q => slv_reg1(5),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[6]\: unisim.vcomponents.FDRE
      port map (
@@ -61120,7 +61120,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[7]_i_1_n_0\,
       D => s00_axi_wdata(6),
       Q => slv_reg1(6),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[7]\: unisim.vcomponents.FDRE
      port map (
@@ -61128,7 +61128,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[7]_i_1_n_0\,
       D => s00_axi_wdata(7),
       Q => slv_reg1(7),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[8]\: unisim.vcomponents.FDRE
      port map (
@@ -61136,7 +61136,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[15]_i_1_n_0\,
       D => s00_axi_wdata(8),
       Q => slv_reg1(8),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg1_reg[9]\: unisim.vcomponents.FDRE
      port map (
@@ -61144,7 +61144,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg1[15]_i_1_n_0\,
       D => s00_axi_wdata(9),
       Q => slv_reg1(9),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2[15]_i_1\: unisim.vcomponents.LUT6
     generic map(
@@ -61204,7 +61204,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[7]_i_1_n_0\,
       D => s00_axi_wdata(0),
       Q => slv_reg2(0),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[10]\: unisim.vcomponents.FDRE
      port map (
@@ -61212,7 +61212,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[15]_i_1_n_0\,
       D => s00_axi_wdata(10),
       Q => slv_reg2(10),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[11]\: unisim.vcomponents.FDRE
      port map (
@@ -61220,7 +61220,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[15]_i_1_n_0\,
       D => s00_axi_wdata(11),
       Q => slv_reg2(11),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[12]\: unisim.vcomponents.FDRE
      port map (
@@ -61228,7 +61228,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[15]_i_1_n_0\,
       D => s00_axi_wdata(12),
       Q => slv_reg2(12),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[13]\: unisim.vcomponents.FDRE
      port map (
@@ -61236,7 +61236,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[15]_i_1_n_0\,
       D => s00_axi_wdata(13),
       Q => slv_reg2(13),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[14]\: unisim.vcomponents.FDRE
      port map (
@@ -61244,7 +61244,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[15]_i_1_n_0\,
       D => s00_axi_wdata(14),
       Q => slv_reg2(14),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[15]\: unisim.vcomponents.FDRE
      port map (
@@ -61252,7 +61252,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[15]_i_1_n_0\,
       D => s00_axi_wdata(15),
       Q => slv_reg2(15),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[16]\: unisim.vcomponents.FDRE
      port map (
@@ -61260,7 +61260,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[23]_i_1_n_0\,
       D => s00_axi_wdata(16),
       Q => slv_reg2(16),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[17]\: unisim.vcomponents.FDRE
      port map (
@@ -61268,7 +61268,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[23]_i_1_n_0\,
       D => s00_axi_wdata(17),
       Q => slv_reg2(17),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[18]\: unisim.vcomponents.FDRE
      port map (
@@ -61276,7 +61276,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[23]_i_1_n_0\,
       D => s00_axi_wdata(18),
       Q => slv_reg2(18),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[19]\: unisim.vcomponents.FDRE
      port map (
@@ -61284,7 +61284,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[23]_i_1_n_0\,
       D => s00_axi_wdata(19),
       Q => slv_reg2(19),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[1]\: unisim.vcomponents.FDRE
      port map (
@@ -61292,7 +61292,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[7]_i_1_n_0\,
       D => s00_axi_wdata(1),
       Q => slv_reg2(1),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[20]\: unisim.vcomponents.FDRE
      port map (
@@ -61300,7 +61300,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[23]_i_1_n_0\,
       D => s00_axi_wdata(20),
       Q => slv_reg2(20),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[21]\: unisim.vcomponents.FDRE
      port map (
@@ -61308,7 +61308,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[23]_i_1_n_0\,
       D => s00_axi_wdata(21),
       Q => slv_reg2(21),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[22]\: unisim.vcomponents.FDRE
      port map (
@@ -61316,7 +61316,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[23]_i_1_n_0\,
       D => s00_axi_wdata(22),
       Q => slv_reg2(22),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[23]\: unisim.vcomponents.FDRE
      port map (
@@ -61324,7 +61324,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[23]_i_1_n_0\,
       D => s00_axi_wdata(23),
       Q => slv_reg2(23),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[24]\: unisim.vcomponents.FDRE
      port map (
@@ -61332,7 +61332,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[31]_i_1_n_0\,
       D => s00_axi_wdata(24),
       Q => \slv_reg2__0\(24),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[25]\: unisim.vcomponents.FDRE
      port map (
@@ -61340,7 +61340,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[31]_i_1_n_0\,
       D => s00_axi_wdata(25),
       Q => \slv_reg2__0\(25),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[26]\: unisim.vcomponents.FDRE
      port map (
@@ -61348,7 +61348,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[31]_i_1_n_0\,
       D => s00_axi_wdata(26),
       Q => \slv_reg2__0\(26),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[27]\: unisim.vcomponents.FDRE
      port map (
@@ -61356,7 +61356,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[31]_i_1_n_0\,
       D => s00_axi_wdata(27),
       Q => \slv_reg2__0\(27),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[28]\: unisim.vcomponents.FDRE
      port map (
@@ -61364,7 +61364,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[31]_i_1_n_0\,
       D => s00_axi_wdata(28),
       Q => \slv_reg2__0\(28),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[29]\: unisim.vcomponents.FDRE
      port map (
@@ -61372,7 +61372,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[31]_i_1_n_0\,
       D => s00_axi_wdata(29),
       Q => \slv_reg2__0\(29),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[2]\: unisim.vcomponents.FDRE
      port map (
@@ -61380,7 +61380,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[7]_i_1_n_0\,
       D => s00_axi_wdata(2),
       Q => slv_reg2(2),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[30]\: unisim.vcomponents.FDRE
      port map (
@@ -61388,7 +61388,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[31]_i_1_n_0\,
       D => s00_axi_wdata(30),
       Q => \slv_reg2__0\(30),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[31]\: unisim.vcomponents.FDRE
      port map (
@@ -61396,7 +61396,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[31]_i_1_n_0\,
       D => s00_axi_wdata(31),
       Q => \slv_reg2__0\(31),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[3]\: unisim.vcomponents.FDRE
      port map (
@@ -61404,7 +61404,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[7]_i_1_n_0\,
       D => s00_axi_wdata(3),
       Q => slv_reg2(3),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[4]\: unisim.vcomponents.FDRE
      port map (
@@ -61412,7 +61412,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[7]_i_1_n_0\,
       D => s00_axi_wdata(4),
       Q => slv_reg2(4),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[5]\: unisim.vcomponents.FDRE
      port map (
@@ -61420,7 +61420,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[7]_i_1_n_0\,
       D => s00_axi_wdata(5),
       Q => slv_reg2(5),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[6]\: unisim.vcomponents.FDRE
      port map (
@@ -61428,7 +61428,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[7]_i_1_n_0\,
       D => s00_axi_wdata(6),
       Q => slv_reg2(6),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[7]\: unisim.vcomponents.FDRE
      port map (
@@ -61436,7 +61436,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[7]_i_1_n_0\,
       D => s00_axi_wdata(7),
       Q => slv_reg2(7),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[8]\: unisim.vcomponents.FDRE
      port map (
@@ -61444,7 +61444,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[15]_i_1_n_0\,
       D => s00_axi_wdata(8),
       Q => slv_reg2(8),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg2_reg[9]\: unisim.vcomponents.FDRE
      port map (
@@ -61452,7 +61452,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg2[15]_i_1_n_0\,
       D => s00_axi_wdata(9),
       Q => slv_reg2(9),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4[15]_i_1\: unisim.vcomponents.LUT6
     generic map(
@@ -61523,7 +61523,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(7),
       D => s00_axi_wdata(0),
       Q => \slv_reg4_reg_n_0_[0]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[10]\: unisim.vcomponents.FDRE
      port map (
@@ -61531,7 +61531,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(9),
       D => s00_axi_wdata(10),
       Q => \slv_reg4_reg_n_0_[10]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[11]\: unisim.vcomponents.FDRE
      port map (
@@ -61539,7 +61539,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(9),
       D => s00_axi_wdata(11),
       Q => \slv_reg4_reg_n_0_[11]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[12]\: unisim.vcomponents.FDRE
      port map (
@@ -61547,7 +61547,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(9),
       D => s00_axi_wdata(12),
       Q => \slv_reg4_reg_n_0_[12]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[13]\: unisim.vcomponents.FDRE
      port map (
@@ -61555,7 +61555,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(9),
       D => s00_axi_wdata(13),
       Q => \slv_reg4_reg_n_0_[13]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[14]\: unisim.vcomponents.FDRE
      port map (
@@ -61563,7 +61563,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(9),
       D => s00_axi_wdata(14),
       Q => \slv_reg4_reg_n_0_[14]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[15]\: unisim.vcomponents.FDRE
      port map (
@@ -61571,7 +61571,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(9),
       D => s00_axi_wdata(15),
       Q => \slv_reg4_reg_n_0_[15]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[16]\: unisim.vcomponents.FDRE
      port map (
@@ -61579,7 +61579,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(23),
       D => s00_axi_wdata(16),
       Q => \slv_reg4_reg_n_0_[16]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[17]\: unisim.vcomponents.FDRE
      port map (
@@ -61587,7 +61587,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(23),
       D => s00_axi_wdata(17),
       Q => \slv_reg4_reg_n_0_[17]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[18]\: unisim.vcomponents.FDRE
      port map (
@@ -61595,7 +61595,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(23),
       D => s00_axi_wdata(18),
       Q => \slv_reg4_reg_n_0_[18]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[19]\: unisim.vcomponents.FDRE
      port map (
@@ -61603,7 +61603,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(23),
       D => s00_axi_wdata(19),
       Q => \slv_reg4_reg_n_0_[19]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[1]\: unisim.vcomponents.FDRE
      port map (
@@ -61611,7 +61611,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(7),
       D => s00_axi_wdata(1),
       Q => \slv_reg4_reg_n_0_[1]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[20]\: unisim.vcomponents.FDRE
      port map (
@@ -61619,7 +61619,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(23),
       D => s00_axi_wdata(20),
       Q => \slv_reg4_reg_n_0_[20]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[21]\: unisim.vcomponents.FDRE
      port map (
@@ -61627,7 +61627,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(23),
       D => s00_axi_wdata(21),
       Q => \slv_reg4_reg_n_0_[21]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[22]\: unisim.vcomponents.FDRE
      port map (
@@ -61635,7 +61635,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(23),
       D => s00_axi_wdata(22),
       Q => \slv_reg4_reg_n_0_[22]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[23]\: unisim.vcomponents.FDRE
      port map (
@@ -61643,7 +61643,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(23),
       D => s00_axi_wdata(23),
       Q => \slv_reg4_reg_n_0_[23]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[24]\: unisim.vcomponents.FDRE
      port map (
@@ -61651,7 +61651,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(31),
       D => s00_axi_wdata(24),
       Q => \slv_reg4_reg_n_0_[24]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[25]\: unisim.vcomponents.FDRE
      port map (
@@ -61659,7 +61659,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(31),
       D => s00_axi_wdata(25),
       Q => \slv_reg4_reg_n_0_[25]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[26]\: unisim.vcomponents.FDRE
      port map (
@@ -61667,7 +61667,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(31),
       D => s00_axi_wdata(26),
       Q => \slv_reg4_reg_n_0_[26]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[27]\: unisim.vcomponents.FDRE
      port map (
@@ -61675,7 +61675,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(31),
       D => s00_axi_wdata(27),
       Q => \slv_reg4_reg_n_0_[27]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[28]\: unisim.vcomponents.FDRE
      port map (
@@ -61683,7 +61683,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(31),
       D => s00_axi_wdata(28),
       Q => \slv_reg4_reg_n_0_[28]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[29]\: unisim.vcomponents.FDRE
      port map (
@@ -61691,7 +61691,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(31),
       D => s00_axi_wdata(29),
       Q => \slv_reg4_reg_n_0_[29]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[2]\: unisim.vcomponents.FDRE
      port map (
@@ -61699,7 +61699,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(7),
       D => s00_axi_wdata(2),
       Q => \slv_reg4_reg_n_0_[2]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[30]\: unisim.vcomponents.FDRE
      port map (
@@ -61707,7 +61707,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(31),
       D => s00_axi_wdata(30),
       Q => \slv_reg4_reg_n_0_[30]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[31]\: unisim.vcomponents.FDRE
      port map (
@@ -61715,7 +61715,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(31),
       D => s00_axi_wdata(31),
       Q => \slv_reg4_reg_n_0_[31]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[3]\: unisim.vcomponents.FDRE
      port map (
@@ -61723,7 +61723,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(7),
       D => s00_axi_wdata(3),
       Q => \slv_reg4_reg_n_0_[3]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[4]\: unisim.vcomponents.FDRE
      port map (
@@ -61731,7 +61731,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(7),
       D => s00_axi_wdata(4),
       Q => \slv_reg4_reg_n_0_[4]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[5]\: unisim.vcomponents.FDRE
      port map (
@@ -61739,7 +61739,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(7),
       D => s00_axi_wdata(5),
       Q => \slv_reg4_reg_n_0_[5]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[6]\: unisim.vcomponents.FDRE
      port map (
@@ -61747,7 +61747,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(7),
       D => s00_axi_wdata(6),
       Q => \slv_reg4_reg_n_0_[6]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[7]\: unisim.vcomponents.FDRE
      port map (
@@ -61755,7 +61755,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(7),
       D => s00_axi_wdata(7),
       Q => \slv_reg4_reg_n_0_[7]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[8]\: unisim.vcomponents.FDRE
      port map (
@@ -61763,7 +61763,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(9),
       D => s00_axi_wdata(8),
       Q => \slv_reg4_reg_n_0_[8]\,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg4_reg[9]\: unisim.vcomponents.FDRE
      port map (
@@ -61771,7 +61771,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => p_1_in(9),
       D => s00_axi_wdata(9),
       Q => p_0_in9_in,
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7[15]_i_1\: unisim.vcomponents.LUT6
     generic map(
@@ -61831,7 +61831,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[7]_i_1_n_0\,
       D => s00_axi_wdata(0),
       Q => slv_reg7(0),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[10]\: unisim.vcomponents.FDRE
      port map (
@@ -61839,7 +61839,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[15]_i_1_n_0\,
       D => s00_axi_wdata(10),
       Q => slv_reg7(10),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[11]\: unisim.vcomponents.FDRE
      port map (
@@ -61847,7 +61847,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[15]_i_1_n_0\,
       D => s00_axi_wdata(11),
       Q => slv_reg7(11),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[12]\: unisim.vcomponents.FDRE
      port map (
@@ -61855,7 +61855,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[15]_i_1_n_0\,
       D => s00_axi_wdata(12),
       Q => slv_reg7(12),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[13]\: unisim.vcomponents.FDRE
      port map (
@@ -61863,7 +61863,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[15]_i_1_n_0\,
       D => s00_axi_wdata(13),
       Q => slv_reg7(13),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[14]\: unisim.vcomponents.FDRE
      port map (
@@ -61871,7 +61871,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[15]_i_1_n_0\,
       D => s00_axi_wdata(14),
       Q => slv_reg7(14),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[15]\: unisim.vcomponents.FDRE
      port map (
@@ -61879,7 +61879,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[15]_i_1_n_0\,
       D => s00_axi_wdata(15),
       Q => slv_reg7(15),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[16]\: unisim.vcomponents.FDRE
      port map (
@@ -61887,7 +61887,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[23]_i_1_n_0\,
       D => s00_axi_wdata(16),
       Q => slv_reg7(16),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[17]\: unisim.vcomponents.FDRE
      port map (
@@ -61895,7 +61895,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[23]_i_1_n_0\,
       D => s00_axi_wdata(17),
       Q => slv_reg7(17),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[18]\: unisim.vcomponents.FDRE
      port map (
@@ -61903,7 +61903,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[23]_i_1_n_0\,
       D => s00_axi_wdata(18),
       Q => slv_reg7(18),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[19]\: unisim.vcomponents.FDRE
      port map (
@@ -61911,7 +61911,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[23]_i_1_n_0\,
       D => s00_axi_wdata(19),
       Q => slv_reg7(19),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[1]\: unisim.vcomponents.FDRE
      port map (
@@ -61919,7 +61919,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[7]_i_1_n_0\,
       D => s00_axi_wdata(1),
       Q => slv_reg7(1),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[20]\: unisim.vcomponents.FDRE
      port map (
@@ -61927,7 +61927,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[23]_i_1_n_0\,
       D => s00_axi_wdata(20),
       Q => slv_reg7(20),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[21]\: unisim.vcomponents.FDRE
      port map (
@@ -61935,7 +61935,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[23]_i_1_n_0\,
       D => s00_axi_wdata(21),
       Q => slv_reg7(21),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[22]\: unisim.vcomponents.FDRE
      port map (
@@ -61943,7 +61943,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[23]_i_1_n_0\,
       D => s00_axi_wdata(22),
       Q => slv_reg7(22),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[23]\: unisim.vcomponents.FDRE
      port map (
@@ -61951,7 +61951,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[23]_i_1_n_0\,
       D => s00_axi_wdata(23),
       Q => slv_reg7(23),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[24]\: unisim.vcomponents.FDRE
      port map (
@@ -61959,7 +61959,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[31]_i_1_n_0\,
       D => s00_axi_wdata(24),
       Q => slv_reg7(24),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[25]\: unisim.vcomponents.FDRE
      port map (
@@ -61967,7 +61967,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[31]_i_1_n_0\,
       D => s00_axi_wdata(25),
       Q => slv_reg7(25),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[26]\: unisim.vcomponents.FDRE
      port map (
@@ -61975,7 +61975,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[31]_i_1_n_0\,
       D => s00_axi_wdata(26),
       Q => slv_reg7(26),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[27]\: unisim.vcomponents.FDRE
      port map (
@@ -61983,7 +61983,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[31]_i_1_n_0\,
       D => s00_axi_wdata(27),
       Q => slv_reg7(27),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[28]\: unisim.vcomponents.FDRE
      port map (
@@ -61991,7 +61991,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[31]_i_1_n_0\,
       D => s00_axi_wdata(28),
       Q => slv_reg7(28),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[29]\: unisim.vcomponents.FDRE
      port map (
@@ -61999,7 +61999,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[31]_i_1_n_0\,
       D => s00_axi_wdata(29),
       Q => slv_reg7(29),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[2]\: unisim.vcomponents.FDRE
      port map (
@@ -62007,7 +62007,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[7]_i_1_n_0\,
       D => s00_axi_wdata(2),
       Q => slv_reg7(2),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[30]\: unisim.vcomponents.FDRE
      port map (
@@ -62015,7 +62015,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[31]_i_1_n_0\,
       D => s00_axi_wdata(30),
       Q => slv_reg7(30),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[31]\: unisim.vcomponents.FDRE
      port map (
@@ -62023,7 +62023,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[31]_i_1_n_0\,
       D => s00_axi_wdata(31),
       Q => slv_reg7(31),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[3]\: unisim.vcomponents.FDRE
      port map (
@@ -62031,7 +62031,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[7]_i_1_n_0\,
       D => s00_axi_wdata(3),
       Q => slv_reg7(3),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[4]\: unisim.vcomponents.FDRE
      port map (
@@ -62039,7 +62039,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[7]_i_1_n_0\,
       D => s00_axi_wdata(4),
       Q => slv_reg7(4),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[5]\: unisim.vcomponents.FDRE
      port map (
@@ -62047,7 +62047,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[7]_i_1_n_0\,
       D => s00_axi_wdata(5),
       Q => slv_reg7(5),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[6]\: unisim.vcomponents.FDRE
      port map (
@@ -62055,7 +62055,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[7]_i_1_n_0\,
       D => s00_axi_wdata(6),
       Q => slv_reg7(6),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[7]\: unisim.vcomponents.FDRE
      port map (
@@ -62063,7 +62063,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[7]_i_1_n_0\,
       D => s00_axi_wdata(7),
       Q => slv_reg7(7),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[8]\: unisim.vcomponents.FDRE
      port map (
@@ -62071,7 +62071,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[15]_i_1_n_0\,
       D => s00_axi_wdata(8),
       Q => slv_reg7(8),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg7_reg[9]\: unisim.vcomponents.FDRE
      port map (
@@ -62079,7 +62079,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg7[15]_i_1_n_0\,
       D => s00_axi_wdata(9),
       Q => slv_reg7(9),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8[15]_i_1\: unisim.vcomponents.LUT6
     generic map(
@@ -62139,7 +62139,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[7]_i_1_n_0\,
       D => s00_axi_wdata(0),
       Q => slv_reg8(0),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[10]\: unisim.vcomponents.FDRE
      port map (
@@ -62147,7 +62147,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[15]_i_1_n_0\,
       D => s00_axi_wdata(10),
       Q => slv_reg8(10),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[11]\: unisim.vcomponents.FDRE
      port map (
@@ -62155,7 +62155,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[15]_i_1_n_0\,
       D => s00_axi_wdata(11),
       Q => slv_reg8(11),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[12]\: unisim.vcomponents.FDRE
      port map (
@@ -62163,7 +62163,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[15]_i_1_n_0\,
       D => s00_axi_wdata(12),
       Q => slv_reg8(12),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[13]\: unisim.vcomponents.FDRE
      port map (
@@ -62171,7 +62171,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[15]_i_1_n_0\,
       D => s00_axi_wdata(13),
       Q => slv_reg8(13),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[14]\: unisim.vcomponents.FDRE
      port map (
@@ -62179,7 +62179,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[15]_i_1_n_0\,
       D => s00_axi_wdata(14),
       Q => slv_reg8(14),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[15]\: unisim.vcomponents.FDRE
      port map (
@@ -62187,7 +62187,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[15]_i_1_n_0\,
       D => s00_axi_wdata(15),
       Q => slv_reg8(15),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[16]\: unisim.vcomponents.FDRE
      port map (
@@ -62195,7 +62195,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[23]_i_1_n_0\,
       D => s00_axi_wdata(16),
       Q => slv_reg8(16),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[17]\: unisim.vcomponents.FDRE
      port map (
@@ -62203,7 +62203,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[23]_i_1_n_0\,
       D => s00_axi_wdata(17),
       Q => slv_reg8(17),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[18]\: unisim.vcomponents.FDRE
      port map (
@@ -62211,7 +62211,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[23]_i_1_n_0\,
       D => s00_axi_wdata(18),
       Q => slv_reg8(18),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[19]\: unisim.vcomponents.FDRE
      port map (
@@ -62219,7 +62219,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[23]_i_1_n_0\,
       D => s00_axi_wdata(19),
       Q => slv_reg8(19),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[1]\: unisim.vcomponents.FDRE
      port map (
@@ -62227,7 +62227,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[7]_i_1_n_0\,
       D => s00_axi_wdata(1),
       Q => slv_reg8(1),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[20]\: unisim.vcomponents.FDRE
      port map (
@@ -62235,7 +62235,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[23]_i_1_n_0\,
       D => s00_axi_wdata(20),
       Q => slv_reg8(20),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[21]\: unisim.vcomponents.FDRE
      port map (
@@ -62243,7 +62243,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[23]_i_1_n_0\,
       D => s00_axi_wdata(21),
       Q => slv_reg8(21),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[22]\: unisim.vcomponents.FDRE
      port map (
@@ -62251,7 +62251,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[23]_i_1_n_0\,
       D => s00_axi_wdata(22),
       Q => slv_reg8(22),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[23]\: unisim.vcomponents.FDRE
      port map (
@@ -62259,7 +62259,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[23]_i_1_n_0\,
       D => s00_axi_wdata(23),
       Q => slv_reg8(23),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[24]\: unisim.vcomponents.FDRE
      port map (
@@ -62267,7 +62267,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[31]_i_1_n_0\,
       D => s00_axi_wdata(24),
       Q => slv_reg8(24),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[25]\: unisim.vcomponents.FDRE
      port map (
@@ -62275,7 +62275,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[31]_i_1_n_0\,
       D => s00_axi_wdata(25),
       Q => slv_reg8(25),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[26]\: unisim.vcomponents.FDRE
      port map (
@@ -62283,7 +62283,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[31]_i_1_n_0\,
       D => s00_axi_wdata(26),
       Q => slv_reg8(26),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[27]\: unisim.vcomponents.FDRE
      port map (
@@ -62291,7 +62291,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[31]_i_1_n_0\,
       D => s00_axi_wdata(27),
       Q => slv_reg8(27),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[28]\: unisim.vcomponents.FDRE
      port map (
@@ -62299,7 +62299,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[31]_i_1_n_0\,
       D => s00_axi_wdata(28),
       Q => slv_reg8(28),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[29]\: unisim.vcomponents.FDRE
      port map (
@@ -62307,7 +62307,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[31]_i_1_n_0\,
       D => s00_axi_wdata(29),
       Q => slv_reg8(29),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[2]\: unisim.vcomponents.FDRE
      port map (
@@ -62315,7 +62315,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[7]_i_1_n_0\,
       D => s00_axi_wdata(2),
       Q => slv_reg8(2),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[30]\: unisim.vcomponents.FDRE
      port map (
@@ -62323,7 +62323,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[31]_i_1_n_0\,
       D => s00_axi_wdata(30),
       Q => slv_reg8(30),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[31]\: unisim.vcomponents.FDRE
      port map (
@@ -62331,7 +62331,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[31]_i_1_n_0\,
       D => s00_axi_wdata(31),
       Q => slv_reg8(31),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[3]\: unisim.vcomponents.FDRE
      port map (
@@ -62339,7 +62339,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[7]_i_1_n_0\,
       D => s00_axi_wdata(3),
       Q => slv_reg8(3),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[4]\: unisim.vcomponents.FDRE
      port map (
@@ -62347,7 +62347,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[7]_i_1_n_0\,
       D => s00_axi_wdata(4),
       Q => slv_reg8(4),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[5]\: unisim.vcomponents.FDRE
      port map (
@@ -62355,7 +62355,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[7]_i_1_n_0\,
       D => s00_axi_wdata(5),
       Q => slv_reg8(5),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[6]\: unisim.vcomponents.FDRE
      port map (
@@ -62363,7 +62363,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[7]_i_1_n_0\,
       D => s00_axi_wdata(6),
       Q => slv_reg8(6),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[7]\: unisim.vcomponents.FDRE
      port map (
@@ -62371,7 +62371,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[7]_i_1_n_0\,
       D => s00_axi_wdata(7),
       Q => slv_reg8(7),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[8]\: unisim.vcomponents.FDRE
      port map (
@@ -62379,7 +62379,7 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[15]_i_1_n_0\,
       D => s00_axi_wdata(8),
       Q => slv_reg8(8),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \slv_reg8_reg[9]\: unisim.vcomponents.FDRE
      port map (
@@ -62387,16 +62387,16 @@ intr_INST_0: unisim.vcomponents.LUT4
       CE => \slv_reg8[15]_i_1_n_0\,
       D => s00_axi_wdata(9),
       Q => slv_reg8(9),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 slv_reg_rden: unisim.vcomponents.LUT3
     generic map(
-      INIT => X"08"
+      INIT => X"20"
     )
         port map (
-      I0 => \^axi_arready_reg_0\,
-      I1 => s00_axi_arvalid,
-      I2 => \^s00_axi_rvalid\,
+      I0 => s00_axi_arvalid,
+      I1 => \^s00_axi_rvalid\,
+      I2 => \^axi_arready_reg_0\,
       O => \slv_reg_rden__0\
     );
 \trigger_stretch_cnt[0]_i_1\: unisim.vcomponents.LUT2
@@ -62482,7 +62482,7 @@ slv_reg_rden: unisim.vcomponents.LUT3
       CE => \trigger_stretch_cnt[3]_i_1_n_0\,
       D => \p_0_in__0\(0),
       Q => trigger_stretch_cnt_reg(0),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \trigger_stretch_cnt_reg[1]\: unisim.vcomponents.FDRE
      port map (
@@ -62490,7 +62490,7 @@ slv_reg_rden: unisim.vcomponents.LUT3
       CE => \trigger_stretch_cnt[3]_i_1_n_0\,
       D => \p_0_in__0\(1),
       Q => trigger_stretch_cnt_reg(1),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \trigger_stretch_cnt_reg[2]\: unisim.vcomponents.FDRE
      port map (
@@ -62498,7 +62498,7 @@ slv_reg_rden: unisim.vcomponents.LUT3
       CE => \trigger_stretch_cnt[3]_i_1_n_0\,
       D => \p_0_in__0\(2),
       Q => trigger_stretch_cnt_reg(2),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 \trigger_stretch_cnt_reg[3]\: unisim.vcomponents.FDRE
      port map (
@@ -62506,7 +62506,7 @@ slv_reg_rden: unisim.vcomponents.LUT3
       CE => \trigger_stretch_cnt[3]_i_1_n_0\,
       D => \p_0_in__0\(3),
       Q => trigger_stretch_cnt_reg(3),
-      R => axi_awready_i_1_n_0
+      R => u_ccd_ddr_n_133
     );
 tx_done_pending_latch_i_1: unisim.vcomponents.LUT6
     generic map(
@@ -62534,7 +62534,7 @@ tx_done_pending_latch_reg: unisim.vcomponents.FDCE
      port map (
       C => s00_axi_aclk,
       CE => '1',
-      CLR => axi_awready_i_1_n_0,
+      CLR => u_ccd_ddr_n_133,
       D => tx_done_pending_latch_i_1_n_0,
       Q => intr_sts_reg(9)
     );
@@ -62553,7 +62553,7 @@ tx_frame_start_reg_reg: unisim.vcomponents.FDCE
      port map (
       C => s00_axi_aclk,
       CE => '1',
-      CLR => axi_awready_i_1_n_0,
+      CLR => u_ccd_ddr_n_133,
       D => tx_frame_start_reg_i_1_n_0,
       Q => tx_frame_start_reg
     );
@@ -62602,6 +62602,7 @@ u_ccd_ddr: entity work.mb_subsystem_ccd_controller_v1_0_0_0_ccd_ddr
       S(2) => \FSM_onehot_state_reg_reg[0]_i_23_n_1\,
       S(1) => \FSM_onehot_state_reg_reg[0]_i_23_n_6\,
       S(0) => \FSM_onehot_state_reg_reg[0]_i_23_n_7\,
+      SR(0) => u_ccd_ddr_n_133,
       \axi_rdata_reg[0]\ => \axi_rdata[0]_i_2_n_0\,
       \axi_rdata_reg[1]\ => \axi_rdata[1]_i_2_n_0\,
       \axi_rdata_reg[2]\ => \axi_rdata[2]_i_2_n_0\,
@@ -62619,9 +62620,9 @@ u_ccd_ddr: entity work.mb_subsystem_ccd_controller_v1_0_0_0_ccd_ddr
       \axi_rdata_reg[3]_7\ => \axi_rdata[9]_i_3_n_0\,
       ccd_frame_exception => ccd_frame_exception,
       cdsclk2_end_carry_i_2(11 downto 0) => slv_reg0(11 downto 0),
-      ctrl_rst_n_reg => ctrl_rst_n_i_1_n_0,
-      ddr3_init_done_s2 => ddr3_init_done_s2,
       i_adc_data(7 downto 0) => i_adc_data(7 downto 0),
+      i_init_calib_complete => i_init_calib_complete,
+      i_mmcm_locked => i_mmcm_locked,
       i_rd_clk => i_rd_clk,
       i_rd_clk_n => i_rd_clk_n,
       i_slave_fifo_full_n => i_slave_fifo_full_n,
@@ -62698,7 +62699,7 @@ u_ccd_ddr: entity work.mb_subsystem_ccd_controller_v1_0_0_0_ccd_ddr
       \pixel_type_reg_reg[1]_i_42\(3 downto 0) => slv_reg2(3 downto 0),
       s00_axi_aclk => s00_axi_aclk,
       s00_axi_aresetn => s00_axi_aresetn,
-      \slv_reg2_reg[1]\ => u_ccd_ddr_n_159,
+      \slv_reg2_reg[1]\ => u_ccd_ddr_n_160,
       state_next21_in(15 downto 0) => \u_ccd_driver/state_next21_in\(16 downto 1),
       tx_frame_start_reg => tx_frame_start_reg
     );
@@ -63386,6 +63387,8 @@ architecture STRUCTURE of mb_subsystem_ccd_controller_v1_0_0_0 is
   attribute X_INTERFACE_PARAMETER of intr : signal is "XIL_INTERFACENAME intr, SENSITIVITY LEVEL_HIGH, PortWidth 1";
   attribute X_INTERFACE_INFO of o_adcclk : signal is "xilinx.com:signal:clock:1.0 o_adcclk CLK";
   attribute X_INTERFACE_PARAMETER of o_adcclk : signal is "XIL_INTERFACENAME o_adcclk, FREQ_HZ 500000, FREQ_TOLERANCE_HZ 0, PHASE 0.000, CLK_DOMAIN mb_subsystem_ccd_controller_v1_0_0_0_o_adcclk, INSERT_VIP 0";
+  attribute X_INTERFACE_INFO of o_slave_fifo_clk : signal is "xilinx.com:signal:clock:1.0 o_slave_fifo_clk CLK";
+  attribute X_INTERFACE_PARAMETER of o_slave_fifo_clk : signal is "XIL_INTERFACENAME o_slave_fifo_clk, FREQ_HZ 48000000, FREQ_TOLERANCE_HZ 0, PHASE 0.000, CLK_DOMAIN mb_subsystem_ccd_controller_v1_0_0_0_o_slave_fifo_clk, INSERT_VIP 0";
   attribute X_INTERFACE_INFO of s00_axi_aclk : signal is "xilinx.com:signal:clock:1.0 s00_axi_aclk CLK";
   attribute X_INTERFACE_PARAMETER of s00_axi_aclk : signal is "XIL_INTERFACENAME s00_axi_aclk, ASSOCIATED_BUSIF S_AXI, ASSOCIATED_RESET s00_axi_aresetn, FREQ_HZ 100000000, FREQ_TOLERANCE_HZ 0, PHASE 0.000, INSERT_VIP 0";
   attribute X_INTERFACE_INFO of s00_axi_aresetn : signal is "xilinx.com:signal:reset:1.0 s00_axi_aresetn RST";

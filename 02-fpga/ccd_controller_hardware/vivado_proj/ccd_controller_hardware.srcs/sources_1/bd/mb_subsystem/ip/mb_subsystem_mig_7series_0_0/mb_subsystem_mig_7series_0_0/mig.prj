@@ -23,7 +23,7 @@
 
   <SystemClock>No Buffer</SystemClock>
 
-  <ReferenceClock>No Buffer</ReferenceClock>
+  <ReferenceClock>Use System Clock</ReferenceClock>
 
   <SysResetPolarity>ACTIVE LOW</SysResetPolarity>
 
@@ -35,12 +35,19 @@
 
   <dci_cascade>0</dci_cascade>
 
+  <FPGADevice>
+    <selected>7a/xc7a35t-fgg484</selected>
+    <selected>7a/xc7a50t-fgg484</selected>
+    <selected>7a/xc7a75t-fgg484</selected>
+    <selected>7a/xc7a15t-fgg484</selected>
+  </FPGADevice>
+
   <Controller number="0">
-    <MemoryDevice>DDR3_SDRAM/Components/MT41K256M8XX-125</MemoryDevice>
+    <MemoryDevice>DDR3_SDRAM/Components/MT41K256M16XX-125</MemoryDevice>
     <TimePeriod>2500</TimePeriod>
     <VccAuxIO>1.8V</VccAuxIO>
     <PHYRatio>4:1</PHYRatio>
-    <InputClkFreq>100</InputClkFreq>
+    <InputClkFreq>200</InputClkFreq>
     <UIExtraClocks>0</UIExtraClocks>
     <MMCM_VCO>800</MMCM_VCO>
     <MMCMClkOut0> 1.000</MMCMClkOut0>
@@ -141,7 +148,7 @@
       <Pin Bank="Select Bank" PADName="No connect" name="tg_compare_error"/>
     </System_Control>
     <TimingParameters>
-      <Parameters tcke="5" tfaw="30" tras="35" trcd="13.75" trefi="7.8" trfc="160" trp="13.75" trrd="6" trtp="7.5" twtr="7.5"/>
+      <Parameters tcke="5" tfaw="40" tras="35" trcd="13.75" trefi="7.8" trfc="260" trp="13.75" trrd="7.5" trtp="7.5" twtr="7.5"/>
     </TimingParameters>
     <mrBurstLength name="Burst Length">8 - Fixed</mrBurstLength>
     <mrBurstType name="Read Burst Type and Length">Sequential</mrBurstType>
@@ -165,7 +172,7 @@
     <mr2RTTWR name="RTT_WR - Dynamic On Die Termination (ODT)">Dynamic ODT off</mr2RTTWR>
     <PortInterface>AXI</PortInterface>
     <AXIParameters>
-      <C0_C_RD_WR_ARB_ALGORITHM>ROUND_ROBIN</C0_C_RD_WR_ARB_ALGORITHM>
+      <C0_C_RD_WR_ARB_ALGORITHM>TDM</C0_C_RD_WR_ARB_ALGORITHM>
       <C0_S_AXI_ADDR_WIDTH>30</C0_S_AXI_ADDR_WIDTH>
       <C0_S_AXI_DATA_WIDTH>128</C0_S_AXI_DATA_WIDTH>
       <C0_S_AXI_ID_WIDTH>4</C0_S_AXI_ID_WIDTH>

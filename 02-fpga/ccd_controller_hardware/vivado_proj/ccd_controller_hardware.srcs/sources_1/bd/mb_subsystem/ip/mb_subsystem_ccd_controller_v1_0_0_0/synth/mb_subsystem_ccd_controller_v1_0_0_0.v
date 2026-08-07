@@ -48,11 +48,11 @@
 
 
 // IP VLNV: xilinx.com:user:ccd_controller_v1_0:1.0
-// IP Revision: 17
+// IP Revision: 30
 
 (* X_CORE_INFO = "ccd_controller_v1_0,Vivado 2020.1" *)
 (* CHECK_LICENSE_TYPE = "mb_subsystem_ccd_controller_v1_0_0_0,ccd_controller_v1_0,{}" *)
-(* CORE_GENERATION_INFO = "mb_subsystem_ccd_controller_v1_0_0_0,ccd_controller_v1_0,{x_ipProduct=Vivado 2020.1,x_ipVendor=xilinx.com,x_ipLibrary=user,x_ipName=ccd_controller_v1_0,x_ipVersion=1.0,x_ipCoreRevision=17,x_ipLanguage=VERILOG,x_ipSimLanguage=MIXED,MAX_FRAME_DEPTH=131072,MAX_FRAMES=8,C_S00_AXI_DATA_WIDTH=32,C_S00_AXI_ADDR_WIDTH=6}" *)
+(* CORE_GENERATION_INFO = "mb_subsystem_ccd_controller_v1_0_0_0,ccd_controller_v1_0,{x_ipProduct=Vivado 2020.1,x_ipVendor=xilinx.com,x_ipLibrary=user,x_ipName=ccd_controller_v1_0,x_ipVersion=1.0,x_ipCoreRevision=30,x_ipLanguage=VERILOG,x_ipSimLanguage=MIXED,MAX_FRAME_DEPTH=131072,MAX_FRAMES=8,C_S00_AXI_DATA_WIDTH=32,C_S00_AXI_ADDR_WIDTH=6}" *)
 (* IP_DEFINITION_SOURCE = "package_project" *)
 (* DowngradeIPIdentifiedWarnings = "yes" *)
 module mb_subsystem_ccd_controller_v1_0_0_0 (
@@ -168,6 +168,8 @@ input wire i_slave_fifo_full_n;
 output wire [15 : 0] o_slave_fifo_data;
 output wire o_slave_fifo_data_wr_en_n;
 output wire o_slave_fifo_data_last_n;
+(* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME o_slave_fifo_clk, FREQ_HZ 48000000, FREQ_TOLERANCE_HZ 0, PHASE 0.000, CLK_DOMAIN mb_subsystem_ccd_controller_v1_0_0_0_o_slave_fifo_clk, INSERT_VIP 0" *)
+(* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 o_slave_fifo_clk CLK" *)
 output wire o_slave_fifo_clk;
 (* X_INTERFACE_PARAMETER = "XIL_INTERFACENAME i_ui_clk, FREQ_HZ 100000000, ASSOCIATED_BUSIF M_AXI, FREQ_TOLERANCE_HZ 0, PHASE 0.000, INSERT_VIP 0" *)
 (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 i_ui_clk CLK" *)

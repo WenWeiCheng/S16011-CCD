@@ -1,4 +1,4 @@
-ï»¿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+ï»?<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <Project NoOfControllers="1">
 
   
@@ -38,11 +38,11 @@
   <dci_cascade>0</dci_cascade>
 
   <Controller number="0">
-    <MemoryDevice>DDR3_SDRAM/Components/MT41K256M8XX-125</MemoryDevice>
+    <MemoryDevice>DDR3_SDRAM/Components/MT41K256M16XX-125</MemoryDevice>
     <TimePeriod>2500</TimePeriod>
     <VccAuxIO>1.8V</VccAuxIO>
     <PHYRatio>4:1</PHYRatio>
-    <InputClkFreq>400</InputClkFreq>
+    <InputClkFreq>100</InputClkFreq>
     <UIExtraClocks>0</UIExtraClocks>
     <MMCM_VCO>800</MMCM_VCO>
     <MMCMClkOut0> 1.000</MMCMClkOut0>
@@ -143,7 +143,7 @@
       <Pin Bank="Select Bank" PADName="No connect" name="tg_compare_error"/>
     </System_Control>
     <TimingParameters>
-      <Parameters tcke="5" tfaw="30" tras="35" trcd="13.75" trefi="7.8" trfc="160" trp="13.75" trrd="6" trtp="7.5" twtr="7.5"/>
+      <Parameters tcke="5" tfaw="40" tras="35" trcd="13.75" trefi="7.8" trfc="260" trp="13.75" trrd="7.5" trtp="7.5" twtr="7.5"/>
     </TimingParameters>
     <mrBurstLength name="Burst Length">8 - Fixed</mrBurstLength>
     <mrBurstType name="Read Burst Type and Length">Sequential</mrBurstType>

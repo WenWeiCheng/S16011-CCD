@@ -155,13 +155,13 @@ module mb_subsystem_mig_7series_0_0_mig #
    parameter PHY_CONTROL_MASTER_BANK = 1,
                                      // The bank index where master PHY_CONTROL resides,
                                      // equal to the PLL residing bank
-   parameter MEM_DENSITY           = "2Gb",
+   parameter MEM_DENSITY           = "4Gb",
                                      // Indicates the density of the Memory part
                                      // Added for the sake of Vivado simulations
    parameter MEM_SPEEDGRADE        = "125",
                                      // Indicates the Speed grade of Memory Part
                                      // Added for the sake of Vivado simulations
-   parameter MEM_DEVICE_WIDTH      = 8,
+   parameter MEM_DEVICE_WIDTH      = 16,
                                      // Indicates the device width of the Memory Part
                                      // Added for the sake of Vivado simulations
 
@@ -228,9 +228,9 @@ module mb_subsystem_mig_7series_0_0_mig #
    // The following parameters are multiplier and divisor factors for PLLE2.
    // Based on the selected design frequency these parameters vary.
    //***************************************************************************
-   parameter CLKIN_PERIOD          = 10000,
+   parameter CLKIN_PERIOD          = 5000,
                                      // Input Clock Period
-   parameter CLKFBOUT_MULT         = 8,
+   parameter CLKFBOUT_MULT         = 4,
                                      // write PLL VCO multiplier
    parameter DIVCLK_DIVIDE         = 1,
                                      // write PLL VCO divisor
@@ -257,7 +257,7 @@ module mb_subsystem_mig_7series_0_0_mig #
    //***************************************************************************
    parameter tCKE                  = 5000,
                                      // memory tCKE paramter in pS
-   parameter tFAW                  = 30000,
+   parameter tFAW                  = 40000,
                                      // memory tRAW paramter in pS.
    parameter tPRDI                 = 1_000_000,
                                      // memory tPRDI paramter in pS.
@@ -267,11 +267,11 @@ module mb_subsystem_mig_7series_0_0_mig #
                                      // memory tRCD paramter in pS.
    parameter tREFI                 = 7800000,
                                      // memory tREFI paramter in pS.
-   parameter tRFC                  = 160000,
+   parameter tRFC                  = 260000,
                                      // memory tRFC paramter in pS.
    parameter tRP                   = 13750,
                                      // memory tRP paramter in pS.
-   parameter tRRD                  = 6000,
+   parameter tRRD                  = 7500,
                                      // memory tRRD paramter in pS.
    parameter tRTP                  = 7500,
                                      // memory tRTP paramter in pS.
@@ -425,7 +425,7 @@ module mb_subsystem_mig_7series_0_0_mig #
    parameter SYSCLK_TYPE           = "NO_BUFFER",
                                      // System clock type DIFFERENTIAL, SINGLE_ENDED,
                                      // NO_BUFFER
-   parameter REFCLK_TYPE           = "NO_BUFFER",
+   parameter REFCLK_TYPE           = "USE_SYSTEM_CLOCK",
                                      // Reference clock type DIFFERENTIAL, SINGLE_ENDED,
                                      // NO_BUFFER, USE_SYSTEM_CLOCK
    parameter SYS_RST_PORT          = "FALSE",
@@ -495,7 +495,7 @@ module mb_subsystem_mig_7series_0_0_mig #
    parameter C_S_AXI_SUPPORTS_NARROW_BURST = 1,
                                              // Indicates whether to instatiate upsizer
                                              // Range: 0, 1
-   parameter C_RD_WR_ARB_ALGORITHM          = "ROUND_ROBIN",
+   parameter C_RD_WR_ARB_ALGORITHM          = "TDM",
                                              // Indicates the Arbitration
                                              // Allowed values - "TDM", "ROUND_ROBIN",
                                              // "RD_PRI_REG", "RD_PRI_REG_STARVE_LIMIT"
@@ -598,8 +598,6 @@ module mb_subsystem_mig_7series_0_0_mig #
    // Single-ended system clock
    input                                        sys_clk_i,
    
-   // Single-ended iodelayctrl clk (reference clock)
-   input                                        clk_ref_i,
    
    // user interface signals
    output                                       ui_clk,
@@ -777,6 +775,7 @@ module mb_subsystem_mig_7series_0_0_mig #
   wire                              mmcm_clk;
   wire                              clk_ref_p;
   wire                              clk_ref_n;
+  wire                              clk_ref_i;
   wire [11:0]                       device_temp_s;
   wire [11:0]                       device_temp_i;
 
@@ -867,8 +866,7 @@ module mb_subsystem_mig_7series_0_0_mig #
   
   assign sys_clk_p = 1'b0;
   assign sys_clk_n = 1'b0;
-  assign clk_ref_p = 1'b0;
-  assign clk_ref_n = 1'b0;
+  assign clk_ref_i = 1'b0;
   assign device_temp = device_temp_s;
       
 

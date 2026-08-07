@@ -1478,6 +1478,82 @@
         </spirit:parameter>
       </spirit:parameters>
     </spirit:busInterface>
+    <spirit:busInterface>
+      <spirit:name>o_slave_fifo_clk</spirit:name>
+      <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="clock" spirit:version="1.0"/>
+      <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="clock_rtl" spirit:version="1.0"/>
+      <spirit:master/>
+      <spirit:portMaps>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>CLK</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>o_slave_fifo_clk</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+      <spirit:parameters>
+        <spirit:parameter>
+          <spirit:name>FREQ_HZ</spirit:name>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.O_SLAVE_FIFO_CLK.FREQ_HZ">48000000</spirit:value>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>FREQ_TOLERANCE_HZ</spirit:name>
+          <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.O_SLAVE_FIFO_CLK.FREQ_TOLERANCE_HZ">0</spirit:value>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>PHASE</spirit:name>
+          <spirit:value spirit:format="float" spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.O_SLAVE_FIFO_CLK.PHASE">0.000</spirit:value>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>CLK_DOMAIN</spirit:name>
+          <spirit:value spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.O_SLAVE_FIFO_CLK.CLK_DOMAIN">mb_subsystem_ccd_controller_v1_0_0_0_o_slave_fifo_clk</spirit:value>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>ASSOCIATED_BUSIF</spirit:name>
+          <spirit:value spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.O_SLAVE_FIFO_CLK.ASSOCIATED_BUSIF"/>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>ASSOCIATED_RESET</spirit:name>
+          <spirit:value spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.O_SLAVE_FIFO_CLK.ASSOCIATED_RESET"/>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>none</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>INSERT_VIP</spirit:name>
+          <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="BUSIFPARAM_VALUE.O_SLAVE_FIFO_CLK.INSERT_VIP">0</spirit:value>
+          <spirit:vendorExtensions>
+            <xilinx:parameterInfo>
+              <xilinx:parameterUsage>simulation.rtl</xilinx:parameterUsage>
+            </xilinx:parameterInfo>
+          </spirit:vendorExtensions>
+        </spirit:parameter>
+      </spirit:parameters>
+    </spirit:busInterface>
   </spirit:busInterfaces>
   <spirit:addressSpaces>
     <spirit:addressSpace>
@@ -1510,11 +1586,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Mon Aug 03 03:41:03 UTC 2026</spirit:value>
+            <spirit:value>Thu Aug 06 14:51:47 UTC 2026</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:ccdf679b</spirit:value>
+            <spirit:value>9:280ba459</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1525,7 +1601,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:ccdf679b</spirit:value>
+            <spirit:value>9:280ba459</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1541,11 +1617,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Mon Aug 03 03:41:03 UTC 2026</spirit:value>
+            <spirit:value>Thu Aug 06 14:51:47 UTC 2026</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:ccdf679b</spirit:value>
+            <spirit:value>9:280ba459</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1560,11 +1636,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Mon Aug 03 03:41:03 UTC 2026</spirit:value>
+            <spirit:value>Thu Aug 06 14:51:47 UTC 2026</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:b744eea8</spirit:value>
+            <spirit:value>9:428bf5fa</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1580,11 +1656,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Mon Aug 03 03:41:03 UTC 2026</spirit:value>
+            <spirit:value>Thu Aug 06 14:51:47 UTC 2026</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:b744eea8</spirit:value>
+            <spirit:value>9:428bf5fa</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1598,11 +1674,11 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>GENtimestamp</spirit:name>
-            <spirit:value>Mon Aug 03 03:42:28 UTC 2026</spirit:value>
+            <spirit:value>Thu Aug 06 14:53:21 UTC 2026</spirit:value>
           </spirit:parameter>
           <spirit:parameter>
             <spirit:name>outputProductCRC</spirit:name>
-            <spirit:value>9:ccdf679b</spirit:value>
+            <spirit:value>9:280ba459</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -2939,41 +3015,49 @@
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagesynthesis_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>../../ipshared/2ddf/src/ccd_clk_gen.v</spirit:name>
+        <spirit:name>../../ipshared/6073/src/ccd_clk_gen.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../ipshared/2ddf/src/ccd_controller_v1_0_S00_AXI.v</spirit:name>
+        <spirit:name>../../ipshared/6073/src/ccd_controller_v1_0_S00_AXI.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../ipshared/2ddf/src/ccd_ddr.v</spirit:name>
+        <spirit:name>../../ipshared/6073/src/ccd_ddr.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../ipshared/2ddf/src/ccd_driver.v</spirit:name>
+        <spirit:name>../../ipshared/6073/src/ccd_driver.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../ipshared/2ddf/src/ccd_frame_buf_ddr.v</spirit:name>
+        <spirit:name>../../ipshared/6073/src/ccd_frame_buf_ddr.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../ipshared/2ddf/src/ccd_frame_buf_ddr_axi_adapter.v</spirit:name>
+        <spirit:name>../../ipshared/6073/src/ccd_frame_buf_ddr_axi_adapter.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../ipshared/2ddf/src/ccd_frame_buf_ddr_ctrl.v</spirit:name>
+        <spirit:name>../../ipshared/6073/src/ccd_frame_buf_ddr_ctrl.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../ipshared/2ddf/src/ccd_frame_tx.v</spirit:name>
+        <spirit:name>../../ipshared/6073/src/ccd_frame_tx.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>constrs_1/new/clock.xdc</spirit:name>
+        <spirit:name>constrs_1/new/ccd_clock_ooc.xdc</spirit:name>
         <spirit:userFileType>xdc</spirit:userFileType>
         <spirit:userFileType>USED_IN_out_of_context</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>constrs_1/new/ccd_top.xdc</spirit:name>
+        <spirit:userFileType>xdc</spirit:userFileType>
+        <spirit:define>
+          <spirit:name>processing_order</spirit:name>
+          <spirit:value>late</spirit:value>
+        </spirit:define>
       </spirit:file>
       <spirit:file>
         <spirit:name>sources_1/ip/rd_ddr3_fifo/rd_ddr3_fifo.xci</spirit:name>
@@ -2984,7 +3068,7 @@
         <spirit:userFileType>xci</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../ipshared/2ddf/src/ccd_controller_v1_0.v</spirit:name>
+        <spirit:name>../../ipshared/6073/src/ccd_controller_v1_0.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
     </spirit:fileSet>
@@ -2999,39 +3083,35 @@
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagebehavioralsimulation_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>../../ipshared/2ddf/src/ccd_clk_gen.v</spirit:name>
+        <spirit:name>../../ipshared/6073/src/ccd_clk_gen.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../ipshared/2ddf/src/ccd_controller_v1_0_S00_AXI.v</spirit:name>
+        <spirit:name>../../ipshared/6073/src/ccd_controller_v1_0_S00_AXI.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../ipshared/2ddf/src/ccd_ddr.v</spirit:name>
+        <spirit:name>../../ipshared/6073/src/ccd_ddr.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../ipshared/2ddf/src/ccd_driver.v</spirit:name>
+        <spirit:name>../../ipshared/6073/src/ccd_driver.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../ipshared/2ddf/src/ccd_frame_buf_ddr.v</spirit:name>
+        <spirit:name>../../ipshared/6073/src/ccd_frame_buf_ddr.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../ipshared/2ddf/src/ccd_frame_buf_ddr_axi_adapter.v</spirit:name>
+        <spirit:name>../../ipshared/6073/src/ccd_frame_buf_ddr_axi_adapter.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../ipshared/2ddf/src/ccd_frame_buf_ddr_ctrl.v</spirit:name>
+        <spirit:name>../../ipshared/6073/src/ccd_frame_buf_ddr_ctrl.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../ipshared/2ddf/src/ccd_frame_tx.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>../../ipshared/2ddf/src/ccd_controller_v1_0.v</spirit:name>
+        <spirit:name>../../ipshared/6073/src/ccd_frame_tx.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -3041,6 +3121,10 @@
       <spirit:file>
         <spirit:name>sources_1/ip/wr_ddr3_fifo/wr_ddr3_fifo.xci</spirit:name>
         <spirit:userFileType>xci</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>../../ipshared/6073/src/ccd_controller_v1_0.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -3088,7 +3172,7 @@
       </spirit:file>
     </spirit:fileSet>
   </spirit:fileSets>
-  <spirit:description>CCD 鎺у埗鍣¨ IP锛氫骇鐢? CCD 鍨傜洿/姘村钩绉讳綅鏃跺簭锛坙ine binning 涓? image 涓ょ§嶈?诲嚭妯″紡锛孲CLK 100/500kHz 鍙?閫夛級锛岄噰闆? ADC 鏁版嵁骞剁紦瀛樿嚦 DDR3锛岀粡 FX2 Slave FIFO 甯у彂閫侊紝鏀?鎸佷腑鏂?涓庡瘎瀛樺櫒閰嶇疆銆</spirit:description>
+  <spirit:description>Generates CCD vertical/horizontal shift timing in two readout modes 芒聙? line binning and full image 芒聙? with selectable SCLK rate of 100 kHz / 500 kH</spirit:description>
   <spirit:parameters>
     <spirit:parameter>
       <spirit:name>MAX_FRAME_DEPTH</spirit:name>
@@ -3123,7 +3207,7 @@
         <xilinx:xpmLibrary>XPM_CDC</xilinx:xpmLibrary>
         <xilinx:xpmLibrary>XPM_MEMORY</xilinx:xpmLibrary>
       </xilinx:xpmLibraries>
-      <xilinx:coreRevision>17</xilinx:coreRevision>
+      <xilinx:coreRevision>30</xilinx:coreRevision>
       <xilinx:tags>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@32849e95_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@1af80f86_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
@@ -3399,6 +3483,233 @@
         <xilinx:tag xilinx:name="ui.data.coregen.dd@4a3158e3_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@5f0b3a76_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
         <xilinx:tag xilinx:name="ui.data.coregen.dd@788f98cc_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1cfd44a1_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2b3b262f_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4050b166_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@50e2ab36_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4b7cb0c8_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@35e286dc_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@57e85ef1_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@128a6a89_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@59500653_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4d080082_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@98dc1ef_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@56074e41_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5c398e64_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@11e6e8ba_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4335f0fa_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4a493ee8_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4a92ee91_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1ad6e7cb_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1aa14c7d_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3ddc65d5_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@174e5080_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5c03c565_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@76b33886_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@14e0f2c7_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3c5c009_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6dc6114f_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@271cdf4b_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2200327_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@566c69c1_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7a627331_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5bfa8bde_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4c7e9164_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@22313c32_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@31c19302_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@21997570_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2909f8c7_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@885f986_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@19789860_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@64c4bd7_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@a52446f_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2c35ce7a_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@635a081a_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@40a73017_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@163e14c8_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@39d139c2_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7e9658df_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@15a35c4b_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5ad98181_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1107aee9_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5b70ad77_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4d4c2fa0_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@182b2c59_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@493f4f2_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@30885867_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@30ceed36_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4b33a7d8_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@54f85c14_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5314da5a_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@53f5274c_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@26e27617_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@65e43d78_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@10ebe8d1_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@74dc92cd_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@518335ce_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4c09bcc9_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2694ac43_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@14561c01_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@57170ff1_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@dbc0c1b_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4290326f_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@cd149bf_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3408d22e_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@684ad0f5_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@124941c3_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1782cbe7_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@24eae0cc_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2325e67_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@54787a92_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@ade53b8_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@591ffaf6_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2efe6cbf_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1308506b_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@26455c30_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@25fe5162_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7eaeeb21_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3c0327be_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6fa4e49b_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2787aa76_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6a34eacb_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4fe88c0c_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@52f48b8_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6ad76de3_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7a475106_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1238d826_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@71896583_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@cefb63c_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7342353d_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@155fe43c_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3282fdf6_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@53fea371_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4e4cb9d3_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@78096350_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7192cc55_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1dfe9b77_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2af15502_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@785fac5c_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5f027b58_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4dc6af8c_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3d9202bf_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5919c854_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7c2a0147_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@756747ad_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@29e2500b_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2edc1d7c_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@38937f95_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@45efbfe_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@288cc353_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6b199bef_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@446e67a1_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3d093a72_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@592fb828_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6f4477d_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6194d4bf_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@38382de9_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1027fa66_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@82b46c0_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4e9abd1c_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@54be2334_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@38134054_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@bf734fa_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@9ea0842_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@702b564c_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@62d5d005_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@29469f2b_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4ea192d6_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@60b31acd_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@751d3816_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4cc82f45_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3a703daf_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2fb4b58e_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6abd5f2d_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6c57ccc0_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@68b47d61_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@21f9510d_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5e15b7b4_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4f5e96de_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5ad49c68_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4778ebae_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@25b49728_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@40093f9a_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@26cf141f_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7a6ba699_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1c7660a4_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@34ae8a2c_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7cef9deb_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@738894d4_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@edf1e49_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1532b4c0_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6e7c61d0_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3243680f_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7cc9ef18_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@13c21971_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2f096b8a_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@31917fb0_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2cfbda62_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7ac01dbc_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@11ae62ec_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7b3c4539_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@43941bf_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@79b08b4_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@361bb097_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1752e979_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2f10e1ae_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6941e7d4_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@78160ff7_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5c2c435a_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@63abcd2_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4665617a_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5deba0d8_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7f4ec57b_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@34eaec08_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@59fd538d_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@572cc36f_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@687ed40_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@67d3afaa_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@330740dd_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@9593bf7_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@a012944_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3d37fc3c_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@45acaa43_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@64eb4e10_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@14e78e6f_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1923b72_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6b9130c4_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3022ae68_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6b6748cf_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@21db93fb_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@37fcc3eb_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2db0f01a_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@17300353_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@51d96302_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@154cd090_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@315ece20_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@31f9ece5_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4cc80f2a_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4e8f45f6_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4bcb9590_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1d9f313c_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@45657fbf_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7209778c_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@15566711_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@65e38041_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@70546e44_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@36485adf_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@671f177b_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@70eaf43f_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@65393069_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@22315d55_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@68edd782_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7e9efb1c_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5807ad06_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5b355542_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@58e97b60_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2c7d226_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@29ed6cb3_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@c9feff4_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@60953778_ARCHIVE_LOCATION">d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/ip/ccd_controller/ccd_controller.srcs</xilinx:tag>
       </xilinx:tags>
       <xilinx:configElementInfos>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.INTR.PortWidth" xilinx:valueSource="constant" xilinx:valuePermission="bd_and_user"/>
@@ -3462,6 +3773,13 @@
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.O_ADCCLK.FREQ_TOLERANCE_HZ" xilinx:valueSource="constant" xilinx:valuePermission="bd_and_user"/>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.O_ADCCLK.INSERT_VIP" xilinx:valueSource="constant"/>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.O_ADCCLK.PHASE" xilinx:valueSource="constant" xilinx:valuePermission="bd_and_user"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.O_SLAVE_FIFO_CLK.ASSOCIATED_BUSIF" xilinx:valueSource="constant" xilinx:valuePermission="bd_and_user"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.O_SLAVE_FIFO_CLK.ASSOCIATED_RESET" xilinx:valueSource="constant" xilinx:valuePermission="bd_and_user"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.O_SLAVE_FIFO_CLK.CLK_DOMAIN" xilinx:valuePermission="bd_and_user"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.O_SLAVE_FIFO_CLK.FREQ_HZ" xilinx:valuePermission="bd_and_user"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.O_SLAVE_FIFO_CLK.FREQ_TOLERANCE_HZ" xilinx:valueSource="constant" xilinx:valuePermission="bd_and_user"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.O_SLAVE_FIFO_CLK.INSERT_VIP" xilinx:valueSource="constant"/>
+        <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.O_SLAVE_FIFO_CLK.PHASE" xilinx:valueSource="constant" xilinx:valuePermission="bd_and_user"/>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.S00_AXI_ACLK.ASSOCIATED_BUSIF" xilinx:valuePermission="bd_and_user"/>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.S00_AXI_ACLK.ASSOCIATED_RESET" xilinx:valuePermission="bd_and_user"/>
         <xilinx:configElementInfo xilinx:referenceId="BUSIFPARAM_VALUE.S00_AXI_ACLK.CLK_DOMAIN" xilinx:valueSource="constant" xilinx:valuePermission="bd_and_user"/>
@@ -3506,10 +3824,10 @@
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1</xilinx:xilinxVersion>
-      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="d644b1d8"/>
+      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="05bac288"/>
       <xilinx:checksum xilinx:scope="addressSpaces" xilinx:value="507d3f29"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="4ad37f43"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="2c901b34"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="38b9efcf"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="a18c0403"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="11194698"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="67dc6601"/>

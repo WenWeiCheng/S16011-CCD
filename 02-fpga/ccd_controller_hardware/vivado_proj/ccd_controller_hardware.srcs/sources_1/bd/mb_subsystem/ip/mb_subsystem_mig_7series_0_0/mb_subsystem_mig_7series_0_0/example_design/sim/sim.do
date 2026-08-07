@@ -96,7 +96,7 @@ vlog wiredly.v
 vlog sim_tb_top.v
 
 #Pass the parameters for memory model parameter file#
-vlog -sv +define+x2Gb +define+sg125 +define+x8 ddr3_model.sv
+vlog -sv +define+x4Gb +define+sg125 +define+x16 ddr3_model.sv
 
 #Load the design. Use required libraries.#
 vsim -t fs -novopt +notimingchecks -L unisims_ver -L secureip work.sim_tb_top glbl
