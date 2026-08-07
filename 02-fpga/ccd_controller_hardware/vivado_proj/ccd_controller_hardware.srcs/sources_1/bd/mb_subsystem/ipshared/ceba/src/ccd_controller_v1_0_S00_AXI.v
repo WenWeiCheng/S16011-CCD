@@ -5,7 +5,7 @@
 	(
 		// Users to add parameters here
 		parameter integer MAX_FRAME_DEPTH = 131072,
-		parameter integer MAX_FRAMES      = 8,
+		parameter integer MAX_FRAMES      = 64,
 		// User parameters ends
 		// Do not modify the parameters beyond this line
 
@@ -185,7 +185,6 @@
 	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg4;
 	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg5;
 	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg6;
-	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg7;
 	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg8;
 	wire	 slv_reg_rden;
 	wire	 slv_reg_wren;
@@ -199,6 +198,7 @@
 	// 中断锁存
 	reg         exception_pending_latch;
 	reg         tx_done_pending_latch;
+	reg         frame_written_pending_latch;  // 帧写入完成锁存 (INTR_STS[10])
 	reg  [6:0]  exception_count;           // 帧异常计数, 映射到 STATUS[15:9]
 
 	// 帧发送触发脉冲 (展宽至约 16 个 AXI 周期, 确保 rd_clk 域可靠采样)
@@ -208,10 +208,11 @@
 	// ccd_ddr 内部连线 (来自 rd_clk / ui_clk 域, 需 CDC 同步)
 	wire        ccd_tx_last_n;
 	wire        ccd_frame_exception;
+	wire        ccd_frame_written;             // 帧完整写入 DDR 脉冲 (rd_clk 域)
 	wire [$clog2(MAX_FRAMES+1)-1:0] ccd_frame_num_raw;
-	wire [7:0]                       ccd_frame_num;    // 定宽 8bit, 利用 STATUS 全部空闲位
+	wire [31:0]                      ccd_frame_num;    // 定宽 32bit, 独立 FRAME_NUM 寄存器
 
-	assign ccd_frame_num = ccd_frame_num_raw;  // 自动零扩展, 保持 8bit 定宽
+	assign ccd_frame_num = ccd_frame_num_raw;  // 自动零扩展, 32bit 定宽
 
 	// FX2 Slave FIFO 最后一字标志: 直接透传 ccd_ddr 的 o_tx_last_n (rd_clk 域)
 	assign o_slave_fifo_data_last_n = ccd_tx_last_n;
@@ -223,19 +224,28 @@
 	reg  ddr3_init_done_s1,    ddr3_init_done_s2;
 	reg  ccd_frame_exception_s1, ccd_frame_exception_s2;
 	reg  ccd_tx_last_n_s1,     ccd_tx_last_n_s2;
+	reg  ccd_frame_written_s1, ccd_frame_written_s2;
 
 
 	// STATUS 寄存器组装 (使用同步后信号)
+	// 注: 帧计数已移入独立 FRAME_NUM 寄存器 (0x1C), STATUS[7:0] 置 0
 	wire [31:0] status_reg;
-	assign status_reg = {15'b0,
+	assign status_reg = {23'b0,
 	                     ddr3_init_done_s2,         // [16]  已同步
 	                     exception_count,          // [15:9] 帧异常计数
 	                     ccd_frame_exception_s2,    // [8]   已同步
-	                     ccd_frame_num};            // [7:0] 8bit
+	                     8'b0};                     // [7:0] 空闲
 
-	// INTR_STS 寄存器 (锁存值) — bit[9]=tx_done_pending, bit[8]=exception_pending
+	// FRAME_NUM 寄存器 (0x1C, 只读实时值, 32bit)
+	//   frame_num 来自 rd_clk 域 (frames_in_fifo), 未做跨域同步
+	//   (与改动前 STATUS[7:0] 一致; 数值每帧变化一次, 撕裂读概率极低且自愈)
+	wire [31:0] frame_num_reg;
+	assign frame_num_reg = ccd_frame_num;
+
+	// INTR_STS 寄存器 (锁存值) — bit[10]=frame_written_pending, bit[9]=tx_done_pending, bit[8]=exception_pending
 	wire [31:0] intr_sts_reg;
-	assign intr_sts_reg = {22'b0, tx_done_pending_latch,
+	assign intr_sts_reg = {21'b0, frame_written_pending_latch,
+	                       tx_done_pending_latch,
 	                       exception_pending_latch, 8'b0};
 
 	// I/O Connections assignments
@@ -348,7 +358,6 @@
 	      slv_reg1 <= 0;
 	      slv_reg2 <= 0;
 	      slv_reg4 <= 0;
-	      slv_reg7 <= 0;
 	      slv_reg8 <= 0;
 	      trigger_stretch_cnt <= 4'd0;
 	    end 
@@ -392,12 +401,8 @@
 	              end  
 	          // 0x18 — INTR_STS (写 1 清除, 由中断锁存块处理)
 	          4'h6: ;
-	          // 0x1C — 保留
-	          4'h7:
-	            for ( byte_index = 0; byte_index <= (C_S_AXI_DATA_WIDTH/8)-1; byte_index = byte_index+1 )
-	              if ( S_AXI_WSTRB[byte_index] == 1 ) begin
-	                slv_reg7[(byte_index*8) +: 8] <= S_AXI_WDATA[(byte_index*8) +: 8];
-	              end  
+	          // 0x1C — FRAME_NUM (只读, 写忽略)
+	          4'h7: ;
 	          // 0x20 — 保留
 	          4'h8:
 	            for ( byte_index = 0; byte_index <= (C_S_AXI_DATA_WIDTH/8)-1; byte_index = byte_index+1 )
@@ -519,7 +524,7 @@
 	        4'h4   : reg_data_out <= status_reg;    // STATUS (实时)
 	        4'h5   : reg_data_out <= slv_reg4;      // INTR_EN
 	        4'h6   : reg_data_out <= intr_sts_reg;  // INTR_STS (锁存值)
-	        4'h7   : reg_data_out <= slv_reg7;      // 保留
+	        4'h7   : reg_data_out <= frame_num_reg; // FRAME_NUM (实时)
 	        4'h8   : reg_data_out <= slv_reg8;      // 保留
 	        default : reg_data_out <= 0;
 	      endcase
@@ -558,7 +563,8 @@
 	    end
 	end
 
-	// ---- CDC 2-FF 同步器 (ddr3_done: MIG域→AXI, exception: ui_clk域→AXI, tx_last_n: rd_clk域→AXI) ----
+	// ---- CDC 2-FF 同步器 (ddr3_done: MIG域→AXI, exception: ui_clk域→AXI,
+	//      tx_last_n / frame_written: rd_clk域→AXI) ----
 	always @(posedge S_AXI_ACLK or negedge S_AXI_ARESETN) begin
 	    if (!S_AXI_ARESETN) begin
 	        ddr3_init_done_s1    <= 1'b0;
@@ -567,6 +573,8 @@
 	        ccd_frame_exception_s2 <= 1'b0;
 	        ccd_tx_last_n_s1     <= 1'b1;
 	        ccd_tx_last_n_s2     <= 1'b1;
+	        ccd_frame_written_s1 <= 1'b0;
+	        ccd_frame_written_s2 <= 1'b0;
 	    end else begin
 	        ddr3_init_done_s1    <= ddr3_init_done;
 	        ddr3_init_done_s2    <= ddr3_init_done_s1;
@@ -574,6 +582,8 @@
 	        ccd_frame_exception_s2 <= ccd_frame_exception_s1;
 	        ccd_tx_last_n_s1     <= ccd_tx_last_n;
 	        ccd_tx_last_n_s2     <= ccd_tx_last_n_s1;
+	        ccd_frame_written_s1 <= ccd_frame_written;
+	        ccd_frame_written_s2 <= ccd_frame_written_s1;
 	    end
 	end
 
@@ -582,25 +592,31 @@
 	wire ccd_frame_exception_rise;
 	reg ccd_tx_last_n_s2_d;
 	wire ccd_tx_done_fall;
+	reg ccd_frame_written_s2_d;
+	wire ccd_frame_written_rise;
 
 	always @(posedge S_AXI_ACLK or negedge S_AXI_ARESETN) begin
 	    if (!S_AXI_ARESETN) begin
 	        ccd_frame_exception_s2_d <= 1'b0;
 	        ccd_tx_last_n_s2_d   <= 1'b1;
+	        ccd_frame_written_s2_d <= 1'b0;
 	    end else begin
 	        ccd_frame_exception_s2_d <= ccd_frame_exception_s2;
 	        ccd_tx_last_n_s2_d   <= ccd_tx_last_n_s2;
+	        ccd_frame_written_s2_d <= ccd_frame_written_s2;
 	    end
 	end
 
 	assign ccd_frame_exception_rise = ccd_frame_exception_s2 && !ccd_frame_exception_s2_d;
 	assign ccd_tx_done_fall         = !ccd_tx_last_n_s2 && ccd_tx_last_n_s2_d;
+	assign ccd_frame_written_rise   = ccd_frame_written_s2 && !ccd_frame_written_s2_d;
 
 	// ---- 中断锁存与写 1 清除 ----
 	always @(posedge S_AXI_ACLK or negedge S_AXI_ARESETN) begin
 	    if (!S_AXI_ARESETN) begin
 	        exception_pending_latch <= 1'b0;
 	        tx_done_pending_latch <= 1'b0;
+	        frame_written_pending_latch <= 1'b0;
 	        exception_count        <= 7'd0;
 	    end else begin
 	        // 帧异常计数 (饱和, 不绕回)
@@ -620,12 +636,20 @@
 	                 (axi_awaddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] == 4'h6) &&
 	                 S_AXI_WDATA[9])
 	            tx_done_pending_latch <= 1'b0;
+	        // 帧写入完成: 上升沿置位, CPU 写 INTR_STS[10]=1 清除
+	        if (ccd_frame_written_rise)
+	            frame_written_pending_latch <= 1'b1;
+	        else if (slv_reg_wren &&
+	                 (axi_awaddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] == 4'h6) &&
+	                 S_AXI_WDATA[10])
+	            frame_written_pending_latch <= 1'b0;
 	    end
 	end
 
 	// ---- 中断输出 ----
 	assign intr = (exception_pending_latch && slv_reg4[8])
-	           || (tx_done_pending_latch && slv_reg4[9]);
+	           || (tx_done_pending_latch && slv_reg4[9])
+	           || (frame_written_pending_latch && slv_reg4[10]);
 
 	// ---- ccd_ddr 例化 ----
 	ccd_ddr #(
@@ -668,6 +692,7 @@
 	    .o_slave_fifo_data_valid_n(o_slave_fifo_data_wr_en_n),
 	    .o_tx_last_n (ccd_tx_last_n),
 	    .o_frame_num    (ccd_frame_num_raw),
+	    .o_frame_written (ccd_frame_written),
 	    .o_frame_exception(ccd_frame_exception),
 	    .i_ui_clk       (i_ui_clk),
 	    .i_mmcm_locked    (i_mmcm_locked),

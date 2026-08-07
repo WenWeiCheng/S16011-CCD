@@ -165,6 +165,9 @@ module test_ccd_frame_buf_ddr;
     // ==================================================================
     integer      frame_i, pixel_i;
     reg   [7:0]  test_num;
+    reg  [15:0]  last_img_width;
+    reg  [15:0]  last_img_height;
+    reg  [1:0]   last_read_mode;
 
     // ==================================================================
     // DUT 例化 (MIG 已移出, 通过 AXI4 接口连接)
@@ -174,7 +177,7 @@ module test_ccd_frame_buf_ddr;
         .MAX_FRAMES      (MAX_FRAMES)
     ) u_dut (
         // ADC 域
-        .i_wr_clk         (i_wr_clk),
+        .i_wr_clk         (i_adcclk),
         .i_rst_n          (ctrl_rst_n),
         .i_wr_data        (i_wr_data),
         .i_wr_en          (i_wr_en),
@@ -402,6 +405,9 @@ module test_ccd_frame_buf_ddr;
             i_image_height  <= 16'd0;
             i_read_mode     <= 2'd0;
             i_fifo_rd_en    <= 1'b0;
+            last_img_width  <= 16'd0;
+            last_img_height <= 16'd0;
+            last_read_mode  <= 2'd0;
 
             wait_adc_cycles(5);
             wait_rd_cycles(5);
@@ -462,6 +468,16 @@ module test_ccd_frame_buf_ddr;
             i_wr_en        <= 1'b0;
             i_wr_data      <= 16'd0;
             i_pixel_type   <= 2'b00;
+
+            // 参数变化 → 顶层 (ccd_frame_buf_ddr) 自动软复位并重新锁定帧长度
+            // 必须等待软复位完成再发帧, 否则 frame_start 会被复位吞掉
+            if (width != last_img_width || height != last_img_height ||
+                read_mode != last_read_mode) begin
+                last_img_width  <= width;
+                last_img_height <= height;
+                last_read_mode  <= read_mode;
+                wait_adc_cycles(2200);   // 覆盖 soft_rst (~41µs @100MHz ui_clk) + 三域同步
+            end
 
             // 2. 脉冲 frame_start: 上升 → 保持 1T → 下降
             @(posedge i_adcclk);
@@ -594,8 +610,10 @@ module test_ccd_frame_buf_ddr;
                 wait_adc_cycles(10);
                 t = t + 10;
             end
-            if (t >= timeout)
+            if (t >= timeout) begin
                 $display("  [WAIT] Timeout waiting for read data");
+                $stop;
+            end
             else
                 $display("  [WAIT] Data available, frames_in_ddr=%0d", o_frame_num);
         end
@@ -620,6 +638,9 @@ module test_ccd_frame_buf_ddr;
         i_read_mode     = 2'd0;
         i_fifo_rd_en    = 1'b0;
         test_num        = 8'd0;
+        last_img_width  = 16'd0;
+        last_img_height = 16'd0;
+        last_read_mode  = 2'd0;
 
         wait_adc_cycles(10);
         wait_rd_cycles(10);
@@ -653,7 +674,7 @@ module test_ccd_frame_buf_ddr;
 
         // 配置 read_mode=0, width=480: frame_depth = 480 pixels
         send_frame(16'd480, 16'd1, 2'd0, 16'd480, 16'hA000, 0);
-        wait_read_available(5000);
+        wait_read_available(50);
         read_frame(16'd480, 16'hA000, 0);
 
         $stop;
@@ -668,7 +689,7 @@ module test_ccd_frame_buf_ddr;
         reset_dut;
 
         send_frame(16'd280, 16'd1, 2'd0, 16'd280, 16'hB000, 0);
-        wait_read_available(5000);
+        wait_read_available(50);
         read_frame(16'd280, 16'hB000, 0);
 
         $stop;
@@ -700,7 +721,7 @@ module test_ccd_frame_buf_ddr;
         reset_dut;
 
         send_frame(16'd60, 16'd8, 2'd1, 16'd480, 16'hD000, 0);
-        wait_read_available(5000);
+        wait_read_available(50);
         read_frame(16'd480, 16'hD000, 0);
 
         $stop;
@@ -759,7 +780,7 @@ module test_ccd_frame_buf_ddr;
 
         // 清空: 读回 4 帧
         for (frame_i = 0; frame_i < MAX_FRAMES; frame_i = frame_i + 1) begin
-            wait_read_available(2000);
+            wait_read_available(50);
             read_frame(16'd256, 16'h1000 + frame_i * 16'h100, frame_i);
         end
 
@@ -781,18 +802,18 @@ module test_ccd_frame_buf_ddr;
         send_frame(16'd256, 16'd1, 2'd0, 16'd256, 16'h2100, 1);
 
         // 读帧 0
-        wait_read_available(2000);
+        wait_read_available(50);
         read_frame(16'd256, 16'h2000, 0);
 
         // 写帧 2 (在读帧 1 之前)
         send_frame(16'd256, 16'd1, 2'd0, 16'd256, 16'h2200, 2);
 
         // 读帧 1
-        wait_read_available(2000);
+        wait_read_available(50);
         read_frame(16'd256, 16'h2100, 1);
 
         // 读帧 2
-        wait_read_available(2000);
+        wait_read_available(50);
         read_frame(16'd256, 16'h2200, 2);
 
         $display("  o_frame_num = %0d (expect 0)", o_frame_num);
@@ -816,7 +837,7 @@ module test_ccd_frame_buf_ddr;
         $display("  After 2 writes: o_frame_num = %0d", o_frame_num);
 
         // 读 1 帧
-        wait_read_available(2000);
+        wait_read_available(50);
         read_frame(16'd256, 16'h3000, 0);
         $display("  After 1 read:  o_frame_num = %0d", o_frame_num);
 
@@ -825,9 +846,9 @@ module test_ccd_frame_buf_ddr;
         $display("  After 1 write: o_frame_num = %0d", o_frame_num);
 
         // 读 2 帧
-        wait_read_available(2000);
+        wait_read_available(50);
         read_frame(16'd256, 16'h3100, 1);
-        wait_read_available(2000);
+        wait_read_available(50);
         read_frame(16'd256, 16'h3200, 2);
         $display("  After 2 reads: o_frame_num = %0d (expect 0)", o_frame_num);
 
@@ -843,7 +864,7 @@ module test_ccd_frame_buf_ddr;
         reset_dut;
 
         send_frame(16'd256, 16'd1, 2'd0, 16'd256, 16'h4000, 0);
-        wait_read_available(5000);
+        wait_read_available(50);
         read_frame(16'd256, 16'h4000, 0);
 
         $stop;
@@ -858,7 +879,7 @@ module test_ccd_frame_buf_ddr;
         reset_dut;
 
         send_frame(16'd2048, 16'd1, 2'd0, 16'd2048, 16'h5000, 0);
-        wait_read_available(10000);
+        wait_read_available(50);
         read_frame(16'd2048, 16'h5000, 0);
 
         // ================================================================

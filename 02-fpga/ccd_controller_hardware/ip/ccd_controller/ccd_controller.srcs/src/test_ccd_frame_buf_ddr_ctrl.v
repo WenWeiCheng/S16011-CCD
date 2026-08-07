@@ -63,7 +63,9 @@ module test_ccd_frame_buf_ddr_ctrl;
     // ==================================================================
     reg i_rst_n;
     reg tb_ddr3_init_done;
-    wire ctrl_rst_n = i_rst_n && tb_ddr3_init_done;
+    reg soft_rst;   // 模拟顶层 (ccd_frame_buf_ddr) 参数变化软复位
+    // 控制器复位: 系统复位 AND DDR3 初始化完成 AND 非软复位 (同顶层门控)
+    wire ctrl_rst_n = i_rst_n && tb_ddr3_init_done && ~soft_rst;
 
     // ==================================================================
     // ADC 域信号 (i_adcclk)
@@ -84,6 +86,7 @@ module test_ccd_frame_buf_ddr_ctrl;
     wire [FRAME_NUM_W-1:0]        o_frame_num;
     reg                           i_fifo_rd_en;
     wire                          o_fifo_prelast;
+    wire                          o_frame_written;
 
     // ==================================================================
     // 异常
@@ -168,6 +171,9 @@ module test_ccd_frame_buf_ddr_ctrl;
     // ==================================================================
     integer      frame_i, pixel_i;
     reg  [7:0]   test_num;
+    reg  [15:0]  last_img_width;
+    reg  [15:0]  last_img_height;
+    reg  [1:0]   last_read_mode;
 
     // ==================================================================
     // DUT 例化
@@ -181,7 +187,7 @@ module test_ccd_frame_buf_ddr_ctrl;
         .FIFO_ADDR_WIDTH (FIFO_ADDR_WIDTH)
     ) u_dut (
         .i_ui_clk         (i_ui_clk),
-        .i_adcclk         (i_adcclk),
+        .i_wr_clk         (i_adcclk),
         .i_rd_clk         (i_rd_clk),
         .i_rst_n          (ctrl_rst_n),
 
@@ -198,6 +204,7 @@ module test_ccd_frame_buf_ddr_ctrl;
         .o_frame_num      (o_frame_num),
         .i_fifo_rd_en     (i_fifo_rd_en),
         .o_fifo_prelast (o_fifo_prelast),
+        .o_frame_written (o_frame_written),
 
         .o_frame_exception(o_frame_exception),
 
@@ -465,6 +472,7 @@ module test_ccd_frame_buf_ddr_ctrl;
             $display("  [RESET] Asserting...");
             i_rst_n              <= 1'b0;
             tb_ddr3_init_done    <= 1'b0;
+            soft_rst             <= 1'b0;
             i_wr_en           <= 1'b0;
             i_wr_data         <= 16'd0;
             i_pixel_type      <= 2'b00;
@@ -475,6 +483,9 @@ module test_ccd_frame_buf_ddr_ctrl;
             i_read_mode       <= 2'd0;
             i_fifo_rd_en      <= 1'b0;
             axi_delay_mode    <= 0;
+            last_img_width    <= 16'd0;
+            last_img_height   <= 16'd0;
+            last_read_mode    <= 2'd0;
 
             m_axi_wready  <= 1'b0;
             m_axi_bid     <= 4'b0000;
@@ -506,6 +517,23 @@ module test_ccd_frame_buf_ddr_ctrl;
     endtask
 
     // ------------------------------------------------------------------
+    // pulse_soft_rst: 模拟顶层参数变化触发的软复位
+    //   置 soft_rst=1 → 等待足够多周期 (覆盖 ctrl 三域复位 + 释放同步)
+    //   → 清 0 → 等待重新锁存完成
+    // ------------------------------------------------------------------
+    task pulse_soft_rst;
+        begin
+            $display("  [SOFT_RST] Asserting (simulate image-param change)...");
+            soft_rst <= 1'b1;
+            wait_ui_cycles(2000);     // 足够 ctrl 三域复位 (wr_clk=50MHz → 1000 周期)
+            soft_rst <= 1'b0;
+            wait_ui_cycles(2000);     // 等释放同步 + 重新锁存帧长度
+            wait_adc_cycles(20);
+            $display("  [SOFT_RST] Released");
+        end
+    endtask
+
+    // ------------------------------------------------------------------
     // send_frame: 在 ADC 域发送一帧像素数据
     //   width/height/read_mode: 帧参数
     //   pixel_count: 实际发送的 active 像素数
@@ -531,6 +559,15 @@ module test_ccd_frame_buf_ddr_ctrl;
             i_wr_en        <= 1'b0;
             i_wr_data      <= 16'd0;
             i_pixel_type   <= 2'b00;
+
+            // 参数变化 → 模拟顶层软复位, 重新锁定帧长度 (固定长度锁存机制)
+            if (width != last_img_width || height != last_img_height ||
+                read_mode != last_read_mode) begin
+                last_img_width  <= width;
+                last_img_height <= height;
+                last_read_mode  <= read_mode;
+                pulse_soft_rst;
+            end
 
             // frame_start 脉冲
             @(posedge i_adcclk);
@@ -594,6 +631,7 @@ module test_ccd_frame_buf_ddr_ctrl;
                     $display("  [READ] ** MISMATCH ** idx=%0d: got=0x%h, expected=0x%h",
                              rd_cnt, rd_data, scoreboard[sb_idx][rd_cnt]);
                     errors = errors + 1;
+                    $stop;
                 end
 
                 rd_cnt = rd_cnt + 1;
@@ -605,8 +643,10 @@ module test_ccd_frame_buf_ddr_ctrl;
 
             if (errors == 0)
                 $display("  [READ] PASS — %0d pixels verified", pixel_count);
-            else
+            else begin
                 $display("  [READ] FAIL — %0d mismatch(es)", errors);
+                $stop;
+            end
 
             wait_rd_cycles(5);
         end
@@ -638,6 +678,7 @@ module test_ccd_frame_buf_ddr_ctrl;
         // 初始状态
         i_rst_n              = 1'b0;
         tb_ddr3_init_done    = 1'b0;
+        soft_rst             = 1'b0;
         i_wr_en          = 1'b0;
         i_wr_data        = 16'd0;
         i_pixel_type     = 2'b00;
@@ -649,6 +690,9 @@ module test_ccd_frame_buf_ddr_ctrl;
         i_fifo_rd_en     = 1'b0;
         axi_delay_mode   = 0;
         test_num         = 8'd0;
+        last_img_width   = 16'd0;
+        last_img_height  = 16'd0;
+        last_read_mode   = 2'd0;
 
         wait_ui_cycles(10);
         $display("============================================================");
@@ -766,31 +810,56 @@ module test_ccd_frame_buf_ddr_ctrl;
         end
         
         // ================================================================
-        // Test 7: read_mode 切换 — 验证每帧使用正确深度
-        //   写一帧 mode=0 (480 pixels), 再写一帧 mode=1 (60×8=480 pixels)
-        //   mode 不同但像素数相同, 验证 o_fifo_prelast 均正确
+        // Test 7: 参数切换 (read_mode/尺寸) → 软复位 → 新帧长度锁定
+        //   帧 0: mode=0, 480 pixels → 读回
+        //   切换参数 (mode=1, 60×8=480) → send_frame 触发软复位
+        //   → 缓存清零, 重新锁定 60×8=480 → 帧 1 写读验证
         // ================================================================
         test_num = test_num + 1;
         $display("\n##########################################################");
-        $display("  Test %0d: read_mode switch — correct per-frame depth", test_num);
+        $display("  Test %0d: Param change — soft reset & new frame depth lock", test_num);
         $display("##########################################################\n");
         reset_dut;
 
         // 帧 0: read_mode=0, 480 pixels
         send_frame(16'd480, 16'd1, 2'd0, 16'd480, 16'hE000, 0);
-
-        // 帧 1: read_mode=1, 60×8=480 pixels (same total, different w/h)
-        send_frame(16'd60, 16'd8, 2'd1, 16'd480, 16'hF000, 1);
-
-        // 读回两帧
         wait_read_available(5000);
         read_frame(16'd480, 16'hE000, 0);
+        $display("  [CHECK] o_frame_num = %0d (expect 0 after read)", o_frame_num);
 
+        // 帧 1: read_mode=1, 60×8=480 pixels (参数变化 → send_frame 内软复位)
+        send_frame(16'd60, 16'd8, 2'd1, 16'd480, 16'hF000, 0);
+        $display("  [CHECK] o_frame_num = %0d (expect 0, cache was flushed by soft reset)", o_frame_num);
+
+        // 读回帧 1 (按新锁存深度 480)
         wait_read_available(5000);
-        read_frame(16'd480, 16'hF000, 1);
+        read_frame(16'd480, 16'hF000, 0);
 
-        $display("  [CHECK] o_fifo_prelast timing correct for per-frame depths");
-        
+        // ================================================================
+        // Test 8: 软复位清空已缓存帧
+        //   写一帧 → 缓存 1 帧 → 手动 soft_rst → 缓存清零
+        // ================================================================
+        test_num = test_num + 1;
+        $display("\n##########################################################");
+        $display("  Test %0d: Soft reset flushes cached frames", test_num);
+        $display("##########################################################\n");
+        reset_dut;
+
+        send_frame(16'd256, 16'd1, 2'd0, 16'd256, 16'h3000, 0);
+        wait_read_available(5000);
+        $display("  [CHECK] o_frame_num = %0d (expect 1)", o_frame_num);
+
+        // 手动触发软复位 (模拟参数变化), 不清空 last_* → 不改锁存目标
+        pulse_soft_rst;
+        $display("  [CHECK] o_frame_num = %0d (expect 0 after soft reset)", o_frame_num);
+
+        // 参数未变, 再次写同参数帧 → 锁存保持, 正常写读
+        send_frame(16'd256, 16'd1, 2'd0, 16'd256, 16'h3100, 0);
+        wait_read_available(5000);
+        read_frame(16'd256, 16'h3100, 0);
+
+        $display("  [CHECK] o_fifo_prelast timing correct for fixed frame depth");
+
         // ================================================================
         // 完成
         // ================================================================

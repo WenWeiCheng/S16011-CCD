@@ -70,11 +70,11 @@ logs/
 .repo.yaml
 .peers.ini
 .ide/
+_ide/
 *.sdk/
 .analytics
 RemoteSystemsTempFiles/
 .log/
-*.mmi
 
 # Xilinx IP 驱动示例工程（参考用，不入库）
 *_example_1/

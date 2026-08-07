@@ -10,7 +10,7 @@
 //==============================================================================
 module ccd_ddr #(
     parameter MAX_FRAME_DEPTH = 131072,  // 每帧最大像素数 (每个像素 2 字节)
-    parameter MAX_FRAMES      = 8        // 最大缓存帧数
+    parameter MAX_FRAMES      = 64        // 最大缓存帧数
 ) (
     // ---- 系统 ----
     input  wire         i_ccd_clk,       // CCD 时序参考时钟 (100 MHz, 仅用于 CCD 时序信号分频)
@@ -61,6 +61,7 @@ module ccd_ddr #(
 
     // ---- 帧缓存状态 ----
     output wire [$clog2(MAX_FRAMES+1)-1:0]   o_frame_num,  // 帧缓存中可读帧数
+    output wire         o_frame_written,     // 帧完整写入 DDR 脉冲 (rd_clk 域)
 
     // ---- 异常 ----
     output wire         o_frame_exception,     // 帧异常脉冲
@@ -134,6 +135,7 @@ module ccd_ddr #(
     wire [$clog2(MAX_FRAMES+1)-1:0] fifo_frame_num_w;
     wire        fifo_prelast_w;
     wire        fifo_rd_en_w;
+    wire        fifo_frame_written_w;
 
     // ==================================================================
     // 内部连线: DDR3 初始化状态 (mmcm_locked && init_calib_complete)
@@ -193,6 +195,9 @@ module ccd_ddr #(
     // 帧缓存帧数 (直通 ccd_frame_buf_ddr.o_frame_num)
     assign o_frame_num = fifo_frame_num_w;
 
+    // 帧写入完成脉冲 (直通 ccd_frame_buf_ddr.o_frame_written, rd_clk 域)
+    assign o_frame_written = fifo_frame_written_w;
+
     // ==================================================================
     // ccd_frame_buf_ddr 实例化
     //   DDR3 帧缓存薄封装, 通过 AXI4 Master 连接外部 MIG。
@@ -215,6 +220,7 @@ module ccd_ddr #(
         .o_fifo_data       (fifo_data_w),
         .o_frame_num       (fifo_frame_num_w),
         .o_fifo_prelast  (fifo_prelast_w),
+        .o_frame_written (fifo_frame_written_w),
         .i_fifo_rd_en      (fifo_rd_en_w),
         .o_frame_exception (o_frame_exception),
         .i_ui_clk          (i_ui_clk),

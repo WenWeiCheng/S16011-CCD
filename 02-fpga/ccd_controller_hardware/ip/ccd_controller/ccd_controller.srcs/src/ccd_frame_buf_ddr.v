@@ -15,7 +15,7 @@
 //==============================================================================
 module ccd_frame_buf_ddr #(
     parameter MAX_FRAME_DEPTH = 131072,  // 每帧最大像素数 (每个像素 2 字节)
-    parameter MAX_FRAMES      = 8        // 最大缓存帧数
+    parameter MAX_FRAMES      = 64        // 最大缓存帧数
 ) (
     // ---- 写侧 (wr_clk 域) ----
     input  wire         i_wr_clk,
@@ -35,6 +35,7 @@ module ccd_frame_buf_ddr #(
     output wire [$clog2(MAX_FRAMES+1)-1:0] o_frame_num,
     input  wire         i_fifo_rd_en,
     output wire         o_fifo_prelast,
+    output wire         o_frame_written,   // 帧完整写入 DDR 脉冲 (rd_clk 域)
 
     // ---- 异常 ----
     output wire         o_frame_exception,
@@ -113,6 +114,41 @@ module ccd_frame_buf_ddr #(
     wire [127:0]        rdfifo_din;
 
     // ==================================================================
+    // 图像参数变化检测 (ui_clk 域): read_mode / width / height 任一变化
+    //   → 软复位电平 (展宽 ~41µs @100MHz, 覆盖最慢 adcclk 的复位同步)
+    //   → 门控 frame_buf_rst_n, 复位 ctrl (三域) 与 adapter
+    //   帧长度在复位释放后锁定, 参数变化即重新锁定新长度。
+    // ==================================================================
+    wire [33:0] img_param_now = {i_image_height, i_image_width, i_read_mode};
+    reg  [33:0] img_param_shadow;
+    reg         soft_rst;
+    reg  [11:0] soft_rst_cnt;
+
+    always @(posedge i_ui_clk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
+            img_param_shadow <= 34'd0;
+            soft_rst         <= 1'b0;
+            soft_rst_cnt     <= 12'd0;
+        end else begin
+            img_param_shadow <= img_param_now;
+            if (img_param_shadow != img_param_now) begin
+                soft_rst     <= 1'b1;
+                soft_rst_cnt <= 12'hFFF;
+            end else if (soft_rst) begin
+                if (soft_rst_cnt == 12'h001) begin
+                    soft_rst     <= 1'b0;
+                    soft_rst_cnt <= 12'd0;
+                end else begin
+                    soft_rst_cnt <= soft_rst_cnt - 1'b1;
+                end
+            end
+        end
+    end
+
+    // 门控复位: 系统复位 AND 非软复位 (soft_rst 为 ui_clk 域信号)
+    wire frame_buf_rst_n = i_rst_n && ~soft_rst;
+
+    // ==================================================================
     // Controller 例化 (控制逻辑 + wr/rd FIFO, AXI adapter 在外部)
     // ==================================================================
     ccd_frame_buf_ddr_ctrl #(
@@ -127,7 +163,7 @@ module ccd_frame_buf_ddr #(
         .i_ui_clk         (i_ui_clk),
         .i_wr_clk         (i_wr_clk),
         .i_rd_clk         (i_rd_clk),
-        .i_rst_n          (i_rst_n),
+        .i_rst_n          (frame_buf_rst_n),
 
         // ADC 域 — 像素数据
         .i_wr_data        (i_wr_data),
@@ -144,6 +180,7 @@ module ccd_frame_buf_ddr #(
         .o_frame_num      (o_frame_num),
         .i_fifo_rd_en     (i_fifo_rd_en),
         .o_fifo_prelast (o_fifo_prelast),
+        .o_frame_written (o_frame_written),
 
         // 异常
         .o_frame_exception(o_frame_exception),
@@ -180,7 +217,7 @@ module ccd_frame_buf_ddr #(
         .AXI_BURST_LEN  (8'd31)
     ) u_adapter (
         .i_clk              (i_ui_clk),
-        .i_rst_n            (i_rst_n),
+        .i_rst_n            (frame_buf_rst_n),
         .i_axi_wr_req       (ctrl_wr_req),
         .i_axi_wr_start_addr(ctrl_wr_start),
         .i_axi_wr_end_addr  (ctrl_wr_end),

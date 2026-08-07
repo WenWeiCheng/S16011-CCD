@@ -48,7 +48,7 @@
 
 
 // IP VLNV: xilinx.com:user:ccd_controller_v1_0:1.0
-// IP Revision: 30
+// IP Revision: 33
 
 `timescale 1ns/1ps
 
@@ -304,7 +304,7 @@ input wire s00_axi_rready;
 
   ccd_controller_v1_0 #(
     .MAX_FRAME_DEPTH(131072),
-    .MAX_FRAMES(8),
+    .MAX_FRAMES(2000),
     .C_S00_AXI_DATA_WIDTH(32),
     .C_S00_AXI_ADDR_WIDTH(6)
   ) inst (

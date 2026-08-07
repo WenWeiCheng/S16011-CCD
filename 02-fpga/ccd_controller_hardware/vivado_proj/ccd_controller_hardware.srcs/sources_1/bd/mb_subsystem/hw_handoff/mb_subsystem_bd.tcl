@@ -559,6 +559,9 @@ proc create_root_design { parentCell } {
 
   # Create instance: ccd_controller_v1_0_0, and set properties
   set ccd_controller_v1_0_0 [ create_bd_cell -type ip -vlnv xilinx.com:user:ccd_controller_v1_0:1.0 ccd_controller_v1_0_0 ]
+  set_property -dict [ list \
+   CONFIG.MAX_FRAMES {2000} \
+ ] $ccd_controller_v1_0_0
 
   # Create instance: clk_wiz_0, and set properties
   set clk_wiz_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:6.0 clk_wiz_0 ]

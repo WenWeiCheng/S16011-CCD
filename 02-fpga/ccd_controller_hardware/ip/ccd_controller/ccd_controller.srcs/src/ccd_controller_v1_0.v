@@ -5,7 +5,7 @@
 	(
 		// Users to add parameters here
 		parameter integer MAX_FRAME_DEPTH = 131072,
-		parameter integer MAX_FRAMES      = 8,
+		parameter integer MAX_FRAMES      = 64,
 		// User parameters ends
 		// Do not modify the parameters beyond this line
 

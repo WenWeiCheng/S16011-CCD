@@ -8,7 +8,8 @@
 //   测试 1 : 寄存器读写 — 写 CTRL/IMG_SIZE/BEVEL_BLANK → 读回验证
 //   测试 2 : line binning + TRIGGER 触发帧发送 → Slave FIFO 读出
 //   测试 3 : 中断 — 使能 tx_done IRQ → 发送帧 → 验证 intr 拉高
-//   测试 4 : STATUS 实时读取 — 读取 frame_num / ddr3_init_done
+//   测试 3b: 中断 — 使能 frame_written IRQ (INTR[10]) → 采集一帧 → 验证 intr
+//   测试 4 : STATUS / FRAME_NUM 实时读取 — 读取 frame_num (0x1C) / ddr3_init_done
 //==============================================================================
 module test_ccd_controller_axi;
 
@@ -28,16 +29,17 @@ module test_ccd_controller_axi;
     parameter [5:0] ADDR_STATUS      = 6'h10;
     parameter [5:0] ADDR_INTR_EN     = 6'h14;
     parameter [5:0] ADDR_INTR_STS    = 6'h18;
+    parameter [5:0] ADDR_FRAME_NUM   = 6'h1C;
 
     // ---- STATUS 位掩码 ----
     parameter [31:0] STS_DDR3_DONE   = 32'h00010000;  // [16]
     parameter [31:0] STS_EXCEP_CNT   = 32'h0000FE00;  // [15:9]
     parameter [31:0] STS_EXCEPTION   = 32'h00000100;  // [8]
-    parameter [31:0] STS_FRAME_NUM   = 32'h000000FF;  // [7:0]
 
     // ---- INTR 位掩码 ----
-    parameter [31:0] INTR_TX_DONE    = 32'h00000200;  // EN[9] / STS[9]
-    parameter [31:0] INTR_EXCEPTION  = 32'h00000100;  // EN[8]
+    parameter [31:0] INTR_TX_DONE        = 32'h00000200;  // EN[9] / STS[9]
+    parameter [31:0] INTR_EXCEPTION      = 32'h00000100;  // EN[8]
+    parameter [31:0] INTR_FRAME_WRITTEN  = 32'h00000400;  // EN[10] / STS[10]
 
     // ==================================================================
     // 系统 — AXI 域 (s00_axi_aclk = ccd_ddr.i_ccd_clk)
@@ -502,25 +504,24 @@ module test_ccd_controller_axi;
         end
     endtask
 
-    // ---- 等待 STATUS.frame_num > 0 ----
+    // ---- 等待 FRAME_NUM 寄存器 (0x1C) > 0 ----
     task wait_frame_available;
         input integer timeout_us;
         integer t;
-        reg [31:0] sts;
+        reg [31:0] frame_num;
         begin
             t = 0;
-            axi_read(ADDR_STATUS, sts);
-            while ((sts & STS_FRAME_NUM) == 0 && t < timeout_us) begin
+            axi_read(ADDR_FRAME_NUM, frame_num);
+            while (frame_num == 0 && t < timeout_us) begin
                 #1000;
                 t = t + 1;
-                axi_read(ADDR_STATUS, sts);
+                axi_read(ADDR_FRAME_NUM, frame_num);
             end
             if (t >= timeout_us) begin
                 $display("  [WAIT] Timeout: no frame available after %0d us", timeout_us);
                 $stop;
             end else
-                $display("  [WAIT] Frame available, frame_num=%0d, sts=0x%08h",
-                         sts & STS_FRAME_NUM, sts);
+                $display("  [WAIT] Frame available, frame_num=%0d", frame_num);
         end
     endtask
 
@@ -708,6 +709,65 @@ module test_ccd_controller_axi;
         end
 
         // $stop;
+        
+        // ================================================================
+        // 测试 3b: 中断 — FRAME_WRITTEN IRQ (一帧完整写入 DDR, INTR[10])
+        // ================================================================
+        $display("========================================");
+        $display("[TEST 3b] Interrupt — frame_written IRQ");
+        $display("========================================");
+        test_num = 4'd6;
+
+        // 清中断状态, 使能 frame_written 中断
+        axi_write(ADDR_INTR_STS, INTR_FRAME_WRITTEN);
+        axi_write(ADDR_INTR_EN, INTR_FRAME_WRITTEN);
+        axi_read_dbg(ADDR_INTR_EN, "INTR_EN");
+
+        if (intr)
+            $display("  Warning: intr already high before capture");
+
+        // 再做一帧采集 (line binning 8x2)
+        axi_write(ADDR_IMG_SIZE, {16'd2, 16'd8});
+        axi_write(ADDR_BEVEL_BLANK, {8'h0, 4'd1, 4'd1, 4'd1, 4'd1, 4'd1, 4'd1});
+        axi_write(ADDR_CTRL, {20'h0, 7'd0, 2'd0, 1'b0, 1'b0, 1'b1});  // exposure=1: 曝光中
+        axi_write(ADDR_CTRL, {20'h0, 7'd0, 2'd0, 1'b0, 1'b0, 1'b0});  // 下降沿→触发读出
+
+        // 轮询 intr (~几百 us 后帧写入 DDR; 超时 800us)
+        wait_timeout = 0;
+        while (!intr && wait_timeout < 80) begin
+            #10000;
+            wait_timeout = wait_timeout + 1;
+        end
+        if (wait_timeout >= 80) begin
+            $display("  [FAIL] frame_written intr timeout");
+            $stop;
+        end
+        $display("  [PASS] frame_written intr asserted after ~%0d us", wait_timeout * 10);
+
+        // 读 INTR_STS
+        axi_read_dbg(ADDR_INTR_STS, "INTR_STS");
+        if (axi_rdata & INTR_FRAME_WRITTEN)
+            $display("[PASS] frame_written_pending=1 in INTR_STS");
+        else begin
+            $display("[FAIL] frame_written_pending not set, got 0x%08h", axi_rdata);
+            $stop;
+        end
+
+        // 写 1 清除中断
+        $display("  Clearing INTR_STS...");
+        axi_write(ADDR_INTR_STS, INTR_FRAME_WRITTEN);
+        sys_wait(5);
+
+        // 验证清除
+        axi_read_dbg(ADDR_INTR_STS, "INTR_STS (after clear)");
+        if (!intr)
+            $display("[PASS] intr deasserted after clear");
+        else begin
+            $display("[FAIL] intr still high");
+            $stop;
+        end
+
+        $stop;
         
         // ================================================================
         // 测试 4: STATUS 实时读取
