@@ -17,6 +17,7 @@
  * 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
  * 1.2   wwc  26/08/07 FRAME_NUM[0x1C] 独立寄存器 (32bit), GetFrameNum 返回 u32
  * 1.3   wwc  26/08/07 新增 FRAME_WRITTEN 中断 (INTR[10], 帧写入完成/读出完成)
+ * 1.4   wwc  26/08/08 新增 CCDC_CTRL_SOFT_RESET_MASK (CTRL[12]) 与 SoftReset API
  * </pre>
 ******************************************************************************/
 #ifndef CCD_CONTROLLER_H
@@ -47,6 +48,7 @@ extern "C" {
 #define CCDC_CTRL_MOCK_MODE_MASK     (1U<<2)
 #define CCDC_CTRL_READ_MODE_MASK     (0x3U<<3) /* 0=line binning, 1=image */
 #define CCDC_CTRL_CDSCLK_DELAY_MASK  (0x7FU<<5)
+#define CCDC_CTRL_SOFT_RESET_MASK    (1U<<12)  /* W1 触发软复位自清脉冲 (位不存储, 读回恒 0) */
 
 /* IMG_SIZE[0x04] */
 #define CCDC_IMG_WIDTH_MASK      0x0000FFFFU
@@ -151,6 +153,7 @@ void CcdController_SetMockMode(CcdController *p, u8 mock);
 int CcdController_StartCapture(CcdController *p);  /* checks ddr3_done, then sets exposure=1 */
 void CcdController_StopCapture(CcdController *p);   /* clears exposure=0 (falling edge starts readout) */
 void CcdController_TriggerFrameSend(CcdController *p); /* writes TRIGGER[0]=1 */
+void CcdController_SoftReset(CcdController *p);     /* writes CTRL[12]=1: 总复位整条 CCD 流水线 (帧长重锁) */
 
 /******************************************************************************
 * Status queries

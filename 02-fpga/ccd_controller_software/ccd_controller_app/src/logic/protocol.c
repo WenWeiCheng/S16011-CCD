@@ -12,8 +12,8 @@
 * floating-point engine (_svfprintf_r + _dtoa_r + malloc) even when used only for integers,
 * which does not fit in the 128KB local mem.
 *
-* Depends on the app driver layer (gUartDrv / gCcd / gCcdCtrl / gMonitor) and the
-* TEC control loop (gTecCtrl); does not access registers or Xilinx drivers directly.
+* Depends on the app driver layer (gUartDrv / gCcd / gMonitor) and the
+* TEC control loop (gTecCtrl); does not access CcdController or Xilinx drivers directly.
 *
 * @note <pre>
 * MODIFICATION HISTORY:
@@ -38,6 +38,10 @@
  *                     与设计文档一致, 步进 snap 保留); exposure_time_us 范围
  *                     扩至 timer 能力 (1:2147483647:1 us, s32 上限,
  *                     step=1us)
+ * 1.10  wwc  26/08/08 图像参数 (read_mode / width / height) 写后调用软复位
+ *                     (总复位) 重锁帧长并清空帧缓存
+ * 1.11  wwc  26/08/08 参数配置全部改走 Ccd_Set* / Ccd_SoftReset API,
+ *                     protocol 不再直接调用 CcdController
  * </pre>
 ******************************************************************************/
 #include "protocol.h"
@@ -228,9 +232,9 @@ static Protocol_Param g_params[] = {
     { "exposure_time_us", VAL_TYPE_INT_RANGE, VAL_ACCESS_RW, "exposure time in us", "us",
       "1:2147483647:1", { .I = 1000 }, NULL, NULL },
     { "read_mode", VAL_TYPE_ENUM, VAL_ACCESS_RW, "readout mode", "",
-      "line_binning,image", { .I = CCDC_READ_MODE_LINE_BINNING }, NULL, NULL },
+      "line_binning,image", { .I = CCD_READ_MODE_LINE_BINNING }, NULL, NULL },
     { "freq_sel", VAL_TYPE_ENUM, VAL_ACCESS_RW, "SCLK frequency", "",
-      "100k,500k", { .I = CCDC_FREQ_100K }, NULL, NULL },
+      "100k,500k", { .I = CCD_FREQ_100K }, NULL, NULL },
     { "mock_mode", VAL_TYPE_BOOL, VAL_ACCESS_RW, "mock ADC output virtual pixels", "",
       "", { .B = 0 }, NULL, NULL },
     { "cdsclk_delay", VAL_TYPE_INT_RANGE, VAL_ACCESS_RW, "CDSCLK fine delay", "clk",
@@ -484,10 +488,9 @@ static int Proto_ParseValue(const Protocol_Param *p, const char *tok,
 ******************************************************************************/
 static int Apply_ReadMode(const Protocol_Param *p)
 {
-    /* 切换 read_mode 会触发硬件软复位 (帧缓存清空, 固定帧长度重新锁定);
-       先停止采集/发送并同步清理软件状态 (State/TxActive/FetchPending/RdWaiting) */
-    Ccd_Stop(&gCcd);
-    CcdController_SetReadMode(&gCcdCtrl, (u8)p->Cur.I);
+    /* read_mode 变化改变固定帧长度: Ccd_SetReadMode 内部停止采集/发送、
+       写寄存器后软复位 (总复位) 重锁帧长并清空帧缓存 */
+    Ccd_SetReadMode(&gCcd, (u8)p->Cur.I);
     return 0;
 }
 
@@ -501,7 +504,7 @@ static int Apply_ReadMode(const Protocol_Param *p)
 ******************************************************************************/
 static int Apply_FreqSel(const Protocol_Param *p)
 {
-    CcdController_SetFreqSel(&gCcdCtrl, (u8)p->Cur.I);
+    Ccd_SetFreqSel(&gCcd, (u8)p->Cur.I);
     return 0;
 }
 
@@ -515,7 +518,7 @@ static int Apply_FreqSel(const Protocol_Param *p)
 ******************************************************************************/
 static int Apply_MockMode(const Protocol_Param *p)
 {
-    CcdController_SetMockMode(&gCcdCtrl, p->Cur.B);
+    Ccd_SetMockMode(&gCcd, p->Cur.B);
     return 0;
 }
 
@@ -529,7 +532,7 @@ static int Apply_MockMode(const Protocol_Param *p)
 ******************************************************************************/
 static int Apply_CdsclkDelay(const Protocol_Param *p)
 {
-    CcdController_SetCdsclkDelay(&gCcdCtrl, (u8)p->Cur.I);
+    Ccd_SetCdsclkDelay(&gCcd, (u8)p->Cur.I);
     return 0;
 }
 
@@ -549,10 +552,8 @@ static int Apply_ImageSize(const Protocol_Param *p)
     (void)p;
     w = Proto_FindParam("image_width");
     h = Proto_FindParam("image_height");
-    /* 写 IMG_SIZE 会触发硬件软复位 (帧缓存清空, 固定帧长度重新锁定);
-       先停止采集/发送并同步清理软件状态 */
-    Ccd_Stop(&gCcd);
-    CcdController_SetImageSize(&gCcdCtrl, (u16)w->Cur.I, (u16)h->Cur.I);
+    /* Ccd_SetImageSize 内部停止采集/发送, 写 IMG_SIZE 后软复位重锁帧长并清空帧缓存 */
+    Ccd_SetImageSize(&gCcd, (u16)w->Cur.I, (u16)h->Cur.I);
     return 0;
 }
 
@@ -568,7 +569,7 @@ static int Apply_ImageSize(const Protocol_Param *p)
 ******************************************************************************/
 static int Apply_BevelBlank(const Protocol_Param *p)
 {
-    CcdController_BevelBlank bb;
+    Ccd_BevelBlank bb;
 
     (void)p;
     bb.BevelLeft   = (u8)Proto_FindParam("bevel_left")->Cur.I;
@@ -577,7 +578,7 @@ static int Apply_BevelBlank(const Protocol_Param *p)
     bb.BevelBottom = (u8)Proto_FindParam("bevel_bottom")->Cur.I;
     bb.BlankLeft   = (u8)Proto_FindParam("blank_left")->Cur.I;
     bb.BlankRight  = (u8)Proto_FindParam("blank_right")->Cur.I;
-    CcdController_SetBevelBlank(&gCcdCtrl, &bb);
+    Ccd_SetBevelBlank(&gCcd, &bb);
     return 0;
 }
 

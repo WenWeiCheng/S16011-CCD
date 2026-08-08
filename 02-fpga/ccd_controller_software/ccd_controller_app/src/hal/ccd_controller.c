@@ -16,6 +16,7 @@
  * 1.1   wwc  26/08/03 Complete function doc comments (Xilinx style)
  * 1.2   wwc  26/08/07 GetFrameNum 改读 FRAME_NUM[0x1C] (32bit)
  * 1.3   wwc  26/08/07 IntrEnable 支持 FRAME_WRITTEN (INTR[10])
+ * 1.4   wwc  26/08/08 新增 SoftReset: 写 CTRL[12]=1 触发总复位自清脉冲
  * </pre>
 ******************************************************************************/
 #include "ccd_controller.h"
@@ -313,6 +314,27 @@ void CcdController_StopCapture(CcdController *p)
 void CcdController_TriggerFrameSend(CcdController *p)
 {
     CcdController_WriteReg(p, CCDC_REG_TRIGGER, CCDC_TRIGGER_TX_START_MASK);
+}
+
+/*****************************************************************************/
+/**
+* @brief  Soft-resets the whole CCD pipeline (writes CTRL[12]=1).
+*
+* The bit is a write-1 self-clearing pulse in hardware: it gates ccd_ddr's
+* master reset (~41us stretched release), which resets the CCD driver, the DDR
+* frame buffer and the frame sender, then re-locks the fixed frame length on
+* the newly written image parameters. Used by the app after changing
+* width/height/read_mode; the frame cache is flushed as part of the reset.
+*
+* Read-modify-write keeps the other CTRL bits unchanged.
+*
+* @param  p  CcdController instance.
+******************************************************************************/
+void CcdController_SoftReset(CcdController *p)
+{
+    u32 ctrl = CcdController_ReadReg(p, CCDC_REG_CTRL);
+    ctrl |= CCDC_CTRL_SOFT_RESET_MASK;
+    CcdController_WriteReg(p, CCDC_REG_CTRL, ctrl);
 }
 
 /*****************************************************************************/

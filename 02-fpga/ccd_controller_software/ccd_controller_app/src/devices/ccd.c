@@ -39,6 +39,8 @@
  * 1.6   wwc  26/08/07 合并 Ccd_StartCapture/Ccd_StartBurst 为 Ccd_Start(d,n,us):
  *                     n==0->live, n==1->single, n>1->burst(n); 容量校验 n>=1 统一;
  *                     帧异常时所有激活模式统一 abort (含 single, 修复丢帧卡 READING)
+ * 1.7   wwc  26/08/08 新增 Ccd_Set* 参数配置 API 与 Ccd_SoftReset, 封装 CcdController
+ *                     (protocol 不再直接调用 CcdController)
  * </pre>
 ******************************************************************************/
 #include "ccd.h"
@@ -398,6 +400,102 @@ void Ccd_TriggerSend(Ccd *d)
         (CcdController_GetFrameNum(d->Ctrl) > 0U)) {
         CcdController_TriggerFrameSend(d->Ctrl);
     }
+}
+
+/*****************************************************************************/
+/**
+* @brief  Sets the readout mode: stops capture, writes CTRL[4:3], then soft-resets
+* the whole pipeline (frame cache flushed, fixed frame length re-locked).
+*
+* Wrapping CcdController_SetReadMode + CcdController_SoftReset so the protocol
+* layer never touches CcdController directly.
+*
+* @param  d     Ccd instance.
+* @param  mode  CCD_READ_MODE_LINE_BINNING or CCD_READ_MODE_IMAGE.
+******************************************************************************/
+void Ccd_SetReadMode(Ccd *d, u8 mode)
+{
+    Ccd_Stop(d);                             /* 停止采集/发送并同步清理软件状态 */
+    CcdController_SetReadMode(d->Ctrl, mode);
+    CcdController_SoftReset(d->Ctrl);        /* 重锁帧长并清空帧缓存 */
+}
+
+/*****************************************************************************/
+/**
+* @brief  Sets the image size: stops capture, writes IMG_SIZE, then soft-resets
+* the whole pipeline (frame cache flushed, fixed frame length re-locked).
+*
+* @param  d  Ccd instance.
+* @param  w  Image width in pixels.
+* @param  h  Image height in pixels.
+******************************************************************************/
+void Ccd_SetImageSize(Ccd *d, u16 w, u16 h)
+{
+    Ccd_Stop(d);
+    CcdController_SetImageSize(d->Ctrl, w, h);
+    CcdController_SoftReset(d->Ctrl);
+}
+
+/*****************************************************************************/
+/**
+* @brief  Writes the bevel/blank edges (BEVEL_BLANK). No stop/reset needed
+* (bevels do not change the fixed frame length).
+*
+* @param  d   Ccd instance.
+* @param  bb  Bevel/blank values; NULL is ignored.
+******************************************************************************/
+void Ccd_SetBevelBlank(Ccd *d, const Ccd_BevelBlank *bb)
+{
+    if (bb != NULL) {
+        CcdController_SetBevelBlank(d->Ctrl, bb);
+    }
+}
+
+/*****************************************************************************/
+/**
+* @brief  Sets the SCLK frequency (CTRL[1]).
+*
+* @param  d     Ccd instance.
+* @param  freq  CCD_FREQ_100K or CCD_FREQ_500K.
+******************************************************************************/
+void Ccd_SetFreqSel(Ccd *d, u8 freq)
+{
+    CcdController_SetFreqSel(d->Ctrl, freq);
+}
+
+/*****************************************************************************/
+/**
+* @brief  Enables/disables mock mode (CTRL[2]).
+*
+* @param  d     Ccd instance.
+* @param  mock  0 = real ADC data, 1 = mock virtual pixels.
+******************************************************************************/
+void Ccd_SetMockMode(Ccd *d, u8 mock)
+{
+    CcdController_SetMockMode(d->Ctrl, mock);
+}
+
+/*****************************************************************************/
+/**
+* @brief  Sets the CDSCLK fine-tune delay (CTRL[11:5]).
+*
+* @param  d      Ccd instance.
+* @param  delay  Fine delay taps, 0..127.
+******************************************************************************/
+void Ccd_SetCdsclkDelay(Ccd *d, u8 delay)
+{
+    CcdController_SetCdsclkDelay(d->Ctrl, delay);
+}
+
+/*****************************************************************************/
+/**
+* @brief  Soft-resets the whole CCD pipeline (writes CTRL[12]=1).
+*
+* @param  d  Ccd instance.
+******************************************************************************/
+void Ccd_SoftReset(Ccd *d)
+{
+    CcdController_SoftReset(d->Ctrl);
 }
 
 /*****************************************************************************/

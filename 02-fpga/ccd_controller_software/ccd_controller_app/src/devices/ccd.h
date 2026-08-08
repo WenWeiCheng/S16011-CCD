@@ -20,6 +20,8 @@
  * 1.4   wwc  26/08/07 single 收尾改由 FRAME_WRITTEN (帧写入完成) 驱动
  * 1.5   wwc  26/08/07 合并 Ccd_StartCapture/Ccd_StartBurst 为 Ccd_Start(d,n,us);
  *                     n=0->live, n=1->single, n>1->burst(n)
+ * 1.6   wwc  26/08/08 新增 Ccd_Set* 参数配置 API 与 Ccd_SoftReset, 封装 CcdController
+ *                     (protocol 不再直接调用 CcdController)
  * </pre>
 ******************************************************************************/
 #ifndef CCD_H
@@ -33,6 +35,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/* 读出模式 / SCLK 频率常量 (protocol 经 Ccd_* API 访问, 不直接依赖 CcdController) */
+#define CCD_READ_MODE_LINE_BINNING  0U
+#define CCD_READ_MODE_IMAGE         1U
+#define CCD_FREQ_100K               0U
+#define CCD_FREQ_500K               1U
 
 typedef enum {
     CCD_MODE_SINGLE = 0,   /* single capture: expose -> readout -> IDLE (frame cached, sent by host fetch) */
@@ -48,6 +56,9 @@ typedef enum {
 
 /* State change callback */
 typedef void (*CcdHandler)(CcdState st, void *ref);
+
+/* 消隐/空白参数 (等价于 CcdController_BevelBlank, 供 protocol 层使用) */
+typedef CcdController_BevelBlank Ccd_BevelBlank;
 
 typedef struct {
     CcdController *Ctrl;
@@ -76,6 +87,18 @@ u8   Ccd_GetException(Ccd *d);
 u32  Ccd_GetExceptionCnt(Ccd *d);
 CcdMode Ccd_GetMode(Ccd *d);
 void Ccd_RegisterHandler(Ccd *d, CcdHandler hdl, void *ref);
+
+/* ============================================================================
+ * 参数配置 (内部封装 CcdController 寄存器访问与软复位,
+ *  protocol 层只经 Ccd_* API 配置, 不直接调用 CcdController)
+ * ==========================================================================*/
+void Ccd_SetReadMode(Ccd *d, u8 mode);           /* 停止采集 → 写 read_mode → 软复位 */
+void Ccd_SetImageSize(Ccd *d, u16 w, u16 h);     /* 停止采集 → 写 IMG_SIZE → 软复位 */
+void Ccd_SetBevelBlank(Ccd *d, const Ccd_BevelBlank *bb);
+void Ccd_SetFreqSel(Ccd *d, u8 freq);            /* CCD_FREQ_100K / CCD_FREQ_500K */
+void Ccd_SetMockMode(Ccd *d, u8 mock);
+void Ccd_SetCdsclkDelay(Ccd *d, u8 delay);
+void Ccd_SoftReset(Ccd *d);                      /* 写 CTRL[12]=1: 总复位整条 CCD 流水线 */
 
 #ifdef __cplusplus
 }
