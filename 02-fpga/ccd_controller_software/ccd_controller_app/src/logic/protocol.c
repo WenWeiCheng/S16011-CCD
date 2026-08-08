@@ -1187,15 +1187,29 @@ static int Cmd_Acq(int argc, char **argv)
         return 0;
     }
 
+    pt = Proto_FindParam("exposure_time_us");
+
     if (strcmp(argv[1], "burst") == 0) {
         if (argc < 3 || Proto_ParseUInt(argv[2], &n) != 0 || n == 0U) {
             Proto_Err(PROTO_ERR_INVALID_VALUE, "burst needs frame count");
             return 0;
         }
+
         st = Ccd_Start(&gCcd, n, (u64)((pt != NULL) ? pt->Cur.I : 1000L));
         if (st == XST_DEVICE_BUSY) { Proto_Err(PROTO_ERR_BUSY, "busy"); return 0; }
         if (st != XST_SUCCESS)     { Proto_Err(PROTO_ERR_INVALID_VALUE,
                                                "burst exceeds cache"); return 0; }
+        Proto_Ok0();
+        return 0;
+    }
+
+    if (strcmp(argv[1], "single") == 0 || strcmp(argv[1], "live") == 0) {
+        u64 us;
+
+        us = (u64)((pt != NULL) ? pt->Cur.I : 1000L);
+        st = Ccd_Start(&gCcd, (argv[1][0] == 'l') ? 0U : 1U, us);
+        if (st == XST_DEVICE_BUSY) { Proto_Err(PROTO_ERR_BUSY, "busy"); return 0; }
+        if (st != XST_SUCCESS)     { Proto_Err(PROTO_ERR_INTERNAL, "acq start failed"); return 0; }
         Proto_Ok0();
         return 0;
     }
@@ -1218,18 +1232,6 @@ static int Cmd_Acq(int argc, char **argv)
             Proto_Err(PROTO_ERR_BUSY, msg);
             return 0;
         }
-        Proto_Ok0();
-        return 0;
-    }
-
-    if (strcmp(argv[1], "single") == 0 || strcmp(argv[1], "live") == 0) {
-        u64 us;
-
-        pt = Proto_FindParam("exposure_time_us");
-        us = (u64)((pt != NULL) ? pt->Cur.I : 1000L);
-        st = Ccd_Start(&gCcd, (argv[1][0] == 'l') ? 0U : 1U, us);
-        if (st == XST_DEVICE_BUSY) { Proto_Err(PROTO_ERR_BUSY, "busy"); return 0; }
-        if (st != XST_SUCCESS)     { Proto_Err(PROTO_ERR_INTERNAL, "acq start failed"); return 0; }
         Proto_Ok0();
         return 0;
     }

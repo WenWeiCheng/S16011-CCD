@@ -347,21 +347,21 @@ u8 CcdController_IsDdrReady(CcdController *p)
 
 /*****************************************************************************/
 /**
-* @brief  Frame exception flag (STATUS[8]).
+* @brief  Frame exception occurred (accumulated count > 0).
+*         Legacy STATUS[8] bit removed; rely on the 16-bit counter STATUS[15:0].
 *
 * @param  p  CcdController instance.
 *
-* @return 1 = a frame exception occurred, 0 = none.
+* @return 1 = at least one frame exception occurred, 0 = none.
 ******************************************************************************/
 u8 CcdController_GetException(CcdController *p)
 {
-    return (CcdController_ReadReg(p, CCDC_REG_STATUS) &
-            CCDC_STATUS_EXCEPTION_MASK) ? 1U : 0U;
+    return CcdController_GetExceptionCnt(p) != 0U;
 }
 
 /*****************************************************************************/
 /**
-* @brief  Accumulated frame exception count (STATUS[15:9]).
+* @brief  Accumulated frame exception count (STATUS[15:0], 16-bit saturating).
 *
 * @param  p  CcdController instance.
 *
@@ -370,7 +370,7 @@ u8 CcdController_GetException(CcdController *p)
 u32 CcdController_GetExceptionCnt(CcdController *p)
 {
     return (CcdController_ReadReg(p, CCDC_REG_STATUS) &
-            CCDC_STATUS_EXCEPTION_CNT) >> 9;
+            CCDC_STATUS_EXCEPTION_CNT);
 }
 
 /*****************************************************************************/

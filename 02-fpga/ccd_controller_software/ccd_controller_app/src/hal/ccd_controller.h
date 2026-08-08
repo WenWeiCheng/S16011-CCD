@@ -64,8 +64,7 @@ extern "C" {
 #define CCDC_TRIGGER_TX_START_MASK  (1U<<0)
 
 /* STATUS[0x10] */
-#define CCDC_STATUS_EXCEPTION_MASK   (1U<<8)
-#define CCDC_STATUS_EXCEPTION_CNT    (0x7FU<<9)
+#define CCDC_STATUS_EXCEPTION_CNT    (0xFFFFU)          /* [15:0] 16-bit saturating count */
 #define CCDC_STATUS_DDR3_DONE_MASK   (1U<<16)
 
 /* INTR_EN[0x14] / INTR_STS[0x18] */
