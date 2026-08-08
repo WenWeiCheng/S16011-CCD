@@ -1,7 +1,7 @@
 // Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-// Date        : Sat Aug  8 14:43:55 2026
+// Date        : Sat Aug  8 16:20:44 2026
 // Host        : DESKTOP-KD2H86C running 64-bit major release  (build 9200)
 // Command     : write_verilog -force -mode funcsim
 //               d:/2607-Pro-S16011-CCD/02-fpga/ccd_controller_hardware/vivado_proj/ccd_controller_hardware.srcs/sources_1/bd/mb_subsystem/ip/mb_subsystem_ccd_controller_v1_0_0_0/mb_subsystem_ccd_controller_v1_0_0_0_sim_netlist.v
@@ -374,6 +374,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     o_cdsclk2,
     s00_axi_aclk,
     \cnt_reg_reg[0]_0 ,
+    cnt_reg1_carry__0_0,
     Q,
     p1v_enable,
     p3h_enable,
@@ -394,14 +395,15 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   output o_cdsclk2;
   input s00_axi_aclk;
   input \cnt_reg_reg[0]_0 ;
-  input [7:0]Q;
+  input cnt_reg1_carry__0_0;
+  input [6:0]Q;
   input p1v_enable;
   input p3h_enable;
   input cdsclk_enable;
   input p2v_tg_enable;
 
   wire CLK;
-  wire [7:0]Q;
+  wire [6:0]Q;
   wire cdsclk1_c;
   wire cdsclk1_c0;
   wire cdsclk1_c00_in;
@@ -562,6 +564,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   wire cdsclk2_end_carry_i_3_n_0;
   wire cdsclk2_end_carry_i_4_n_0;
   wire cdsclk2_end_carry_i_5_n_0;
+  wire cdsclk2_end_carry_i_6_n_0;
   wire cdsclk2_end_carry_i_7_n_0;
   wire cdsclk2_end_carry_i_8_n_0;
   wire cdsclk2_end_carry_i_9_n_0;
@@ -627,10 +630,15 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   wire cdsclk2_wrap_carry_n_2;
   wire cdsclk2_wrap_carry_n_3;
   wire cdsclk_enable;
+  wire cnt_reg1_carry__0_0;
   wire cnt_reg1_carry__0_i_1_n_0;
   wire cnt_reg1_carry__0_i_2_n_0;
   wire cnt_reg1_carry__0_i_3_n_0;
   wire cnt_reg1_carry__0_i_4_n_0;
+  wire cnt_reg1_carry__0_i_5_n_0;
+  wire cnt_reg1_carry__0_i_6_n_0;
+  wire cnt_reg1_carry__0_i_7_n_0;
+  wire cnt_reg1_carry__0_i_8_n_0;
   wire cnt_reg1_carry__0_n_0;
   wire cnt_reg1_carry__0_n_1;
   wire cnt_reg1_carry__0_n_2;
@@ -638,12 +646,31 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   wire cnt_reg1_carry__1_i_1_n_0;
   wire cnt_reg1_carry__1_i_2_n_0;
   wire cnt_reg1_carry__1_i_3_n_0;
+  wire cnt_reg1_carry__1_i_4_n_0;
+  wire cnt_reg1_carry__1_i_5_n_0;
+  wire cnt_reg1_carry__1_i_6_n_0;
+  wire cnt_reg1_carry__1_i_7_n_0;
+  wire cnt_reg1_carry__1_i_8_n_0;
+  wire cnt_reg1_carry__1_n_0;
+  wire cnt_reg1_carry__1_n_1;
   wire cnt_reg1_carry__1_n_2;
   wire cnt_reg1_carry__1_n_3;
+  wire cnt_reg1_carry__2_i_1_n_0;
+  wire cnt_reg1_carry__2_i_2_n_0;
+  wire cnt_reg1_carry__2_i_3_n_0;
+  wire cnt_reg1_carry__2_i_4_n_0;
+  wire cnt_reg1_carry__2_i_5_n_0;
+  wire cnt_reg1_carry__2_i_6_n_0;
+  wire cnt_reg1_carry__2_i_7_n_0;
+  wire cnt_reg1_carry__2_i_8_n_0;
+  wire cnt_reg1_carry__2_n_1;
+  wire cnt_reg1_carry__2_n_2;
+  wire cnt_reg1_carry__2_n_3;
   wire cnt_reg1_carry_i_1_n_0;
   wire cnt_reg1_carry_i_2_n_0;
   wire cnt_reg1_carry_i_3_n_0;
   wire cnt_reg1_carry_i_4_n_0;
+  wire cnt_reg1_carry_i_5_n_0;
   wire cnt_reg1_carry_n_0;
   wire cnt_reg1_carry_n_1;
   wire cnt_reg1_carry_n_2;
@@ -746,7 +773,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   wire \cnt_reg_reg[8]_i_1_n_5 ;
   wire \cnt_reg_reg[8]_i_1_n_6 ;
   wire \cnt_reg_reg[8]_i_1_n_7 ;
-  wire [3:0]delay_clamped;
+  wire [2:0]delay_clamped;
   wire i__carry__0_i_1__0_n_0;
   wire i__carry__0_i_1__2_n_0;
   wire i__carry__0_i_1_n_0;
@@ -1197,8 +1224,8 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   wire [3:0]NLW_cdsclk2_wrap_carry__2_O_UNCONNECTED;
   wire [3:0]NLW_cnt_reg1_carry_O_UNCONNECTED;
   wire [3:0]NLW_cnt_reg1_carry__0_O_UNCONNECTED;
-  wire [3:3]NLW_cnt_reg1_carry__1_CO_UNCONNECTED;
   wire [3:0]NLW_cnt_reg1_carry__1_O_UNCONNECTED;
+  wire [3:0]NLW_cnt_reg1_carry__2_O_UNCONNECTED;
   wire [3:3]\NLW_cnt_reg_reg[28]_i_1_CO_UNCONNECTED ;
   wire [3:0]NLW_p_2_out__1_carry_O_UNCONNECTED;
   wire [3:0]NLW_p_2_out__1_carry__0_O_UNCONNECTED;
@@ -1255,8 +1282,8 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'hE)) 
     cdsclk1_c0_carry__0_i_1
-       (.I0(cnt_reg_reg[15]),
-        .I1(cnt_reg_reg[14]),
+       (.I0(cnt_reg_reg[14]),
+        .I1(cnt_reg_reg[15]),
         .O(cdsclk1_c0_carry__0_i_1_n_0));
   LUT2 #(
     .INIT(4'hE)) 
@@ -1267,22 +1294,22 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'hE)) 
     cdsclk1_c0_carry__0_i_3
-       (.I0(cnt_reg_reg[11]),
-        .I1(cnt_reg_reg[10]),
+       (.I0(cnt_reg_reg[10]),
+        .I1(cnt_reg_reg[11]),
         .O(cdsclk1_c0_carry__0_i_3_n_0));
   LUT4 #(
-    .INIT(16'hA0F8)) 
+    .INIT(16'hBB20)) 
     cdsclk1_c0_carry__0_i_4
        (.I0(cnt_reg_reg[8]),
-        .I1(Q[0]),
-        .I2(cnt_reg_reg[9]),
-        .I3(p_2_out__1_carry__1_i_9_n_0),
+        .I1(p_2_out__1_carry__1_i_9_n_0),
+        .I2(cnt_reg1_carry__0_0),
+        .I3(cnt_reg_reg[9]),
         .O(cdsclk1_c0_carry__0_i_4_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     cdsclk1_c0_carry__0_i_5
-       (.I0(cnt_reg_reg[14]),
-        .I1(cnt_reg_reg[15]),
+       (.I0(cnt_reg_reg[15]),
+        .I1(cnt_reg_reg[14]),
         .O(cdsclk1_c0_carry__0_i_5_n_0));
   LUT2 #(
     .INIT(4'h1)) 
@@ -1293,16 +1320,16 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     cdsclk1_c0_carry__0_i_7
-       (.I0(cnt_reg_reg[10]),
-        .I1(cnt_reg_reg[11]),
+       (.I0(cnt_reg_reg[11]),
+        .I1(cnt_reg_reg[10]),
         .O(cdsclk1_c0_carry__0_i_7_n_0));
   LUT4 #(
-    .INIT(16'h0B18)) 
+    .INIT(16'h01A4)) 
     cdsclk1_c0_carry__0_i_8
-       (.I0(p_2_out__1_carry__1_i_9_n_0),
-        .I1(cnt_reg_reg[9]),
-        .I2(cnt_reg_reg[8]),
-        .I3(Q[0]),
+       (.I0(cnt_reg_reg[9]),
+        .I1(cnt_reg1_carry__0_0),
+        .I2(p_2_out__1_carry__1_i_9_n_0),
+        .I3(cnt_reg_reg[8]),
         .O(cdsclk1_c0_carry__0_i_8_n_0));
   (* COMPARATOR_THRESHOLD = "11" *) 
   CARRY4 cdsclk1_c0_carry__1
@@ -1315,14 +1342,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'hE)) 
     cdsclk1_c0_carry__1_i_1
-       (.I0(cnt_reg_reg[23]),
-        .I1(cnt_reg_reg[22]),
+       (.I0(cnt_reg_reg[22]),
+        .I1(cnt_reg_reg[23]),
         .O(cdsclk1_c0_carry__1_i_1_n_0));
   LUT2 #(
     .INIT(4'hE)) 
     cdsclk1_c0_carry__1_i_2
-       (.I0(cnt_reg_reg[21]),
-        .I1(cnt_reg_reg[20]),
+       (.I0(cnt_reg_reg[20]),
+        .I1(cnt_reg_reg[21]),
         .O(cdsclk1_c0_carry__1_i_2_n_0));
   LUT2 #(
     .INIT(4'hE)) 
@@ -1333,20 +1360,20 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'hE)) 
     cdsclk1_c0_carry__1_i_4
-       (.I0(cnt_reg_reg[17]),
-        .I1(cnt_reg_reg[16]),
+       (.I0(cnt_reg_reg[16]),
+        .I1(cnt_reg_reg[17]),
         .O(cdsclk1_c0_carry__1_i_4_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     cdsclk1_c0_carry__1_i_5
-       (.I0(cnt_reg_reg[22]),
-        .I1(cnt_reg_reg[23]),
+       (.I0(cnt_reg_reg[23]),
+        .I1(cnt_reg_reg[22]),
         .O(cdsclk1_c0_carry__1_i_5_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     cdsclk1_c0_carry__1_i_6
-       (.I0(cnt_reg_reg[20]),
-        .I1(cnt_reg_reg[21]),
+       (.I0(cnt_reg_reg[21]),
+        .I1(cnt_reg_reg[20]),
         .O(cdsclk1_c0_carry__1_i_6_n_0));
   LUT2 #(
     .INIT(4'h1)) 
@@ -1357,8 +1384,8 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     cdsclk1_c0_carry__1_i_8
-       (.I0(cnt_reg_reg[16]),
-        .I1(cnt_reg_reg[17]),
+       (.I0(cnt_reg_reg[17]),
+        .I1(cnt_reg_reg[16]),
         .O(cdsclk1_c0_carry__1_i_8_n_0));
   (* COMPARATOR_THRESHOLD = "11" *) 
   CARRY4 cdsclk1_c0_carry__2
@@ -1377,14 +1404,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'hE)) 
     cdsclk1_c0_carry__2_i_2
-       (.I0(cnt_reg_reg[29]),
-        .I1(cnt_reg_reg[28]),
+       (.I0(cnt_reg_reg[28]),
+        .I1(cnt_reg_reg[29]),
         .O(cdsclk1_c0_carry__2_i_2_n_0));
   LUT2 #(
     .INIT(4'hE)) 
     cdsclk1_c0_carry__2_i_3
-       (.I0(cnt_reg_reg[27]),
-        .I1(cnt_reg_reg[26]),
+       (.I0(cnt_reg_reg[26]),
+        .I1(cnt_reg_reg[27]),
         .O(cdsclk1_c0_carry__2_i_3_n_0));
   LUT2 #(
     .INIT(4'hE)) 
@@ -1401,14 +1428,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     cdsclk1_c0_carry__2_i_6
-       (.I0(cnt_reg_reg[28]),
-        .I1(cnt_reg_reg[29]),
+       (.I0(cnt_reg_reg[29]),
+        .I1(cnt_reg_reg[28]),
         .O(cdsclk1_c0_carry__2_i_6_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     cdsclk1_c0_carry__2_i_7
-       (.I0(cnt_reg_reg[26]),
-        .I1(cnt_reg_reg[27]),
+       (.I0(cnt_reg_reg[27]),
+        .I1(cnt_reg_reg[26]),
         .O(cdsclk1_c0_carry__2_i_7_n_0));
   LUT2 #(
     .INIT(4'h1)) 
@@ -1433,22 +1460,22 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
         .I3(cnt_reg_reg[4]),
         .O(cdsclk1_c0_carry_i_2_n_0));
   LUT6 #(
-    .INIT(64'h2E2E2E003F1D0C00)) 
+    .INIT(64'h2E2E3F1D2E000C00)) 
     cdsclk1_c0_carry_i_3
-       (.I0(Q[3]),
+       (.I0(Q[2]),
         .I1(p_2_out__1_carry_i_6_n_0),
-        .I2(Q[0]),
+        .I2(cnt_reg1_carry__0_0),
         .I3(cnt_reg_reg[2]),
-        .I4(cnt_reg_reg[3]),
-        .I5(Q[4]),
+        .I4(Q[3]),
+        .I5(cnt_reg_reg[3]),
         .O(cdsclk1_c0_carry_i_3_n_0));
   LUT5 #(
     .INIT(32'hBAFF0010)) 
     cdsclk1_c0_carry_i_4
        (.I0(p_2_out__1_carry_i_6_n_0),
-        .I1(Q[1]),
+        .I1(Q[0]),
         .I2(cnt_reg_reg[0]),
-        .I3(Q[2]),
+        .I3(Q[1]),
         .I4(cnt_reg_reg[1]),
         .O(cdsclk1_c0_carry_i_4_n_0));
   LUT4 #(
@@ -1468,22 +1495,22 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
         .I3(cnt_reg_reg[5]),
         .O(cdsclk1_c0_carry_i_6_n_0));
   LUT6 #(
-    .INIT(64'hA2020454A4040252)) 
+    .INIT(64'hA202A40404540252)) 
     cdsclk1_c0_carry_i_7
        (.I0(cnt_reg_reg[2]),
-        .I1(Q[3]),
+        .I1(Q[2]),
         .I2(p_2_out__1_carry_i_6_n_0),
-        .I3(Q[0]),
-        .I4(cnt_reg_reg[3]),
-        .I5(Q[4]),
+        .I3(cnt_reg1_carry__0_0),
+        .I4(Q[3]),
+        .I5(cnt_reg_reg[3]),
         .O(cdsclk1_c0_carry_i_7_n_0));
   LUT5 #(
     .INIT(32'h210088A9)) 
     cdsclk1_c0_carry_i_8
        (.I0(cnt_reg_reg[0]),
         .I1(p_2_out__1_carry_i_6_n_0),
-        .I2(Q[1]),
-        .I3(Q[2]),
+        .I2(Q[0]),
+        .I3(Q[1]),
         .I4(cnt_reg_reg[1]),
         .O(cdsclk1_c0_carry_i_8_n_0));
   (* COMPARATOR_THRESHOLD = "11" *) 
@@ -1506,8 +1533,8 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     .INIT(8'h15)) 
     cdsclk2_c1_carry__0_i_1
        (.I0(cdsclk2_end_carry__1_n_1),
-        .I1(cnt_reg_reg[15]),
-        .I2(cnt_reg_reg[14]),
+        .I1(cnt_reg_reg[14]),
+        .I2(cnt_reg_reg[15]),
         .O(cdsclk2_c1_carry__0_i_1_n_0));
   LUT3 #(
     .INIT(8'h15)) 
@@ -1536,8 +1563,8 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     .INIT(8'h42)) 
     cdsclk2_c1_carry__0_i_5
        (.I0(cdsclk2_end_carry__1_n_1),
-        .I1(cnt_reg_reg[14]),
-        .I2(cnt_reg_reg[15]),
+        .I1(cnt_reg_reg[15]),
+        .I2(cnt_reg_reg[14]),
         .O(cdsclk2_c1_carry__0_i_5_n_0));
   LUT3 #(
     .INIT(8'h42)) 
@@ -1574,15 +1601,15 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     .INIT(8'h15)) 
     cdsclk2_c1_carry__1_i_1
        (.I0(cdsclk2_end_carry__1_n_1),
-        .I1(cnt_reg_reg[23]),
-        .I2(cnt_reg_reg[22]),
+        .I1(cnt_reg_reg[22]),
+        .I2(cnt_reg_reg[23]),
         .O(cdsclk2_c1_carry__1_i_1_n_0));
   LUT3 #(
     .INIT(8'h15)) 
     cdsclk2_c1_carry__1_i_2
        (.I0(cdsclk2_end_carry__1_n_1),
-        .I1(cnt_reg_reg[21]),
-        .I2(cnt_reg_reg[20]),
+        .I1(cnt_reg_reg[20]),
+        .I2(cnt_reg_reg[21]),
         .O(cdsclk2_c1_carry__1_i_2_n_0));
   LUT3 #(
     .INIT(8'h15)) 
@@ -1595,22 +1622,22 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     .INIT(8'h15)) 
     cdsclk2_c1_carry__1_i_4
        (.I0(cdsclk2_end_carry__1_n_1),
-        .I1(cnt_reg_reg[17]),
-        .I2(cnt_reg_reg[16]),
+        .I1(cnt_reg_reg[16]),
+        .I2(cnt_reg_reg[17]),
         .O(cdsclk2_c1_carry__1_i_4_n_0));
   LUT3 #(
     .INIT(8'h42)) 
     cdsclk2_c1_carry__1_i_5
        (.I0(cdsclk2_end_carry__1_n_1),
-        .I1(cnt_reg_reg[22]),
-        .I2(cnt_reg_reg[23]),
+        .I1(cnt_reg_reg[23]),
+        .I2(cnt_reg_reg[22]),
         .O(cdsclk2_c1_carry__1_i_5_n_0));
   LUT3 #(
     .INIT(8'h42)) 
     cdsclk2_c1_carry__1_i_6
        (.I0(cdsclk2_end_carry__1_n_1),
-        .I1(cnt_reg_reg[20]),
-        .I2(cnt_reg_reg[21]),
+        .I1(cnt_reg_reg[21]),
+        .I2(cnt_reg_reg[20]),
         .O(cdsclk2_c1_carry__1_i_6_n_0));
   LUT3 #(
     .INIT(8'h42)) 
@@ -1623,8 +1650,8 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     .INIT(8'h42)) 
     cdsclk2_c1_carry__1_i_8
        (.I0(cdsclk2_end_carry__1_n_1),
-        .I1(cnt_reg_reg[16]),
-        .I2(cnt_reg_reg[17]),
+        .I1(cnt_reg_reg[17]),
+        .I2(cnt_reg_reg[16]),
         .O(cdsclk2_c1_carry__1_i_8_n_0));
   (* COMPARATOR_THRESHOLD = "11" *) 
   CARRY4 cdsclk2_c1_carry__2
@@ -1645,15 +1672,15 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     .INIT(8'h15)) 
     cdsclk2_c1_carry__2_i_2
        (.I0(cdsclk2_end_carry__1_n_1),
-        .I1(cnt_reg_reg[29]),
-        .I2(cnt_reg_reg[28]),
+        .I1(cnt_reg_reg[28]),
+        .I2(cnt_reg_reg[29]),
         .O(cdsclk2_c1_carry__2_i_2_n_0));
   LUT3 #(
     .INIT(8'h15)) 
     cdsclk2_c1_carry__2_i_3
        (.I0(cdsclk2_end_carry__1_n_1),
-        .I1(cnt_reg_reg[27]),
-        .I2(cnt_reg_reg[26]),
+        .I1(cnt_reg_reg[26]),
+        .I2(cnt_reg_reg[27]),
         .O(cdsclk2_c1_carry__2_i_3_n_0));
   LUT3 #(
     .INIT(8'h15)) 
@@ -1673,15 +1700,15 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     .INIT(8'h42)) 
     cdsclk2_c1_carry__2_i_6
        (.I0(cdsclk2_end_carry__1_n_1),
-        .I1(cnt_reg_reg[28]),
-        .I2(cnt_reg_reg[29]),
+        .I1(cnt_reg_reg[29]),
+        .I2(cnt_reg_reg[28]),
         .O(cdsclk2_c1_carry__2_i_6_n_0));
   LUT3 #(
     .INIT(8'h42)) 
     cdsclk2_c1_carry__2_i_7
        (.I0(cdsclk2_end_carry__1_n_1),
-        .I1(cnt_reg_reg[26]),
-        .I2(cnt_reg_reg[27]),
+        .I1(cnt_reg_reg[27]),
+        .I2(cnt_reg_reg[26]),
         .O(cdsclk2_c1_carry__2_i_7_n_0));
   LUT3 #(
     .INIT(8'h42)) 
@@ -1767,7 +1794,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
        (.CI(\cdsclk2_c1_inferred__0/i__carry_n_0 ),
         .CO({\cdsclk2_c1_inferred__0/i__carry__0_n_0 ,\cdsclk2_c1_inferred__0/i__carry__0_n_1 ,\cdsclk2_c1_inferred__0/i__carry__0_n_2 ,\cdsclk2_c1_inferred__0/i__carry__0_n_3 }),
         .CYINIT(1'b0),
-        .DI({i__carry__0_i_1_n_0,i__carry__0_i_2_n_0,i__carry__0_i_3_n_0,i__carry__0_i_4_n_0}),
+        .DI({i__carry__0_i_1_n_0,i__carry__0_i_2_n_0,i__carry__0_i_3_n_0,i__carry__0_i_4__0_n_0}),
         .O(\NLW_cdsclk2_c1_inferred__0/i__carry__0_O_UNCONNECTED [3:0]),
         .S({i__carry__0_i_5__0_n_0,i__carry__0_i_6__0_n_0,i__carry__0_i_7_n_0,i__carry__0_i_8_n_0}));
   (* COMPARATOR_THRESHOLD = "11" *) 
@@ -1829,38 +1856,38 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
        (.CI(cdsclk2_end_carry_n_0),
         .CO({cdsclk2_end_carry__0_n_0,cdsclk2_end_carry__0_n_1,cdsclk2_end_carry__0_n_2,cdsclk2_end_carry__0_n_3}),
         .CYINIT(1'b0),
-        .DI({cdsclk2_end_carry__0_i_1_n_0,cdsclk2_start[6],Q[0],cdsclk2_start[5]}),
+        .DI({cdsclk2_end_carry__0_i_1_n_0,cdsclk2_start[6],cnt_reg1_carry__0_0,cdsclk2_start[5]}),
         .O(cdsclk2_end[8:5]),
         .S({cdsclk2_end_carry__0_i_2_n_0,cdsclk2_end_carry__0_i_3_n_0,cdsclk2_end_carry__0_i_4_n_0,cdsclk2_end_carry__0_i_5_n_0}));
   LUT2 #(
     .INIT(4'h7)) 
     cdsclk2_end_carry__0_i_1
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(cdsclk2_start[8]),
         .O(cdsclk2_end_carry__0_i_1_n_0));
   LUT2 #(
     .INIT(4'h4)) 
     cdsclk2_end_carry__0_i_2
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(cdsclk2_start[8]),
         .O(cdsclk2_end_carry__0_i_2_n_0));
   LUT3 #(
     .INIT(8'h69)) 
     cdsclk2_end_carry__0_i_3
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(cdsclk2_start[8]),
         .I2(cdsclk2_start[6]),
         .O(cdsclk2_end_carry__0_i_3_n_0));
   LUT2 #(
     .INIT(4'h9)) 
     cdsclk2_end_carry__0_i_4
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(cdsclk2_start[6]),
         .O(cdsclk2_end_carry__0_i_4_n_0));
   LUT2 #(
     .INIT(4'h9)) 
     cdsclk2_end_carry__0_i_5
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(cdsclk2_start[5]),
         .O(cdsclk2_end_carry__0_i_5_n_0));
   CARRY4 cdsclk2_end_carry__1
@@ -1869,75 +1896,75 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
         .CYINIT(1'b0),
         .DI({1'b0,1'b0,cdsclk2_end_carry__1_i_1_n_0,cdsclk2_start[8]}),
         .O({NLW_cdsclk2_end_carry__1_O_UNCONNECTED[3:2],cdsclk2_end[10:9]}),
-        .S({1'b0,1'b1,Q[0],cdsclk2_end_carry__1_i_2_n_0}));
+        .S({1'b0,1'b1,cnt_reg1_carry__0_0,cdsclk2_end_carry__1_i_2_n_0}));
   LUT1 #(
     .INIT(2'h1)) 
     cdsclk2_end_carry__1_i_1
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .O(cdsclk2_end_carry__1_i_1_n_0));
   LUT2 #(
     .INIT(4'h6)) 
     cdsclk2_end_carry__1_i_2
        (.I0(cdsclk2_start[8]),
-        .I1(Q[0]),
+        .I1(cnt_reg1_carry__0_0),
         .O(cdsclk2_end_carry__1_i_2_n_0));
   CARRY4 cdsclk2_end_carry_i_1
        (.CI(1'b0),
         .CO({cdsclk2_end_carry_i_1_n_0,cdsclk2_end_carry_i_1_n_1,cdsclk2_end_carry_i_1_n_2,cdsclk2_end_carry_i_1_n_3}),
         .CYINIT(1'b0),
-        .DI({delay_clamped[3:2],cdsclk2_end_carry_i_7_n_0,1'b0}),
+        .DI({cdsclk2_end_carry_i_6_n_0,delay_clamped[2],cdsclk2_end_carry_i_7_n_0,1'b0}),
         .O(cdsclk2_start[3:0]),
         .S({cdsclk2_end_carry_i_8_n_0,cdsclk2_end_carry_i_9_n_0,p_1_in,delay_clamped[0]}));
   LUT2 #(
     .INIT(4'hD)) 
     cdsclk2_end_carry_i_10
-       (.I0(Q[2]),
+       (.I0(Q[1]),
         .I1(p_2_out__1_carry_i_6_n_0),
         .O(p_1_in));
   LUT2 #(
     .INIT(4'hE)) 
     cdsclk2_end_carry_i_11
        (.I0(p_2_out__1_carry_i_6_n_0),
-        .I1(Q[1]),
+        .I1(Q[0]),
         .O(delay_clamped[0]));
   LUT3 #(
     .INIT(8'h54)) 
     cdsclk2_end_carry_i_12
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(p_2_out__1_carry_i_8_n_0),
-        .I2(Q[7]),
+        .I2(Q[6]),
         .O(cdsclk2_end_carry_i_12_n_0));
   LUT3 #(
     .INIT(8'h54)) 
     cdsclk2_end_carry_i_13
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(p_2_out__1_carry_i_8_n_0),
-        .I2(Q[6]),
+        .I2(Q[5]),
         .O(cdsclk2_end_carry_i_13_n_0));
   LUT2 #(
     .INIT(4'h9)) 
     cdsclk2_end_carry_i_14
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(p_2_out__1_carry__0_i_15_n_0),
         .O(cdsclk2_end_carry_i_14_n_0));
   LUT2 #(
     .INIT(4'h9)) 
     cdsclk2_end_carry_i_15
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(p_2_out__1_carry__0_i_16_n_0),
         .O(cdsclk2_end_carry_i_15_n_0));
   LUT3 #(
     .INIT(8'h56)) 
     cdsclk2_end_carry_i_16
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(p_2_out__1_carry_i_6_n_0),
-        .I2(Q[5]),
+        .I2(Q[4]),
         .O(cdsclk2_end_carry_i_16_n_0));
   CARRY4 cdsclk2_end_carry_i_2
        (.CI(cdsclk2_end_carry_i_1_n_0),
         .CO({cdsclk2_start[8:7],cdsclk2_end_carry_i_2_n_2,cdsclk2_end_carry_i_2_n_3}),
         .CYINIT(1'b0),
-        .DI({1'b0,cdsclk2_end_carry_i_12_n_0,cdsclk2_end_carry_i_13_n_0,Q[0]}),
+        .DI({1'b0,cdsclk2_end_carry_i_12_n_0,cdsclk2_end_carry_i_13_n_0,cnt_reg1_carry__0_0}),
         .O({NLW_cdsclk2_end_carry_i_2_O_UNCONNECTED[3],cdsclk2_start[6:4]}),
         .S({1'b1,cdsclk2_end_carry_i_14_n_0,cdsclk2_end_carry_i_15_n_0,cdsclk2_end_carry_i_16_n_0}));
   LUT1 #(
@@ -1954,26 +1981,26 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     .INIT(4'h9)) 
     cdsclk2_end_carry_i_5
        (.I0(cdsclk2_start[2]),
-        .I1(Q[0]),
+        .I1(cnt_reg1_carry__0_0),
         .O(cdsclk2_end_carry_i_5_n_0));
   LUT2 #(
     .INIT(4'hE)) 
     cdsclk2_end_carry_i_6
-       (.I0(Q[4]),
+       (.I0(Q[3]),
         .I1(p_2_out__1_carry_i_6_n_0),
-        .O(delay_clamped[3]));
+        .O(cdsclk2_end_carry_i_6_n_0));
   LUT2 #(
     .INIT(4'h2)) 
     cdsclk2_end_carry_i_7
-       (.I0(Q[2]),
+       (.I0(Q[1]),
         .I1(p_2_out__1_carry_i_6_n_0),
         .O(cdsclk2_end_carry_i_7_n_0));
   LUT3 #(
     .INIT(8'hE1)) 
     cdsclk2_end_carry_i_8
-       (.I0(Q[4]),
+       (.I0(Q[3]),
         .I1(p_2_out__1_carry_i_6_n_0),
-        .I2(Q[0]),
+        .I2(cnt_reg1_carry__0_0),
         .O(cdsclk2_end_carry_i_8_n_0));
   LUT1 #(
     .INIT(2'h1)) 
@@ -1991,24 +2018,24 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
        (.CI(cdsclk2_end_wrapped_carry_n_0),
         .CO({cdsclk2_end_wrapped_carry__0_n_0,cdsclk2_end_wrapped_carry__0_n_1,cdsclk2_end_wrapped_carry__0_n_2,cdsclk2_end_wrapped_carry__0_n_3}),
         .CYINIT(1'b0),
-        .DI({cdsclk2_end_wrapped_carry__0_i_1_n_0,Q[0],1'b0,1'b0}),
+        .DI({cdsclk2_end_wrapped_carry__0_i_1_n_0,cnt_reg1_carry__0_0,1'b0,1'b0}),
         .O(cdsclk2_end_wrapped[9:6]),
         .S({cdsclk2_end_wrapped_carry__0_i_2_n_0,cdsclk2_end_wrapped_carry__0_i_3_n_0,cdsclk2_end[7:6]}));
   LUT1 #(
     .INIT(2'h1)) 
     cdsclk2_end_wrapped_carry__0_i_1
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .O(cdsclk2_end_wrapped_carry__0_i_1_n_0));
   LUT2 #(
     .INIT(4'h6)) 
     cdsclk2_end_wrapped_carry__0_i_2
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(cdsclk2_end[9]),
         .O(cdsclk2_end_wrapped_carry__0_i_2_n_0));
   LUT2 #(
     .INIT(4'h6)) 
     cdsclk2_end_wrapped_carry__0_i_3
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(cdsclk2_end[8]),
         .O(cdsclk2_end_wrapped_carry__0_i_3_n_0));
   CARRY4 cdsclk2_end_wrapped_carry__1
@@ -2022,7 +2049,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     .INIT(8'h78)) 
     cdsclk2_end_wrapped_carry__1_i_1
        (.I0(cdsclk2_end[10]),
-        .I1(Q[0]),
+        .I1(cnt_reg1_carry__0_0),
         .I2(cdsclk2_end_carry__1_n_1),
         .O(cdsclk2_end_wrapped_carry__1_i_1_n_0));
   LUT3 #(
@@ -2030,13 +2057,13 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     cdsclk2_end_wrapped_carry__1_i_2
        (.I0(cdsclk2_end[9]),
         .I1(cdsclk2_end[10]),
-        .I2(Q[0]),
+        .I2(cnt_reg1_carry__0_0),
         .O(cdsclk2_end_wrapped_carry__1_i_2_n_0));
   LUT2 #(
     .INIT(4'h6)) 
     cdsclk2_end_wrapped_carry_i_1
        (.I0(cdsclk2_end[5]),
-        .I1(Q[0]),
+        .I1(cnt_reg1_carry__0_0),
         .O(cdsclk2_end_wrapped_carry_i_1_n_0));
   LUT1 #(
     .INIT(2'h1)) 
@@ -2083,7 +2110,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT3 #(
     .INIT(8'hA8)) 
     cdsclk2_wrap_carry__0_i_4
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(cdsclk2_end[8]),
         .I2(cdsclk2_end[9]),
         .O(cdsclk2_wrap_carry__0_i_4_n_0));
@@ -2096,7 +2123,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT3 #(
     .INIT(8'h42)) 
     cdsclk2_wrap_carry__0_i_6
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(cdsclk2_end[9]),
         .I2(cdsclk2_end[8]),
         .O(cdsclk2_wrap_carry__0_i_6_n_0));
@@ -2159,7 +2186,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT3 #(
     .INIT(8'hE8)) 
     cdsclk2_wrap_carry_i_1
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(cdsclk2_end[4]),
         .I2(cdsclk2_end[5]),
         .O(cdsclk2_wrap_carry_i_1_n_0));
@@ -2184,7 +2211,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT3 #(
     .INIT(8'h06)) 
     cdsclk2_wrap_carry_i_5
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(cdsclk2_end[5]),
         .I2(cdsclk2_end[4]),
         .O(cdsclk2_wrap_carry_i_5_n_0));
@@ -2200,106 +2227,216 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
        (.I0(cdsclk2_start[0]),
         .I1(cdsclk2_end[1]),
         .O(cdsclk2_wrap_carry_i_7_n_0));
+  (* COMPARATOR_THRESHOLD = "11" *) 
   CARRY4 cnt_reg1_carry
        (.CI(1'b0),
         .CO({cnt_reg1_carry_n_0,cnt_reg1_carry_n_1,cnt_reg1_carry_n_2,cnt_reg1_carry_n_3}),
         .CYINIT(1'b1),
-        .DI({1'b0,1'b0,1'b0,1'b0}),
+        .DI({1'b0,cnt_reg1_carry_i_1_n_0,cnt_reg_reg[3],1'b0}),
         .O(NLW_cnt_reg1_carry_O_UNCONNECTED[3:0]),
-        .S({cnt_reg1_carry_i_1_n_0,cnt_reg1_carry_i_2_n_0,cnt_reg1_carry_i_3_n_0,cnt_reg1_carry_i_4_n_0}));
+        .S({cnt_reg1_carry_i_2_n_0,cnt_reg1_carry_i_3_n_0,cnt_reg1_carry_i_4_n_0,cnt_reg1_carry_i_5_n_0}));
+  (* COMPARATOR_THRESHOLD = "11" *) 
   CARRY4 cnt_reg1_carry__0
        (.CI(cnt_reg1_carry_n_0),
         .CO({cnt_reg1_carry__0_n_0,cnt_reg1_carry__0_n_1,cnt_reg1_carry__0_n_2,cnt_reg1_carry__0_n_3}),
         .CYINIT(1'b0),
-        .DI({1'b0,1'b0,1'b0,1'b0}),
+        .DI({cnt_reg1_carry__0_i_1_n_0,cnt_reg1_carry__0_i_2_n_0,cnt_reg1_carry__0_i_3_n_0,cnt_reg1_carry__0_i_4_n_0}),
         .O(NLW_cnt_reg1_carry__0_O_UNCONNECTED[3:0]),
-        .S({cnt_reg1_carry__0_i_1_n_0,cnt_reg1_carry__0_i_2_n_0,cnt_reg1_carry__0_i_3_n_0,cnt_reg1_carry__0_i_4_n_0}));
-  LUT3 #(
-    .INIT(8'h01)) 
+        .S({cnt_reg1_carry__0_i_5_n_0,cnt_reg1_carry__0_i_6_n_0,cnt_reg1_carry__0_i_7_n_0,cnt_reg1_carry__0_i_8_n_0}));
+  LUT2 #(
+    .INIT(4'hE)) 
     cnt_reg1_carry__0_i_1
-       (.I0(cnt_reg_reg[23]),
-        .I1(cnt_reg_reg[22]),
-        .I2(cnt_reg_reg[21]),
+       (.I0(cnt_reg_reg[14]),
+        .I1(cnt_reg_reg[15]),
         .O(cnt_reg1_carry__0_i_1_n_0));
-  LUT3 #(
-    .INIT(8'h01)) 
+  LUT2 #(
+    .INIT(4'hE)) 
     cnt_reg1_carry__0_i_2
-       (.I0(cnt_reg_reg[18]),
-        .I1(cnt_reg_reg[19]),
-        .I2(cnt_reg_reg[20]),
-        .O(cnt_reg1_carry__0_i_2_n_0));
-  LUT3 #(
-    .INIT(8'h01)) 
-    cnt_reg1_carry__0_i_3
-       (.I0(cnt_reg_reg[17]),
-        .I1(cnt_reg_reg[16]),
-        .I2(cnt_reg_reg[15]),
-        .O(cnt_reg1_carry__0_i_3_n_0));
-  LUT3 #(
-    .INIT(8'h01)) 
-    cnt_reg1_carry__0_i_4
        (.I0(cnt_reg_reg[12]),
         .I1(cnt_reg_reg[13]),
-        .I2(cnt_reg_reg[14]),
+        .O(cnt_reg1_carry__0_i_2_n_0));
+  LUT2 #(
+    .INIT(4'hE)) 
+    cnt_reg1_carry__0_i_3
+       (.I0(cnt_reg_reg[10]),
+        .I1(cnt_reg_reg[11]),
+        .O(cnt_reg1_carry__0_i_3_n_0));
+  LUT3 #(
+    .INIT(8'hA8)) 
+    cnt_reg1_carry__0_i_4
+       (.I0(cnt_reg1_carry__0_0),
+        .I1(cnt_reg_reg[8]),
+        .I2(cnt_reg_reg[9]),
         .O(cnt_reg1_carry__0_i_4_n_0));
-  CARRY4 cnt_reg1_carry__1
-       (.CI(cnt_reg1_carry__0_n_0),
-        .CO({NLW_cnt_reg1_carry__1_CO_UNCONNECTED[3],load,cnt_reg1_carry__1_n_2,cnt_reg1_carry__1_n_3}),
-        .CYINIT(1'b0),
-        .DI({1'b0,1'b0,1'b0,1'b0}),
-        .O(NLW_cnt_reg1_carry__1_O_UNCONNECTED[3:0]),
-        .S({1'b0,cnt_reg1_carry__1_i_1_n_0,cnt_reg1_carry__1_i_2_n_0,cnt_reg1_carry__1_i_3_n_0}));
   LUT2 #(
     .INIT(4'h1)) 
-    cnt_reg1_carry__1_i_1
-       (.I0(cnt_reg_reg[31]),
-        .I1(cnt_reg_reg[30]),
-        .O(cnt_reg1_carry__1_i_1_n_0));
-  LUT3 #(
-    .INIT(8'h01)) 
-    cnt_reg1_carry__1_i_2
-       (.I0(cnt_reg_reg[29]),
-        .I1(cnt_reg_reg[28]),
-        .I2(cnt_reg_reg[27]),
-        .O(cnt_reg1_carry__1_i_2_n_0));
-  LUT3 #(
-    .INIT(8'h01)) 
-    cnt_reg1_carry__1_i_3
-       (.I0(cnt_reg_reg[24]),
-        .I1(cnt_reg_reg[25]),
-        .I2(cnt_reg_reg[26]),
-        .O(cnt_reg1_carry__1_i_3_n_0));
-  LUT4 #(
-    .INIT(16'h0110)) 
-    cnt_reg1_carry_i_1
+    cnt_reg1_carry__0_i_5
+       (.I0(cnt_reg_reg[15]),
+        .I1(cnt_reg_reg[14]),
+        .O(cnt_reg1_carry__0_i_5_n_0));
+  LUT2 #(
+    .INIT(4'h1)) 
+    cnt_reg1_carry__0_i_6
+       (.I0(cnt_reg_reg[13]),
+        .I1(cnt_reg_reg[12]),
+        .O(cnt_reg1_carry__0_i_6_n_0));
+  LUT2 #(
+    .INIT(4'h1)) 
+    cnt_reg1_carry__0_i_7
        (.I0(cnt_reg_reg[11]),
         .I1(cnt_reg_reg[10]),
-        .I2(cnt_reg_reg[9]),
-        .I3(Q[0]),
+        .O(cnt_reg1_carry__0_i_7_n_0));
+  LUT3 #(
+    .INIT(8'h42)) 
+    cnt_reg1_carry__0_i_8
+       (.I0(cnt_reg1_carry__0_0),
+        .I1(cnt_reg_reg[9]),
+        .I2(cnt_reg_reg[8]),
+        .O(cnt_reg1_carry__0_i_8_n_0));
+  (* COMPARATOR_THRESHOLD = "11" *) 
+  CARRY4 cnt_reg1_carry__1
+       (.CI(cnt_reg1_carry__0_n_0),
+        .CO({cnt_reg1_carry__1_n_0,cnt_reg1_carry__1_n_1,cnt_reg1_carry__1_n_2,cnt_reg1_carry__1_n_3}),
+        .CYINIT(1'b0),
+        .DI({cnt_reg1_carry__1_i_1_n_0,cnt_reg1_carry__1_i_2_n_0,cnt_reg1_carry__1_i_3_n_0,cnt_reg1_carry__1_i_4_n_0}),
+        .O(NLW_cnt_reg1_carry__1_O_UNCONNECTED[3:0]),
+        .S({cnt_reg1_carry__1_i_5_n_0,cnt_reg1_carry__1_i_6_n_0,cnt_reg1_carry__1_i_7_n_0,cnt_reg1_carry__1_i_8_n_0}));
+  LUT2 #(
+    .INIT(4'hE)) 
+    cnt_reg1_carry__1_i_1
+       (.I0(cnt_reg_reg[22]),
+        .I1(cnt_reg_reg[23]),
+        .O(cnt_reg1_carry__1_i_1_n_0));
+  LUT2 #(
+    .INIT(4'hE)) 
+    cnt_reg1_carry__1_i_2
+       (.I0(cnt_reg_reg[20]),
+        .I1(cnt_reg_reg[21]),
+        .O(cnt_reg1_carry__1_i_2_n_0));
+  LUT2 #(
+    .INIT(4'hE)) 
+    cnt_reg1_carry__1_i_3
+       (.I0(cnt_reg_reg[18]),
+        .I1(cnt_reg_reg[19]),
+        .O(cnt_reg1_carry__1_i_3_n_0));
+  LUT2 #(
+    .INIT(4'hE)) 
+    cnt_reg1_carry__1_i_4
+       (.I0(cnt_reg_reg[16]),
+        .I1(cnt_reg_reg[17]),
+        .O(cnt_reg1_carry__1_i_4_n_0));
+  LUT2 #(
+    .INIT(4'h1)) 
+    cnt_reg1_carry__1_i_5
+       (.I0(cnt_reg_reg[23]),
+        .I1(cnt_reg_reg[22]),
+        .O(cnt_reg1_carry__1_i_5_n_0));
+  LUT2 #(
+    .INIT(4'h1)) 
+    cnt_reg1_carry__1_i_6
+       (.I0(cnt_reg_reg[21]),
+        .I1(cnt_reg_reg[20]),
+        .O(cnt_reg1_carry__1_i_6_n_0));
+  LUT2 #(
+    .INIT(4'h1)) 
+    cnt_reg1_carry__1_i_7
+       (.I0(cnt_reg_reg[19]),
+        .I1(cnt_reg_reg[18]),
+        .O(cnt_reg1_carry__1_i_7_n_0));
+  LUT2 #(
+    .INIT(4'h1)) 
+    cnt_reg1_carry__1_i_8
+       (.I0(cnt_reg_reg[17]),
+        .I1(cnt_reg_reg[16]),
+        .O(cnt_reg1_carry__1_i_8_n_0));
+  (* COMPARATOR_THRESHOLD = "11" *) 
+  CARRY4 cnt_reg1_carry__2
+       (.CI(cnt_reg1_carry__1_n_0),
+        .CO({load,cnt_reg1_carry__2_n_1,cnt_reg1_carry__2_n_2,cnt_reg1_carry__2_n_3}),
+        .CYINIT(1'b0),
+        .DI({cnt_reg1_carry__2_i_1_n_0,cnt_reg1_carry__2_i_2_n_0,cnt_reg1_carry__2_i_3_n_0,cnt_reg1_carry__2_i_4_n_0}),
+        .O(NLW_cnt_reg1_carry__2_O_UNCONNECTED[3:0]),
+        .S({cnt_reg1_carry__2_i_5_n_0,cnt_reg1_carry__2_i_6_n_0,cnt_reg1_carry__2_i_7_n_0,cnt_reg1_carry__2_i_8_n_0}));
+  LUT2 #(
+    .INIT(4'hE)) 
+    cnt_reg1_carry__2_i_1
+       (.I0(cnt_reg_reg[30]),
+        .I1(cnt_reg_reg[31]),
+        .O(cnt_reg1_carry__2_i_1_n_0));
+  LUT2 #(
+    .INIT(4'hE)) 
+    cnt_reg1_carry__2_i_2
+       (.I0(cnt_reg_reg[28]),
+        .I1(cnt_reg_reg[29]),
+        .O(cnt_reg1_carry__2_i_2_n_0));
+  LUT2 #(
+    .INIT(4'hE)) 
+    cnt_reg1_carry__2_i_3
+       (.I0(cnt_reg_reg[26]),
+        .I1(cnt_reg_reg[27]),
+        .O(cnt_reg1_carry__2_i_3_n_0));
+  LUT2 #(
+    .INIT(4'hE)) 
+    cnt_reg1_carry__2_i_4
+       (.I0(cnt_reg_reg[24]),
+        .I1(cnt_reg_reg[25]),
+        .O(cnt_reg1_carry__2_i_4_n_0));
+  LUT2 #(
+    .INIT(4'h1)) 
+    cnt_reg1_carry__2_i_5
+       (.I0(cnt_reg_reg[31]),
+        .I1(cnt_reg_reg[30]),
+        .O(cnt_reg1_carry__2_i_5_n_0));
+  LUT2 #(
+    .INIT(4'h1)) 
+    cnt_reg1_carry__2_i_6
+       (.I0(cnt_reg_reg[29]),
+        .I1(cnt_reg_reg[28]),
+        .O(cnt_reg1_carry__2_i_6_n_0));
+  LUT2 #(
+    .INIT(4'h1)) 
+    cnt_reg1_carry__2_i_7
+       (.I0(cnt_reg_reg[27]),
+        .I1(cnt_reg_reg[26]),
+        .O(cnt_reg1_carry__2_i_7_n_0));
+  LUT2 #(
+    .INIT(4'h1)) 
+    cnt_reg1_carry__2_i_8
+       (.I0(cnt_reg_reg[25]),
+        .I1(cnt_reg_reg[24]),
+        .O(cnt_reg1_carry__2_i_8_n_0));
+  LUT3 #(
+    .INIT(8'hE8)) 
+    cnt_reg1_carry_i_1
+       (.I0(cnt_reg_reg[5]),
+        .I1(cnt_reg_reg[4]),
+        .I2(cnt_reg1_carry__0_0),
         .O(cnt_reg1_carry_i_1_n_0));
-  LUT4 #(
-    .INIT(16'h0880)) 
+  LUT2 #(
+    .INIT(4'h8)) 
     cnt_reg1_carry_i_2
        (.I0(cnt_reg_reg[7]),
         .I1(cnt_reg_reg[6]),
-        .I2(Q[0]),
-        .I3(cnt_reg_reg[8]),
         .O(cnt_reg1_carry_i_2_n_0));
-  LUT4 #(
-    .INIT(16'h0110)) 
-    cnt_reg1_carry_i_3
-       (.I0(cnt_reg_reg[4]),
-        .I1(cnt_reg_reg[3]),
-        .I2(Q[0]),
-        .I3(cnt_reg_reg[5]),
-        .O(cnt_reg1_carry_i_3_n_0));
   LUT3 #(
-    .INIT(8'h80)) 
+    .INIT(8'h06)) 
+    cnt_reg1_carry_i_3
+       (.I0(cnt_reg1_carry__0_0),
+        .I1(cnt_reg_reg[5]),
+        .I2(cnt_reg_reg[4]),
+        .O(cnt_reg1_carry_i_3_n_0));
+  LUT2 #(
+    .INIT(4'h2)) 
     cnt_reg1_carry_i_4
-       (.I0(cnt_reg_reg[0]),
-        .I1(cnt_reg_reg[1]),
-        .I2(cnt_reg_reg[2]),
+       (.I0(cnt_reg_reg[2]),
+        .I1(cnt_reg_reg[3]),
         .O(cnt_reg1_carry_i_4_n_0));
+  LUT2 #(
+    .INIT(4'h8)) 
+    cnt_reg1_carry_i_5
+       (.I0(cnt_reg_reg[1]),
+        .I1(cnt_reg_reg[0]),
+        .O(cnt_reg1_carry_i_5_n_0));
   LUT2 #(
     .INIT(4'h2)) 
     \cnt_reg[0]_i_2 
@@ -2757,21 +2894,21 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'hE)) 
     i__carry__0_i_1
-       (.I0(cnt_reg_reg[15]),
-        .I1(cnt_reg_reg[14]),
+       (.I0(cnt_reg_reg[14]),
+        .I1(cnt_reg_reg[15]),
         .O(i__carry__0_i_1_n_0));
   LUT2 #(
     .INIT(4'hE)) 
     i__carry__0_i_1__0
-       (.I0(cnt_reg_reg[15]),
-        .I1(cnt_reg_reg[14]),
+       (.I0(cnt_reg_reg[14]),
+        .I1(cnt_reg_reg[15]),
         .O(i__carry__0_i_1__0_n_0));
   LUT3 #(
     .INIT(8'h15)) 
     i__carry__0_i_1__2
        (.I0(cdsclk2_end_wrapped_carry__1_n_1),
-        .I1(cnt_reg_reg[15]),
-        .I2(cnt_reg_reg[14]),
+        .I1(cnt_reg_reg[14]),
+        .I2(cnt_reg_reg[15]),
         .O(i__carry__0_i_1__2_n_0));
   LUT2 #(
     .INIT(4'hE)) 
@@ -2795,8 +2932,8 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'hE)) 
     i__carry__0_i_3
-       (.I0(cnt_reg_reg[11]),
-        .I1(cnt_reg_reg[10]),
+       (.I0(cnt_reg_reg[10]),
+        .I1(cnt_reg_reg[11]),
         .O(i__carry__0_i_3_n_0));
   LUT4 #(
     .INIT(16'h2F02)) 
@@ -2809,22 +2946,22 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'hE)) 
     i__carry__0_i_3__1
-       (.I0(cnt_reg_reg[11]),
-        .I1(cnt_reg_reg[10]),
+       (.I0(cnt_reg_reg[10]),
+        .I1(cnt_reg_reg[11]),
         .O(i__carry__0_i_3__1_n_0));
-  LUT4 #(
-    .INIT(16'h88E8)) 
-    i__carry__0_i_4
-       (.I0(Q[0]),
-        .I1(cnt_reg_reg[9]),
-        .I2(cnt_reg_reg[8]),
-        .I3(cdsclk2_start[8]),
-        .O(i__carry__0_i_4_n_0));
   LUT2 #(
     .INIT(4'hE)) 
+    i__carry__0_i_4
+       (.I0(cnt_reg_reg[8]),
+        .I1(cnt_reg_reg[9]),
+        .O(i__carry__0_i_4_n_0));
+  LUT4 #(
+    .INIT(16'hD4C0)) 
     i__carry__0_i_4__0
-       (.I0(cnt_reg_reg[9]),
-        .I1(cnt_reg_reg[8]),
+       (.I0(cdsclk2_start[8]),
+        .I1(cnt_reg_reg[9]),
+        .I2(cnt_reg1_carry__0_0),
+        .I3(cnt_reg_reg[8]),
         .O(i__carry__0_i_4__0_n_0));
   LUT4 #(
     .INIT(16'h2F02)) 
@@ -2838,20 +2975,20 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     .INIT(8'h42)) 
     i__carry__0_i_5
        (.I0(cdsclk2_end_wrapped_carry__1_n_1),
-        .I1(cnt_reg_reg[14]),
-        .I2(cnt_reg_reg[15]),
+        .I1(cnt_reg_reg[15]),
+        .I2(cnt_reg_reg[14]),
         .O(i__carry__0_i_5_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     i__carry__0_i_5__0
-       (.I0(cnt_reg_reg[14]),
-        .I1(cnt_reg_reg[15]),
+       (.I0(cnt_reg_reg[15]),
+        .I1(cnt_reg_reg[14]),
         .O(i__carry__0_i_5__0_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     i__carry__0_i_5__1
-       (.I0(cnt_reg_reg[14]),
-        .I1(cnt_reg_reg[15]),
+       (.I0(cnt_reg_reg[15]),
+        .I1(cnt_reg_reg[14]),
         .O(i__carry__0_i_5__1_n_0));
   LUT3 #(
     .INIT(8'h42)) 
@@ -2875,8 +3012,8 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     i__carry__0_i_7
-       (.I0(cnt_reg_reg[10]),
-        .I1(cnt_reg_reg[11]),
+       (.I0(cnt_reg_reg[11]),
+        .I1(cnt_reg_reg[10]),
         .O(i__carry__0_i_7_n_0));
   LUT4 #(
     .INIT(16'h9009)) 
@@ -2889,15 +3026,15 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     i__carry__0_i_7__1
-       (.I0(cnt_reg_reg[10]),
-        .I1(cnt_reg_reg[11]),
+       (.I0(cnt_reg_reg[11]),
+        .I1(cnt_reg_reg[10]),
         .O(i__carry__0_i_7__1_n_0));
   LUT4 #(
-    .INIT(16'h6006)) 
+    .INIT(16'h2814)) 
     i__carry__0_i_8
-       (.I0(cnt_reg_reg[9]),
-        .I1(Q[0]),
-        .I2(cdsclk2_start[8]),
+       (.I0(cdsclk2_start[8]),
+        .I1(cnt_reg_reg[9]),
+        .I2(cnt_reg1_carry__0_0),
         .I3(cnt_reg_reg[8]),
         .O(i__carry__0_i_8_n_0));
   LUT4 #(
@@ -2911,46 +3048,46 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     i__carry__0_i_8__1
-       (.I0(cnt_reg_reg[8]),
-        .I1(cnt_reg_reg[9]),
+       (.I0(cnt_reg_reg[9]),
+        .I1(cnt_reg_reg[8]),
         .O(i__carry__0_i_8__1_n_0));
   LUT2 #(
     .INIT(4'hE)) 
     i__carry__1_i_1
-       (.I0(cnt_reg_reg[23]),
-        .I1(cnt_reg_reg[22]),
+       (.I0(cnt_reg_reg[22]),
+        .I1(cnt_reg_reg[23]),
         .O(i__carry__1_i_1_n_0));
   LUT2 #(
     .INIT(4'hE)) 
     i__carry__1_i_1__0
-       (.I0(cnt_reg_reg[23]),
-        .I1(cnt_reg_reg[22]),
+       (.I0(cnt_reg_reg[22]),
+        .I1(cnt_reg_reg[23]),
         .O(i__carry__1_i_1__0_n_0));
   LUT3 #(
     .INIT(8'h15)) 
     i__carry__1_i_1__2
        (.I0(cdsclk2_end_wrapped_carry__1_n_1),
-        .I1(cnt_reg_reg[23]),
-        .I2(cnt_reg_reg[22]),
+        .I1(cnt_reg_reg[22]),
+        .I2(cnt_reg_reg[23]),
         .O(i__carry__1_i_1__2_n_0));
   LUT2 #(
     .INIT(4'hE)) 
     i__carry__1_i_2
-       (.I0(cnt_reg_reg[21]),
-        .I1(cnt_reg_reg[20]),
+       (.I0(cnt_reg_reg[20]),
+        .I1(cnt_reg_reg[21]),
         .O(i__carry__1_i_2_n_0));
   LUT2 #(
     .INIT(4'hE)) 
     i__carry__1_i_2__0
-       (.I0(cnt_reg_reg[21]),
-        .I1(cnt_reg_reg[20]),
+       (.I0(cnt_reg_reg[20]),
+        .I1(cnt_reg_reg[21]),
         .O(i__carry__1_i_2__0_n_0));
   LUT3 #(
     .INIT(8'h15)) 
     i__carry__1_i_2__2
        (.I0(cdsclk2_end_wrapped_carry__1_n_1),
-        .I1(cnt_reg_reg[21]),
-        .I2(cnt_reg_reg[20]),
+        .I1(cnt_reg_reg[20]),
+        .I2(cnt_reg_reg[21]),
         .O(i__carry__1_i_2__2_n_0));
   LUT2 #(
     .INIT(4'hE)) 
@@ -2974,59 +3111,59 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'hE)) 
     i__carry__1_i_4
-       (.I0(cnt_reg_reg[17]),
-        .I1(cnt_reg_reg[16]),
+       (.I0(cnt_reg_reg[16]),
+        .I1(cnt_reg_reg[17]),
         .O(i__carry__1_i_4_n_0));
   LUT2 #(
     .INIT(4'hE)) 
     i__carry__1_i_4__0
-       (.I0(cnt_reg_reg[17]),
-        .I1(cnt_reg_reg[16]),
+       (.I0(cnt_reg_reg[16]),
+        .I1(cnt_reg_reg[17]),
         .O(i__carry__1_i_4__0_n_0));
   LUT3 #(
     .INIT(8'h15)) 
     i__carry__1_i_4__2
        (.I0(cdsclk2_end_wrapped_carry__1_n_1),
-        .I1(cnt_reg_reg[17]),
-        .I2(cnt_reg_reg[16]),
+        .I1(cnt_reg_reg[16]),
+        .I2(cnt_reg_reg[17]),
         .O(i__carry__1_i_4__2_n_0));
   LUT3 #(
     .INIT(8'h42)) 
     i__carry__1_i_5
        (.I0(cdsclk2_end_wrapped_carry__1_n_1),
-        .I1(cnt_reg_reg[22]),
-        .I2(cnt_reg_reg[23]),
+        .I1(cnt_reg_reg[23]),
+        .I2(cnt_reg_reg[22]),
         .O(i__carry__1_i_5_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     i__carry__1_i_5__0
-       (.I0(cnt_reg_reg[22]),
-        .I1(cnt_reg_reg[23]),
+       (.I0(cnt_reg_reg[23]),
+        .I1(cnt_reg_reg[22]),
         .O(i__carry__1_i_5__0_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     i__carry__1_i_5__1
-       (.I0(cnt_reg_reg[22]),
-        .I1(cnt_reg_reg[23]),
+       (.I0(cnt_reg_reg[23]),
+        .I1(cnt_reg_reg[22]),
         .O(i__carry__1_i_5__1_n_0));
   LUT3 #(
     .INIT(8'h42)) 
     i__carry__1_i_6
        (.I0(cdsclk2_end_wrapped_carry__1_n_1),
-        .I1(cnt_reg_reg[20]),
-        .I2(cnt_reg_reg[21]),
+        .I1(cnt_reg_reg[21]),
+        .I2(cnt_reg_reg[20]),
         .O(i__carry__1_i_6_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     i__carry__1_i_6__0
-       (.I0(cnt_reg_reg[20]),
-        .I1(cnt_reg_reg[21]),
+       (.I0(cnt_reg_reg[21]),
+        .I1(cnt_reg_reg[20]),
         .O(i__carry__1_i_6__0_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     i__carry__1_i_6__1
-       (.I0(cnt_reg_reg[20]),
-        .I1(cnt_reg_reg[21]),
+       (.I0(cnt_reg_reg[21]),
+        .I1(cnt_reg_reg[20]),
         .O(i__carry__1_i_6__1_n_0));
   LUT3 #(
     .INIT(8'h42)) 
@@ -3051,20 +3188,20 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     .INIT(8'h42)) 
     i__carry__1_i_8
        (.I0(cdsclk2_end_wrapped_carry__1_n_1),
-        .I1(cnt_reg_reg[16]),
-        .I2(cnt_reg_reg[17]),
+        .I1(cnt_reg_reg[17]),
+        .I2(cnt_reg_reg[16]),
         .O(i__carry__1_i_8_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     i__carry__1_i_8__0
-       (.I0(cnt_reg_reg[16]),
-        .I1(cnt_reg_reg[17]),
+       (.I0(cnt_reg_reg[17]),
+        .I1(cnt_reg_reg[16]),
         .O(i__carry__1_i_8__0_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     i__carry__1_i_8__1
-       (.I0(cnt_reg_reg[16]),
-        .I1(cnt_reg_reg[17]),
+       (.I0(cnt_reg_reg[17]),
+        .I1(cnt_reg_reg[16]),
         .O(i__carry__1_i_8__1_n_0));
   LUT2 #(
     .INIT(4'hE)) 
@@ -3088,40 +3225,40 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'hE)) 
     i__carry__2_i_2
-       (.I0(cnt_reg_reg[29]),
-        .I1(cnt_reg_reg[28]),
+       (.I0(cnt_reg_reg[28]),
+        .I1(cnt_reg_reg[29]),
         .O(i__carry__2_i_2_n_0));
   LUT2 #(
     .INIT(4'hE)) 
     i__carry__2_i_2__0
-       (.I0(cnt_reg_reg[29]),
-        .I1(cnt_reg_reg[28]),
+       (.I0(cnt_reg_reg[28]),
+        .I1(cnt_reg_reg[29]),
         .O(i__carry__2_i_2__0_n_0));
   LUT3 #(
     .INIT(8'h15)) 
     i__carry__2_i_2__1
        (.I0(cdsclk2_end_wrapped_carry__1_n_1),
-        .I1(cnt_reg_reg[29]),
-        .I2(cnt_reg_reg[28]),
+        .I1(cnt_reg_reg[28]),
+        .I2(cnt_reg_reg[29]),
         .O(i__carry__2_i_2__1_n_0));
   LUT2 #(
     .INIT(4'hE)) 
     i__carry__2_i_3
-       (.I0(cnt_reg_reg[27]),
-        .I1(cnt_reg_reg[26]),
+       (.I0(cnt_reg_reg[26]),
+        .I1(cnt_reg_reg[27]),
         .O(i__carry__2_i_3_n_0));
   LUT2 #(
     .INIT(4'hE)) 
     i__carry__2_i_3__0
-       (.I0(cnt_reg_reg[27]),
-        .I1(cnt_reg_reg[26]),
+       (.I0(cnt_reg_reg[26]),
+        .I1(cnt_reg_reg[27]),
         .O(i__carry__2_i_3__0_n_0));
   LUT3 #(
     .INIT(8'h15)) 
     i__carry__2_i_3__1
        (.I0(cdsclk2_end_wrapped_carry__1_n_1),
-        .I1(cnt_reg_reg[27]),
-        .I2(cnt_reg_reg[26]),
+        .I1(cnt_reg_reg[26]),
+        .I2(cnt_reg_reg[27]),
         .O(i__carry__2_i_3__1_n_0));
   LUT2 #(
     .INIT(4'hE)) 
@@ -3165,39 +3302,39 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     .INIT(8'h42)) 
     i__carry__2_i_6
        (.I0(cdsclk2_end_wrapped_carry__1_n_1),
-        .I1(cnt_reg_reg[28]),
-        .I2(cnt_reg_reg[29]),
+        .I1(cnt_reg_reg[29]),
+        .I2(cnt_reg_reg[28]),
         .O(i__carry__2_i_6_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     i__carry__2_i_6__0
-       (.I0(cnt_reg_reg[28]),
-        .I1(cnt_reg_reg[29]),
+       (.I0(cnt_reg_reg[29]),
+        .I1(cnt_reg_reg[28]),
         .O(i__carry__2_i_6__0_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     i__carry__2_i_6__1
-       (.I0(cnt_reg_reg[28]),
-        .I1(cnt_reg_reg[29]),
+       (.I0(cnt_reg_reg[29]),
+        .I1(cnt_reg_reg[28]),
         .O(i__carry__2_i_6__1_n_0));
   LUT3 #(
     .INIT(8'h42)) 
     i__carry__2_i_7
        (.I0(cdsclk2_end_wrapped_carry__1_n_1),
-        .I1(cnt_reg_reg[26]),
-        .I2(cnt_reg_reg[27]),
+        .I1(cnt_reg_reg[27]),
+        .I2(cnt_reg_reg[26]),
         .O(i__carry__2_i_7_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     i__carry__2_i_7__0
-       (.I0(cnt_reg_reg[26]),
-        .I1(cnt_reg_reg[27]),
+       (.I0(cnt_reg_reg[27]),
+        .I1(cnt_reg_reg[26]),
         .O(i__carry__2_i_7__0_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     i__carry__2_i_7__1
-       (.I0(cnt_reg_reg[26]),
-        .I1(cnt_reg_reg[27]),
+       (.I0(cnt_reg_reg[27]),
+        .I1(cnt_reg_reg[26]),
         .O(i__carry__2_i_7__1_n_0));
   LUT3 #(
     .INIT(8'h42)) 
@@ -3221,7 +3358,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT3 #(
     .INIT(8'hA8)) 
     i__carry_i_1
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(cnt_reg_reg[6]),
         .I2(cnt_reg_reg[7]),
         .O(i__carry_i_1_n_0));
@@ -3244,9 +3381,9 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT3 #(
     .INIT(8'hE8)) 
     i__carry_i_2
-       (.I0(cnt_reg_reg[2]),
-        .I1(Q[0]),
-        .I2(cnt_reg_reg[3]),
+       (.I0(cnt_reg1_carry__0_0),
+        .I1(cnt_reg_reg[3]),
+        .I2(cnt_reg_reg[2]),
         .O(i__carry_i_2_n_0));
   LUT4 #(
     .INIT(16'h2F02)) 
@@ -3307,7 +3444,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     i__carry_i_4__1
        (.I0(cnt_reg_reg[7]),
         .I1(cnt_reg_reg[6]),
-        .I2(Q[0]),
+        .I2(cnt_reg1_carry__0_0),
         .O(i__carry_i_4__1_n_0));
   LUT4 #(
     .INIT(16'h0990)) 
@@ -3328,8 +3465,8 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h8)) 
     i__carry_i_5__1
-       (.I0(cnt_reg_reg[4]),
-        .I1(cnt_reg_reg[5]),
+       (.I0(cnt_reg_reg[5]),
+        .I1(cnt_reg_reg[4]),
         .O(i__carry_i_5__1_n_0));
   LUT4 #(
     .INIT(16'h9009)) 
@@ -3350,8 +3487,8 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT3 #(
     .INIT(8'h06)) 
     i__carry_i_6__1
-       (.I0(Q[0]),
-        .I1(cnt_reg_reg[3]),
+       (.I0(cnt_reg_reg[3]),
+        .I1(cnt_reg1_carry__0_0),
         .I2(cnt_reg_reg[2]),
         .O(i__carry_i_6__1_n_0));
   LUT4 #(
@@ -3548,8 +3685,8 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     .INIT(32'h40000040)) 
     p_2_out__1_carry__0_i_1
        (.I0(p_2_out__1_carry__0_i_9_n_0),
-        .I1(cnt_reg_reg[4]),
-        .I2(cnt_reg_reg[5]),
+        .I1(cnt_reg_reg[5]),
+        .I2(cnt_reg_reg[4]),
         .I3(p_2_out__1_carry__0_i_10_n_0),
         .I4(cnt_reg_reg[6]),
         .O(p_2_out__1_carry__0_i_1_n_0));
@@ -3557,77 +3694,77 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     .INIT(64'h555555556AAA556A)) 
     p_2_out__1_carry__0_i_10
        (.I0(p_2_out__1_carry__0_i_15_n_0),
-        .I1(Q[4]),
+        .I1(Q[3]),
         .I2(delay_clamped[2]),
-        .I3(Q[5]),
-        .I4(Q[0]),
+        .I3(Q[4]),
+        .I4(cnt_reg1_carry__0_0),
         .I5(p_2_out__1_carry__0_i_16_n_0),
         .O(p_2_out__1_carry__0_i_10_n_0));
   LUT5 #(
     .INIT(32'h599A9A9A)) 
     p_2_out__1_carry__0_i_11
        (.I0(p_2_out__1_carry__0_i_16_n_0),
-        .I1(Q[0]),
-        .I2(Q[5]),
+        .I1(cnt_reg1_carry__0_0),
+        .I2(Q[4]),
         .I3(delay_clamped[2]),
-        .I4(Q[4]),
+        .I4(Q[3]),
         .O(p_2_out__1_carry__0_i_11_n_0));
   LUT6 #(
     .INIT(64'h0802020802080208)) 
     p_2_out__1_carry__0_i_12
        (.I0(p_2_out__1_carry__0_i_17_n_0),
-        .I1(Q[5]),
+        .I1(Q[4]),
         .I2(p_2_out__1_carry_i_6_n_0),
-        .I3(Q[0]),
+        .I3(cnt_reg1_carry__0_0),
         .I4(Q[3]),
-        .I5(Q[4]),
+        .I5(Q[2]),
         .O(p_2_out__1_carry__0_i_12_n_0));
   LUT6 #(
     .INIT(64'h0000000000010101)) 
     p_2_out__1_carry__0_i_13
        (.I0(p_2_out__1_carry__0_i_16_n_0),
-        .I1(Q[0]),
-        .I2(Q[5]),
+        .I1(cnt_reg1_carry__0_0),
+        .I2(Q[4]),
         .I3(delay_clamped[2]),
-        .I4(Q[4]),
+        .I4(Q[3]),
         .I5(p_2_out__1_carry__0_i_15_n_0),
         .O(p_2_out__1_carry__0_i_13_n_0));
   LUT5 #(
-    .INIT(32'hF757FD5D)) 
+    .INIT(32'h8BB8FFFF)) 
     p_2_out__1_carry__0_i_14
-       (.I0(cnt_reg_reg[3]),
-        .I1(Q[4]),
-        .I2(p_2_out__1_carry_i_6_n_0),
-        .I3(Q[0]),
-        .I4(Q[3]),
+       (.I0(cnt_reg1_carry__0_0),
+        .I1(p_2_out__1_carry_i_6_n_0),
+        .I2(Q[2]),
+        .I3(Q[3]),
+        .I4(cnt_reg_reg[3]),
         .O(p_2_out__1_carry__0_i_14_n_0));
   LUT3 #(
     .INIT(8'h54)) 
     p_2_out__1_carry__0_i_15
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(p_2_out__1_carry_i_8_n_0),
-        .I2(Q[7]),
+        .I2(Q[6]),
         .O(p_2_out__1_carry__0_i_15_n_0));
   (* SOFT_HLUTNM = "soft_lutpair0" *) 
   LUT3 #(
     .INIT(8'h54)) 
     p_2_out__1_carry__0_i_16
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(p_2_out__1_carry_i_8_n_0),
-        .I2(Q[6]),
+        .I2(Q[5]),
         .O(p_2_out__1_carry__0_i_16_n_0));
   LUT2 #(
     .INIT(4'h8)) 
     p_2_out__1_carry__0_i_17
-       (.I0(cnt_reg_reg[4]),
-        .I1(cnt_reg_reg[5]),
+       (.I0(cnt_reg_reg[5]),
+        .I1(cnt_reg_reg[4]),
         .O(p_2_out__1_carry__0_i_17_n_0));
   LUT5 #(
     .INIT(32'hBF4040BF)) 
     p_2_out__1_carry__0_i_2
        (.I0(p_2_out__1_carry__0_i_9_n_0),
-        .I1(cnt_reg_reg[4]),
-        .I2(cnt_reg_reg[5]),
+        .I1(cnt_reg_reg[5]),
+        .I2(cnt_reg_reg[4]),
         .I3(p_2_out__1_carry__0_i_10_n_0),
         .I4(cnt_reg_reg[6]),
         .O(p_2_out__1_carry__0_i_2_n_0));
@@ -3635,23 +3772,23 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     .INIT(4'h6)) 
     p_2_out__1_carry__0_i_3
        (.I0(p_2_out__1_carry__0_i_11_n_0),
-        .I1(Q[0]),
+        .I1(cnt_reg1_carry__0_0),
         .O(p_2_out__1_carry__0_i_3_n_0));
   LUT5 #(
-    .INIT(32'h3A350000)) 
+    .INIT(32'h0082AA82)) 
     p_2_out__1_carry__0_i_4
-       (.I0(Q[3]),
-        .I1(Q[0]),
-        .I2(p_2_out__1_carry_i_6_n_0),
-        .I3(Q[4]),
-        .I4(cnt_reg_reg[3]),
+       (.I0(cnt_reg_reg[3]),
+        .I1(Q[3]),
+        .I2(Q[2]),
+        .I3(p_2_out__1_carry_i_6_n_0),
+        .I4(cnt_reg1_carry__0_0),
         .O(p_2_out__1_carry__0_i_4_n_0));
   LUT6 #(
     .INIT(64'h6996C33CC33C9669)) 
     p_2_out__1_carry__0_i_5
        (.I0(p_2_out__1_carry__0_i_12_n_0),
         .I1(cnt_reg_reg[7]),
-        .I2(Q[0]),
+        .I2(cnt_reg1_carry__0_0),
         .I3(p_2_out__1_carry__0_i_13_n_0),
         .I4(cnt_reg_reg[6]),
         .I5(p_2_out__1_carry__0_i_10_n_0),
@@ -3661,15 +3798,15 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     p_2_out__1_carry__0_i_6
        (.I0(cnt_reg_reg[6]),
         .I1(p_2_out__1_carry__0_i_10_n_0),
-        .I2(cnt_reg_reg[5]),
-        .I3(cnt_reg_reg[4]),
+        .I2(cnt_reg_reg[4]),
+        .I3(cnt_reg_reg[5]),
         .I4(p_2_out__1_carry__0_i_9_n_0),
-        .I5(Q[0]),
+        .I5(cnt_reg1_carry__0_0),
         .O(p_2_out__1_carry__0_i_6_n_0));
   LUT5 #(
     .INIT(32'h99696696)) 
     p_2_out__1_carry__0_i_7
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(p_2_out__1_carry__0_i_11_n_0),
         .I2(cnt_reg_reg[4]),
         .I3(p_2_out__1_carry__0_i_9_n_0),
@@ -3685,11 +3822,11 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT5 #(
     .INIT(32'hFF78FF87)) 
     p_2_out__1_carry__0_i_9
-       (.I0(Q[4]),
+       (.I0(Q[2]),
         .I1(Q[3]),
-        .I2(Q[0]),
+        .I2(cnt_reg1_carry__0_0),
         .I3(p_2_out__1_carry_i_6_n_0),
-        .I4(Q[5]),
+        .I4(Q[4]),
         .O(p_2_out__1_carry__0_i_9_n_0));
   (* ADDER_THRESHOLD = "35" *) 
   CARRY4 p_2_out__1_carry__1
@@ -3707,20 +3844,20 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
         .I2(p_2_out__1_carry__1_i_9_n_0),
         .O(p_2_out__1_carry__1_i_1_n_0));
   LUT4 #(
-    .INIT(16'h6664)) 
+    .INIT(16'h0EF0)) 
     p_2_out__1_carry__1_i_2
-       (.I0(cnt_reg_reg[9]),
-        .I1(p_2_out__1_carry__1_i_9_n_0),
-        .I2(Q[0]),
-        .I3(cnt_reg_reg[8]),
+       (.I0(cnt_reg1_carry__0_0),
+        .I1(cnt_reg_reg[8]),
+        .I2(p_2_out__1_carry__1_i_9_n_0),
+        .I3(cnt_reg_reg[9]),
         .O(p_2_out__1_carry__1_i_2_n_0));
   LUT4 #(
-    .INIT(16'h4440)) 
+    .INIT(16'h00A8)) 
     p_2_out__1_carry__1_i_3
-       (.I0(p_2_out__1_carry__0_i_13_n_0),
-        .I1(cnt_reg_reg[8]),
+       (.I0(cnt_reg_reg[8]),
+        .I1(cnt_reg1_carry__0_0),
         .I2(cnt_reg_reg[7]),
-        .I3(Q[0]),
+        .I3(p_2_out__1_carry__0_i_13_n_0),
         .O(p_2_out__1_carry__1_i_3_n_0));
   LUT5 #(
     .INIT(32'h0EE0E00E)) 
@@ -3728,7 +3865,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
        (.I0(p_2_out__1_carry__0_i_10_n_0),
         .I1(cnt_reg_reg[6]),
         .I2(p_2_out__1_carry__0_i_13_n_0),
-        .I3(Q[0]),
+        .I3(cnt_reg1_carry__0_0),
         .I4(cnt_reg_reg[7]),
         .O(p_2_out__1_carry__1_i_4_n_0));
   LUT4 #(
@@ -3740,22 +3877,22 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
         .I3(cnt_reg_reg[11]),
         .O(p_2_out__1_carry__1_i_5_n_0));
   LUT5 #(
-    .INIT(32'h0F0FE10F)) 
+    .INIT(32'h0E00F1FF)) 
     p_2_out__1_carry__1_i_6
        (.I0(cnt_reg_reg[8]),
-        .I1(Q[0]),
-        .I2(cnt_reg_reg[10]),
+        .I1(cnt_reg1_carry__0_0),
+        .I2(p_2_out__1_carry__1_i_9_n_0),
         .I3(cnt_reg_reg[9]),
-        .I4(p_2_out__1_carry__1_i_9_n_0),
+        .I4(cnt_reg_reg[10]),
         .O(p_2_out__1_carry__1_i_6_n_0));
   LUT5 #(
-    .INIT(32'h3C63C3CC)) 
+    .INIT(32'h3CC363CC)) 
     p_2_out__1_carry__1_i_7
        (.I0(cnt_reg_reg[7]),
         .I1(cnt_reg_reg[9]),
         .I2(p_2_out__1_carry__1_i_9_n_0),
-        .I3(Q[0]),
-        .I4(cnt_reg_reg[8]),
+        .I3(cnt_reg_reg[8]),
+        .I4(cnt_reg1_carry__0_0),
         .O(p_2_out__1_carry__1_i_7_n_0));
   LUT6 #(
     .INIT(64'h0EE0E001F11F1FFE)) 
@@ -3764,17 +3901,17 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
         .I1(p_2_out__1_carry__0_i_10_n_0),
         .I2(p_2_out__1_carry__0_i_13_n_0),
         .I3(cnt_reg_reg[7]),
-        .I4(Q[0]),
+        .I4(cnt_reg1_carry__0_0),
         .I5(cnt_reg_reg[8]),
         .O(p_2_out__1_carry__1_i_8_n_0));
   LUT6 #(
     .INIT(64'hFFFFFFFFEAAAFFEA)) 
     p_2_out__1_carry__1_i_9
        (.I0(p_2_out__1_carry__0_i_15_n_0),
-        .I1(Q[4]),
+        .I1(Q[3]),
         .I2(delay_clamped[2]),
-        .I3(Q[5]),
-        .I4(Q[0]),
+        .I3(Q[4]),
+        .I4(cnt_reg1_carry__0_0),
         .I5(p_2_out__1_carry__0_i_16_n_0),
         .O(p_2_out__1_carry__1_i_9_n_0));
   (* ADDER_THRESHOLD = "35" *) 
@@ -3951,34 +4088,34 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
        (.I0(cnt_reg_reg[31]),
         .O(p_2_out__1_carry__7_i_1_n_0));
   LUT5 #(
-    .INIT(32'hA656A959)) 
+    .INIT(32'h959A9A95)) 
     p_2_out__1_carry_i_1
        (.I0(cnt_reg_reg[3]),
-        .I1(Q[4]),
+        .I1(cnt_reg1_carry__0_0),
         .I2(p_2_out__1_carry_i_6_n_0),
-        .I3(Q[0]),
+        .I3(Q[2]),
         .I4(Q[3]),
         .O(p_2_out__1_carry_i_1_n_0));
   LUT5 #(
-    .INIT(32'h3B34C4CB)) 
+    .INIT(32'h09FAF605)) 
     p_2_out__1_carry_i_2
        (.I0(Q[3]),
-        .I1(Q[0]),
+        .I1(Q[2]),
         .I2(p_2_out__1_carry_i_6_n_0),
-        .I3(Q[4]),
+        .I3(cnt_reg1_carry__0_0),
         .I4(cnt_reg_reg[3]),
         .O(p_2_out__1_carry_i_2_n_0));
   LUT3 #(
     .INIT(8'h69)) 
     p_2_out__1_carry_i_3
        (.I0(delay_clamped[2]),
-        .I1(Q[0]),
+        .I1(cnt_reg1_carry__0_0),
         .I2(cnt_reg_reg[2]),
         .O(p_2_out__1_carry_i_3_n_0));
   LUT3 #(
     .INIT(8'h2D)) 
     p_2_out__1_carry_i_4
-       (.I0(Q[2]),
+       (.I0(Q[1]),
         .I1(p_2_out__1_carry_i_6_n_0),
         .I2(cnt_reg_reg[1]),
         .O(p_2_out__1_carry_i_4_n_0));
@@ -3987,41 +4124,41 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     p_2_out__1_carry_i_5
        (.I0(cnt_reg_reg[0]),
         .I1(p_2_out__1_carry_i_6_n_0),
-        .I2(Q[1]),
+        .I2(Q[0]),
         .O(p_2_out__1_carry_i_5_n_0));
   (* SOFT_HLUTNM = "soft_lutpair0" *) 
   LUT4 #(
     .INIT(16'hFEAA)) 
     p_2_out__1_carry_i_6
        (.I0(p_2_out__1_carry_i_8_n_0),
-        .I1(Q[7]),
-        .I2(Q[6]),
-        .I3(Q[0]),
+        .I1(Q[6]),
+        .I2(Q[5]),
+        .I3(cnt_reg1_carry__0_0),
         .O(p_2_out__1_carry_i_6_n_0));
   LUT5 #(
     .INIT(32'h01FF00AA)) 
     p_2_out__1_carry_i_7
        (.I0(p_2_out__1_carry_i_8_n_0),
-        .I1(Q[7]),
-        .I2(Q[6]),
-        .I3(Q[0]),
-        .I4(Q[3]),
+        .I1(Q[6]),
+        .I2(Q[5]),
+        .I3(cnt_reg1_carry__0_0),
+        .I4(Q[2]),
         .O(delay_clamped[2]));
   LUT3 #(
     .INIT(8'h40)) 
     p_2_out__1_carry_i_8
        (.I0(p_2_out__1_carry_i_9_n_0),
-        .I1(Q[4]),
-        .I2(Q[5]),
+        .I1(Q[3]),
+        .I2(Q[4]),
         .O(p_2_out__1_carry_i_8_n_0));
   LUT5 #(
     .INIT(32'h15775577)) 
     p_2_out__1_carry_i_9
-       (.I0(Q[0]),
-        .I1(Q[2]),
-        .I2(Q[7]),
-        .I3(Q[3]),
-        .I4(Q[6]),
+       (.I0(cnt_reg1_carry__0_0),
+        .I1(Q[1]),
+        .I2(Q[6]),
+        .I3(Q[2]),
+        .I4(Q[5]),
         .O(p_2_out__1_carry_i_9_n_0));
   (* COMPARATOR_THRESHOLD = "11" *) 
   CARRY4 rg_p270_c_carry
@@ -4042,8 +4179,8 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'hE)) 
     rg_p270_c_carry__0_i_1
-       (.I0(cnt_reg_reg[15]),
-        .I1(cnt_reg_reg[14]),
+       (.I0(cnt_reg_reg[14]),
+        .I1(cnt_reg_reg[15]),
         .O(rg_p270_c_carry__0_i_1_n_0));
   LUT2 #(
     .INIT(4'hE)) 
@@ -4054,21 +4191,21 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'hE)) 
     rg_p270_c_carry__0_i_3
-       (.I0(cnt_reg_reg[11]),
-        .I1(cnt_reg_reg[10]),
+       (.I0(cnt_reg_reg[10]),
+        .I1(cnt_reg_reg[11]),
         .O(rg_p270_c_carry__0_i_3_n_0));
   LUT3 #(
     .INIT(8'hE8)) 
     rg_p270_c_carry__0_i_4
-       (.I0(Q[0]),
-        .I1(cnt_reg_reg[8]),
+       (.I0(cnt_reg_reg[8]),
+        .I1(cnt_reg1_carry__0_0),
         .I2(cnt_reg_reg[9]),
         .O(rg_p270_c_carry__0_i_4_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     rg_p270_c_carry__0_i_5
-       (.I0(cnt_reg_reg[14]),
-        .I1(cnt_reg_reg[15]),
+       (.I0(cnt_reg_reg[15]),
+        .I1(cnt_reg_reg[14]),
         .O(rg_p270_c_carry__0_i_5_n_0));
   LUT2 #(
     .INIT(4'h1)) 
@@ -4079,14 +4216,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     rg_p270_c_carry__0_i_7
-       (.I0(cnt_reg_reg[10]),
-        .I1(cnt_reg_reg[11]),
+       (.I0(cnt_reg_reg[11]),
+        .I1(cnt_reg_reg[10]),
         .O(rg_p270_c_carry__0_i_7_n_0));
   LUT3 #(
     .INIT(8'h06)) 
     rg_p270_c_carry__0_i_8
        (.I0(cnt_reg_reg[9]),
-        .I1(Q[0]),
+        .I1(cnt_reg1_carry__0_0),
         .I2(cnt_reg_reg[8]),
         .O(rg_p270_c_carry__0_i_8_n_0));
   (* COMPARATOR_THRESHOLD = "11" *) 
@@ -4100,14 +4237,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'hE)) 
     rg_p270_c_carry__1_i_1
-       (.I0(cnt_reg_reg[23]),
-        .I1(cnt_reg_reg[22]),
+       (.I0(cnt_reg_reg[22]),
+        .I1(cnt_reg_reg[23]),
         .O(rg_p270_c_carry__1_i_1_n_0));
   LUT2 #(
     .INIT(4'hE)) 
     rg_p270_c_carry__1_i_2
-       (.I0(cnt_reg_reg[21]),
-        .I1(cnt_reg_reg[20]),
+       (.I0(cnt_reg_reg[20]),
+        .I1(cnt_reg_reg[21]),
         .O(rg_p270_c_carry__1_i_2_n_0));
   LUT2 #(
     .INIT(4'hE)) 
@@ -4118,20 +4255,20 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'hE)) 
     rg_p270_c_carry__1_i_4
-       (.I0(cnt_reg_reg[17]),
-        .I1(cnt_reg_reg[16]),
+       (.I0(cnt_reg_reg[16]),
+        .I1(cnt_reg_reg[17]),
         .O(rg_p270_c_carry__1_i_4_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     rg_p270_c_carry__1_i_5
-       (.I0(cnt_reg_reg[22]),
-        .I1(cnt_reg_reg[23]),
+       (.I0(cnt_reg_reg[23]),
+        .I1(cnt_reg_reg[22]),
         .O(rg_p270_c_carry__1_i_5_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     rg_p270_c_carry__1_i_6
-       (.I0(cnt_reg_reg[20]),
-        .I1(cnt_reg_reg[21]),
+       (.I0(cnt_reg_reg[21]),
+        .I1(cnt_reg_reg[20]),
         .O(rg_p270_c_carry__1_i_6_n_0));
   LUT2 #(
     .INIT(4'h1)) 
@@ -4142,8 +4279,8 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     rg_p270_c_carry__1_i_8
-       (.I0(cnt_reg_reg[16]),
-        .I1(cnt_reg_reg[17]),
+       (.I0(cnt_reg_reg[17]),
+        .I1(cnt_reg_reg[16]),
         .O(rg_p270_c_carry__1_i_8_n_0));
   (* COMPARATOR_THRESHOLD = "11" *) 
   CARRY4 rg_p270_c_carry__2
@@ -4162,14 +4299,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'hE)) 
     rg_p270_c_carry__2_i_2
-       (.I0(cnt_reg_reg[29]),
-        .I1(cnt_reg_reg[28]),
+       (.I0(cnt_reg_reg[28]),
+        .I1(cnt_reg_reg[29]),
         .O(rg_p270_c_carry__2_i_2_n_0));
   LUT2 #(
     .INIT(4'hE)) 
     rg_p270_c_carry__2_i_3
-       (.I0(cnt_reg_reg[27]),
-        .I1(cnt_reg_reg[26]),
+       (.I0(cnt_reg_reg[26]),
+        .I1(cnt_reg_reg[27]),
         .O(rg_p270_c_carry__2_i_3_n_0));
   LUT2 #(
     .INIT(4'hE)) 
@@ -4186,14 +4323,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     rg_p270_c_carry__2_i_6
-       (.I0(cnt_reg_reg[28]),
-        .I1(cnt_reg_reg[29]),
+       (.I0(cnt_reg_reg[29]),
+        .I1(cnt_reg_reg[28]),
         .O(rg_p270_c_carry__2_i_6_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     rg_p270_c_carry__2_i_7
-       (.I0(cnt_reg_reg[26]),
-        .I1(cnt_reg_reg[27]),
+       (.I0(cnt_reg_reg[27]),
+        .I1(cnt_reg_reg[26]),
         .O(rg_p270_c_carry__2_i_7_n_0));
   LUT2 #(
     .INIT(4'h1)) 
@@ -4205,21 +4342,21 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     .INIT(8'h80)) 
     rg_p270_c_carry_i_1
        (.I0(cnt_reg_reg[7]),
-        .I1(Q[0]),
+        .I1(cnt_reg1_carry__0_0),
         .I2(cnt_reg_reg[6]),
         .O(rg_p270_c_carry_i_1_n_0));
   LUT3 #(
-    .INIT(8'hC8)) 
+    .INIT(8'hA8)) 
     rg_p270_c_carry_i_2
-       (.I0(cnt_reg_reg[4]),
-        .I1(cnt_reg_reg[5]),
-        .I2(Q[0]),
+       (.I0(cnt_reg_reg[5]),
+        .I1(cnt_reg1_carry__0_0),
+        .I2(cnt_reg_reg[4]),
         .O(rg_p270_c_carry_i_2_n_0));
   LUT2 #(
     .INIT(4'h8)) 
     rg_p270_c_carry_i_3
-       (.I0(cnt_reg_reg[3]),
-        .I1(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
+        .I1(cnt_reg_reg[3]),
         .O(rg_p270_c_carry_i_3_n_0));
   LUT2 #(
     .INIT(4'h8)) 
@@ -4230,7 +4367,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT3 #(
     .INIT(8'h48)) 
     rg_p270_c_carry_i_5
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(cnt_reg_reg[7]),
         .I2(cnt_reg_reg[6]),
         .O(rg_p270_c_carry_i_5_n_0));
@@ -4238,14 +4375,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     .INIT(8'h18)) 
     rg_p270_c_carry_i_6
        (.I0(cnt_reg_reg[4]),
-        .I1(Q[0]),
+        .I1(cnt_reg1_carry__0_0),
         .I2(cnt_reg_reg[5]),
         .O(rg_p270_c_carry_i_6_n_0));
   LUT3 #(
     .INIT(8'h60)) 
     rg_p270_c_carry_i_7
-       (.I0(Q[0]),
-        .I1(cnt_reg_reg[3]),
+       (.I0(cnt_reg_reg[3]),
+        .I1(cnt_reg1_carry__0_0),
         .I2(cnt_reg_reg[2]),
         .O(rg_p270_c_carry_i_7_n_0));
   LUT2 #(
@@ -4273,14 +4410,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p0_c_carry__0_i_1
-       (.I0(cnt_reg_reg[16]),
-        .I1(cnt_reg_reg[17]),
+       (.I0(cnt_reg_reg[17]),
+        .I1(cnt_reg_reg[16]),
         .O(sclk_p0_c_carry__0_i_1_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p0_c_carry__0_i_2
-       (.I0(cnt_reg_reg[14]),
-        .I1(cnt_reg_reg[15]),
+       (.I0(cnt_reg_reg[15]),
+        .I1(cnt_reg_reg[14]),
         .O(sclk_p0_c_carry__0_i_2_n_0));
   LUT2 #(
     .INIT(4'h1)) 
@@ -4291,8 +4428,8 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p0_c_carry__0_i_4
-       (.I0(cnt_reg_reg[10]),
-        .I1(cnt_reg_reg[11]),
+       (.I0(cnt_reg_reg[11]),
+        .I1(cnt_reg_reg[10]),
         .O(sclk_p0_c_carry__0_i_4_n_0));
   (* COMPARATOR_THRESHOLD = "11" *) 
   CARRY4 sclk_p0_c_carry__1
@@ -4311,14 +4448,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p0_c_carry__1_i_2
-       (.I0(cnt_reg_reg[22]),
-        .I1(cnt_reg_reg[23]),
+       (.I0(cnt_reg_reg[23]),
+        .I1(cnt_reg_reg[22]),
         .O(sclk_p0_c_carry__1_i_2_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p0_c_carry__1_i_3
-       (.I0(cnt_reg_reg[20]),
-        .I1(cnt_reg_reg[21]),
+       (.I0(cnt_reg_reg[21]),
+        .I1(cnt_reg_reg[20]),
         .O(sclk_p0_c_carry__1_i_3_n_0));
   LUT2 #(
     .INIT(4'h1)) 
@@ -4343,46 +4480,46 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p0_c_carry__2_i_2
-       (.I0(cnt_reg_reg[28]),
-        .I1(cnt_reg_reg[29]),
+       (.I0(cnt_reg_reg[29]),
+        .I1(cnt_reg_reg[28]),
         .O(sclk_p0_c_carry__2_i_2_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p0_c_carry__2_i_3
-       (.I0(cnt_reg_reg[26]),
-        .I1(cnt_reg_reg[27]),
+       (.I0(cnt_reg_reg[27]),
+        .I1(cnt_reg_reg[26]),
         .O(sclk_p0_c_carry__2_i_3_n_0));
   LUT3 #(
     .INIT(8'h01)) 
     sclk_p0_c_carry_i_1
        (.I0(cnt_reg_reg[9]),
-        .I1(cnt_reg_reg[8]),
-        .I2(Q[0]),
+        .I1(cnt_reg1_carry__0_0),
+        .I2(cnt_reg_reg[8]),
         .O(sclk_p0_c_carry_i_1_n_0));
   LUT3 #(
     .INIT(8'h17)) 
     sclk_p0_c_carry_i_2
        (.I0(cnt_reg_reg[7]),
         .I1(cnt_reg_reg[6]),
-        .I2(Q[0]),
+        .I2(cnt_reg1_carry__0_0),
         .O(sclk_p0_c_carry_i_2_n_0));
   LUT3 #(
-    .INIT(8'h37)) 
+    .INIT(8'h1F)) 
     sclk_p0_c_carry_i_3
-       (.I0(Q[0]),
-        .I1(cnt_reg_reg[5]),
-        .I2(cnt_reg_reg[4]),
+       (.I0(cnt_reg_reg[4]),
+        .I1(cnt_reg1_carry__0_0),
+        .I2(cnt_reg_reg[5]),
         .O(sclk_p0_c_carry_i_3_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p0_c_carry_i_4
-       (.I0(cnt_reg_reg[2]),
-        .I1(cnt_reg_reg[3]),
+       (.I0(cnt_reg_reg[3]),
+        .I1(cnt_reg_reg[2]),
         .O(sclk_p0_c_carry_i_4_n_0));
   LUT3 #(
     .INIT(8'h06)) 
     sclk_p0_c_carry_i_5
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(cnt_reg_reg[8]),
         .I2(cnt_reg_reg[9]),
         .O(sclk_p0_c_carry_i_5_n_0));
@@ -4390,14 +4527,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     .INIT(8'h60)) 
     sclk_p0_c_carry_i_6
        (.I0(cnt_reg_reg[7]),
-        .I1(Q[0]),
+        .I1(cnt_reg1_carry__0_0),
         .I2(cnt_reg_reg[6]),
         .O(sclk_p0_c_carry_i_6_n_0));
   LUT3 #(
     .INIT(8'h28)) 
     sclk_p0_c_carry_i_7
        (.I0(cnt_reg_reg[5]),
-        .I1(Q[0]),
+        .I1(cnt_reg1_carry__0_0),
         .I2(cnt_reg_reg[4]),
         .O(sclk_p0_c_carry_i_7_n_0));
   LUT2 #(
@@ -4425,8 +4562,8 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'hE)) 
     sclk_p180_c_carry__0_i_1
-       (.I0(cnt_reg_reg[15]),
-        .I1(cnt_reg_reg[14]),
+       (.I0(cnt_reg_reg[14]),
+        .I1(cnt_reg_reg[15]),
         .O(sclk_p180_c_carry__0_i_1_n_0));
   LUT2 #(
     .INIT(4'hE)) 
@@ -4437,21 +4574,21 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'hE)) 
     sclk_p180_c_carry__0_i_3
-       (.I0(cnt_reg_reg[11]),
-        .I1(cnt_reg_reg[10]),
+       (.I0(cnt_reg_reg[10]),
+        .I1(cnt_reg_reg[11]),
         .O(sclk_p180_c_carry__0_i_3_n_0));
   LUT3 #(
-    .INIT(8'hEA)) 
+    .INIT(8'hEC)) 
     sclk_p180_c_carry__0_i_4
-       (.I0(cnt_reg_reg[9]),
-        .I1(cnt_reg_reg[8]),
-        .I2(Q[0]),
+       (.I0(cnt_reg_reg[8]),
+        .I1(cnt_reg_reg[9]),
+        .I2(cnt_reg1_carry__0_0),
         .O(sclk_p180_c_carry__0_i_4_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p180_c_carry__0_i_5
-       (.I0(cnt_reg_reg[14]),
-        .I1(cnt_reg_reg[15]),
+       (.I0(cnt_reg_reg[15]),
+        .I1(cnt_reg_reg[14]),
         .O(sclk_p180_c_carry__0_i_5_n_0));
   LUT2 #(
     .INIT(4'h1)) 
@@ -4462,13 +4599,13 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p180_c_carry__0_i_7
-       (.I0(cnt_reg_reg[10]),
-        .I1(cnt_reg_reg[11]),
+       (.I0(cnt_reg_reg[11]),
+        .I1(cnt_reg_reg[10]),
         .O(sclk_p180_c_carry__0_i_7_n_0));
   LUT3 #(
     .INIT(8'h06)) 
     sclk_p180_c_carry__0_i_8
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(cnt_reg_reg[8]),
         .I2(cnt_reg_reg[9]),
         .O(sclk_p180_c_carry__0_i_8_n_0));
@@ -4483,14 +4620,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'hE)) 
     sclk_p180_c_carry__1_i_1
-       (.I0(cnt_reg_reg[23]),
-        .I1(cnt_reg_reg[22]),
+       (.I0(cnt_reg_reg[22]),
+        .I1(cnt_reg_reg[23]),
         .O(sclk_p180_c_carry__1_i_1_n_0));
   LUT2 #(
     .INIT(4'hE)) 
     sclk_p180_c_carry__1_i_2
-       (.I0(cnt_reg_reg[21]),
-        .I1(cnt_reg_reg[20]),
+       (.I0(cnt_reg_reg[20]),
+        .I1(cnt_reg_reg[21]),
         .O(sclk_p180_c_carry__1_i_2_n_0));
   LUT2 #(
     .INIT(4'hE)) 
@@ -4501,20 +4638,20 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'hE)) 
     sclk_p180_c_carry__1_i_4
-       (.I0(cnt_reg_reg[17]),
-        .I1(cnt_reg_reg[16]),
+       (.I0(cnt_reg_reg[16]),
+        .I1(cnt_reg_reg[17]),
         .O(sclk_p180_c_carry__1_i_4_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p180_c_carry__1_i_5
-       (.I0(cnt_reg_reg[22]),
-        .I1(cnt_reg_reg[23]),
+       (.I0(cnt_reg_reg[23]),
+        .I1(cnt_reg_reg[22]),
         .O(sclk_p180_c_carry__1_i_5_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p180_c_carry__1_i_6
-       (.I0(cnt_reg_reg[20]),
-        .I1(cnt_reg_reg[21]),
+       (.I0(cnt_reg_reg[21]),
+        .I1(cnt_reg_reg[20]),
         .O(sclk_p180_c_carry__1_i_6_n_0));
   LUT2 #(
     .INIT(4'h1)) 
@@ -4525,8 +4662,8 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p180_c_carry__1_i_8
-       (.I0(cnt_reg_reg[16]),
-        .I1(cnt_reg_reg[17]),
+       (.I0(cnt_reg_reg[17]),
+        .I1(cnt_reg_reg[16]),
         .O(sclk_p180_c_carry__1_i_8_n_0));
   (* COMPARATOR_THRESHOLD = "11" *) 
   CARRY4 sclk_p180_c_carry__2
@@ -4545,14 +4682,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'hE)) 
     sclk_p180_c_carry__2_i_2
-       (.I0(cnt_reg_reg[29]),
-        .I1(cnt_reg_reg[28]),
+       (.I0(cnt_reg_reg[28]),
+        .I1(cnt_reg_reg[29]),
         .O(sclk_p180_c_carry__2_i_2_n_0));
   LUT2 #(
     .INIT(4'hE)) 
     sclk_p180_c_carry__2_i_3
-       (.I0(cnt_reg_reg[27]),
-        .I1(cnt_reg_reg[26]),
+       (.I0(cnt_reg_reg[26]),
+        .I1(cnt_reg_reg[27]),
         .O(sclk_p180_c_carry__2_i_3_n_0));
   LUT2 #(
     .INIT(4'hE)) 
@@ -4569,14 +4706,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p180_c_carry__2_i_6
-       (.I0(cnt_reg_reg[28]),
-        .I1(cnt_reg_reg[29]),
+       (.I0(cnt_reg_reg[29]),
+        .I1(cnt_reg_reg[28]),
         .O(sclk_p180_c_carry__2_i_6_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p180_c_carry__2_i_7
-       (.I0(cnt_reg_reg[26]),
-        .I1(cnt_reg_reg[27]),
+       (.I0(cnt_reg_reg[27]),
+        .I1(cnt_reg_reg[26]),
         .O(sclk_p180_c_carry__2_i_7_n_0));
   LUT2 #(
     .INIT(4'h1)) 
@@ -4587,15 +4724,15 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h8)) 
     sclk_p180_c_carry_i_1
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(cnt_reg_reg[7]),
         .O(sclk_p180_c_carry_i_1_n_0));
   LUT3 #(
     .INIT(8'h80)) 
     sclk_p180_c_carry_i_2
-       (.I0(Q[0]),
-        .I1(cnt_reg_reg[4]),
-        .I2(cnt_reg_reg[5]),
+       (.I0(cnt_reg1_carry__0_0),
+        .I1(cnt_reg_reg[5]),
+        .I2(cnt_reg_reg[4]),
         .O(sclk_p180_c_carry_i_2_n_0));
   LUT2 #(
     .INIT(4'hE)) 
@@ -4607,14 +4744,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     .INIT(8'h60)) 
     sclk_p180_c_carry_i_4
        (.I0(cnt_reg_reg[7]),
-        .I1(Q[0]),
+        .I1(cnt_reg1_carry__0_0),
         .I2(cnt_reg_reg[6]),
         .O(sclk_p180_c_carry_i_4_n_0));
   LUT3 #(
     .INIT(8'h28)) 
     sclk_p180_c_carry_i_5
        (.I0(cnt_reg_reg[5]),
-        .I1(Q[0]),
+        .I1(cnt_reg1_carry__0_0),
         .I2(cnt_reg_reg[4]),
         .O(sclk_p180_c_carry_i_5_n_0));
   LUT2 #(
@@ -4648,8 +4785,8 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p270_c0_carry__0_i_1
-       (.I0(cnt_reg_reg[14]),
-        .I1(cnt_reg_reg[15]),
+       (.I0(cnt_reg_reg[15]),
+        .I1(cnt_reg_reg[14]),
         .O(sclk_p270_c0_carry__0_i_1_n_0));
   LUT2 #(
     .INIT(4'h1)) 
@@ -4660,14 +4797,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p270_c0_carry__0_i_3
-       (.I0(cnt_reg_reg[10]),
-        .I1(cnt_reg_reg[11]),
+       (.I0(cnt_reg_reg[11]),
+        .I1(cnt_reg_reg[10]),
         .O(sclk_p270_c0_carry__0_i_3_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p270_c0_carry__0_i_4
-       (.I0(cnt_reg_reg[8]),
-        .I1(cnt_reg_reg[9]),
+       (.I0(cnt_reg_reg[9]),
+        .I1(cnt_reg_reg[8]),
         .O(sclk_p270_c0_carry__0_i_4_n_0));
   (* COMPARATOR_THRESHOLD = "11" *) 
   CARRY4 sclk_p270_c0_carry__1
@@ -4680,14 +4817,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p270_c0_carry__1_i_1
-       (.I0(cnt_reg_reg[22]),
-        .I1(cnt_reg_reg[23]),
+       (.I0(cnt_reg_reg[23]),
+        .I1(cnt_reg_reg[22]),
         .O(sclk_p270_c0_carry__1_i_1_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p270_c0_carry__1_i_2
-       (.I0(cnt_reg_reg[20]),
-        .I1(cnt_reg_reg[21]),
+       (.I0(cnt_reg_reg[21]),
+        .I1(cnt_reg_reg[20]),
         .O(sclk_p270_c0_carry__1_i_2_n_0));
   LUT2 #(
     .INIT(4'h1)) 
@@ -4698,8 +4835,8 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p270_c0_carry__1_i_4
-       (.I0(cnt_reg_reg[16]),
-        .I1(cnt_reg_reg[17]),
+       (.I0(cnt_reg_reg[17]),
+        .I1(cnt_reg_reg[16]),
         .O(sclk_p270_c0_carry__1_i_4_n_0));
   (* COMPARATOR_THRESHOLD = "11" *) 
   CARRY4 sclk_p270_c0_carry__2
@@ -4718,14 +4855,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p270_c0_carry__2_i_2
-       (.I0(cnt_reg_reg[28]),
-        .I1(cnt_reg_reg[29]),
+       (.I0(cnt_reg_reg[29]),
+        .I1(cnt_reg_reg[28]),
         .O(sclk_p270_c0_carry__2_i_2_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p270_c0_carry__2_i_3
-       (.I0(cnt_reg_reg[26]),
-        .I1(cnt_reg_reg[27]),
+       (.I0(cnt_reg_reg[27]),
+        .I1(cnt_reg_reg[26]),
         .O(sclk_p270_c0_carry__2_i_3_n_0));
   LUT2 #(
     .INIT(4'h1)) 
@@ -4736,21 +4873,21 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT3 #(
     .INIT(8'h15)) 
     sclk_p270_c0_carry_i_1
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(cnt_reg_reg[6]),
         .I2(cnt_reg_reg[7]),
         .O(sclk_p270_c0_carry_i_1_n_0));
   LUT2 #(
     .INIT(4'h7)) 
     sclk_p270_c0_carry_i_2
-       (.I0(cnt_reg_reg[5]),
-        .I1(cnt_reg_reg[4]),
+       (.I0(cnt_reg_reg[4]),
+        .I1(cnt_reg_reg[5]),
         .O(sclk_p270_c0_carry_i_2_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p270_c0_carry_i_3
-       (.I0(cnt_reg_reg[3]),
-        .I1(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
+        .I1(cnt_reg_reg[3]),
         .O(sclk_p270_c0_carry_i_3_n_0));
   LUT1 #(
     .INIT(2'h1)) 
@@ -4762,19 +4899,19 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     sclk_p270_c0_carry_i_5
        (.I0(cnt_reg_reg[7]),
         .I1(cnt_reg_reg[6]),
-        .I2(Q[0]),
+        .I2(cnt_reg1_carry__0_0),
         .O(sclk_p270_c0_carry_i_5_n_0));
   LUT2 #(
     .INIT(4'h8)) 
     sclk_p270_c0_carry_i_6
-       (.I0(cnt_reg_reg[4]),
-        .I1(cnt_reg_reg[5]),
+       (.I0(cnt_reg_reg[5]),
+        .I1(cnt_reg_reg[4]),
         .O(sclk_p270_c0_carry_i_6_n_0));
   LUT3 #(
     .INIT(8'h06)) 
     sclk_p270_c0_carry_i_7
-       (.I0(Q[0]),
-        .I1(cnt_reg_reg[3]),
+       (.I0(cnt_reg_reg[3]),
+        .I1(cnt_reg1_carry__0_0),
         .I2(cnt_reg_reg[2]),
         .O(sclk_p270_c0_carry_i_7_n_0));
   LUT2 #(
@@ -4802,14 +4939,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p90_c0_carry__0_i_1
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(cnt_reg_reg[9]),
         .O(sclk_p90_c0_carry__0_i_1_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p90_c0_carry__0_i_2
-       (.I0(cnt_reg_reg[14]),
-        .I1(cnt_reg_reg[15]),
+       (.I0(cnt_reg_reg[15]),
+        .I1(cnt_reg_reg[14]),
         .O(sclk_p90_c0_carry__0_i_2_n_0));
   LUT2 #(
     .INIT(4'h1)) 
@@ -4820,14 +4957,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p90_c0_carry__0_i_4
-       (.I0(cnt_reg_reg[10]),
-        .I1(cnt_reg_reg[11]),
+       (.I0(cnt_reg_reg[11]),
+        .I1(cnt_reg_reg[10]),
         .O(sclk_p90_c0_carry__0_i_4_n_0));
   LUT3 #(
     .INIT(8'h06)) 
     sclk_p90_c0_carry__0_i_5
        (.I0(cnt_reg_reg[9]),
-        .I1(Q[0]),
+        .I1(cnt_reg1_carry__0_0),
         .I2(cnt_reg_reg[8]),
         .O(sclk_p90_c0_carry__0_i_5_n_0));
   (* COMPARATOR_THRESHOLD = "11" *) 
@@ -4841,14 +4978,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p90_c0_carry__1_i_1
-       (.I0(cnt_reg_reg[22]),
-        .I1(cnt_reg_reg[23]),
+       (.I0(cnt_reg_reg[23]),
+        .I1(cnt_reg_reg[22]),
         .O(sclk_p90_c0_carry__1_i_1_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p90_c0_carry__1_i_2
-       (.I0(cnt_reg_reg[20]),
-        .I1(cnt_reg_reg[21]),
+       (.I0(cnt_reg_reg[21]),
+        .I1(cnt_reg_reg[20]),
         .O(sclk_p90_c0_carry__1_i_2_n_0));
   LUT2 #(
     .INIT(4'h1)) 
@@ -4859,8 +4996,8 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p90_c0_carry__1_i_4
-       (.I0(cnt_reg_reg[16]),
-        .I1(cnt_reg_reg[17]),
+       (.I0(cnt_reg_reg[17]),
+        .I1(cnt_reg_reg[16]),
         .O(sclk_p90_c0_carry__1_i_4_n_0));
   (* COMPARATOR_THRESHOLD = "11" *) 
   CARRY4 sclk_p90_c0_carry__2
@@ -4879,14 +5016,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p90_c0_carry__2_i_2
-       (.I0(cnt_reg_reg[28]),
-        .I1(cnt_reg_reg[29]),
+       (.I0(cnt_reg_reg[29]),
+        .I1(cnt_reg_reg[28]),
         .O(sclk_p90_c0_carry__2_i_2_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     sclk_p90_c0_carry__2_i_3
-       (.I0(cnt_reg_reg[26]),
-        .I1(cnt_reg_reg[27]),
+       (.I0(cnt_reg_reg[27]),
+        .I1(cnt_reg_reg[26]),
         .O(sclk_p90_c0_carry__2_i_3_n_0));
   LUT2 #(
     .INIT(4'h1)) 
@@ -4899,21 +5036,21 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     sclk_p90_c0_carry_i_1
        (.I0(cnt_reg_reg[6]),
         .I1(cnt_reg_reg[7]),
-        .I2(Q[0]),
+        .I2(cnt_reg1_carry__0_0),
         .O(sclk_p90_c0_carry_i_1_n_0));
   LUT3 #(
     .INIT(8'h15)) 
     sclk_p90_c0_carry_i_2
        (.I0(cnt_reg_reg[5]),
-        .I1(Q[0]),
+        .I1(cnt_reg1_carry__0_0),
         .I2(cnt_reg_reg[4]),
         .O(sclk_p90_c0_carry_i_2_n_0));
   LUT3 #(
     .INIT(8'h17)) 
     sclk_p90_c0_carry_i_3
-       (.I0(cnt_reg_reg[3]),
-        .I1(Q[0]),
-        .I2(cnt_reg_reg[2]),
+       (.I0(cnt_reg_reg[2]),
+        .I1(cnt_reg_reg[3]),
+        .I2(cnt_reg1_carry__0_0),
         .O(sclk_p90_c0_carry_i_3_n_0));
   LUT1 #(
     .INIT(2'h1)) 
@@ -4923,7 +5060,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
   LUT3 #(
     .INIT(8'h48)) 
     sclk_p90_c0_carry_i_5
-       (.I0(Q[0]),
+       (.I0(cnt_reg1_carry__0_0),
         .I1(cnt_reg_reg[7]),
         .I2(cnt_reg_reg[6]),
         .O(sclk_p90_c0_carry_i_5_n_0));
@@ -4931,14 +5068,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
     .INIT(8'h18)) 
     sclk_p90_c0_carry_i_6
        (.I0(cnt_reg_reg[4]),
-        .I1(Q[0]),
+        .I1(cnt_reg1_carry__0_0),
         .I2(cnt_reg_reg[5]),
         .O(sclk_p90_c0_carry_i_6_n_0));
   LUT3 #(
     .INIT(8'h60)) 
     sclk_p90_c0_carry_i_7
-       (.I0(Q[0]),
-        .I1(cnt_reg_reg[3]),
+       (.I0(cnt_reg_reg[3]),
+        .I1(cnt_reg1_carry__0_0),
         .I2(cnt_reg_reg[2]),
         .O(sclk_p90_c0_carry_i_7_n_0));
   LUT2 #(
@@ -4960,7 +5097,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen
        (.CI(\sclk_p90_c0_inferred__0/i__carry_n_0 ),
         .CO({\sclk_p90_c0_inferred__0/i__carry__0_n_0 ,\sclk_p90_c0_inferred__0/i__carry__0_n_1 ,\sclk_p90_c0_inferred__0/i__carry__0_n_2 ,\sclk_p90_c0_inferred__0/i__carry__0_n_3 }),
         .CYINIT(1'b0),
-        .DI({i__carry__0_i_1__0_n_0,i__carry__0_i_2__0_n_0,i__carry__0_i_3__1_n_0,i__carry__0_i_4__0_n_0}),
+        .DI({i__carry__0_i_1__0_n_0,i__carry__0_i_2__0_n_0,i__carry__0_i_3__1_n_0,i__carry__0_i_4_n_0}),
         .O(\NLW_sclk_p90_c0_inferred__0/i__carry__0_O_UNCONNECTED [3:0]),
         .S({i__carry__0_i_5__1_n_0,i__carry__0_i_6__1_n_0,i__carry__0_i_7__1_n_0,i__carry__0_i_8__1_n_0}));
   (* COMPARATOR_THRESHOLD = "11" *) 
@@ -6104,9 +6241,10 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_controller_v1_0_S00_AXI
   wire ccd_frame_written_s1;
   wire ccd_frame_written_s2;
   wire ccd_frame_written_s2_d;
-  wire ccd_tx_last_n_s1;
-  wire ccd_tx_last_n_s2;
-  wire ccd_tx_last_n_s2_d;
+  wire ccd_tx_idle;
+  wire ccd_tx_idle_s1;
+  wire ccd_tx_idle_s2;
+  wire ccd_tx_idle_s2_d;
   wire [16:16]data3;
   wire ddr3_init_done;
   wire ddr3_init_done_s1;
@@ -7200,7 +7338,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_controller_v1_0_S00_AXI
   LUT5 #(
     .INIT(32'h0FCA00CA)) 
     \axi_rdata[1]_i_2 
-       (.I0(slv_reg0[1]),
+       (.I0(\slv_reg0_reg[1]_rep_n_0 ),
         .I1(slv_reg2[1]),
         .I2(axi_araddr[3]),
         .I3(axi_araddr[2]),
@@ -7787,24 +7925,24 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_controller_v1_0_S00_AXI
         .CLR(axi_awready_i_1_n_0),
         .D(ccd_frame_written_s1),
         .Q(ccd_frame_written_s2));
-  FDPE ccd_tx_last_n_s1_reg
+  FDPE ccd_tx_idle_s1_reg
        (.C(s00_axi_aclk),
         .CE(1'b1),
-        .D(o_slave_fifo_data_last_n),
+        .D(ccd_tx_idle),
         .PRE(axi_awready_i_1_n_0),
-        .Q(ccd_tx_last_n_s1));
-  FDPE ccd_tx_last_n_s2_d_reg
+        .Q(ccd_tx_idle_s1));
+  FDPE ccd_tx_idle_s2_d_reg
        (.C(s00_axi_aclk),
         .CE(1'b1),
-        .D(ccd_tx_last_n_s2),
+        .D(ccd_tx_idle_s2),
         .PRE(axi_awready_i_1_n_0),
-        .Q(ccd_tx_last_n_s2_d));
-  FDPE ccd_tx_last_n_s2_reg
+        .Q(ccd_tx_idle_s2_d));
+  FDPE ccd_tx_idle_s2_reg
        (.C(s00_axi_aclk),
         .CE(1'b1),
-        .D(ccd_tx_last_n_s1),
+        .D(ccd_tx_idle_s1),
         .PRE(axi_awready_i_1_n_0),
-        .Q(ccd_tx_last_n_s2));
+        .Q(ccd_tx_idle_s2));
   LUT2 #(
     .INIT(4'h8)) 
     ddr3_init_done_s1_i_1
@@ -9517,8 +9655,8 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_controller_v1_0_S00_AXI
   LUT5 #(
     .INIT(32'h4FFF4444)) 
     tx_done_pending_latch_i_1
-       (.I0(ccd_tx_last_n_s2),
-        .I1(ccd_tx_last_n_s2_d),
+       (.I0(ccd_tx_idle_s2_d),
+        .I1(ccd_tx_idle_s2),
         .I2(p_9_in),
         .I3(s00_axi_wdata[9]),
         .I4(intr_sts_reg[9]),
@@ -9547,6 +9685,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_controller_v1_0_S00_AXI
        (.CO(\FSM_onehot_state_reg_reg[1]_i_21_n_3 ),
         .D(reg_data_out[10:0]),
         .DI(u_ccd_ddr_n_4),
+        .\FSM_onehot_state_reg[0] (ccd_tx_idle),
         .\FSM_onehot_state_reg_reg[1]_i_10 ({\FSM_onehot_state_reg_reg[1]_i_27_n_4 ,\FSM_onehot_state_reg_reg[1]_i_27_n_5 ,\FSM_onehot_state_reg_reg[1]_i_27_n_6 ,\FSM_onehot_state_reg_reg[1]_i_27_n_7 }),
         .\FSM_onehot_state_reg_reg[1]_i_5 ({\FSM_onehot_state_reg_reg[1]_i_19_n_4 ,\FSM_onehot_state_reg_reg[1]_i_19_n_5 ,\FSM_onehot_state_reg_reg[1]_i_19_n_6 ,\FSM_onehot_state_reg_reg[1]_i_19_n_7 }),
         .\FSM_onehot_state_reg_reg[1]_i_5_0 (\FSM_onehot_state_reg[1]_i_20_n_0 ),
@@ -9591,6 +9730,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_controller_v1_0_S00_AXI
         .ctrl_rst_stretch_reg_0(soft_rst_cnt_reg),
         .exception_count_reg(exception_count_reg[10:0]),
         .frame_depth_w0(slv_reg1),
+        .freq_sel_prev_reg(\slv_reg0_reg[1]_rep_n_0 ),
         .i_adc_data(i_adc_data),
         .i_init_calib_complete(i_init_calib_complete),
         .i_mmcm_locked(i_mmcm_locked),
@@ -9600,7 +9740,6 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_controller_v1_0_S00_AXI
         .i_ui_clk(i_ui_clk),
         .intr_sts_reg(intr_sts_reg),
         .l_counter1(l_counter1),
-        .\l_counter_reg[0] (\slv_reg0_reg[1]_rep_n_0 ),
         .m_axi_wlast_reg(m_axi_wlast_reg),
         .m_axi_wvalid_reg(m_axi_wvalid_reg),
         .o_cdsclk1(o_cdsclk1),
@@ -9659,6 +9798,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_ddr
     o_p1h,
     M_AXI_AWLEN,
     o_rg,
+    \FSM_onehot_state_reg[0] ,
     D,
     o_slave_fifo_data,
     o_p2v_tg,
@@ -9678,7 +9818,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_ddr
     ccd_frame_written,
     M_AXI_ARLEN,
     s00_axi_aclk,
-    Q,
+    freq_sel_prev_reg,
     i_mmcm_locked,
     tx_frame_start_reg,
     i_rd_clk,
@@ -9689,8 +9829,8 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_ddr
     p1h_enable_reg_i_35,
     p1h_enable_reg_i_30,
     S,
+    Q,
     \pixel_type_reg_reg[1]_i_86 ,
-    \l_counter_reg[0] ,
     i_adc_data,
     \FSM_onehot_state_reg_reg[1]_i_5 ,
     \FSM_onehot_state_reg_reg[1]_i_5_0 ,
@@ -9758,6 +9898,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_ddr
   output o_p1h;
   output [7:0]M_AXI_AWLEN;
   output o_rg;
+  output [0:0]\FSM_onehot_state_reg[0] ;
   output [10:0]D;
   output [15:0]o_slave_fifo_data;
   output o_p2v_tg;
@@ -9777,7 +9918,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_ddr
   output ccd_frame_written;
   output [7:0]M_AXI_ARLEN;
   input s00_axi_aclk;
-  input [11:0]Q;
+  input freq_sel_prev_reg;
   input i_mmcm_locked;
   input tx_frame_start_reg;
   input i_rd_clk;
@@ -9788,8 +9929,8 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_ddr
   input [3:0]p1h_enable_reg_i_35;
   input [3:0]p1h_enable_reg_i_30;
   input [2:0]S;
+  input [11:0]Q;
   input [7:0]\pixel_type_reg_reg[1]_i_86 ;
-  input \l_counter_reg[0] ;
   input [7:0]i_adc_data;
   input [3:0]\FSM_onehot_state_reg_reg[1]_i_5 ;
   input \FSM_onehot_state_reg_reg[1]_i_5_0 ;
@@ -9849,6 +9990,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_ddr
   wire [0:0]CO;
   wire [10:0]D;
   wire [0:0]DI;
+  wire [0:0]\FSM_onehot_state_reg[0] ;
   wire [3:0]\FSM_onehot_state_reg_reg[1]_i_10 ;
   wire [3:0]\FSM_onehot_state_reg_reg[1]_i_5 ;
   wire \FSM_onehot_state_reg_reg[1]_i_5_0 ;
@@ -9941,6 +10083,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_ddr
   wire [31:0]frame_depth_w0;
   wire frame_end_w;
   wire frame_start_w;
+  wire freq_sel_prev_reg;
   wire [7:0]i_adc_data;
   wire i_init_calib_complete;
   wire i_mmcm_locked;
@@ -9950,7 +10093,6 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_ddr
   wire i_ui_clk;
   wire [2:0]intr_sts_reg;
   wire [18:0]l_counter1;
-  wire \l_counter_reg[0] ;
   wire m_axi_wlast_reg;
   wire m_axi_wvalid_reg;
   wire o_cdsclk1;
@@ -10413,9 +10555,9 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_ddr
         .frame_end_w(frame_end_w),
         .frame_start_rise_wr_reg(u_ccd_driver_n_11),
         .frame_start_w(frame_start_w),
+        .freq_sel_prev_reg_0(freq_sel_prev_reg),
         .i_adc_data(i_adc_data),
         .l_counter1(l_counter1),
-        .\l_counter_reg[0]_0 (\l_counter_reg[0] ),
         .o_cdsclk1(o_cdsclk1),
         .o_cdsclk2(o_cdsclk2),
         .o_p1h(o_p1h),
@@ -10539,6 +10681,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_ddr
         .wr_en(\u_ctrl/pixel_cnt_wr1 ));
   mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_tx u_ccd_frame_tx
        (.D(fifo_data_w),
+        .Q(\FSM_onehot_state_reg[0] ),
         .ctrl_rst_stretch(ctrl_rst_stretch),
         .fifo_prelast_w(fifo_prelast_w),
         .fifo_rd_en_w(fifo_rd_en_w),
@@ -10583,14 +10726,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     s00_axi_aclk,
     \cnt_reg_reg[0] ,
     ctrl_rst_stretch,
-    Q,
+    freq_sel_prev_reg_0,
     O,
     p1h_enable_reg_i_40_0,
     p1h_enable_reg_i_35_0,
     p1h_enable_reg_i_30_0,
     S,
+    Q,
     \pixel_type_reg_reg[1]_i_86 ,
-    \l_counter_reg[0]_0 ,
     i_adc_data,
     \FSM_onehot_state_reg_reg[1]_i_5_0 ,
     \FSM_onehot_state_reg_reg[1]_i_5_1 ,
@@ -10647,14 +10790,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
   input s00_axi_aclk;
   input \cnt_reg_reg[0] ;
   input ctrl_rst_stretch;
-  input [11:0]Q;
+  input freq_sel_prev_reg_0;
   input [3:0]O;
   input [3:0]p1h_enable_reg_i_40_0;
   input [3:0]p1h_enable_reg_i_35_0;
   input [3:0]p1h_enable_reg_i_30_0;
   input [2:0]S;
+  input [11:0]Q;
   input [7:0]\pixel_type_reg_reg[1]_i_86 ;
-  input \l_counter_reg[0]_0 ;
   input [7:0]i_adc_data;
   input [3:0]\FSM_onehot_state_reg_reg[1]_i_5_0 ;
   input \FSM_onehot_state_reg_reg[1]_i_5_1 ;
@@ -10688,7 +10831,6 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
   wire [0:0]DI;
   wire \FSM_onehot_state_reg[0]_i_1_n_0 ;
   wire \FSM_onehot_state_reg[0]_i_2_n_0 ;
-  wire \FSM_onehot_state_reg[0]_i_3_n_0 ;
   wire \FSM_onehot_state_reg[1]_i_11_n_0 ;
   wire \FSM_onehot_state_reg[1]_i_12_n_0 ;
   wire \FSM_onehot_state_reg[1]_i_13_n_0 ;
@@ -11000,9 +11142,11 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
   wire frame_start_reg_i_3_n_0;
   wire frame_start_reg_i_4_n_0;
   wire frame_start_reg_i_5_n_0;
+  wire frame_start_reg_i_6_n_0;
   wire frame_start_rise_wr_reg;
   wire frame_start_w;
   wire freq_sel_prev;
+  wire freq_sel_prev_reg_0;
   wire \h_counter_reg[12]_i_2_n_0 ;
   wire \h_counter_reg[12]_i_2_n_1 ;
   wire \h_counter_reg[12]_i_2_n_2 ;
@@ -11084,7 +11228,6 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
   wire \l_counter[31]_i_6_n_0 ;
   wire \l_counter[31]_i_7_n_0 ;
   wire \l_counter[31]_i_8_n_0 ;
-  wire \l_counter_reg[0]_0 ;
   wire \l_counter_reg[12]_i_2_n_0 ;
   wire \l_counter_reg[12]_i_2_n_1 ;
   wire \l_counter_reg[12]_i_2_n_2 ;
@@ -11219,7 +11362,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
   wire o_sclk_p0_reg;
   wire p1h_enable0;
   wire p1h_enable_i_10_n_0;
-  wire p1h_enable_i_11_n_0;
+  wire p1h_enable_i_12_n_0;
   wire p1h_enable_i_13_n_0;
   wire p1h_enable_i_14_n_0;
   wire p1h_enable_i_15_n_0;
@@ -11262,10 +11405,10 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
   wire p1h_enable_i_7_n_0;
   wire p1h_enable_i_8_n_0;
   wire p1h_enable_i_9_n_0;
-  wire p1h_enable_reg_i_12_n_0;
-  wire p1h_enable_reg_i_12_n_1;
-  wire p1h_enable_reg_i_12_n_2;
-  wire p1h_enable_reg_i_12_n_3;
+  wire p1h_enable_reg_i_11_n_0;
+  wire p1h_enable_reg_i_11_n_1;
+  wire p1h_enable_reg_i_11_n_2;
+  wire p1h_enable_reg_i_11_n_3;
   wire p1h_enable_reg_i_20_n_0;
   wire p1h_enable_reg_i_20_n_1;
   wire p1h_enable_reg_i_20_n_2;
@@ -11743,7 +11886,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
   wire [3:0]\NLW_l_counter_reg[31]_i_5_O_UNCONNECTED ;
   wire [3:0]\NLW_l_counter_reg[31]_i_9_O_UNCONNECTED ;
   wire [3:3]\NLW_mock_pixel_cnt_reg[12]_i_1_CO_UNCONNECTED ;
-  wire [3:0]NLW_p1h_enable_reg_i_12_O_UNCONNECTED;
+  wire [3:0]NLW_p1h_enable_reg_i_11_O_UNCONNECTED;
   wire [3:0]NLW_p1h_enable_reg_i_20_O_UNCONNECTED;
   wire [3:0]NLW_p1h_enable_reg_i_25_O_UNCONNECTED;
   wire [3:0]NLW_p1h_enable_reg_i_30_O_UNCONNECTED;
@@ -11781,36 +11924,27 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
 
   assign pixel_cnt_wr_reg_0_sn_1 = pixel_cnt_wr_reg_0_sp_1;
   LUT6 #(
-    .INIT(64'h000000001455FF55)) 
+    .INIT(64'h5555454555454545)) 
     \FSM_onehot_state_reg[0]_i_1 
        (.I0(\FSM_onehot_state_reg[0]_i_2_n_0 ),
-        .I1(\l_counter_reg[0]_0 ),
-        .I2(freq_sel_prev),
-        .I3(p_0_in),
-        .I4(exposure_falling),
-        .I5(\FSM_onehot_state_reg[0]_i_3_n_0 ),
+        .I1(\FSM_onehot_state_reg[1]_i_3_n_0 ),
+        .I2(\FSM_onehot_state_reg[2]_i_2_n_0 ),
+        .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
+        .I4(state_next10_out),
+        .I5(state_next1),
         .O(\FSM_onehot_state_reg[0]_i_1_n_0 ));
-  (* SOFT_HLUTNM = "soft_lutpair5" *) 
-  LUT4 #(
-    .INIT(16'h4004)) 
+  LUT6 #(
+    .INIT(64'h8008B00B80088008)) 
     \FSM_onehot_state_reg[0]_i_2 
-       (.I0(Q[0]),
-        .I1(\FSM_onehot_state_reg_reg_n_0_[1] ),
+       (.I0(exposure_falling),
+        .I1(p_0_in),
         .I2(freq_sel_prev),
-        .I3(\l_counter_reg[0]_0 ),
+        .I3(Q[1]),
+        .I4(Q[0]),
+        .I5(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .O(\FSM_onehot_state_reg[0]_i_2_n_0 ));
   LUT6 #(
-    .INIT(64'h0000000000001F00)) 
-    \FSM_onehot_state_reg[0]_i_3 
-       (.I0(state_next1),
-        .I1(\FSM_onehot_state_reg_reg_n_0_[1] ),
-        .I2(state_next10_out),
-        .I3(\FSM_onehot_state_reg[2]_i_2_n_0 ),
-        .I4(p_0_in),
-        .I5(Q[0]),
-        .O(\FSM_onehot_state_reg[0]_i_3_n_0 ));
-  LUT6 #(
-    .INIT(64'hFFFFFFFF04000000)) 
+    .INIT(64'hFFFFFFFF00000400)) 
     \FSM_onehot_state_reg[1]_i_1 
        (.I0(state_next1),
         .I1(state_next10_out),
@@ -11940,7 +12074,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
         .O(\FSM_onehot_state_reg[1]_i_29_n_0 ));
   (* SOFT_HLUTNM = "soft_lutpair8" *) 
   LUT2 #(
-    .INIT(4'h1)) 
+    .INIT(4'hE)) 
     \FSM_onehot_state_reg[1]_i_3 
        (.I0(p_0_in),
         .I1(Q[0]),
@@ -11979,7 +12113,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
   LUT2 #(
     .INIT(4'h6)) 
     \FSM_onehot_state_reg[1]_i_9 
-       (.I0(\l_counter_reg[0]_0 ),
+       (.I0(Q[1]),
         .I1(freq_sel_prev),
         .O(\FSM_onehot_state_reg[1]_i_9_n_0 ));
   LUT6 #(
@@ -12018,22 +12152,22 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
   LUT6 #(
     .INIT(64'h9009000000009009)) 
     \FSM_onehot_state_reg[2]_i_15 
-       (.I0(\h_counter_reg_n_0_[15] ),
-        .I1(state_next2[14]),
-        .I2(state_next2[15]),
-        .I3(\h_counter_reg_n_0_[16] ),
+       (.I0(\h_counter_reg_n_0_[16] ),
+        .I1(state_next2[15]),
+        .I2(state_next2[14]),
+        .I3(\h_counter_reg_n_0_[15] ),
         .I4(state_next2[16]),
         .I5(\h_counter_reg_n_0_[17] ),
         .O(\FSM_onehot_state_reg[2]_i_15_n_0 ));
   LUT6 #(
     .INIT(64'h9009000000009009)) 
     \FSM_onehot_state_reg[2]_i_16 
-       (.I0(\h_counter_reg_n_0_[12] ),
-        .I1(state_next2[11]),
+       (.I0(state_next2[12]),
+        .I1(\h_counter_reg_n_0_[13] ),
         .I2(state_next2[13]),
         .I3(\h_counter_reg_n_0_[14] ),
-        .I4(state_next2[12]),
-        .I5(\h_counter_reg_n_0_[13] ),
+        .I4(\h_counter_reg_n_0_[12] ),
+        .I5(state_next2[11]),
         .O(\FSM_onehot_state_reg[2]_i_16_n_0 ));
   LUT3 #(
     .INIT(8'h42)) 
@@ -12056,7 +12190,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     \FSM_onehot_state_reg[2]_i_2 
        (.I0(hstate),
         .I1(freq_sel_prev),
-        .I2(\l_counter_reg[0]_0 ),
+        .I2(Q[1]),
         .O(\FSM_onehot_state_reg[2]_i_2_n_0 ));
   LUT4 #(
     .INIT(16'h2004)) 
@@ -12071,30 +12205,30 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     \FSM_onehot_state_reg[2]_i_21 
        (.I0(state_next2[10]),
         .I1(\h_counter_reg_n_0_[11] ),
-        .I2(\h_counter_reg_n_0_[10] ),
-        .I3(state_next2[9]),
-        .I4(state_next2[8]),
-        .I5(\h_counter_reg_n_0_[9] ),
+        .I2(state_next2[8]),
+        .I3(\h_counter_reg_n_0_[9] ),
+        .I4(\h_counter_reg_n_0_[10] ),
+        .I5(state_next2[9]),
         .O(\FSM_onehot_state_reg[2]_i_21_n_0 ));
   LUT6 #(
     .INIT(64'h9009000000009009)) 
     \FSM_onehot_state_reg[2]_i_22 
-       (.I0(state_next2[7]),
-        .I1(\h_counter_reg_n_0_[8] ),
-        .I2(state_next2[6]),
-        .I3(\h_counter_reg_n_0_[7] ),
-        .I4(\h_counter_reg_n_0_[6] ),
-        .I5(state_next2[5]),
+       (.I0(\h_counter_reg_n_0_[7] ),
+        .I1(state_next2[6]),
+        .I2(state_next2[5]),
+        .I3(\h_counter_reg_n_0_[6] ),
+        .I4(state_next2[7]),
+        .I5(\h_counter_reg_n_0_[8] ),
         .O(\FSM_onehot_state_reg[2]_i_22_n_0 ));
   LUT6 #(
     .INIT(64'h9009000000009009)) 
     \FSM_onehot_state_reg[2]_i_23 
-       (.I0(\h_counter_reg_n_0_[3] ),
-        .I1(state_next2[2]),
+       (.I0(state_next2[4]),
+        .I1(\h_counter_reg_n_0_[5] ),
         .I2(\h_counter_reg_n_0_[4] ),
         .I3(state_next2[3]),
-        .I4(\h_counter_reg_n_0_[5] ),
-        .I5(state_next2[4]),
+        .I4(state_next2[2]),
+        .I5(\h_counter_reg_n_0_[3] ),
         .O(\FSM_onehot_state_reg[2]_i_23_n_0 ));
   LUT6 #(
     .INIT(64'h6006000000006006)) 
@@ -12143,10 +12277,10 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
         .I5(state_next21_in[12]),
         .O(\FSM_onehot_state_reg[2]_i_32_n_0 ));
   LUT6 #(
-    .INIT(64'h20FF202020202020)) 
+    .INIT(64'h40FF404040404040)) 
     \FSM_onehot_state_reg[2]_i_4 
-       (.I0(p_0_in),
-        .I1(exposure_falling),
+       (.I0(exposure_falling),
+        .I1(p_0_in),
         .I2(\FSM_onehot_state_reg[2]_i_2_n_0 ),
         .I3(\FSM_onehot_state_reg[2]_i_9_n_0 ),
         .I4(state_next12_out),
@@ -12155,32 +12289,32 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
   LUT6 #(
     .INIT(64'h9009000000009009)) 
     \FSM_onehot_state_reg[2]_i_40 
-       (.I0(state_next21_in[10]),
-        .I1(v_counter[11]),
-        .I2(state_next21_in[8]),
-        .I3(v_counter[9]),
-        .I4(v_counter[10]),
-        .I5(state_next21_in[9]),
+       (.I0(state_next21_in[9]),
+        .I1(v_counter[10]),
+        .I2(state_next21_in[10]),
+        .I3(v_counter[11]),
+        .I4(v_counter[9]),
+        .I5(state_next21_in[8]),
         .O(\FSM_onehot_state_reg[2]_i_40_n_0 ));
   LUT6 #(
     .INIT(64'h9009000000009009)) 
     \FSM_onehot_state_reg[2]_i_41 
-       (.I0(state_next21_in[7]),
-        .I1(v_counter[8]),
-        .I2(state_next21_in[6]),
-        .I3(v_counter[7]),
-        .I4(v_counter[6]),
-        .I5(state_next21_in[5]),
+       (.I0(state_next21_in[5]),
+        .I1(v_counter[6]),
+        .I2(state_next21_in[7]),
+        .I3(v_counter[8]),
+        .I4(v_counter[7]),
+        .I5(state_next21_in[6]),
         .O(\FSM_onehot_state_reg[2]_i_41_n_0 ));
   LUT6 #(
     .INIT(64'h9009000000009009)) 
     \FSM_onehot_state_reg[2]_i_42 
-       (.I0(state_next21_in[2]),
-        .I1(v_counter[3]),
+       (.I0(state_next21_in[3]),
+        .I1(v_counter[4]),
         .I2(state_next21_in[4]),
         .I3(v_counter[5]),
-        .I4(v_counter[4]),
-        .I5(state_next21_in[3]),
+        .I4(v_counter[3]),
+        .I5(state_next21_in[2]),
         .O(\FSM_onehot_state_reg[2]_i_42_n_0 ));
   LUT5 #(
     .INIT(32'h00009009)) 
@@ -12225,7 +12359,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     \FSM_onehot_state_reg[2]_i_9 
        (.I0(p_0_in),
         .I1(freq_sel_prev),
-        .I2(\l_counter_reg[0]_0 ),
+        .I2(Q[1]),
         .O(\FSM_onehot_state_reg[2]_i_9_n_0 ));
   (* FSM_ENCODED_STATES = "STATE_HORIZONTAL_SHIFT:100,STATE_IDLE:001,STATE_VERTICAL_SHIFT:010" *) 
   FDPE #(
@@ -12762,69 +12896,69 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
   LUT4 #(
     .INIT(16'hFFFE)) 
     \exp_stretch_cnt[0]_i_15 
-       (.I0(exp_stretch_cnt_reg[9]),
-        .I1(exp_stretch_cnt_reg[10]),
-        .I2(exp_stretch_cnt_reg[14]),
-        .I3(exp_stretch_cnt_reg[7]),
+       (.I0(exp_stretch_cnt_reg[6]),
+        .I1(exp_stretch_cnt_reg[3]),
+        .I2(exp_stretch_cnt_reg[30]),
+        .I3(exp_stretch_cnt_reg[23]),
         .O(\exp_stretch_cnt[0]_i_15_n_0 ));
   LUT4 #(
     .INIT(16'hFFFE)) 
     \exp_stretch_cnt[0]_i_16 
-       (.I0(exp_stretch_cnt_reg[19]),
-        .I1(exp_stretch_cnt_reg[0]),
-        .I2(exp_stretch_cnt_reg[30]),
-        .I3(exp_stretch_cnt_reg[27]),
+       (.I0(exp_stretch_cnt_reg[31]),
+        .I1(exp_stretch_cnt_reg[8]),
+        .I2(exp_stretch_cnt_reg[21]),
+        .I3(exp_stretch_cnt_reg[24]),
         .O(\exp_stretch_cnt[0]_i_16_n_0 ));
   LUT4 #(
     .INIT(16'hFFFE)) 
     \exp_stretch_cnt[0]_i_17 
-       (.I0(exp_stretch_cnt_reg[26]),
-        .I1(exp_stretch_cnt_reg[11]),
-        .I2(exp_stretch_cnt_reg[31]),
-        .I3(exp_stretch_cnt_reg[23]),
+       (.I0(exp_stretch_cnt_reg[15]),
+        .I1(exp_stretch_cnt_reg[14]),
+        .I2(exp_stretch_cnt_reg[10]),
+        .I3(exp_stretch_cnt_reg[7]),
         .O(\exp_stretch_cnt[0]_i_17_n_0 ));
   LUT4 #(
     .INIT(16'hFFFE)) 
     \exp_stretch_cnt[0]_i_18 
-       (.I0(exp_stretch_cnt_reg[25]),
-        .I1(exp_stretch_cnt_reg[12]),
-        .I2(exp_stretch_cnt_reg[22]),
-        .I3(exp_stretch_cnt_reg[29]),
+       (.I0(exp_stretch_cnt_reg[9]),
+        .I1(exp_stretch_cnt_reg[2]),
+        .I2(exp_stretch_cnt_reg[27]),
+        .I3(exp_stretch_cnt_reg[18]),
         .O(\exp_stretch_cnt[0]_i_18_n_0 ));
   LUT5 #(
     .INIT(32'hFFFFFFFE)) 
     \exp_stretch_cnt[0]_i_3 
-       (.I0(exp_stretch_cnt_reg[8]),
-        .I1(exp_stretch_cnt_reg[13]),
-        .I2(exp_stretch_cnt_reg[4]),
-        .I3(exp_stretch_cnt_reg[3]),
+       (.I0(exp_stretch_cnt_reg[25]),
+        .I1(exp_stretch_cnt_reg[0]),
+        .I2(exp_stretch_cnt_reg[26]),
+        .I3(exp_stretch_cnt_reg[19]),
         .I4(\exp_stretch_cnt[0]_i_15_n_0 ),
         .O(\exp_stretch_cnt[0]_i_3_n_0 ));
   LUT5 #(
     .INIT(32'h00000001)) 
     \exp_stretch_cnt[0]_i_4 
        (.I0(exp_stretch_cnt_reg[5]),
-        .I1(exp_stretch_cnt_reg[15]),
-        .I2(exp_stretch_cnt_reg[6]),
-        .I3(exp_stretch_cnt_reg[16]),
+        .I1(exp_stretch_cnt_reg[20]),
+        .I2(exp_stretch_cnt_reg[17]),
+        .I3(exp_stretch_cnt_reg[22]),
         .I4(\exp_stretch_cnt[0]_i_16_n_0 ),
         .O(\exp_stretch_cnt[0]_i_4_n_0 ));
   LUT5 #(
     .INIT(32'hFFFFFFFE)) 
     \exp_stretch_cnt[0]_i_5 
-       (.I0(exp_stretch_cnt_reg[28]),
-        .I1(exp_stretch_cnt_reg[21]),
-        .I2(exp_stretch_cnt_reg[18]),
-        .I3(exp_stretch_cnt_reg[17]),
+       (.I0(exp_stretch_cnt_reg[13]),
+        .I1(exp_stretch_cnt_reg[16]),
+        .I2(exp_stretch_cnt_reg[12]),
+        .I3(exp_stretch_cnt_reg[11]),
         .I4(\exp_stretch_cnt[0]_i_17_n_0 ),
         .O(\exp_stretch_cnt[0]_i_5_n_0 ));
   LUT5 #(
     .INIT(32'hFFFFFFFE)) 
     \exp_stretch_cnt[0]_i_6 
-       (.I0(exp_stretch_cnt_reg[24]),
-        .I1(exp_stretch_cnt_reg[20]),
-        .I2(exp_stretch_cnt_reg[2]),
-        .I3(exp_stretch_cnt_reg[1]),
+       (.I0(exp_stretch_cnt_reg[28]),
+        .I1(exp_stretch_cnt_reg[29]),
+        .I2(exp_stretch_cnt_reg[1]),
+        .I3(exp_stretch_cnt_reg[4]),
         .I4(\exp_stretch_cnt[0]_i_18_n_0 ),
         .O(\exp_stretch_cnt[0]_i_6_n_0 ));
   LUT4 #(
@@ -13621,10 +13755,10 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     frame_start_reg_i_2
        (.I0(frame_start_reg_i_4_n_0),
         .I1(Q[0]),
-        .I2(\FSM_onehot_state_reg[0]_i_2_n_0 ),
+        .I2(frame_start_reg_i_5_n_0),
         .I3(state_next12_out),
         .I4(hstate),
-        .I5(frame_start_reg_i_5_n_0),
+        .I5(frame_start_reg_i_6_n_0),
         .O(frame_start_reg_i_2_n_0));
   LUT6 #(
     .INIT(64'h00000000EEFFCFFF)) 
@@ -13641,20 +13775,29 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'hBEFF)) 
     frame_start_reg_i_4
        (.I0(state_next10_out),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(frame_start_reg_i_4_n_0));
+  (* SOFT_HLUTNM = "soft_lutpair5" *) 
+  LUT4 #(
+    .INIT(16'h4004)) 
+    frame_start_reg_i_5
+       (.I0(Q[0]),
+        .I1(\FSM_onehot_state_reg_reg_n_0_[1] ),
+        .I2(freq_sel_prev),
+        .I3(Q[1]),
+        .O(frame_start_reg_i_5_n_0));
   (* SOFT_HLUTNM = "soft_lutpair11" *) 
   LUT5 #(
-    .INIT(32'h00900000)) 
-    frame_start_reg_i_5
-       (.I0(\l_counter_reg[0]_0 ),
+    .INIT(32'h00009000)) 
+    frame_start_reg_i_6
+       (.I0(Q[1]),
         .I1(freq_sel_prev),
         .I2(hstate),
-        .I3(exposure_falling),
-        .I4(p_0_in),
-        .O(frame_start_reg_i_5_n_0));
+        .I3(p_0_in),
+        .I4(exposure_falling),
+        .O(frame_start_reg_i_6_n_0));
   FDCE frame_start_reg_reg
        (.C(o_sclk_p0_reg),
         .CE(1'b1),
@@ -13665,12 +13808,12 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
        (.C(o_sclk_p0_reg),
         .CE(1'b1),
         .CLR(ctrl_rst_stretch),
-        .D(Q[1]),
+        .D(freq_sel_prev_reg_0),
         .Q(freq_sel_prev));
   LUT4 #(
     .INIT(16'h0090)) 
     \h_counter[0]_i_1 
-       (.I0(\l_counter_reg[0]_0 ),
+       (.I0(Q[1]),
         .I1(freq_sel_prev),
         .I2(hstate),
         .I3(\h_counter_reg_n_0_[0] ),
@@ -13680,7 +13823,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[10]_i_1 
        (.I0(in11[10]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[10]));
@@ -13689,7 +13832,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[11]_i_1 
        (.I0(in11[11]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[11]));
@@ -13698,7 +13841,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[12]_i_1 
        (.I0(in11[12]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[12]));
@@ -13707,7 +13850,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[13]_i_1 
        (.I0(in11[13]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[13]));
@@ -13716,7 +13859,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[14]_i_1 
        (.I0(in11[14]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[14]));
@@ -13725,7 +13868,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[15]_i_1 
        (.I0(in11[15]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[15]));
@@ -13734,7 +13877,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[16]_i_1 
        (.I0(in11[16]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[16]));
@@ -13743,7 +13886,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[17]_i_1 
        (.I0(in11[17]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[17]));
@@ -13752,7 +13895,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[18]_i_1 
        (.I0(in11[18]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[18]));
@@ -13761,7 +13904,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[19]_i_1 
        (.I0(in11[19]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[19]));
@@ -13770,7 +13913,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[1]_i_1 
        (.I0(in11[1]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[1]));
@@ -13779,7 +13922,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[20]_i_1 
        (.I0(in11[20]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[20]));
@@ -13788,7 +13931,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[21]_i_1 
        (.I0(in11[21]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[21]));
@@ -13797,7 +13940,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[22]_i_1 
        (.I0(in11[22]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[22]));
@@ -13806,7 +13949,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[23]_i_1 
        (.I0(in11[23]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[23]));
@@ -13815,7 +13958,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[24]_i_1 
        (.I0(in11[24]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[24]));
@@ -13824,7 +13967,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[25]_i_1 
        (.I0(in11[25]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[25]));
@@ -13833,7 +13976,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[26]_i_1 
        (.I0(in11[26]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[26]));
@@ -13842,7 +13985,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[27]_i_1 
        (.I0(in11[27]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[27]));
@@ -13851,7 +13994,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[28]_i_1 
        (.I0(in11[28]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[28]));
@@ -13860,7 +14003,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[29]_i_1 
        (.I0(in11[29]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[29]));
@@ -13869,7 +14012,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[2]_i_1 
        (.I0(in11[2]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[2]));
@@ -13878,7 +14021,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[30]_i_1 
        (.I0(in11[30]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[30]));
@@ -13887,7 +14030,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[31]_i_1 
        (.I0(in11[31]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[31]));
@@ -13896,7 +14039,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[3]_i_1 
        (.I0(in11[3]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[3]));
@@ -13905,7 +14048,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[4]_i_1 
        (.I0(in11[4]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[4]));
@@ -13914,7 +14057,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[5]_i_1 
        (.I0(in11[5]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[5]));
@@ -13923,7 +14066,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[6]_i_1 
        (.I0(in11[6]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[6]));
@@ -13932,7 +14075,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[7]_i_1 
        (.I0(in11[7]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[7]));
@@ -13941,7 +14084,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[8]_i_1 
        (.I0(in11[8]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[8]));
@@ -13950,7 +14093,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h8200)) 
     \h_counter[9]_i_1 
        (.I0(in11[9]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(hstate),
         .O(p_1_in[9]));
@@ -14214,7 +14357,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0041)) 
     \l_counter[0]_i_1 
        (.I0(\l_counter_reg_n_0_[0] ),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(\l_counter[0]_i_1_n_0 ));
@@ -14223,7 +14366,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[10]_i_1 
        (.I0(in13[10]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[10]));
@@ -14232,7 +14375,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[11]_i_1 
        (.I0(in13[11]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[11]));
@@ -14241,7 +14384,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[12]_i_1 
        (.I0(in13[12]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[12]));
@@ -14250,7 +14393,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[13]_i_1 
        (.I0(in13[13]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[13]));
@@ -14259,7 +14402,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[14]_i_1 
        (.I0(in13[14]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[14]));
@@ -14268,7 +14411,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[15]_i_1 
        (.I0(in13[15]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[15]));
@@ -14277,7 +14420,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[16]_i_1 
        (.I0(in13[16]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[16]));
@@ -14286,7 +14429,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[17]_i_1 
        (.I0(in13[17]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[17]));
@@ -14295,7 +14438,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[18]_i_1 
        (.I0(in13[18]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[18]));
@@ -14304,7 +14447,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[19]_i_1 
        (.I0(in13[19]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[19]));
@@ -14313,7 +14456,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[1]_i_1 
        (.I0(in13[1]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[1]));
@@ -14322,7 +14465,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[20]_i_1 
        (.I0(in13[20]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[20]));
@@ -14331,7 +14474,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[21]_i_1 
        (.I0(in13[21]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[21]));
@@ -14340,7 +14483,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[22]_i_1 
        (.I0(in13[22]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[22]));
@@ -14349,7 +14492,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[23]_i_1 
        (.I0(in13[23]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[23]));
@@ -14358,7 +14501,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[24]_i_1 
        (.I0(in13[24]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[24]));
@@ -14367,7 +14510,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[25]_i_1 
        (.I0(in13[25]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[25]));
@@ -14376,7 +14519,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[26]_i_1 
        (.I0(in13[26]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[26]));
@@ -14385,7 +14528,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[27]_i_1 
        (.I0(in13[27]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[27]));
@@ -14394,7 +14537,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[28]_i_1 
        (.I0(in13[28]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[28]));
@@ -14403,7 +14546,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[29]_i_1 
        (.I0(in13[29]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[29]));
@@ -14412,7 +14555,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[2]_i_1 
        (.I0(in13[2]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[2]));
@@ -14421,7 +14564,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[30]_i_1 
        (.I0(in13[30]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[30]));
@@ -14429,7 +14572,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'hFFBE)) 
     \l_counter[31]_i_1 
        (.I0(l_counter0),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(\l_counter[31]_i_1_n_0 ));
@@ -14452,22 +14595,22 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
   LUT6 #(
     .INIT(64'h9009000000009009)) 
     \l_counter[31]_i_12 
-       (.I0(l_counter1[14]),
-        .I1(\h_counter_reg_n_0_[15] ),
-        .I2(\h_counter_reg_n_0_[16] ),
-        .I3(l_counter1[15]),
+       (.I0(l_counter1[15]),
+        .I1(\h_counter_reg_n_0_[16] ),
+        .I2(\h_counter_reg_n_0_[15] ),
+        .I3(l_counter1[14]),
         .I4(\h_counter_reg_n_0_[17] ),
         .I5(l_counter1[16]),
         .O(\l_counter[31]_i_12_n_0 ));
   LUT6 #(
     .INIT(64'h9009000000009009)) 
     \l_counter[31]_i_13 
-       (.I0(l_counter1[11]),
-        .I1(\h_counter_reg_n_0_[12] ),
-        .I2(\h_counter_reg_n_0_[13] ),
-        .I3(l_counter1[12]),
-        .I4(\h_counter_reg_n_0_[14] ),
-        .I5(l_counter1[13]),
+       (.I0(\h_counter_reg_n_0_[12] ),
+        .I1(l_counter1[11]),
+        .I2(\h_counter_reg_n_0_[14] ),
+        .I3(l_counter1[13]),
+        .I4(l_counter1[12]),
+        .I5(\h_counter_reg_n_0_[13] ),
         .O(\l_counter[31]_i_13_n_0 ));
   LUT6 #(
     .INIT(64'h9009000000009009)) 
@@ -14482,12 +14625,12 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
   LUT6 #(
     .INIT(64'h9009000000009009)) 
     \l_counter[31]_i_15 
-       (.I0(\h_counter_reg_n_0_[8] ),
-        .I1(l_counter1[7]),
-        .I2(\h_counter_reg_n_0_[6] ),
-        .I3(l_counter1[5]),
-        .I4(l_counter1[6]),
-        .I5(\h_counter_reg_n_0_[7] ),
+       (.I0(l_counter1[6]),
+        .I1(\h_counter_reg_n_0_[7] ),
+        .I2(\h_counter_reg_n_0_[8] ),
+        .I3(l_counter1[7]),
+        .I4(\h_counter_reg_n_0_[6] ),
+        .I5(l_counter1[5]),
         .O(\l_counter[31]_i_15_n_0 ));
   LUT6 #(
     .INIT(64'h9009000000009009)) 
@@ -14502,19 +14645,19 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
   LUT6 #(
     .INIT(64'h9009000000009009)) 
     \l_counter[31]_i_17 
-       (.I0(l_counter1[0]),
-        .I1(\h_counter_reg_n_0_[1] ),
-        .I2(\h_counter_reg_n_0_[2] ),
-        .I3(l_counter1[1]),
-        .I4(\h_counter_reg_n_0_[0] ),
-        .I5(O[0]),
+       (.I0(\h_counter_reg_n_0_[1] ),
+        .I1(l_counter1[0]),
+        .I2(\h_counter_reg_n_0_[0] ),
+        .I3(O[0]),
+        .I4(l_counter1[1]),
+        .I5(\h_counter_reg_n_0_[2] ),
         .O(\l_counter[31]_i_17_n_0 ));
   (* SOFT_HLUTNM = "soft_lutpair13" *) 
   LUT4 #(
     .INIT(16'h0082)) 
     \l_counter[31]_i_2 
        (.I0(in13[31]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[31]));
@@ -14543,7 +14686,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[3]_i_1 
        (.I0(in13[3]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[3]));
@@ -14552,7 +14695,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[4]_i_1 
        (.I0(in13[4]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[4]));
@@ -14561,7 +14704,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[5]_i_1 
        (.I0(in13[5]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[5]));
@@ -14570,7 +14713,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[6]_i_1 
        (.I0(in13[6]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[6]));
@@ -14579,7 +14722,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[7]_i_1 
        (.I0(in13[7]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[7]));
@@ -14588,7 +14731,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[8]_i_1 
        (.I0(in13[8]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[8]));
@@ -14597,7 +14740,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(16'h0082)) 
     \l_counter[9]_i_1 
        (.I0(in13[9]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(p_0_in),
         .O(p_2_in[9]));
@@ -15144,62 +15287,58 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
         .I4(p1h_enable_reg_i_4_n_0),
         .O(p1h_enable0));
   LUT6 #(
-    .INIT(64'hFFFFFFFFFFFFFEFF)) 
+    .INIT(64'hFFFEFFFFFFFFFFFF)) 
     p1h_enable_i_10
-       (.I0(\h_counter_reg_n_0_[12] ),
-        .I1(\h_counter_reg_n_0_[13] ),
-        .I2(\h_counter_reg_n_0_[24] ),
-        .I3(p1h_enable_i_17_n_0),
-        .I4(\h_counter_reg_n_0_[6] ),
-        .I5(\h_counter_reg_n_0_[7] ),
+       (.I0(\h_counter_reg_n_0_[8] ),
+        .I1(\h_counter_reg_n_0_[9] ),
+        .I2(\h_counter_reg_n_0_[14] ),
+        .I3(\h_counter_reg_n_0_[15] ),
+        .I4(p1h_enable_i_18_n_0),
+        .I5(p1h_enable_i_19_n_0),
         .O(p1h_enable_i_10_n_0));
-  LUT6 #(
-    .INIT(64'hFFFFFFFFFFFFFFF7)) 
-    p1h_enable_i_11
-       (.I0(p1h_enable_i_18_n_0),
-        .I1(p1h_enable_i_19_n_0),
-        .I2(\h_counter_reg_n_0_[8] ),
-        .I3(\h_counter_reg_n_0_[9] ),
-        .I4(\h_counter_reg_n_0_[10] ),
-        .I5(\h_counter_reg_n_0_[11] ),
-        .O(p1h_enable_i_11_n_0));
+  LUT1 #(
+    .INIT(2'h1)) 
+    p1h_enable_i_12
+       (.I0(\h_counter_reg_n_0_[31] ),
+        .O(p1h_enable_i_12_n_0));
   LUT1 #(
     .INIT(2'h1)) 
     p1h_enable_i_13
-       (.I0(\h_counter_reg_n_0_[31] ),
+       (.I0(\h_counter_reg_n_0_[30] ),
         .O(p1h_enable_i_13_n_0));
   LUT1 #(
     .INIT(2'h1)) 
     p1h_enable_i_14
-       (.I0(\h_counter_reg_n_0_[30] ),
+       (.I0(\h_counter_reg_n_0_[29] ),
         .O(p1h_enable_i_14_n_0));
   LUT1 #(
     .INIT(2'h1)) 
     p1h_enable_i_15
-       (.I0(\h_counter_reg_n_0_[29] ),
-        .O(p1h_enable_i_15_n_0));
-  LUT1 #(
-    .INIT(2'h1)) 
-    p1h_enable_i_16
        (.I0(\h_counter_reg_n_0_[28] ),
+        .O(p1h_enable_i_15_n_0));
+  LUT2 #(
+    .INIT(4'h1)) 
+    p1h_enable_i_16
+       (.I0(\h_counter_reg_n_0_[29] ),
+        .I1(\h_counter_reg_n_0_[28] ),
         .O(p1h_enable_i_16_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     p1h_enable_i_17
-       (.I0(\h_counter_reg_n_0_[17] ),
-        .I1(\h_counter_reg_n_0_[16] ),
+       (.I0(\h_counter_reg_n_0_[4] ),
+        .I1(\h_counter_reg_n_0_[5] ),
         .O(p1h_enable_i_17_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     p1h_enable_i_18
-       (.I0(\h_counter_reg_n_0_[23] ),
-        .I1(\h_counter_reg_n_0_[22] ),
+       (.I0(\h_counter_reg_n_0_[17] ),
+        .I1(\h_counter_reg_n_0_[16] ),
         .O(p1h_enable_i_18_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     p1h_enable_i_19
-       (.I0(\h_counter_reg_n_0_[4] ),
-        .I1(\h_counter_reg_n_0_[5] ),
+       (.I0(\h_counter_reg_n_0_[6] ),
+        .I1(\h_counter_reg_n_0_[7] ),
         .O(p1h_enable_i_19_n_0));
   LUT5 #(
     .INIT(32'hFFFFFFFE)) 
@@ -15251,14 +15390,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
        (.I0(\h_counter_reg_n_0_[20] ),
         .O(p1h_enable_i_29_n_0));
   LUT6 #(
-    .INIT(64'hFFFFFFFFFFFF7FFF)) 
+    .INIT(64'hFFFFFFFFFBFFFFFF)) 
     p1h_enable_i_3
        (.I0(p1h_enable_i_6_n_0),
         .I1(p1h_enable_i_7_n_0),
-        .I2(p1h_enable_i_8_n_0),
-        .I3(p1h_enable_i_9_n_0),
-        .I4(p1h_enable_i_10_n_0),
-        .I5(p1h_enable_i_11_n_0),
+        .I2(\h_counter_reg_n_0_[24] ),
+        .I3(p1h_enable_i_8_n_0),
+        .I4(p1h_enable_i_9_n_0),
+        .I5(p1h_enable_i_10_n_0),
         .O(p1h_enable_i_3_n_0));
   LUT1 #(
     .INIT(2'h1)) 
@@ -15389,11 +15528,15 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
        (.I0(O[0]),
         .I1(\h_counter_reg_n_0_[0] ),
         .O(p1h_enable_i_53_n_0));
-  LUT2 #(
-    .INIT(4'h1)) 
+  LUT6 #(
+    .INIT(64'hFFFFFFFFFFFFFDFF)) 
     p1h_enable_i_6
-       (.I0(\h_counter_reg_n_0_[19] ),
-        .I1(\h_counter_reg_n_0_[18] ),
+       (.I0(p1h_enable_i_16_n_0),
+        .I1(\h_counter_reg_n_0_[12] ),
+        .I2(\h_counter_reg_n_0_[13] ),
+        .I3(p1h_enable_i_17_n_0),
+        .I4(\h_counter_reg_n_0_[10] ),
+        .I5(\h_counter_reg_n_0_[11] ),
         .O(p1h_enable_i_6_n_0));
   LUT2 #(
     .INIT(4'h1)) 
@@ -15404,14 +15547,14 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
   LUT2 #(
     .INIT(4'h1)) 
     p1h_enable_i_8
-       (.I0(\h_counter_reg_n_0_[14] ),
-        .I1(\h_counter_reg_n_0_[15] ),
+       (.I0(\h_counter_reg_n_0_[19] ),
+        .I1(\h_counter_reg_n_0_[18] ),
         .O(p1h_enable_i_8_n_0));
   LUT2 #(
     .INIT(4'h1)) 
     p1h_enable_i_9
-       (.I0(\h_counter_reg_n_0_[29] ),
-        .I1(\h_counter_reg_n_0_[28] ),
+       (.I0(\h_counter_reg_n_0_[23] ),
+        .I1(\h_counter_reg_n_0_[22] ),
         .O(p1h_enable_i_9_n_0));
   FDCE p1h_enable_reg
        (.C(sclk_p180_w),
@@ -15419,12 +15562,12 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
         .CLR(ctrl_rst_stretch),
         .D(p1h_enable0),
         .Q(p3h_enable));
-  CARRY4 p1h_enable_reg_i_12
+  CARRY4 p1h_enable_reg_i_11
        (.CI(p1h_enable_reg_i_20_n_0),
-        .CO({p1h_enable_reg_i_12_n_0,p1h_enable_reg_i_12_n_1,p1h_enable_reg_i_12_n_2,p1h_enable_reg_i_12_n_3}),
+        .CO({p1h_enable_reg_i_11_n_0,p1h_enable_reg_i_11_n_1,p1h_enable_reg_i_11_n_2,p1h_enable_reg_i_11_n_3}),
         .CYINIT(1'b0),
         .DI({\h_counter_reg_n_0_[27] ,\h_counter_reg_n_0_[26] ,\h_counter_reg_n_0_[25] ,\h_counter_reg_n_0_[24] }),
-        .O(NLW_p1h_enable_reg_i_12_O_UNCONNECTED[3:0]),
+        .O(NLW_p1h_enable_reg_i_11_O_UNCONNECTED[3:0]),
         .S({p1h_enable_i_21_n_0,p1h_enable_i_22_n_0,p1h_enable_i_23_n_0,p1h_enable_i_24_n_0}));
   CARRY4 p1h_enable_reg_i_20
        (.CI(p1h_enable_reg_i_25_n_0),
@@ -15455,12 +15598,12 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
         .O(NLW_p1h_enable_reg_i_35_O_UNCONNECTED[3:0]),
         .S({p1h_enable_i_41_n_0,p1h_enable_i_42_n_0,p1h_enable_i_43_n_0,p1h_enable_i_44_n_0}));
   CARRY4 p1h_enable_reg_i_4
-       (.CI(p1h_enable_reg_i_12_n_0),
+       (.CI(p1h_enable_reg_i_11_n_0),
         .CO({p1h_enable_reg_i_4_n_0,p1h_enable_reg_i_4_n_1,p1h_enable_reg_i_4_n_2,p1h_enable_reg_i_4_n_3}),
         .CYINIT(1'b0),
         .DI({\h_counter_reg_n_0_[31] ,\h_counter_reg_n_0_[30] ,\h_counter_reg_n_0_[29] ,\h_counter_reg_n_0_[28] }),
         .O(NLW_p1h_enable_reg_i_4_O_UNCONNECTED[3:0]),
-        .S({p1h_enable_i_13_n_0,p1h_enable_i_14_n_0,p1h_enable_i_15_n_0,p1h_enable_i_16_n_0}));
+        .S({p1h_enable_i_12_n_0,p1h_enable_i_13_n_0,p1h_enable_i_14_n_0,p1h_enable_i_15_n_0}));
   CARRY4 p1h_enable_reg_i_40
        (.CI(p1h_enable_reg_i_45_n_0),
         .CO({p1h_enable_reg_i_40_n_0,p1h_enable_reg_i_40_n_1,p1h_enable_reg_i_40_n_2,p1h_enable_reg_i_40_n_3}),
@@ -15508,18 +15651,18 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
   LUT4 #(
     .INIT(16'hFFFE)) 
     p1v_enable_i_14
-       (.I0(v_counter[25]),
-        .I1(v_counter[26]),
-        .I2(v_counter[12]),
+       (.I0(v_counter[19]),
+        .I1(v_counter[20]),
+        .I2(v_counter[29]),
         .I3(v_counter[9]),
         .O(p1v_enable_i_14_n_0));
   LUT4 #(
     .INIT(16'hFFFE)) 
     p1v_enable_i_15
-       (.I0(v_counter[8]),
-        .I1(v_counter[3]),
-        .I2(v_counter[17]),
-        .I3(v_counter[10]),
+       (.I0(v_counter[15]),
+        .I1(v_counter[7]),
+        .I2(v_counter[4]),
+        .I3(v_counter[0]),
         .O(p1v_enable_i_15_n_0));
   LUT1 #(
     .INIT(2'h1)) 
@@ -15540,10 +15683,10 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(64'hFFFFFFFFFFFFFFFE)) 
     p1v_enable_i_2
        (.I0(p1v_enable_i_5_n_0),
-        .I1(v_counter[19]),
-        .I2(v_counter[20]),
-        .I3(v_counter[30]),
-        .I4(v_counter[31]),
+        .I1(v_counter[21]),
+        .I2(v_counter[22]),
+        .I3(v_counter[25]),
+        .I4(v_counter[26]),
         .I5(p1v_enable_i_6_n_0),
         .O(p1v_enable_i_2_n_0));
   LUT1 #(
@@ -15590,10 +15733,10 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(64'hFFFFFFFFFFFFFFFE)) 
     p1v_enable_i_3
        (.I0(p1v_enable_i_7_n_0),
-        .I1(v_counter[16]),
-        .I2(v_counter[5]),
-        .I3(v_counter[11]),
-        .I4(v_counter[1]),
+        .I1(v_counter[14]),
+        .I2(v_counter[8]),
+        .I3(v_counter[12]),
+        .I4(v_counter[5]),
         .I5(p1v_enable_i_8_n_0),
         .O(p1v_enable_i_3_n_0));
   LUT4 #(
@@ -15735,35 +15878,35 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
   LUT4 #(
     .INIT(16'hFFFE)) 
     p1v_enable_i_5
-       (.I0(v_counter[21]),
-        .I1(v_counter[22]),
+       (.I0(v_counter[30]),
+        .I1(v_counter[31]),
         .I2(v_counter[27]),
         .I3(v_counter[28]),
         .O(p1v_enable_i_5_n_0));
   LUT5 #(
     .INIT(32'hFFFFFFFE)) 
     p1v_enable_i_6
-       (.I0(v_counter[6]),
+       (.I0(v_counter[3]),
         .I1(v_counter[24]),
-        .I2(v_counter[4]),
-        .I3(v_counter[13]),
+        .I2(v_counter[17]),
+        .I3(v_counter[18]),
         .I4(p1v_enable_i_14_n_0),
         .O(p1v_enable_i_6_n_0));
   LUT4 #(
     .INIT(16'hFFFE)) 
     p1v_enable_i_7
-       (.I0(v_counter[14]),
-        .I1(v_counter[0]),
-        .I2(v_counter[18]),
-        .I3(v_counter[7]),
+       (.I0(v_counter[23]),
+        .I1(v_counter[1]),
+        .I2(v_counter[13]),
+        .I3(v_counter[2]),
         .O(p1v_enable_i_7_n_0));
   LUT5 #(
     .INIT(32'hFFFFFFFE)) 
     p1v_enable_i_8
-       (.I0(v_counter[2]),
-        .I1(v_counter[23]),
-        .I2(v_counter[15]),
-        .I3(v_counter[29]),
+       (.I0(v_counter[11]),
+        .I1(v_counter[16]),
+        .I2(v_counter[6]),
+        .I3(v_counter[10]),
         .I4(p1v_enable_i_15_n_0),
         .O(p1v_enable_i_8_n_0));
   FDCE p1v_enable_reg
@@ -17337,8 +17480,9 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
         .S({\pixel_type_reg[1]_i_79_n_0 ,\pixel_type_reg[1]_i_80_n_0 ,\pixel_type_reg[1]_i_81_n_0 ,\pixel_type_reg[1]_i_82_n_0 }));
   mb_subsystem_ccd_controller_v1_0_0_0_ccd_clk_gen u_ccd_clk_gen
        (.CLK(o_sclk_p0_reg),
-        .Q({Q[11:5],Q[1]}),
+        .Q(Q[11:5]),
         .cdsclk_enable(cdsclk_enable),
+        .cnt_reg1_carry__0_0(freq_sel_prev_reg_0),
         .\cnt_reg_reg[0]_0 (\cnt_reg_reg[0] ),
         .o_cdsclk1(o_cdsclk1),
         .o_cdsclk2(o_cdsclk2),
@@ -17368,7 +17512,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
   LUT5 #(
     .INIT(32'h00000090)) 
     \v_counter[0]_i_1 
-       (.I0(\l_counter_reg[0]_0 ),
+       (.I0(Q[1]),
         .I1(freq_sel_prev),
         .I2(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I3(Q[0]),
@@ -17378,7 +17522,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[10]_i_1 
        (.I0(v_counter0[10]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17387,7 +17531,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[11]_i_1 
        (.I0(v_counter0[11]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17396,7 +17540,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[12]_i_1 
        (.I0(v_counter0[12]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17405,7 +17549,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[13]_i_1 
        (.I0(v_counter0[13]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17414,7 +17558,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[14]_i_1 
        (.I0(v_counter0[14]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17423,7 +17567,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[15]_i_1 
        (.I0(v_counter0[15]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17432,7 +17576,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[16]_i_1 
        (.I0(v_counter0[16]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17441,7 +17585,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[17]_i_1 
        (.I0(v_counter0[17]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17450,7 +17594,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[18]_i_1 
        (.I0(v_counter0[18]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17459,7 +17603,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[19]_i_1 
        (.I0(v_counter0[19]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17468,7 +17612,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[1]_i_1 
        (.I0(v_counter0[1]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17477,7 +17621,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[20]_i_1 
        (.I0(v_counter0[20]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17486,7 +17630,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[21]_i_1 
        (.I0(v_counter0[21]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17495,7 +17639,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[22]_i_1 
        (.I0(v_counter0[22]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17504,7 +17648,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[23]_i_1 
        (.I0(v_counter0[23]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17513,7 +17657,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[24]_i_1 
        (.I0(v_counter0[24]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17522,7 +17666,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[25]_i_1 
        (.I0(v_counter0[25]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17531,7 +17675,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[26]_i_1 
        (.I0(v_counter0[26]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17540,7 +17684,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[27]_i_1 
        (.I0(v_counter0[27]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17549,7 +17693,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[28]_i_1 
        (.I0(v_counter0[28]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17559,7 +17703,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[29]_i_1 
        (.I0(v_counter0[29]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17568,7 +17712,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[2]_i_1 
        (.I0(v_counter0[2]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17578,7 +17722,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[30]_i_1 
        (.I0(v_counter0[30]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17588,7 +17732,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[31]_i_1 
        (.I0(v_counter0[31]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17597,7 +17741,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[3]_i_1 
        (.I0(v_counter0[3]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17606,7 +17750,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[4]_i_1 
        (.I0(v_counter0[4]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17615,7 +17759,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[5]_i_1 
        (.I0(v_counter0[5]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17624,7 +17768,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[6]_i_1 
        (.I0(v_counter0[6]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17633,7 +17777,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[7]_i_1 
        (.I0(v_counter0[7]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17642,7 +17786,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[8]_i_1 
        (.I0(v_counter0[8]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -17651,7 +17795,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_driver
     .INIT(32'h00008200)) 
     \v_counter[9]_i_1 
        (.I0(v_counter0[9]),
-        .I1(\l_counter_reg[0]_0 ),
+        .I1(Q[1]),
         .I2(freq_sel_prev),
         .I3(\FSM_onehot_state_reg_reg_n_0_[1] ),
         .I4(Q[0]),
@@ -28332,6 +28476,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_tx
    (fifo_rd_en_w,
     o_slave_fifo_data_wr_en_n,
     o_slave_fifo_data_last_n,
+    Q,
     o_slave_fifo_data,
     tx_frame_start_reg,
     i_rd_clk,
@@ -28344,6 +28489,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_tx
   output fifo_rd_en_w;
   output o_slave_fifo_data_wr_en_n;
   output o_slave_fifo_data_last_n;
+  output [0:0]Q;
   output [15:0]o_slave_fifo_data;
   input tx_frame_start_reg;
   input i_rd_clk;
@@ -28360,7 +28506,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_tx
   wire \FSM_onehot_state[1]_i_2_n_0 ;
   wire \FSM_onehot_state[2]_i_1_n_0 ;
   wire \FSM_onehot_state[2]_i_2_n_0 ;
-  wire \FSM_onehot_state_reg_n_0_[0] ;
+  wire [0:0]Q;
   wire ctrl_rst_stretch;
   wire fifo_pipe_valid;
   wire fifo_pipe_valid0;
@@ -28390,7 +28536,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_tx
         .I2(state_next1__10),
         .I3(\FSM_onehot_state[2]_i_2_n_0 ),
         .I4(state_reg[1]),
-        .I5(\FSM_onehot_state_reg_n_0_[0] ),
+        .I5(Q),
         .O(\FSM_onehot_state[0]_i_1_n_0 ));
   LUT4 #(
     .INIT(16'hFF08)) 
@@ -28405,7 +28551,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_tx
     .INIT(32'hD0DCD0D0)) 
     \FSM_onehot_state[1]_i_2 
        (.I0(state_next1__10),
-        .I1(\FSM_onehot_state_reg_n_0_[0] ),
+        .I1(Q),
         .I2(state_reg[0]),
         .I3(frame_start_d),
         .I4(tx_frame_start_reg),
@@ -28423,7 +28569,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_tx
   LUT3 #(
     .INIT(8'h8A)) 
     \FSM_onehot_state[2]_i_2 
-       (.I0(\FSM_onehot_state_reg_n_0_[0] ),
+       (.I0(Q),
         .I1(frame_start_d),
         .I2(tx_frame_start_reg),
         .O(\FSM_onehot_state[2]_i_2_n_0 ));
@@ -28435,7 +28581,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_tx
         .CE(1'b1),
         .D(\FSM_onehot_state[0]_i_1_n_0 ),
         .PRE(ctrl_rst_stretch),
-        .Q(\FSM_onehot_state_reg_n_0_[0] ));
+        .Q(Q));
   (* FSM_ENCODED_STATES = "S_WAIT:010,S_TRANSMIT:100,S_IDLE:001" *) 
   FDCE #(
     .INIT(1'b0)) 
@@ -28509,7 +28655,7 @@ module mb_subsystem_ccd_controller_v1_0_0_0_ccd_frame_tx
         .I2(state_reg[1]),
         .I3(fifo_prelast_pipe),
         .I4(state_reg[0]),
-        .I5(\FSM_onehot_state_reg_n_0_[0] ),
+        .I5(Q),
         .O(rd_en_reg2__0));
   FDCE rd_en_reg_reg
        (.C(i_rd_clk),

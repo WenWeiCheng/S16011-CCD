@@ -505,16 +505,16 @@
           "g_inst/slot_0_axi"
         ]
       },
-      "ila_lib_TRIG_OUT": {
-        "interface_ports": [
-          "TRIG_OUT",
-          "ila_lib/TRIG_OUT"
-        ]
-      },
       "TRIG_IN_1": {
         "interface_ports": [
           "TRIG_IN",
           "ila_lib/TRIG_IN"
+        ]
+      },
+      "ila_lib_TRIG_OUT": {
+        "interface_ports": [
+          "TRIG_OUT",
+          "ila_lib/TRIG_OUT"
         ]
       }
     },

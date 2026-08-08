@@ -210,6 +210,7 @@
 
 	// ccd_ddr 内部连线 (来自 rd_clk / ui_clk 域, 需 CDC 同步)
 	wire        ccd_tx_last_n;
+	wire        ccd_tx_idle;              // 帧发送状态, 1=idle (rd_clk 域)
 	wire        ccd_frame_exception;
 	wire        ccd_frame_written;             // 帧完整写入 DDR 脉冲 (rd_clk 域)
 	wire [$clog2(MAX_FRAMES+1)-1:0] ccd_frame_num_raw;
@@ -231,7 +232,7 @@
 	// CDC 2-FF 同步器 (跨时钟域 → S_AXI_ACLK)
 	reg  ddr3_init_done_s1,    ddr3_init_done_s2;
 	reg  ccd_frame_exception_s1, ccd_frame_exception_s2;
-	reg  ccd_tx_last_n_s1,     ccd_tx_last_n_s2;
+	reg  ccd_tx_idle_s1,      ccd_tx_idle_s2;
 	reg  ccd_frame_written_s1, ccd_frame_written_s2;
 
 
@@ -582,15 +583,15 @@
 	end
 
 	// ---- CDC 2-FF 同步器 (ddr3_done: MIG域→AXI, exception: ui_clk域→AXI,
-	//      tx_last_n / frame_written: rd_clk域→AXI) ----
+	//      tx_idle / frame_written: rd_clk域→AXI) ----
 	always @(posedge S_AXI_ACLK or negedge S_AXI_ARESETN) begin
 	    if (!S_AXI_ARESETN) begin
 	        ddr3_init_done_s1    <= 1'b0;
 	        ddr3_init_done_s2    <= 1'b0;
 	        ccd_frame_exception_s1 <= 1'b0;
 	        ccd_frame_exception_s2 <= 1'b0;
-	        ccd_tx_last_n_s1     <= 1'b1;
-	        ccd_tx_last_n_s2     <= 1'b1;
+	        ccd_tx_idle_s1      <= 1'b1;
+	        ccd_tx_idle_s2      <= 1'b1;
 	        ccd_frame_written_s1 <= 1'b0;
 	        ccd_frame_written_s2 <= 1'b0;
 	    end else begin
@@ -598,8 +599,8 @@
 	        ddr3_init_done_s2    <= ddr3_init_done_s1;
 	        ccd_frame_exception_s1 <= ccd_frame_exception;
 	        ccd_frame_exception_s2 <= ccd_frame_exception_s1;
-	        ccd_tx_last_n_s1     <= ccd_tx_last_n;
-	        ccd_tx_last_n_s2     <= ccd_tx_last_n_s1;
+	        ccd_tx_idle_s1      <= ccd_tx_idle;
+	        ccd_tx_idle_s2      <= ccd_tx_idle_s1;
 	        ccd_frame_written_s1 <= ccd_frame_written;
 	        ccd_frame_written_s2 <= ccd_frame_written_s1;
 	    end
@@ -608,25 +609,25 @@
 	// ---- 中断边沿检测 (基于同步后信号) ----
 	reg ccd_frame_exception_s2_d;
 	wire ccd_frame_exception_rise;
-	reg ccd_tx_last_n_s2_d;
-	wire ccd_tx_done_fall;
+	reg ccd_tx_idle_s2_d;
+	wire ccd_tx_done_rise;
 	reg ccd_frame_written_s2_d;
 	wire ccd_frame_written_rise;
 
 	always @(posedge S_AXI_ACLK or negedge S_AXI_ARESETN) begin
 	    if (!S_AXI_ARESETN) begin
 	        ccd_frame_exception_s2_d <= 1'b0;
-	        ccd_tx_last_n_s2_d   <= 1'b1;
+	        ccd_tx_idle_s2_d    <= 1'b1;
 	        ccd_frame_written_s2_d <= 1'b0;
 	    end else begin
 	        ccd_frame_exception_s2_d <= ccd_frame_exception_s2;
-	        ccd_tx_last_n_s2_d   <= ccd_tx_last_n_s2;
+	        ccd_tx_idle_s2_d    <= ccd_tx_idle_s2;
 	        ccd_frame_written_s2_d <= ccd_frame_written_s2;
 	    end
 	end
 
 	assign ccd_frame_exception_rise = ccd_frame_exception_s2 && !ccd_frame_exception_s2_d;
-	assign ccd_tx_done_fall         = !ccd_tx_last_n_s2 && ccd_tx_last_n_s2_d;
+	assign ccd_tx_done_rise         = ccd_tx_idle_s2 && !ccd_tx_idle_s2_d;
 	assign ccd_frame_written_rise   = ccd_frame_written_s2 && !ccd_frame_written_s2_d;
 
 	// ---- 中断锁存与写 1 清除 ----
@@ -647,8 +648,8 @@
 	                 (axi_awaddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] == 4'h6) &&
 	                 S_AXI_WDATA[8])
 	            exception_pending_latch <= 1'b0;
-	        // TX done: o_tx_last_n 下降沿置位, CPU 写 INTR_STS[9]=1 清除
-	        if (ccd_tx_done_fall)
+	        // TX done: tx_idle 上升沿 (回到 idle) 置位, CPU 写 INTR_STS[9]=1 清除
+	        if (ccd_tx_done_rise)
 	            tx_done_pending_latch <= 1'b1;
 	        else if (slv_reg_wren &&
 	                 (axi_awaddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] == 4'h6) &&
@@ -709,6 +710,7 @@
 	    .o_slave_fifo_data    (o_slave_fifo_data),
 	    .o_slave_fifo_data_valid_n(o_slave_fifo_data_wr_en_n),
 	    .o_tx_last_n (ccd_tx_last_n),
+	    .o_tx_idle  (ccd_tx_idle),
 	    .o_frame_num    (ccd_frame_num_raw),
 	    .o_frame_written (ccd_frame_written),
 	    .o_frame_exception(ccd_frame_exception),

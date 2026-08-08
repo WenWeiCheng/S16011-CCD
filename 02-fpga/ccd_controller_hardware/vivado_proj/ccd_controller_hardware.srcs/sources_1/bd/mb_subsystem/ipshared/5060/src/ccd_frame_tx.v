@@ -39,7 +39,8 @@ module ccd_frame_tx #(
 
     // 帧控制
     input  wire         i_frame_start,     // 开始一帧数据传输
-    output wire         o_tx_last_n      // 帧最后一字标志, 低有效脉冲
+    output wire         o_tx_last_n,      // 帧最后一字标志, 低有效脉冲
+    output wire         o_tx_idle        // 帧发送状态, 1=idle, 0=其他
 );
 
     // ==================================================================
@@ -192,5 +193,8 @@ module ccd_frame_tx #(
     assign o_slave_fifo_data       = slave_data_reg;
     assign o_slave_fifo_data_valid_n = slave_valid_n_reg;
     assign o_tx_last_n          = frame_done_n_reg;
+
+    // 帧发送状态: 1=idle (空闲), 0=其他 (wait / transmit)
+    assign o_tx_idle          = (state == S_IDLE);
 
 endmodule

@@ -48,11 +48,11 @@
 
 
 // IP VLNV: xilinx.com:user:ccd_controller_v1_0:1.0
-// IP Revision: 39
+// IP Revision: 41
 
 (* X_CORE_INFO = "ccd_controller_v1_0,Vivado 2020.1" *)
 (* CHECK_LICENSE_TYPE = "mb_subsystem_ccd_controller_v1_0_0_0,ccd_controller_v1_0,{}" *)
-(* CORE_GENERATION_INFO = "mb_subsystem_ccd_controller_v1_0_0_0,ccd_controller_v1_0,{x_ipProduct=Vivado 2020.1,x_ipVendor=xilinx.com,x_ipLibrary=user,x_ipName=ccd_controller_v1_0,x_ipVersion=1.0,x_ipCoreRevision=39,x_ipLanguage=VERILOG,x_ipSimLanguage=MIXED,MAX_FRAME_DEPTH=131072,MAX_FRAMES=2000,C_S00_AXI_DATA_WIDTH=32,C_S00_AXI_ADDR_WIDTH=6}" *)
+(* CORE_GENERATION_INFO = "mb_subsystem_ccd_controller_v1_0_0_0,ccd_controller_v1_0,{x_ipProduct=Vivado 2020.1,x_ipVendor=xilinx.com,x_ipLibrary=user,x_ipName=ccd_controller_v1_0,x_ipVersion=1.0,x_ipCoreRevision=41,x_ipLanguage=VERILOG,x_ipSimLanguage=MIXED,MAX_FRAME_DEPTH=131072,MAX_FRAMES=2000,C_S00_AXI_DATA_WIDTH=32,C_S00_AXI_ADDR_WIDTH=6}" *)
 (* IP_DEFINITION_SOURCE = "package_project" *)
 (* DowngradeIPIdentifiedWarnings = "yes" *)
 module mb_subsystem_ccd_controller_v1_0_0_0 (

@@ -58,6 +58,7 @@ module ccd_ddr #(
     output wire         o_slave_fifo_data_valid_n, // 数据有效 (低有效)
     output wire         o_slave_fifo_clk,      // 读时钟输出 (i_rd_clk 扇出)
     output wire         o_tx_last_n,        // 帧最后一字标志, 低有效脉冲
+    output wire         o_tx_idle,         // 帧发送状态, 1=idle, 0=其他
 
     // ---- 帧缓存状态 ----
     output wire [$clog2(MAX_FRAMES+1)-1:0]   o_frame_num,  // 帧缓存中可读帧数
@@ -312,7 +313,8 @@ module ccd_ddr #(
         .i_slave_fifo_empty_n  (i_slave_fifo_empty_n),
         .i_slave_fifo_full_n   (i_slave_fifo_full_n),
         .i_frame_start         (i_tx_frame_start),
-        .o_tx_last_n        (o_tx_last_n)
+        .o_tx_last_n        (o_tx_last_n),
+        .o_tx_idle         (o_tx_idle)
     );
 
 endmodule

@@ -87,7 +87,7 @@ module ccd_clk_gen #(
     always @(posedge i_clk or negedge i_rst_n) begin
         if (!i_rst_n)
             cnt_reg <= 32'd0;
-        else if (cnt_reg == period_reg - 1'b1)
+        else if (cnt_reg >= period_reg - 1'b1)
             cnt_reg <= 32'd0;
         else
             cnt_reg <= cnt_reg + 1'b1;
