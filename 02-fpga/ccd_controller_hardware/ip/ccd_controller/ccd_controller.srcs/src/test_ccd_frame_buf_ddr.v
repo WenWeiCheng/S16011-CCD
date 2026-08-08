@@ -469,14 +469,19 @@ module test_ccd_frame_buf_ddr;
             i_wr_data      <= 16'd0;
             i_pixel_type   <= 2'b00;
 
-            // 参数变化 → 顶层 (ccd_frame_buf_ddr) 自动软复位并重新锁定帧长度
-            // 必须等待软复位完成再发帧, 否则 frame_start 会被复位吞掉
+            // 参数变化 → 模拟软件软复位 (经总复位): 脉冲 i_rst_n 复位三域,
+            // 释放后固定帧长度重新锁定为新参数。必须等复位完成再发帧,
+            // 否则 frame_start 会被复位吞掉。
             if (width != last_img_width || height != last_img_height ||
                 read_mode != last_read_mode) begin
                 last_img_width  <= width;
                 last_img_height <= height;
                 last_read_mode  <= read_mode;
-                wait_adc_cycles(2200);   // 覆盖 soft_rst (~41µs @100MHz ui_clk) + 三域同步
+                i_rst_n <= 1'b0;
+                wait_adc_cycles(5);
+                wait_rd_cycles(5);
+                i_rst_n <= 1'b1;
+                wait_adc_cycles(2200);   // 覆盖复位释放 + 三域同步
             end
 
             // 2. 脉冲 frame_start: 上升 → 保持 1T → 下降

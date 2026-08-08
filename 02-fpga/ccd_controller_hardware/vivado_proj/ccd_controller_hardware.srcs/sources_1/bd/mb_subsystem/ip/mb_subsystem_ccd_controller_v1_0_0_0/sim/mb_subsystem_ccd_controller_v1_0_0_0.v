@@ -48,7 +48,7 @@
 
 
 // IP VLNV: xilinx.com:user:ccd_controller_v1_0:1.0
-// IP Revision: 37
+// IP Revision: 39
 
 `timescale 1ns/1ps
 

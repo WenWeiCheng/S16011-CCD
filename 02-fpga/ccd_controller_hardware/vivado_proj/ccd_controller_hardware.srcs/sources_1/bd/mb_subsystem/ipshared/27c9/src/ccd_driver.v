@@ -161,8 +161,11 @@ ccd_clk_gen #(
 // ==================================================================
 always @(posedge i_clk or negedge i_rst_n) begin
     if (!i_rst_n) begin
-        exp_sync       <= 2'b11;
-        exp_sync_d1    <= 1'b1;
+        // 同步链复位为 0 (与 exposure 静止电平一致): 复位释放后 exposure=0 时
+        // 不会产生假下降沿 (避免误触发一帧读出); exposure=1 时链先跟踪高电平,
+        // 再由真实 1→0 触发读出。
+        exp_sync       <= 2'b00;
+        exp_sync_d1    <= 1'b0;
         exp_stretch_cnt <= 32'd0;
     end else begin
         exp_sync[0] <= i_exposure;

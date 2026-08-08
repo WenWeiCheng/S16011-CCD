@@ -114,41 +114,11 @@ module ccd_frame_buf_ddr #(
     wire [127:0]        rdfifo_din;
 
     // ==================================================================
-    // 参数变化软复位 (ui_clk 域):
-    //   图像参数 (read_mode / width / height) 变化时展宽 ~41µs 再释放,
-    //   帧长度在释放后锁定新参数。
-    //   i_rst_n 释放展宽已由上层 ccd_ddr 统一处理, 此处仅做 soft_rst。
-    //   → 门控 frame_buf_rst_n, 复位 ctrl (三域) 与 adapter。
-    //   各域直接用 frame_buf_rst_n 作异步复位, 无需 per-domain 同步释放。
+    // 复位直通: 系统复位 (来自上层 ccd_ddr 的展宽主复位, 已含软件软复位门控)。
+    // 图像参数 (width / height / read_mode) 变化不再自动复位; 软件写入新参数
+    // 后通过 CTRL[12] 软复位 (总复位) 触发重新锁定帧长, 复位时机由软件掌控。
     // ==================================================================
-    wire [33:0] img_param_now = {i_image_height, i_image_width, i_read_mode};
-    reg  [33:0] img_param_shadow;
-    reg         soft_rst;
-    reg  [11:0] soft_rst_cnt;
-
-    always @(posedge i_ui_clk or negedge i_rst_n) begin
-        if (!i_rst_n) begin
-            img_param_shadow <= 34'd0;
-            soft_rst         <= 1'b0;
-            soft_rst_cnt     <= 12'd0;
-        end else begin
-            img_param_shadow <= img_param_now;
-            if (img_param_shadow != img_param_now) begin
-                soft_rst     <= 1'b1;
-                soft_rst_cnt <= 12'hFFF;
-            end else if (soft_rst) begin
-                if (soft_rst_cnt == 12'h001) begin
-                    soft_rst     <= 1'b0;
-                    soft_rst_cnt <= 12'd0;
-                end else begin
-                    soft_rst_cnt <= soft_rst_cnt - 1'b1;
-                end
-            end
-        end
-    end
-
-    // 门控复位: 系统复位 (来自 ccd_ddr 的展宽主复位) AND 非软复位
-    wire frame_buf_rst_n = i_rst_n && ~soft_rst;
+    wire frame_buf_rst_n = i_rst_n;
 
     // ==================================================================
     // Controller 例化 (控制逻辑 + wr/rd FIFO, AXI adapter 在外部)

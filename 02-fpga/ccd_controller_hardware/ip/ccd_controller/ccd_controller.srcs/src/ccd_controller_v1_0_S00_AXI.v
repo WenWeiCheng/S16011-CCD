@@ -205,6 +205,9 @@
 	reg         tx_frame_start_reg;
 	reg  [3:0]  trigger_stretch_cnt;
 
+	// 软复位触发脉冲 (写 CTRL[12]=1 自清, 展宽至约 16 个 AXI 周期 → 门控 ccd_ddr 主复位)
+	reg  [3:0]  soft_rst_cnt;
+
 	// ccd_ddr 内部连线 (来自 rd_clk / ui_clk 域, 需 CDC 同步)
 	wire        ccd_tx_last_n;
 	wire        ccd_frame_exception;
@@ -219,6 +222,11 @@
 
 	// DDR3 初始化完成 (mmcm_locked && init_calib_complete, 来自 ui_clk 域)
 	wire ddr3_init_done = i_mmcm_locked && i_init_calib_complete;
+
+	// 门控主复位 (总复位): 系统复位 AND 非软复位脉冲。
+	// 软复位 = 写 CTRL[12]=1 触发自清脉冲 (soft_rst_cnt 递减), 经 ccd_ddr 现有
+	// 展宽复位 (~41µs) 复位整条 CCD 流水线, 释放后帧长重锁新参数。
+	wire ccd_ddr_rst_n = S_AXI_ARESETN && (soft_rst_cnt == 4'd0);
 
 	// CDC 2-FF 同步器 (跨时钟域 → S_AXI_ACLK)
 	reg  ddr3_init_done_s1,    ddr3_init_done_s2;
@@ -358,21 +366,33 @@
 	      slv_reg4 <= 0;
 	      slv_reg8 <= 0;
 	      trigger_stretch_cnt <= 4'd0;
+	      soft_rst_cnt      <= 4'd0;
 	    end 
 	  else begin
 	    // 展宽计数器自动递减 (与触发写共用同一 always 块, 避免多驱动)
 	    if (trigger_stretch_cnt != 0)
 	        trigger_stretch_cnt <= trigger_stretch_cnt - 1'b1;
+	    if (soft_rst_cnt != 0)
+	        soft_rst_cnt <= soft_rst_cnt - 1'b1;
 
 	    if (slv_reg_wren)
 	      begin
 	        case ( axi_awaddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] )
 	          // 0x00 — CTRL
 	          4'h0:
-	            for ( byte_index = 0; byte_index <= (C_S_AXI_DATA_WIDTH/8)-1; byte_index = byte_index+1 )
-	              if ( S_AXI_WSTRB[byte_index] == 1 ) begin
-	                slv_reg0[(byte_index*8) +: 8] <= S_AXI_WDATA[(byte_index*8) +: 8];
-	              end  
+	            begin
+	              for ( byte_index = 0; byte_index <= (C_S_AXI_DATA_WIDTH/8)-1; byte_index = byte_index+1 )
+	                if ( S_AXI_WSTRB[byte_index] == 1 ) begin
+	                  // bit12 为软复位触发位 (写1自清脉冲), 不存储 → 掩码恒 0
+	                  if (byte_index == 1)
+	                    slv_reg0[15:8] <= S_AXI_WDATA[15:8] & ~8'h10;
+	                  else
+	                    slv_reg0[(byte_index*8) +: 8] <= S_AXI_WDATA[(byte_index*8) +: 8];
+	                end
+	              // 软复位触发: 写 CTRL[12]=1 且 WSTRB[1] 置位 → 载入自清脉冲计数器
+	              if (S_AXI_WDATA[12] && S_AXI_WSTRB[1] && soft_rst_cnt == 4'd0)
+	                soft_rst_cnt <= 4'd15;
+	            end  
 	          // 0x04 — IMG_SIZE
 	          4'h1:
 	            for ( byte_index = 0; byte_index <= (C_S_AXI_DATA_WIDTH/8)-1; byte_index = byte_index+1 )
@@ -655,7 +675,7 @@
 	    .MAX_FRAMES     (MAX_FRAMES)
 	) u_ccd_ddr (
 	    .i_ccd_clk      (S_AXI_ACLK),
-	    .i_rst_n        (S_AXI_ARESETN), 
+	    .i_rst_n        (ccd_ddr_rst_n),   // 门控主复位 (含软复位脉冲)
 	    .i_exposure     (slv_reg0[0]),
 	    .i_freq_sel     (slv_reg0[1]),
 	    .i_cdsclk_delay (slv_reg0[11:5]),

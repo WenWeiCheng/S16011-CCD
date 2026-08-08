@@ -459,6 +459,16 @@ module test_ccd_controller_axi;
         end
     endtask
 
+    // ---- 软复位: 写 CTRL[12]=1 触发写1自清脉冲 (总复位) ----
+    // 图像参数 (width/height/read_mode) 写后需软复位重锁固定帧长度并清空帧缓存
+    task soft_reset_pulse;
+        input [31:0] ctrl_val;
+        begin
+            axi_write(ADDR_CTRL, ctrl_val | 32'h00001000);
+            wait_us(100);   // 覆盖 ccd_ddr 释放展宽 (~41µs) + 三域同步
+        end
+    endtask
+
     task rd_wait;
         input integer cycles;
         begin
@@ -596,6 +606,12 @@ module test_ccd_controller_axi;
         axi_write(ADDR_CTRL, {20'h0, 7'd10, 2'b01, 1'b0, 1'b1, 1'b1});
         axi_read_dbg(ADDR_CTRL, "CTRL");
 
+        // 软复位位 (CTRL[12]) 写1自清脉冲, 不存储 → 读回恒 0
+        if (axi_rdata & 32'h00001000)
+            $display("[FAIL] CTRL[12] should read back 0 (self-clearing), got 0x%08h", axi_rdata);
+        else
+            $display("[PASS] CTRL[12] reads back 0");
+
         // 写 IMG_SIZE: width=8, height=2
         axi_write(ADDR_IMG_SIZE, {16'd2, 16'd8});
         axi_read_dbg(ADDR_IMG_SIZE, "IMG_SIZE");
@@ -625,6 +641,9 @@ module test_ccd_controller_axi;
 
         // 配置 CTRL: exposure=1, freq_sel=0=100kHz, read_mode=0=line binning
         axi_write(ADDR_CTRL, {20'h0, 7'd0, 2'd0, 1'b0, 1'b0, 1'b1});
+
+        // 参数配置完成 → 软复位 (CTRL[12]=1 写1自清) 重锁固定帧长度
+        soft_reset_pulse({20'h0, 7'd0, 2'd0, 1'b0, 1'b0, 1'b1});
 
         // 拉低 exposure 启动采集
         axi_write(ADDR_CTRL, {20'h0, 7'd0, 2'd0, 1'b0, 1'b0, 1'b0});
@@ -794,6 +813,8 @@ module test_ccd_controller_axi;
         // line binning 8x2, 各消隐=1
         axi_write(ADDR_IMG_SIZE, {16'd2, 16'd8});
         axi_write(ADDR_BEVEL_BLANK, {8'h0, 4'd1, 4'd1, 4'd1, 4'd1, 4'd1, 4'd1});
+        // 参数写后软复位: 帧长锁定为 8 (帧中途再改宽度不再复位 → 帧长失配触发异常)
+        soft_reset_pulse({20'h0, 7'd0, 2'd0, 1'b0, 1'b0, 1'b1});
         axi_write(ADDR_CTRL, {20'h0, 7'd0, 2'd0, 1'b0, 1'b0, 1'b1});  // exposure=1: 曝光中
         axi_write(ADDR_CTRL, {20'h0, 7'd0, 2'd0, 1'b0, 1'b0, 1'b0});  // 下降沿→触发读出
 

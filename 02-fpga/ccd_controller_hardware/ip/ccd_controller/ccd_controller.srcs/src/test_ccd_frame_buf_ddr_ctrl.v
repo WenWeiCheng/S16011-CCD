@@ -63,9 +63,10 @@ module test_ccd_frame_buf_ddr_ctrl;
     // ==================================================================
     reg i_rst_n;
     reg tb_ddr3_init_done;
-    reg soft_rst;   // 模拟顶层 (ccd_frame_buf_ddr) 参数变化软复位
-    // 控制器复位: 系统复位 AND DDR3 初始化完成 AND 非软复位 (同顶层门控)
-    wire ctrl_rst_n = i_rst_n && tb_ddr3_init_done && ~soft_rst;
+    // 控制器复位: 系统复位 AND DDR3 初始化完成。
+    // 参数变化软复位已上移到 AXI 层 (CTRL[12] 写1自清 → 门控总复位 i_rst_n),
+    // 本 TB 用脉冲 i_rst_n 模拟软件软复位。
+    wire ctrl_rst_n = i_rst_n && tb_ddr3_init_done;
 
     // ==================================================================
     // ADC 域信号 (i_adcclk)
@@ -472,7 +473,6 @@ module test_ccd_frame_buf_ddr_ctrl;
             $display("  [RESET] Asserting...");
             i_rst_n              <= 1'b0;
             tb_ddr3_init_done    <= 1'b0;
-            soft_rst             <= 1'b0;
             i_wr_en           <= 1'b0;
             i_wr_data         <= 16'd0;
             i_pixel_type      <= 2'b00;
@@ -517,16 +517,17 @@ module test_ccd_frame_buf_ddr_ctrl;
     endtask
 
     // ------------------------------------------------------------------
-    // pulse_soft_rst: 模拟顶层参数变化触发的软复位
-    //   置 soft_rst=1 → 等待足够多周期 (覆盖 ctrl 三域复位 + 释放同步)
-    //   → 清 0 → 等待重新锁存完成
+    // pulse_soft_rst: 模拟软件软复位 (AXI 层 CTRL[12] 写1自清 → 门控总复位)
+    //   脉冲 i_rst_n 低 → 复位 ctrl 三域 → 释放 → 等待重新锁存帧长
     // ------------------------------------------------------------------
     task pulse_soft_rst;
         begin
-            $display("  [SOFT_RST] Asserting (simulate image-param change)...");
-            soft_rst <= 1'b1;
-            wait_ui_cycles(2000);     // 足够 ctrl 三域复位 (wr_clk=50MHz → 1000 周期)
-            soft_rst <= 1'b0;
+            $display("  [SOFT_RST] Asserting (simulate SW soft reset via i_rst_n)...");
+            i_rst_n <= 1'b0;
+            wait_ui_cycles(50);
+            wait_adc_cycles(5);
+            wait_rd_cycles(5);
+            i_rst_n <= 1'b1;
             wait_ui_cycles(2000);     // 等释放同步 + 重新锁存帧长度
             wait_adc_cycles(20);
             $display("  [SOFT_RST] Released");
@@ -560,7 +561,7 @@ module test_ccd_frame_buf_ddr_ctrl;
             i_wr_data      <= 16'd0;
             i_pixel_type   <= 2'b00;
 
-            // 参数变化 → 模拟顶层软复位, 重新锁定帧长度 (固定长度锁存机制)
+            // 参数变化 → 模拟软件软复位 (总复位), 重新锁定帧长度 (固定长度锁存机制)
             if (width != last_img_width || height != last_img_height ||
                 read_mode != last_read_mode) begin
                 last_img_width  <= width;
@@ -678,7 +679,6 @@ module test_ccd_frame_buf_ddr_ctrl;
         // 初始状态
         i_rst_n              = 1'b0;
         tb_ddr3_init_done    = 1'b0;
-        soft_rst             = 1'b0;
         i_wr_en          = 1'b0;
         i_wr_data        = 16'd0;
         i_pixel_type     = 2'b00;
@@ -837,7 +837,7 @@ module test_ccd_frame_buf_ddr_ctrl;
 
         // ================================================================
         // Test 8: 软复位清空已缓存帧
-        //   写一帧 → 缓存 1 帧 → 手动 soft_rst → 缓存清零
+        //   写一帧 → 缓存 1 帧 → 手动软复位 (脉冲 i_rst_n) → 缓存清零
         // ================================================================
         test_num = test_num + 1;
         $display("\n##########################################################");
