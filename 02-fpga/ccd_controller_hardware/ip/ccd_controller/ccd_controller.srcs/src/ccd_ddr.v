@@ -140,15 +140,39 @@ module ccd_ddr #(
     // ==================================================================
     // 内部连线: DDR3 初始化状态 (mmcm_locked && init_calib_complete)
     // ==================================================================
-    wire        ddr3_init_done = i_mmcm_locked && i_init_calib_complete;
+    wire        mmcm_locked = i_mmcm_locked;             // MMCM 锁存指示 (来自 MIG)
+    wire        ddr3_init_done = mmcm_locked && i_init_calib_complete;
 
     // ==================================================================
-    // 控制器复位: 系统复位 AND DDR3 初始化完成
+    // 控制器复位生成 (ui_clk 域): 系统复位 i_rst_n / DDR3 初始化完成
+    //   两者的释放沿均展宽 ~41µs (12'hFFF @ i_ui_clk), 保证释放沿经
+    //   ui_clk 域同步后再释放。展宽信号直接作为主复位输出。
     //   ccd_driver / ccd_frame_buf_ddr / ccd_frame_tx 共享此复位。
-    //   注: ccd_driver 内部的 ccd_clk_gen 不随此复位, 仅由
-    //   i_clk_locked (ddr3_init_done) 控制, 保证 CCD 时钟稳定输出。
+    //   注: ccd_driver 内部的 ccd_clk_gen 不随此复位, 仅由 i_clk_locked
+    //   (mmcm_locked) 控制, 保证 CCD 时钟稳定输出。
     // ==================================================================
-    wire        ctrl_rst_n = i_rst_n && ddr3_init_done;
+    reg         ctrl_rst_stretch;          // 1 = 复位展宽中 (释放尚未完成)
+    reg  [11:0] ctrl_rst_stretch_cnt;
+
+    always @(posedge i_ui_clk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
+            ctrl_rst_stretch     <= 1'b1;   // i_rst_n 释放展宽 (异步置位)
+            ctrl_rst_stretch_cnt <= 12'hFFF;
+        end else begin
+            if (!ddr3_init_done) begin
+                ctrl_rst_stretch     <= 1'b1;   // ddr3_init_done 释放展宽 (校准期间保持)
+                ctrl_rst_stretch_cnt <= 12'hFFF;
+            end else if (ctrl_rst_stretch_cnt == 12'h001) begin
+                ctrl_rst_stretch     <= 1'b0;
+                ctrl_rst_stretch_cnt <= 12'd0;
+            end else if (ctrl_rst_stretch_cnt != 12'd0) begin
+                ctrl_rst_stretch_cnt <= ctrl_rst_stretch_cnt - 1'b1;
+            end
+        end
+    end
+
+    // 主复位: 单一展宽信号直接输出 (i_rst_n / ddr3_init_done 已封装进 stretch)
+    wire        ctrl_rst_n = ~ctrl_rst_stretch;
 
     // ==================================================================
     // ccd_driver 实例化
@@ -156,7 +180,7 @@ module ccd_ddr #(
     ccd_driver u_ccd_driver (
         .i_clk         (i_ccd_clk),
         .i_rst_n       (ctrl_rst_n),
-        .i_clk_locked  (i_rst_n),
+        .i_clk_locked  (mmcm_locked),
         .i_exposure    (i_exposure),
         .i_freq_sel    (i_freq_sel),
         .i_cdsclk_delay(i_cdsclk_delay),

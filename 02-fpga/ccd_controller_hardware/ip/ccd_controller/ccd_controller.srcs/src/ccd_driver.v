@@ -10,7 +10,7 @@
 //          内嵌三态状态机 (IDLE / VERTICAL_SHIFT / HORIZONTAL_SHIFT),
 //          所有状态转移与 s_clk (sclk_p0) 上升沿同步。
 //          ccd_clk_gen 的复位仅由 i_clk_locked 控制 (在 ccd_ddr 中
-//          接 ddr3_init_done),不随 i_rst_n 复位,保证时钟稳定输出。
+//          接 mmcm_locked),不随 i_rst_n 复位,保证时钟稳定输出。
 //          计数目标 v/h/l 由图像尺寸/消隐/空白参数和读出模式
 //          在内部计算得出,支持 image / line binning 两种模式。
 //          状态转移条件:
@@ -27,7 +27,7 @@ module ccd_driver (
     input  wire         i_clk,           // 系统时钟 (默认 100 MHz)
     input  wire         i_rst_n,         // 异步复位,低有效
     input  wire         i_clk_locked,    // 时钟稳定指示: 高有效,控制 ccd_clk_gen 复位
-                                         // (在 ccd_ddr 中由 ddr3_init_done 驱动)
+                                         // (在 ccd_ddr 中由 mmcm_locked 驱动)
     input  wire         i_exposure,      // 曝光信号
     input  wire         i_freq_sel,      // SCLK 频率选择: 0 -> 100kHz, 1 -> 500kHz
     input  wire [6:0]   i_cdsclk_delay,  // CDSCLK 微调延时,单位系统时钟周期 (10ns)

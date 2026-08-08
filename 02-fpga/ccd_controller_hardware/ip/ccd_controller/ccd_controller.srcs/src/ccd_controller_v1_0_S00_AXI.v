@@ -199,7 +199,7 @@
 	reg         exception_pending_latch;
 	reg         tx_done_pending_latch;
 	reg         frame_written_pending_latch;  // 帧写入完成锁存 (INTR_STS[10])
-	reg  [6:0]  exception_count;           // 帧异常计数, 映射到 STATUS[15:9]
+	reg  [15:0] exception_count;           // 帧异常计数, 映射到 STATUS[15:0] (16bit, 饱和)
 
 	// 帧发送触发脉冲 (展宽至约 16 个 AXI 周期, 确保 rd_clk 域可靠采样)
 	reg         tx_frame_start_reg;
@@ -228,13 +228,11 @@
 
 
 	// STATUS 寄存器组装 (使用同步后信号)
-	// 注: 帧计数已移入独立 FRAME_NUM 寄存器 (0x1C), STATUS[7:0] 置 0
+	// 注: 帧计数已移入独立 FRAME_NUM 寄存器 (0x1C); 帧异常计数 16bit (STATUS[15:0], 饱和)
 	wire [31:0] status_reg;
-	assign status_reg = {23'b0,
+	assign status_reg = {15'b0,
 	                     ddr3_init_done_s2,         // [16]  已同步
-	                     exception_count,          // [15:9] 帧异常计数
-	                     ccd_frame_exception_s2,    // [8]   已同步
-	                     8'b0};                     // [7:0] 空闲
+	                     exception_count};          // [15:0] 帧异常计数 (16bit, 饱和)
 
 	// FRAME_NUM 寄存器 (0x1C, 只读实时值, 32bit)
 	//   frame_num 来自 rd_clk 域 (frames_in_fifo), 未做跨域同步
@@ -617,10 +615,10 @@
 	        exception_pending_latch <= 1'b0;
 	        tx_done_pending_latch <= 1'b0;
 	        frame_written_pending_latch <= 1'b0;
-	        exception_count        <= 7'd0;
+	        exception_count        <= 16'd0;
 	    end else begin
 	        // 帧异常计数 (饱和, 不绕回)
-	        if (ccd_frame_exception_rise && exception_count != 7'd127)
+	        if (ccd_frame_exception_rise && exception_count != 16'hFFFF)
 	            exception_count <= exception_count + 1'b1;
 	        // Exception: 上升沿置位, CPU 写 INTR_STS[8]=1 清除
 	        if (ccd_frame_exception_rise)

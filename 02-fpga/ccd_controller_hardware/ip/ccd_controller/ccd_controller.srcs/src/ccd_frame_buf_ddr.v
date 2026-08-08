@@ -114,10 +114,12 @@ module ccd_frame_buf_ddr #(
     wire [127:0]        rdfifo_din;
 
     // ==================================================================
-    // 图像参数变化检测 (ui_clk 域): read_mode / width / height 任一变化
-    //   → 软复位电平 (展宽 ~41µs @100MHz, 覆盖最慢 adcclk 的复位同步)
-    //   → 门控 frame_buf_rst_n, 复位 ctrl (三域) 与 adapter
-    //   帧长度在复位释放后锁定, 参数变化即重新锁定新长度。
+    // 参数变化软复位 (ui_clk 域):
+    //   图像参数 (read_mode / width / height) 变化时展宽 ~41µs 再释放,
+    //   帧长度在释放后锁定新参数。
+    //   i_rst_n 释放展宽已由上层 ccd_ddr 统一处理, 此处仅做 soft_rst。
+    //   → 门控 frame_buf_rst_n, 复位 ctrl (三域) 与 adapter。
+    //   各域直接用 frame_buf_rst_n 作异步复位, 无需 per-domain 同步释放。
     // ==================================================================
     wire [33:0] img_param_now = {i_image_height, i_image_width, i_read_mode};
     reg  [33:0] img_param_shadow;
@@ -145,7 +147,7 @@ module ccd_frame_buf_ddr #(
         end
     end
 
-    // 门控复位: 系统复位 AND 非软复位 (soft_rst 为 ui_clk 域信号)
+    // 门控复位: 系统复位 (来自 ccd_ddr 的展宽主复位) AND 非软复位
     wire frame_buf_rst_n = i_rst_n && ~soft_rst;
 
     // ==================================================================

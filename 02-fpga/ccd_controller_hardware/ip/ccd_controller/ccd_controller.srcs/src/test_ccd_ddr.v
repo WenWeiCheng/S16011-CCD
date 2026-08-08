@@ -424,7 +424,7 @@ module test_ccd_ddr;
             while (!ddr3_init_done) begin
                 @(posedge i_clk);
             end
-            sys_wait(2000);
+            sys_wait(6000);   // 覆盖 i_rst_n 释放展宽 (~41µs)
             $display("  [DDR3] Init done");
         end
     endtask

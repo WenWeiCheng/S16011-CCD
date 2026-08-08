@@ -33,8 +33,7 @@ module test_ccd_controller_axi;
 
     // ---- STATUS 位掩码 ----
     parameter [31:0] STS_DDR3_DONE   = 32'h00010000;  // [16]
-    parameter [31:0] STS_EXCEP_CNT   = 32'h0000FE00;  // [15:9]
-    parameter [31:0] STS_EXCEPTION   = 32'h00000100;  // [8]
+    parameter [31:0] STS_EXCEP_CNT   = 32'h0000FFFF;  // [15:0]
 
     // ---- INTR 位掩码 ----
     parameter [31:0] INTR_TX_DONE        = 32'h00000200;  // EN[9] / STS[9]
@@ -479,7 +478,7 @@ module test_ccd_controller_axi;
             $display("  [DDR3] Waiting for init_calib_complete...");
             while (!ddr3_init_done)
                 @(posedge s00_axi_aclk);
-            sys_wait(2000);
+            sys_wait(6000);   // 覆盖 i_rst_n 释放展宽 (~41µs)
             $display("  [DDR3] Init done");
         end
     endtask

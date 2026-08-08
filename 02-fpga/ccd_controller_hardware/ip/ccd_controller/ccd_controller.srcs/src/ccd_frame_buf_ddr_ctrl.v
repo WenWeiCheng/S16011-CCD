@@ -34,7 +34,7 @@ module ccd_frame_buf_ddr_ctrl #(
     input  wire                            i_ui_clk,          // MIG ui_clk
     input  wire                            i_wr_clk,          // 写侧时钟 (CCD 像素时钟)
     input  wire                            i_rd_clk,          // FX2 读出时钟
-    input  wire                            i_rst_n,           // 系统复位（低有效, 顶层已门控 DDR 初始化完成）
+    input  wire                            i_rst_n,           // 系统复位（低有效, 顶层已门控 DDR 完成; 直接作三域异步复位）
 
     // ==================================================================
     // 写侧 (wr_clk 域) 输入 — 像素数据
@@ -191,14 +191,6 @@ module ccd_frame_buf_ddr_ctrl #(
     reg  [31:0] frame_depth_locked_rd;            // 复位释放后锁存 (与 wr/ui 域同值)
     reg         frame_depth_locked_rd_flag;
 
-    // ---- 复位同步器 (异步断言/同步释放; 支持顶层参数变化门控 i_rst_n) ----
-    reg  [1:0] rst_n_wr_sync;
-    reg  [1:0] rst_n_ui_sync;
-    reg  [1:0] rst_n_rd_sync;
-    wire       rst_n_wr;
-    wire       rst_n_ui;
-    wire       rst_n_rd;
-
     // ==================================================================
     // 辅助信号-组合逻辑 (ui_clk 域)
     // ==================================================================
@@ -242,31 +234,10 @@ module ccd_frame_buf_ddr_ctrl #(
     assign rd_fifo_has_space_partial = (rdfifo_wrcnt < (FIFO_DEPTH - rd_partial_units));
 
     // ==================================================================
-    // ---- 复位同步器 (异步断言, 同步释放) ----
-    //   顶层 (ccd_frame_buf_ddr) 检测到图像参数变化时会把 soft_rst 门控进
-    //   i_rst_n; 各时钟域须对释放做同步化, 避免 wr/rd 域复位异步释放亚稳态。
-    // ==================================================================
-    always @(posedge i_wr_clk or negedge i_rst_n) begin
-        if (!i_rst_n)      rst_n_wr_sync <= 2'b00;
-        else               rst_n_wr_sync <= {rst_n_wr_sync[0], 1'b1};
-    end
-    always @(posedge i_ui_clk or negedge i_rst_n) begin
-        if (!i_rst_n)      rst_n_ui_sync <= 2'b00;
-        else               rst_n_ui_sync <= {rst_n_ui_sync[0], 1'b1};
-    end
-    always @(posedge i_rd_clk or negedge i_rst_n) begin
-        if (!i_rst_n)      rst_n_rd_sync <= 2'b00;
-        else               rst_n_rd_sync <= {rst_n_rd_sync[0], 1'b1};
-    end
-    assign rst_n_wr = rst_n_wr_sync[1];
-    assign rst_n_ui = rst_n_ui_sync[1];
-    assign rst_n_rd = rst_n_rd_sync[1];
-
-    // ==================================================================
     // ---- i_wr_clk 域: 固定帧长度锁存 (复位释放后第一拍, 之后不变) ----
     // ==================================================================
-    always @(posedge i_wr_clk or negedge rst_n_wr) begin
-        if (!rst_n_wr) begin
+    always @(posedge i_wr_clk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
             frame_depth_locked_wr      <= 32'd0;
             frame_depth_locked_wr_flag <= 1'b0;
         end else if (!frame_depth_locked_wr_flag) begin
@@ -278,8 +249,8 @@ module ccd_frame_buf_ddr_ctrl #(
     // ==================================================================
     // ---- i_ui_clk 域: 固定帧长度锁存 ----
     // ==================================================================
-    always @(posedge i_ui_clk or negedge rst_n_ui) begin
-        if (!rst_n_ui) begin
+    always @(posedge i_ui_clk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
             frame_depth_locked_ui      <= 32'd0;
             frame_depth_locked_ui_flag <= 1'b0;
         end else if (!frame_depth_locked_ui_flag) begin
@@ -291,8 +262,8 @@ module ccd_frame_buf_ddr_ctrl #(
     // ==================================================================
     // ---- i_rd_clk 域: 固定帧长度锁存 ----
     // ==================================================================
-    always @(posedge i_rd_clk or negedge rst_n_rd) begin
-        if (!rst_n_rd) begin
+    always @(posedge i_rd_clk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
             frame_depth_locked_rd      <= 32'd0;
             frame_depth_locked_rd_flag <= 1'b0;
         end else if (!frame_depth_locked_rd_flag) begin
@@ -304,8 +275,8 @@ module ccd_frame_buf_ddr_ctrl #(
     // ==================================================================
     // ---- i_wr_clk 域: 边沿检测 ----
     // ==================================================================
-    always @(posedge i_wr_clk or negedge rst_n_wr) begin
-        if (!rst_n_wr) begin
+    always @(posedge i_wr_clk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
             frame_start_d_wr <= 1'b0;
             frame_end_d_wr   <= 1'b0;
             frame_start_rise_wr <= 1'b0;
@@ -324,8 +295,8 @@ module ccd_frame_buf_ddr_ctrl #(
     assign frame_depth_w = (i_read_mode == 2'd0) ?
         {16'd0, i_image_width} : (i_image_width * i_image_height);
 
-    always @(posedge i_wr_clk or negedge rst_n_wr) begin
-        if (!rst_n_wr) begin
+    always @(posedge i_wr_clk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
             frame_active_wr    <= 1'b0;
             pixel_cnt_wr       <= 32'd0;
         end else begin
@@ -349,8 +320,8 @@ module ccd_frame_buf_ddr_ctrl #(
     // ==================================================================
     assign wrfifo_wr_en = i_wr_en && (i_pixel_type == 2'b10) && frame_active_wr;
 
-    always @(posedge i_wr_clk or negedge rst_n_wr) begin
-        if (!rst_n_wr) begin
+    always @(posedge i_wr_clk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
             frame_exception_wrclk <= 1'b0;
         end else begin
             if (frame_end_rise_wr && pixel_cnt_wr != frame_depth_locked_wr)
@@ -366,8 +337,8 @@ module ccd_frame_buf_ddr_ctrl #(
     // ==================================================================
 
     // frame_start_rise → 上升沿 → frame_start_rise_ui
-    always @(posedge i_ui_clk or negedge rst_n_ui) begin
-        if (!rst_n_ui) begin
+    always @(posedge i_ui_clk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
             frame_start_sync   <= 3'b000;
             frame_start_sync_d <= 1'b0;
         end else begin
@@ -380,8 +351,8 @@ module ccd_frame_buf_ddr_ctrl #(
     assign frame_start_rise_ui = frame_start_sync[2] && !frame_start_sync_d;
 
     // frame_end_rise → 上升沿 → frame_end_rise_ui
-    always @(posedge i_ui_clk or negedge rst_n_ui) begin
-        if (!rst_n_ui) begin
+    always @(posedge i_ui_clk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
             frame_end_sync   <= 3'b000;
             frame_end_sync_d <= 1'b0;
         end else begin
@@ -396,8 +367,8 @@ module ccd_frame_buf_ddr_ctrl #(
     // ==================================================================
     // ---- ui_clk 域: frame_active_ui（自维护，避免 CDC 延迟）----
     // ==================================================================
-    always @(posedge i_ui_clk or negedge rst_n_ui) begin
-        if (!rst_n_ui)
+    always @(posedge i_ui_clk or negedge i_rst_n) begin
+        if (!i_rst_n)
             frame_active_ui <= 1'b0;
         else begin
             if (frame_start_rise_ui)
@@ -410,8 +381,8 @@ module ccd_frame_buf_ddr_ctrl #(
     // ==================================================================
     // ---- ui_clk 域: 写 FSM — 状态寄存器 ----
     // ==================================================================
-    always @(posedge i_ui_clk or negedge rst_n_ui) begin
-        if (!rst_n_ui)
+    always @(posedge i_ui_clk or negedge i_rst_n) begin
+        if (!i_rst_n)
             wr_state <= S_WR_IDLE;
         else
             wr_state <= wr_state_next;
@@ -446,8 +417,8 @@ module ccd_frame_buf_ddr_ctrl #(
     // ==================================================================
     // ---- ui_clk 域: 写 FSM — 输出逻辑 ----
     // ==================================================================
-    always @(posedge i_ui_clk or negedge rst_n_ui) begin
-        if (!rst_n_ui) begin
+    always @(posedge i_ui_clk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
             o_axi_wr_req           <= 1'b0;
             o_axi_wr_start_addr    <= 0;
             o_axi_wr_end_addr      <= 0;
@@ -506,8 +477,8 @@ module ccd_frame_buf_ddr_ctrl #(
     // ==================================================================
     // ---- ui_clk 域: 读 FSM — 状态寄存器 ----
     // ==================================================================
-    always @(posedge i_ui_clk or negedge rst_n_ui) begin
-        if (!rst_n_ui)
+    always @(posedge i_ui_clk or negedge i_rst_n) begin
+        if (!i_rst_n)
             rd_state <= S_RD_IDLE;
         else
             rd_state <= rd_state_next;
@@ -516,8 +487,8 @@ module ccd_frame_buf_ddr_ctrl #(
     // ==================================================================
     // ---- ui_clk 域: 边沿检测寄存器 ----
     // ==================================================================
-    always @(posedge i_ui_clk or negedge rst_n_ui) begin
-        if (!rst_n_ui) begin
+    always @(posedge i_ui_clk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
             axi_wr_idle_d1 <= 1'b0;
             axi_rd_idle_d1 <= 1'b0;
         end else begin
@@ -550,8 +521,8 @@ module ccd_frame_buf_ddr_ctrl #(
     // ==================================================================
     // ---- ui_clk 域: 读 FSM — 输出逻辑 ----
     // ==================================================================
-    always @(posedge i_ui_clk or negedge rst_n_ui) begin
-        if (!rst_n_ui) begin
+    always @(posedge i_ui_clk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
             o_axi_rd_req         <= 1'b0;
             o_axi_rd_start_addr  <= 0;
             o_axi_rd_end_addr    <= 0;
@@ -598,8 +569,8 @@ module ccd_frame_buf_ddr_ctrl #(
     // ==================================================================
     // ---- ui_clk 域: wr_frame_inc 脉冲 → toggle (CDC 到 rd_clk) ----
     // ==================================================================
-    always @(posedge i_ui_clk or negedge rst_n_ui) begin
-        if (!rst_n_ui)
+    always @(posedge i_ui_clk or negedge i_rst_n) begin
+        if (!i_rst_n)
             wr_frame_inc_toggle <= 1'b0;
         else if (wr_frame_inc)
             wr_frame_inc_toggle <= ~wr_frame_inc_toggle;
@@ -608,8 +579,8 @@ module ccd_frame_buf_ddr_ctrl #(
     // ==================================================================
     // ---- CDC: ui_clk → rd_clk (wr_frame_inc 脉冲, toggle 方式) ----
     // ==================================================================
-    always @(posedge i_rd_clk or negedge rst_n_rd) begin
-        if (!rst_n_rd) begin
+    always @(posedge i_rd_clk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
             wr_frame_inc_toggle_sync   <= 3'b000;
             wr_frame_inc_toggle_sync_d <= 1'b0;
         end else begin
@@ -626,8 +597,8 @@ module ccd_frame_buf_ddr_ctrl #(
     //   帧长度由固定锁存 frame_depth_locked_rd 提供 (所有帧一致)
     //   frames_in_fifo:         可用帧计数, 有效帧写入DDR时+1, FX2读完一帧时-1
     // ==================================================================
-    always @(posedge i_rd_clk or negedge rst_n_rd) begin
-        if (!rst_n_rd) begin
+    always @(posedge i_rd_clk or negedge i_rst_n) begin
+        if (!i_rst_n) begin
             rd_pixel_cnt  <= 32'd0;
             prelast_reg <= 1'b0;
             frames_in_fifo <= 0;
@@ -678,7 +649,7 @@ module ccd_frame_buf_ddr_ctrl #(
     // Xilinx FIFO 配置深度: 写侧512 / 读侧64
     // 实际可用深度:       写侧511 / 读侧63
     wr_ddr3_fifo u_wrfifo (
-        .rst           (~rst_n_wr),
+        .rst           (~i_rst_n),
         .wr_clk        (i_wr_clk),
         .rd_clk        (i_ui_clk),
         .din           (i_wr_data),
@@ -699,7 +670,7 @@ module ccd_frame_buf_ddr_ctrl #(
     assign o_fifo_data = rdfifo_dout;
 
     rd_ddr3_fifo u_rdfifo (
-        .rst           (~rst_n_ui),
+        .rst           (~i_rst_n),
         .wr_clk        (i_ui_clk),
         .rd_clk        (i_rd_clk),
         .din           (i_rdfifo_din),

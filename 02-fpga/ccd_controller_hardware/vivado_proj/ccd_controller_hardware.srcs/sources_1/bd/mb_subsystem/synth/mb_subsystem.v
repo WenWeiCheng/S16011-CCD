@@ -1,7 +1,7 @@
 //Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 //--------------------------------------------------------------------------------
 //Tool Version: Vivado v.2020.1 (win64) Build 2902540 Wed May 27 19:54:49 MDT 2020
-//Date        : Fri Aug  7 17:33:07 2026
+//Date        : Sat Aug  8 12:03:57 2026
 //Host        : DESKTOP-KD2H86C running 64-bit major release  (build 9200)
 //Command     : generate_target mb_subsystem.bd
 //Design      : mb_subsystem
@@ -1475,7 +1475,7 @@ module m10_couplers_imp_1XBGQ72
   assign m10_couplers_to_m10_couplers_WVALID = S_AXI_wvalid[0];
 endmodule
 
-(* CORE_GENERATION_INFO = "mb_subsystem,IP_Integrator,{x_ipVendor=xilinx.com,x_ipLibrary=BlockDiagram,x_ipName=mb_subsystem,x_ipVersion=1.00.a,x_ipLanguage=VERILOG,numBlks=43,numReposBlks=29,numNonXlnxBlks=0,numHierBlks=14,maxHierDepth=1,numSysgenBlks=0,numHlsBlks=0,numHdlrefBlks=0,numPkgbdBlks=0,bdsource=USER,da_axi4_cnt=52,da_board_cnt=55,da_bram_cntlr_cnt=10,da_clkrst_cnt=75,da_mb_cnt=5,da_trigger_cnt=14,synth_mode=OOC_per_IP}" *) (* HW_HANDOFF = "mb_subsystem.hwdef" *) 
+(* CORE_GENERATION_INFO = "mb_subsystem,IP_Integrator,{x_ipVendor=xilinx.com,x_ipLibrary=BlockDiagram,x_ipName=mb_subsystem,x_ipVersion=1.00.a,x_ipLanguage=VERILOG,numBlks=42,numReposBlks=28,numNonXlnxBlks=0,numHierBlks=14,maxHierDepth=1,numSysgenBlks=0,numHlsBlks=0,numHdlrefBlks=0,numPkgbdBlks=0,bdsource=USER,da_axi4_cnt=52,da_board_cnt=55,da_bram_cntlr_cnt=10,da_clkrst_cnt=75,da_mb_cnt=5,da_trigger_cnt=14,synth_mode=OOC_per_IP}" *) (* HW_HANDOFF = "mb_subsystem.hwdef" *) 
 module mb_subsystem
    (DDR3_addr,
     DDR3_ba,
@@ -2098,7 +2098,7 @@ module mb_subsystem
   wire mig_7series_0_DDR3_WE_N;
   wire mig_7series_0_init_calib_complete;
   wire mig_7series_0_mmcm_locked;
-  (* DEBUG = "true" *) (* MARK_DEBUG *) wire mig_7series_0_ui_clk;
+  wire mig_7series_0_ui_clk;
   wire reset_1;
   wire [0:0]rst_clk_wiz_0_100M_bus_struct_reset;
   wire rst_clk_wiz_0_100M_mb_reset;
@@ -3235,9 +3235,6 @@ module mb_subsystem
         .TRIG_OUT_trig(system_ila_TRIG_OUT_TRIG),
         .clk(clk_wiz_0_clk_100M),
         .resetn(rst_clk_wiz_0_100M_peripheral_aresetn));
-  mb_subsystem_system_ila_0_0 system_ila_0
-       (.clk(clk_wiz_0_clk_200M),
-        .probe0(mig_7series_0_ui_clk));
 endmodule
 
 module mb_subsystem_microblaze_0_axi_periph_6

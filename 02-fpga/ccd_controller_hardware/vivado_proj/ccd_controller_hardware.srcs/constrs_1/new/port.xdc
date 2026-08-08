@@ -144,3 +144,224 @@ set_property IOSTANDARD LVCMOS33 [get_ports {gpio_general_tri_io[1]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpio_general_tri_io[2]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {gpio_general_tri_io[3]}]
 
+
+set_property PULLUP true [get_ports i_slave_fifo_empty_n]
+set_property PULLUP true [get_ports i_slave_fifo_full_n]
+create_debug_core u_ila_0 ila
+set_property ALL_PROBE_SAME_MU true [get_debug_cores u_ila_0]
+set_property ALL_PROBE_SAME_MU_CNT 4 [get_debug_cores u_ila_0]
+set_property C_ADV_TRIGGER true [get_debug_cores u_ila_0]
+set_property C_DATA_DEPTH 2048 [get_debug_cores u_ila_0]
+set_property C_EN_STRG_QUAL true [get_debug_cores u_ila_0]
+set_property C_INPUT_PIPE_STAGES 0 [get_debug_cores u_ila_0]
+set_property C_TRIGIN_EN false [get_debug_cores u_ila_0]
+set_property C_TRIGOUT_EN false [get_debug_cores u_ila_0]
+set_property port_width 1 [get_debug_ports u_ila_0/clk]
+connect_debug_port u_ila_0/clk [get_nets [list mb_subsystem_i/clk_wiz_0/inst/clk_200M]]
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe0]
+set_property port_width 32 [get_debug_ports u_ila_0/probe0]
+connect_debug_port u_ila_0/probe0 [get_nets [list {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[0]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[1]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[2]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[3]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[4]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[5]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[6]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[7]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[8]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[9]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[10]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[11]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[12]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[13]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[14]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[15]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[16]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[17]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[18]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[19]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[20]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[21]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[22]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[23]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[24]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[25]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[26]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[27]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[28]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[29]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[30]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_locked_wr[31]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe1]
+set_property port_width 15 [get_debug_ports u_ila_0/probe1]
+connect_debug_port u_ila_0/probe1 [get_nets [list {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/ddr_wr_byte_count[4]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/ddr_wr_byte_count[5]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/ddr_wr_byte_count[6]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/ddr_wr_byte_count[7]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/ddr_wr_byte_count[8]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/ddr_wr_byte_count[9]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/ddr_wr_byte_count[10]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/ddr_wr_byte_count[11]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/ddr_wr_byte_count[12]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/ddr_wr_byte_count[13]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/ddr_wr_byte_count[14]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/ddr_wr_byte_count[15]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/ddr_wr_byte_count[16]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/ddr_wr_byte_count[17]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/ddr_wr_byte_count[18]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe2]
+set_property port_width 32 [get_debug_ports u_ila_0/probe2]
+connect_debug_port u_ila_0/probe2 [get_nets [list {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[0]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[1]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[2]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[3]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[4]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[5]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[6]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[7]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[8]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[9]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[10]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[11]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[12]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[13]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[14]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[15]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[16]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[17]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[18]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[19]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[20]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[21]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[22]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[23]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[24]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[25]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[26]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[27]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[28]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[29]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[30]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frame_depth_w[31]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe3]
+set_property port_width 11 [get_debug_ports u_ila_0/probe3]
+connect_debug_port u_ila_0/probe3 [get_nets [list {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frames_in_fifo_reg[0]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frames_in_fifo_reg[1]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frames_in_fifo_reg[2]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frames_in_fifo_reg[3]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frames_in_fifo_reg[4]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frames_in_fifo_reg[5]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frames_in_fifo_reg[6]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frames_in_fifo_reg[7]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frames_in_fifo_reg[8]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frames_in_fifo_reg[9]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/frames_in_fifo_reg[10]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe4]
+set_property port_width 32 [get_debug_ports u_ila_0/probe4]
+connect_debug_port u_ila_0/probe4 [get_nets [list {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[0]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[1]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[2]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[3]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[4]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[5]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[6]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[7]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[8]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[9]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[10]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[11]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[12]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[13]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[14]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[15]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[16]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[17]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[18]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[19]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[20]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[21]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[22]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[23]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[24]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[25]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[26]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[27]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[28]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[29]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[30]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/pixel_cnt_wr_reg[31]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe5]
+set_property port_width 5 [get_debug_ports u_ila_0/probe5]
+connect_debug_port u_ila_0/probe5 [get_nets [list {mb_subsystem_i/gpio_fx2_fifo_tri_i[0]} {mb_subsystem_i/gpio_fx2_fifo_tri_i[1]} {mb_subsystem_i/gpio_fx2_fifo_tri_i[2]} {mb_subsystem_i/gpio_fx2_fifo_tri_i[3]} {mb_subsystem_i/gpio_fx2_fifo_tri_i[4]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe6]
+set_property port_width 5 [get_debug_ports u_ila_0/probe6]
+connect_debug_port u_ila_0/probe6 [get_nets [list {mb_subsystem_i/gpio_fx2_fifo_tri_o[0]} {mb_subsystem_i/gpio_fx2_fifo_tri_o[1]} {mb_subsystem_i/gpio_fx2_fifo_tri_o[2]} {mb_subsystem_i/gpio_fx2_fifo_tri_o[3]} {mb_subsystem_i/gpio_fx2_fifo_tri_o[4]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe7]
+set_property port_width 4 [get_debug_ports u_ila_0/probe7]
+connect_debug_port u_ila_0/probe7 [get_nets [list {mb_subsystem_i/gpio_general_tri_i[0]} {mb_subsystem_i/gpio_general_tri_i[1]} {mb_subsystem_i/gpio_general_tri_i[2]} {mb_subsystem_i/gpio_general_tri_i[3]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe8]
+set_property port_width 4 [get_debug_ports u_ila_0/probe8]
+connect_debug_port u_ila_0/probe8 [get_nets [list {mb_subsystem_i/gpio_general_tri_o[0]} {mb_subsystem_i/gpio_general_tri_o[1]} {mb_subsystem_i/gpio_general_tri_o[2]} {mb_subsystem_i/gpio_general_tri_o[3]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe9]
+set_property port_width 8 [get_debug_ports u_ila_0/probe9]
+connect_debug_port u_ila_0/probe9 [get_nets [list {mb_subsystem_i/i_adc_data[0]} {mb_subsystem_i/i_adc_data[1]} {mb_subsystem_i/i_adc_data[2]} {mb_subsystem_i/i_adc_data[3]} {mb_subsystem_i/i_adc_data[4]} {mb_subsystem_i/i_adc_data[5]} {mb_subsystem_i/i_adc_data[6]} {mb_subsystem_i/i_adc_data[7]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe10]
+set_property port_width 16 [get_debug_ports u_ila_0/probe10]
+connect_debug_port u_ila_0/probe10 [get_nets [list {mb_subsystem_i/o_slave_fifo_data[0]} {mb_subsystem_i/o_slave_fifo_data[1]} {mb_subsystem_i/o_slave_fifo_data[2]} {mb_subsystem_i/o_slave_fifo_data[3]} {mb_subsystem_i/o_slave_fifo_data[4]} {mb_subsystem_i/o_slave_fifo_data[5]} {mb_subsystem_i/o_slave_fifo_data[6]} {mb_subsystem_i/o_slave_fifo_data[7]} {mb_subsystem_i/o_slave_fifo_data[8]} {mb_subsystem_i/o_slave_fifo_data[9]} {mb_subsystem_i/o_slave_fifo_data[10]} {mb_subsystem_i/o_slave_fifo_data[11]} {mb_subsystem_i/o_slave_fifo_data[12]} {mb_subsystem_i/o_slave_fifo_data[13]} {mb_subsystem_i/o_slave_fifo_data[14]} {mb_subsystem_i/o_slave_fifo_data[15]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe11]
+set_property port_width 9 [get_debug_ports u_ila_0/probe11]
+connect_debug_port u_ila_0/probe11 [get_nets [list {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/u_wrfifo/wr_data_count[0]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/u_wrfifo/wr_data_count[1]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/u_wrfifo/wr_data_count[2]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/u_wrfifo/wr_data_count[3]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/u_wrfifo/wr_data_count[4]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/u_wrfifo/wr_data_count[5]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/u_wrfifo/wr_data_count[6]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/u_wrfifo/wr_data_count[7]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/u_wrfifo/wr_data_count[8]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe12]
+set_property port_width 16 [get_debug_ports u_ila_0/probe12]
+connect_debug_port u_ila_0/probe12 [get_nets [list {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_driver/pixel_data_reg_reg[15]_0[0]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_driver/pixel_data_reg_reg[15]_0[1]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_driver/pixel_data_reg_reg[15]_0[2]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_driver/pixel_data_reg_reg[15]_0[3]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_driver/pixel_data_reg_reg[15]_0[4]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_driver/pixel_data_reg_reg[15]_0[5]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_driver/pixel_data_reg_reg[15]_0[6]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_driver/pixel_data_reg_reg[15]_0[7]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_driver/pixel_data_reg_reg[15]_0[8]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_driver/pixel_data_reg_reg[15]_0[9]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_driver/pixel_data_reg_reg[15]_0[10]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_driver/pixel_data_reg_reg[15]_0[11]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_driver/pixel_data_reg_reg[15]_0[12]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_driver/pixel_data_reg_reg[15]_0[13]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_driver/pixel_data_reg_reg[15]_0[14]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_driver/pixel_data_reg_reg[15]_0[15]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe13]
+set_property port_width 2 [get_debug_ports u_ila_0/probe13]
+connect_debug_port u_ila_0/probe13 [get_nets [list {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_driver/pixel_type_w[0]} {mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_driver/pixel_type_w[1]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe14]
+set_property port_width 1 [get_debug_ports u_ila_0/probe14]
+connect_debug_port u_ila_0/probe14 [get_nets [list mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/ccd_frame_written]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe15]
+set_property port_width 1 [get_debug_ports u_ila_0/probe15]
+connect_debug_port u_ila_0/probe15 [get_nets [list mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/ctrl_rd_idle]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe16]
+set_property port_width 1 [get_debug_ports u_ila_0/probe16]
+connect_debug_port u_ila_0/probe16 [get_nets [list mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/ctrl_rd_req]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe17]
+set_property port_width 1 [get_debug_ports u_ila_0/probe17]
+connect_debug_port u_ila_0/probe17 [get_nets [list mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/ctrl_wr_idle]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe18]
+set_property port_width 1 [get_debug_ports u_ila_0/probe18]
+connect_debug_port u_ila_0/probe18 [get_nets [list mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/ctrl_wr_req]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe19]
+set_property port_width 1 [get_debug_ports u_ila_0/probe19]
+connect_debug_port u_ila_0/probe19 [get_nets [list mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_driver/data_valid_w]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe20]
+set_property port_width 1 [get_debug_ports u_ila_0/probe20]
+connect_debug_port u_ila_0/probe20 [get_nets [list mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_driver/frame_end_w]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe21]
+set_property port_width 1 [get_debug_ports u_ila_0/probe21]
+connect_debug_port u_ila_0/probe21 [get_nets [list mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_driver/frame_start_w]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe22]
+set_property port_width 1 [get_debug_ports u_ila_0/probe22]
+connect_debug_port u_ila_0/probe22 [get_nets [list mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/u_wrfifo/full]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe23]
+set_property port_width 1 [get_debug_ports u_ila_0/probe23]
+connect_debug_port u_ila_0/probe23 [get_nets [list mb_subsystem_i/ccd_controller_v1_0_0/i_init_calib_complete]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe24]
+set_property port_width 1 [get_debug_ports u_ila_0/probe24]
+connect_debug_port u_ila_0/probe24 [get_nets [list mb_subsystem_i/ccd_controller_v1_0_0/i_mmcm_locked]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe25]
+set_property port_width 1 [get_debug_ports u_ila_0/probe25]
+connect_debug_port u_ila_0/probe25 [get_nets [list mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/i_rd_clk]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe26]
+set_property port_width 1 [get_debug_ports u_ila_0/probe26]
+connect_debug_port u_ila_0/probe26 [get_nets [list mb_subsystem_i/i_slave_fifo_empty_n]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe27]
+set_property port_width 1 [get_debug_ports u_ila_0/probe27]
+connect_debug_port u_ila_0/probe27 [get_nets [list mb_subsystem_i/i_slave_fifo_full_n]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe28]
+set_property port_width 1 [get_debug_ports u_ila_0/probe28]
+connect_debug_port u_ila_0/probe28 [get_nets [list mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/i_ui_clk]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe29]
+set_property port_width 1 [get_debug_ports u_ila_0/probe29]
+connect_debug_port u_ila_0/probe29 [get_nets [list mb_subsystem_i/o_adcclk]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe30]
+set_property port_width 1 [get_debug_ports u_ila_0/probe30]
+connect_debug_port u_ila_0/probe30 [get_nets [list mb_subsystem_i/o_cdsclk1]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe31]
+set_property port_width 1 [get_debug_ports u_ila_0/probe31]
+connect_debug_port u_ila_0/probe31 [get_nets [list mb_subsystem_i/o_cdsclk2]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe32]
+set_property port_width 1 [get_debug_ports u_ila_0/probe32]
+connect_debug_port u_ila_0/probe32 [get_nets [list mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/o_frame_exception]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe33]
+set_property port_width 1 [get_debug_ports u_ila_0/probe33]
+connect_debug_port u_ila_0/probe33 [get_nets [list mb_subsystem_i/o_p1h]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe34]
+set_property port_width 1 [get_debug_ports u_ila_0/probe34]
+connect_debug_port u_ila_0/probe34 [get_nets [list mb_subsystem_i/o_p1v]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe35]
+set_property port_width 1 [get_debug_ports u_ila_0/probe35]
+connect_debug_port u_ila_0/probe35 [get_nets [list mb_subsystem_i/o_p2h]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe36]
+set_property port_width 1 [get_debug_ports u_ila_0/probe36]
+connect_debug_port u_ila_0/probe36 [get_nets [list mb_subsystem_i/o_p2v_tg]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe37]
+set_property port_width 1 [get_debug_ports u_ila_0/probe37]
+connect_debug_port u_ila_0/probe37 [get_nets [list mb_subsystem_i/o_p3h]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe38]
+set_property port_width 1 [get_debug_ports u_ila_0/probe38]
+connect_debug_port u_ila_0/probe38 [get_nets [list mb_subsystem_i/o_p4h_sg]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe39]
+set_property port_width 1 [get_debug_ports u_ila_0/probe39]
+connect_debug_port u_ila_0/probe39 [get_nets [list mb_subsystem_i/o_rg]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe40]
+set_property port_width 1 [get_debug_ports u_ila_0/probe40]
+connect_debug_port u_ila_0/probe40 [get_nets [list mb_subsystem_i/o_slave_fifo_data_last_n]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe41]
+set_property port_width 1 [get_debug_ports u_ila_0/probe41]
+connect_debug_port u_ila_0/probe41 [get_nets [list mb_subsystem_i/o_slave_fifo_data_wr_en_n]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe42]
+set_property port_width 1 [get_debug_ports u_ila_0/probe42]
+connect_debug_port u_ila_0/probe42 [get_nets [list mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/u_wrfifo/rd_rst_busy]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe43]
+set_property port_width 1 [get_debug_ports u_ila_0/probe43]
+connect_debug_port u_ila_0/probe43 [get_nets [list spi_io0_o]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe44]
+set_property port_width 1 [get_debug_ports u_ila_0/probe44]
+connect_debug_port u_ila_0/probe44 [get_nets [list spi_io1_o]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe45]
+set_property port_width 1 [get_debug_ports u_ila_0/probe45]
+connect_debug_port u_ila_0/probe45 [get_nets [list spi_ss_o_0]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe46]
+set_property port_width 1 [get_debug_ports u_ila_0/probe46]
+connect_debug_port u_ila_0/probe46 [get_nets [list spi_ss_o_1]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe47]
+set_property port_width 1 [get_debug_ports u_ila_0/probe47]
+connect_debug_port u_ila_0/probe47 [get_nets [list spi_ss_o_2]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe48]
+set_property port_width 1 [get_debug_ports u_ila_0/probe48]
+connect_debug_port u_ila_0/probe48 [get_nets [list mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/wr_en]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe49]
+set_property port_width 1 [get_debug_ports u_ila_0/probe49]
+connect_debug_port u_ila_0/probe49 [get_nets [list mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/u_wrfifo/wr_rst_busy]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe50]
+set_property port_width 1 [get_debug_ports u_ila_0/probe50]
+connect_debug_port u_ila_0/probe50 [get_nets [list mb_subsystem_i/ccd_controller_v1_0_0/inst/ccd_controller_v1_0_S00_AXI_inst/u_ccd_ddr/u_ccd_frame_buf_ddr/u_ctrl/wrfifo_empty]]
+set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
+set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
+set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]
+connect_debug_port dbg_hub/clk [get_nets clk]

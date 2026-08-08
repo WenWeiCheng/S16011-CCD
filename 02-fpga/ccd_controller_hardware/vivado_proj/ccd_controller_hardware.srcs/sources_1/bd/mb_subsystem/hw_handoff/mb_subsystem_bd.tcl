@@ -687,14 +687,6 @@ proc create_root_design { parentCell } {
    CONFIG.C_TRIGOUT_EN {true} \
  ] $system_ila
 
-  # Create instance: system_ila_0, and set properties
-  set system_ila_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:system_ila:1.1 system_ila_0 ]
-  set_property -dict [ list \
-   CONFIG.C_MON_TYPE {NATIVE} \
-   CONFIG.C_NUM_OF_PROBES {1} \
-   CONFIG.C_PROBE0_TYPE {0} \
- ] $system_ila_0
-
   # Create interface connections
   connect_bd_intf_net -intf_net axi_bram_ctrl_0_BRAM_PORTA [get_bd_intf_pins axi_bram_ctrl_0/BRAM_PORTA] [get_bd_intf_pins axi_bram_ctrl_0_bram/BRAM_PORTA]
   connect_bd_intf_net -intf_net axi_bram_ctrl_0_BRAM_PORTB [get_bd_intf_pins axi_bram_ctrl_0/BRAM_PORTB] [get_bd_intf_pins axi_bram_ctrl_0_bram/BRAM_PORTB]
@@ -757,7 +749,7 @@ connect_bd_intf_net -intf_net [get_bd_intf_nets microblaze_0_axi_periph_M03_AXI]
   connect_bd_net -net ccd_controller_v1_0_0_o_slave_fifo_data_wr_en_n [get_bd_ports o_slave_fifo_data_wr_en_n] [get_bd_pins ccd_controller_v1_0_0/o_slave_fifo_data_wr_en_n]
   connect_bd_net -net clk_100MHz_1 [get_bd_ports clk_50MHz] [get_bd_pins clk_wiz_0/clk_in1]
   connect_bd_net -net clk_wiz_0_clk_100M [get_bd_pins axi_bram_ctrl_0/s_axi_aclk] [get_bd_pins axi_gpio_fx2fifo/s_axi_aclk] [get_bd_pins axi_gpio_general/s_axi_aclk] [get_bd_pins axi_gpio_key/s_axi_aclk] [get_bd_pins axi_gpio_led/s_axi_aclk] [get_bd_pins axi_iic_0/s_axi_aclk] [get_bd_pins axi_quad_spi_0/ext_spi_clk] [get_bd_pins axi_quad_spi_0/s_axi_aclk] [get_bd_pins axi_smc/aclk] [get_bd_pins axi_timer_0/s_axi_aclk] [get_bd_pins axi_timer_1/s_axi_aclk] [get_bd_pins axi_uartlite_0/s_axi_aclk] [get_bd_pins ccd_controller_v1_0_0/s00_axi_aclk] [get_bd_pins clk_wiz_0/clk_100M] [get_bd_pins mdm_1/M_AXI_ACLK] [get_bd_pins microblaze_0/Clk] [get_bd_pins microblaze_0_axi_intc/processor_clk] [get_bd_pins microblaze_0_axi_intc/s_axi_aclk] [get_bd_pins microblaze_0_axi_periph/ACLK] [get_bd_pins microblaze_0_axi_periph/M00_ACLK] [get_bd_pins microblaze_0_axi_periph/M01_ACLK] [get_bd_pins microblaze_0_axi_periph/M02_ACLK] [get_bd_pins microblaze_0_axi_periph/M03_ACLK] [get_bd_pins microblaze_0_axi_periph/M04_ACLK] [get_bd_pins microblaze_0_axi_periph/M05_ACLK] [get_bd_pins microblaze_0_axi_periph/M06_ACLK] [get_bd_pins microblaze_0_axi_periph/M07_ACLK] [get_bd_pins microblaze_0_axi_periph/M08_ACLK] [get_bd_pins microblaze_0_axi_periph/M09_ACLK] [get_bd_pins microblaze_0_axi_periph/M10_ACLK] [get_bd_pins microblaze_0_axi_periph/S00_ACLK] [get_bd_pins microblaze_0_local_memory/LMB_Clk] [get_bd_pins rst_clk_wiz_0_100M/slowest_sync_clk] [get_bd_pins system_ila/clk]
-  connect_bd_net -net clk_wiz_0_clk_200M [get_bd_pins clk_wiz_0/clk_200M] [get_bd_pins mig_7series_0/sys_clk_i] [get_bd_pins system_ila_0/clk]
+  connect_bd_net -net clk_wiz_0_clk_200M [get_bd_pins clk_wiz_0/clk_200M] [get_bd_pins mig_7series_0/sys_clk_i]
   connect_bd_net -net clk_wiz_0_clk_48M [get_bd_pins ccd_controller_v1_0_0/i_rd_clk] [get_bd_pins clk_wiz_0/clk_48M]
   connect_bd_net -net clk_wiz_0_clk_48M_p180 [get_bd_pins ccd_controller_v1_0_0/i_rd_clk_n] [get_bd_pins clk_wiz_0/clk_48M_p180]
   connect_bd_net -net clk_wiz_0_locked [get_bd_pins clk_wiz_0/locked] [get_bd_pins mig_7series_0/aresetn] [get_bd_pins mig_7series_0/sys_rst] [get_bd_pins rst_clk_wiz_0_100M/dcm_locked]
@@ -768,8 +760,7 @@ connect_bd_intf_net -intf_net [get_bd_intf_nets microblaze_0_axi_periph_M03_AXI]
   connect_bd_net -net microblaze_0_intr [get_bd_pins microblaze_0_axi_intc/intr] [get_bd_pins microblaze_0_xlconcat/dout]
   connect_bd_net -net mig_7series_0_init_calib_complete [get_bd_pins ccd_controller_v1_0_0/i_init_calib_complete] [get_bd_pins mig_7series_0/init_calib_complete]
   connect_bd_net -net mig_7series_0_mmcm_locked [get_bd_pins ccd_controller_v1_0_0/i_mmcm_locked] [get_bd_pins mig_7series_0/mmcm_locked]
-  connect_bd_net -net mig_7series_0_ui_clk [get_bd_pins ccd_controller_v1_0_0/i_ui_clk] [get_bd_pins mig_7series_0/ui_clk] [get_bd_pins system_ila_0/probe0]
-  set_property HDL_ATTRIBUTE.DEBUG {true} [get_bd_nets mig_7series_0_ui_clk]
+  connect_bd_net -net mig_7series_0_ui_clk [get_bd_pins ccd_controller_v1_0_0/i_ui_clk] [get_bd_pins mig_7series_0/ui_clk]
   connect_bd_net -net reset_1 [get_bd_ports reset] [get_bd_pins rst_clk_wiz_0_100M/ext_reset_in]
   connect_bd_net -net rst_clk_wiz_0_100M_bus_struct_reset [get_bd_pins microblaze_0_local_memory/SYS_Rst] [get_bd_pins rst_clk_wiz_0_100M/bus_struct_reset]
   connect_bd_net -net rst_clk_wiz_0_100M_mb_reset [get_bd_pins microblaze_0/Reset] [get_bd_pins microblaze_0_axi_intc/processor_rst] [get_bd_pins rst_clk_wiz_0_100M/mb_reset]
