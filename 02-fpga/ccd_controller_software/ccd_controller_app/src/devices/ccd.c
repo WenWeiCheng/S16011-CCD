@@ -461,6 +461,7 @@ void Ccd_SetBevelBlank(Ccd *d, const Ccd_BevelBlank *bb)
 void Ccd_SetFreqSel(Ccd *d, u8 freq)
 {
     CcdController_SetFreqSel(d->Ctrl, freq);
+    CcdController_SoftReset(d->Ctrl);
 }
 
 /*****************************************************************************/

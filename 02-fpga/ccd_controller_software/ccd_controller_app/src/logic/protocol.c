@@ -42,6 +42,7 @@
  *                     (总复位) 重锁帧长并清空帧缓存
  * 1.11  wwc  26/08/08 参数配置全部改走 Ccd_Set* / Ccd_SoftReset API,
  *                     protocol 不再直接调用 CcdController
+ * 1.12  wwc  26/08/08 新增 RESET 命令 (CCD 软复位): Ccd_Stop + Ccd_SoftReset
  * </pre>
 ******************************************************************************/
 #include "protocol.h"
@@ -223,6 +224,7 @@ static int  Cmd_GetInfo(int argc, char **argv);
 static int  Cmd_GetParam(int argc, char **argv);
 static int  Cmd_SetParam(int argc, char **argv);
 static int  Cmd_Acq(int argc, char **argv);
+static int  Cmd_Reset(int argc, char **argv);
 
 /* ============================================================================
  * Parameter table ("add a new parameter with just one line")
@@ -320,6 +322,7 @@ static const Proto_Cmd g_cmds[] = {
     { "GETPARAM",   Cmd_GetParam },
     { "SETPARAM",   Cmd_SetParam },
     { "ACQ",        Cmd_Acq },
+    { "RESET",      Cmd_Reset },
 };
 #define PROTO_NUM_CMDS  (sizeof g_cmds / sizeof g_cmds[0])
 
@@ -1240,6 +1243,30 @@ static int Cmd_Acq(int argc, char **argv)
     }
 
     Proto_Err(PROTO_ERR_INVALID_VALUE, "invalid mode (single|live|burst|fetch|abort)");
+    return 0;
+}
+
+/*****************************************************************************/
+/**
+* @brief  RESET: soft-resets the whole CCD pipeline.
+*
+* Stops the current acquisition/fetch (Ccd_Stop) so the software state and the
+* hardware agree, then writes CTRL[12]=1 (Ccd_SoftReset) which re-locks the
+* fixed frame length on the current image parameters and flushes the frame
+* cache. Returns to IDLE.
+*
+* @param  argc  Token count.
+* @param  argv  Tokens (unused; no arguments).
+*
+* @return 0.
+******************************************************************************/
+static int Cmd_Reset(int argc, char **argv)
+{
+    (void)argc;
+    (void)argv;
+    Ccd_Stop(&gCcd);        /* 先停采集/发送,保持软硬件状态一致 */
+    Ccd_SoftReset(&gCcd);   /* CTRL[12]=1: 总复位整条 CCD 流水线,清空帧缓存并重锁帧长 */
+    Proto_Ok0();
     return 0;
 }
 
