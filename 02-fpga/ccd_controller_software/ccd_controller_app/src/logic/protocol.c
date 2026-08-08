@@ -34,6 +34,10 @@
  *                     曝光); 新增 RO frame_capacity (最大缓存帧数)
  * 1.8   wwc  26/08/07 新增 RO exception_flag / exception_cnt (帧异常标志与
  *                     累计计数, 源自 STATUS[8]/[15:9])
+ * 1.9   wwc  26/08/08 SETPARAM 越界值由 clamp 改为拒绝 (ERR 3 invalid value,
+ *                     与设计文档一致, 步进 snap 保留); exposure_time_us 范围
+ *                     扩至 timer 能力 (1:2147483647:1 us, s32 上限,
+ *                     step=1us)
  * </pre>
 ******************************************************************************/
 #include "protocol.h"
@@ -222,7 +226,7 @@ static int  Cmd_Acq(int argc, char **argv);
 static Protocol_Param g_params[] = {
     /* ---- exposure / image ---- */
     { "exposure_time_us", VAL_TYPE_INT_RANGE, VAL_ACCESS_RW, "exposure time in us", "us",
-      "100:10000:100", { .I = 1000 }, NULL, NULL },
+      "1:2147483647:1", { .I = 1000 }, NULL, NULL },
     { "read_mode", VAL_TYPE_ENUM, VAL_ACCESS_RW, "readout mode", "",
       "line_binning,image", { .I = CCDC_READ_MODE_LINE_BINNING }, NULL, NULL },
     { "freq_sel", VAL_TYPE_ENUM, VAL_ACCESS_RW, "SCLK frequency", "",
@@ -405,8 +409,8 @@ static const char *Proto_AccessName(Protocol_Access a)
 /**
 * @brief  Parses + validates the token against p->Constraint and stores the result in *v.
 *
-* Out-of-range values are clamped; int values not on a step are snapped to the nearest
-* valid step.
+* Out-of-range values are rejected (return -1); int values not on a step are snapped
+* to the nearest valid step.
 *
 * @param  p    Parameter descriptor (Constraint / Type select the rules).
 * @param  tok  Token to parse.
@@ -427,8 +431,7 @@ static int Proto_ParseValue(const Protocol_Param *p, const char *tok,
     case VAL_TYPE_INT_RANGE:
         if (Proto_ParseIntConstraint(p->Constraint, &mn, &mx, &st) != 0) return -1;
         if (Proto_ParseInt(tok, &iv) != 0) return -1;
-        if (iv < mn) iv = (s32)mn;               /* clamp to range */
-        if (iv > mx) iv = (s32)mx;
+        if (iv < mn || iv > mx) return -1;       /* reject out-of-range */
         if (st > 1L) {                           /* snap to nearest valid step */
             long q = ((long)iv - mn + st / 2L) / st;
             iv = (s32)(mn + q * st);
@@ -441,8 +444,7 @@ static int Proto_ParseValue(const Protocol_Param *p, const char *tok,
     case VAL_TYPE_FLOAT_RANGE:
         if (Proto_ParseFloatConstraint(p->Constraint, &fmn, &fmx, &fst) != 0) return -1;
         if (Proto_ParseFloat(tok, &fv) != 0) return -1;
-        if (fv < fmn) fv = fmn;                  /* clamp to range */
-        if (fv > fmx) fv = fmx;
+        if (fv < fmn || fv > fmx) return -1;     /* reject out-of-range */
         v->F = fv;
         return 0;
     case VAL_TYPE_BOOL:
