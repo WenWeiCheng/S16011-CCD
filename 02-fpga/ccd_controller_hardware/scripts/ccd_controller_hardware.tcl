@@ -139,24 +139,9 @@ if { $obj != {} } {
 
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
-# Import local files from the original project
-set files [\
-]
-set imported_files [import_files -fileset sources_1 $files]
 
 # Set 'sources_1' fileset file properties for remote files
 # None
-
-# Set 'sources_1' fileset file properties for local files
-set file "mb_subsystem_mig_7series_0_0/mig_a.prj"
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "scoped_to_cells" -value "mb_subsystem_mig_7series_0_0" -objects $file_obj
-
-
-# Set 'sources_1' fileset properties
-set obj [get_filesets sources_1]
-set_property -name "top" -value "mb_subsystem_wrapper" -objects $obj
-set_property -name "top_auto_set" -value "0" -objects $obj
 
 # Create 'constrs_1' fileset (if not found)
 if {[string equal [get_filesets -quiet constrs_1] ""]} {
@@ -682,7 +667,6 @@ proc create_hier_cell_microblaze_0_local_memory { parentCell nameHier } {
   # Create instance: axi_quad_spi_0, and set properties
   set axi_quad_spi_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_quad_spi:3.2 axi_quad_spi_0 ]
   set_property -dict [ list \
-   CONFIG.C_FIFO_DEPTH {16} \
    CONFIG.C_NUM_SS_BITS {3} \
    CONFIG.C_NUM_TRANSFER_BITS {16} \
    CONFIG.C_SCK_RATIO {16} \
