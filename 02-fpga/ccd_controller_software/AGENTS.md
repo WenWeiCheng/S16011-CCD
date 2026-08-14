@@ -6,33 +6,35 @@
 
 ```
 ccd_controller_software/
-├── mb_subsystem/              平台工程（基于 Vivado 导出的 .xsa 生成）
-│   ├── platform.spr           平台描述（handoff 指向 hw/mb_subsystem_wrapper.xsa，勿手改）
-│   ├── hw/                    硬件副本（.xsa/.bit 被忽略，.mmi 未忽略）
-│   ├── bitstream/ tempdsa/    位流缓存（.bit 被忽略）
-│   ├── export/mb_subsystem/   导出平台 (.xpfm/.spfm，生成物)
+├── ccd_controller_app/          主应用工程（唯一入库的应用源码）
+│   ├── src/                     应用源码（唯一设计源，Linux 重建时拷入新工程）
+│   │   ├── main.c
+│   │   ├── lscript.ld           链接脚本（LMB/BRAM 内存布局）
+│   │   ├── include/             board_config.h
+│   │   ├── devices/             AD9826/ADN8833/ADS1118/DAC8311/FX2/CCD/UART/LED/KEY 等外设驱动
+│   │   ├── hal/                 board_hal / ccd_controller（硬件抽象）
+│   │   └── logic/               protocol / proto_num / tec / ntc / pid / monitor
+│   ├── .clangd                  clangd 语义解析配置（保留）
+│   ├── tools/gen_ntc_table.py   NTC 查表生成工具（保留）
+│   └── (其余文件均不入库)         *.prj / *_system / Debug / _ide 等为 Vitis 生成物
+├── mb_subsystem/                ⚠️ gitignore，不入库（平台工程，Linux Vitis 从 .xsa 重建）
+│   ├── platform.spr             平台描述
+│   ├── export/mb_subsystem/     导出平台 (.xpfm/.spfm，生成物)
 │   └── microblaze_0/standalone_domain/bsp/   BSP（生成物，勿手改）
-├── test/                      主应用工程（源码在 src/）
-│   ├── test.prj               工程定义（runtime=C/C++, cpu=standalone_domain）
-│   └── src/                   唯一需要维护的应用源码
-│       ├── testperiph.c       main 入口（目前跑 Intc 自测 + 中断配置）
-│       ├── xgpio_tapp_example.c / xintc_tapp_example.c   外设自测示例
-│       ├── gpio_header.h / intc_header.h
-│       └── lscript.ld         链接脚本（LMB/BRAM 内存布局）
-├── test_system/               主系统工程（关联平台+应用，构建/烧录入口）
-├── perph_test/                残留空壳（只剩 .project，勿用；已被 test/ 取代）
-└── *_example_1/ + *_example_1_system/   Xilinx 驱动示例工程（参考用）
-    ├── xgpio_example_1        GPIO 示例
-    ├── xintc_example_1        中断控制器示例
-    ├── xspi_intr_example_1    SPI 中断示例
-    ├── xtmrctr_intr_64bit_example_1 / xtmrctr_intr_example_1   定时器示例
-    └── xuartlite_intr_example_1    UART 中断示例
+├── ccd_controller_app_system/   ⚠️ gitignore，不入库（系统工程）
+├── test/                        ⚠️ gitignore，不入库（早期外设自测工程，已废弃，可查 git 历史）
+├── test_system/                 ⚠️ gitignore，不入库
+├── perph_test/                  ⚠️ gitignore，不入库（残留空壳）
+└── *_example_1/ + *_example_1_system/   ⚠️ gitignore，不入库（Xilinx 驱动示例，参考用）
 ```
+
+> **只入库 `ccd_controller_app/src/`（+ `.clangd` + `tools/`）**。平台工程（`mb_subsystem/`）、BSP、`*.prj`/`*.sprj`、系统工程、示例工程全部是 Vitis 生成物，**不入库**，由 Linux Vitis 从硬件 `.xsa` 重建。
+> 本 AGENTS.md 其余章节（应用开发约定、外设使用参考、构建经验、clangd 配置）描述的平台结构与驱动宏均以重建后的 BSP 为准，内容仍适用。
 
 ## 应用开发约定
 
 - 调试输出走 UART stdout：`axi_uartlite_0`，**波特率 115200**（BD 中 C_BAUDRATE=115200），用 `xil_printf` / `print`。
-- 沿用现有模板模式：每个外设一个自测文件（如 `xgpio_tapp_example.c`）+ 同名 header 声明函数，在 `testperiph.c` 的 main 中按需调用。
+- 模块组织沿用 `ccd_controller_app/src/` 现有分层：`devices/`（外设驱动）、`hal/`（硬件抽象）、`logic/`（协议/算法）；每个设备一对 `.c`/`.h`。
 - BSP 是生成物，不要手改；standalone 的 stdin/stdout 等选项在 BSP 设置里配置，改后 Regenerate BSP。
 - 改硬件（BD / IP / 约束）后，软件侧按上文重新同步再联调。
 
@@ -51,12 +53,12 @@ ccd_controller_software/
 另有 `axi_iic_0`（`XPAR_IIC_0_DEVICE_ID`，`XPAR_INTC_0_IIC_0_VEC_ID`），仓库内暂无示例，驱动 API 见 BSP `xiic.h`。
 
 - 示例源码中的 `DEVICE_ID` / `VEC_ID` 宏都映射自 xparameters.h；本设计已提供 `XPAR_GPIO_0_DEVICE_ID`、`XPAR_INTC_0_DEVICE_ID`、`XPAR_SPI_0_DEVICE_ID`、`XPAR_TMRCTR_0_DEVICE_ID`、`XPAR_UARTLITE_0_DEVICE_ID` 等别名，Xilinx 原版示例常量常可直接使用。
-- `*_example_1` 工程仅作参考（各自带独立 `*_system` 工程，不进 `test_system`）。要实际跑某外设，把对应函数以 `TESTAPP_GEN` 模式搬进 `test/src` 并在 `testperiph.c` 中调用。
+- `*_example_1` 工程仅作参考（各自带独立 `*_system` 工程，均不入库）。要实际跑某外设，参考可查 git 历史的 `test/src/` 外设自测代码搬入 `ccd_controller_app/src/`。
 
 ### API 风格
 
 - 简单外设（GPIO/Intc/UartLite/TmrCtr）：`X<Periph>_Initialize(&Instance, DeviceId)`，随后一般跟 `X<Periph>_SelfTest(&Instance)` 自检；**SPI 例外**——新版驱动用 `XSpi_LookupConfig` + `XSpi_CfgInitialize`（`XSpi_Initialize` 已废弃）。
-- 带中断的外设接入 Intc 的顺序固定（见各例的 `*SetupIntrSystem` 与 `test/src/xintc_tapp_example.c`）：
+- 带中断的外设接入 Intc 的顺序固定（参考各例的 `*SetupIntrSystem` 与 git 历史中 `test/src/xintc_tapp_example.c`）：
   1. `XIntc_Initialize(&Intc, INTC_DEVICE_ID)`
   2. `XIntc_Connect(&Intc, VEC_ID, (XInterruptHandler)X<Periph>_InterruptHandler, (void *)&Instance)` —— 驱动自带 ISR 一律叫 `X<Periph>_InterruptHandler`
   3. `XIntc_Start(&Intc, XIN_REAL_MODE)`
@@ -74,9 +76,9 @@ ccd_controller_software/
 
 ## 构建与调试
 
-- 常规流程：Vitis IDE 打开本工作区 → 构建 `test_system` → Run / Debug。
-- `test/Debug/makefile` 是 IDE 生成的（每次构建会重写），不要手编。
-- UART 打印对不上时，硬件波形问题回 `ccd_controller_hardware` 用 ILA 抓（约束见其 `vivado_proj/.../constrs_1/new/debug.xdc`）。
+- 常规流程：Vitis IDE 打开工作区 → 构建 `ccd_controller_app_system` → Run / Debug。
+- `Debug/makefile` 是 IDE 生成的（每次构建会重写），不要手编。
+- UART 打印对不上时，硬件波形问题回 `ccd_controller_hardware` 用 ILA 抓（约束见其 `constraint/debug.xdc`）。
 
 ### 无头构建（mb-gcc 命令行）经验
 
@@ -135,11 +137,8 @@ ccd_controller_software/
 
 ## Git 提交约定
 
-- **整个目录当前未被 git 追踪**（未提交，不是被 ignore）。
-- 不要盲目 `git add` 整个目录 —— 会把数百个 BSP/平台生成文件一起带入（`mb_subsystem/export/`、`bsp/` 等）。只提交源码与工程定义：
-  - `test/src/*`、`test/test.prj`
-  - `test_system/test_system.sprj`
-  - `mb_subsystem/platform.spr`
-  - 如需提交驱动示例，同理只带 `*_example_1/src/*` 与其 `.prj`、`*_example_1_system/*.sprj`。
-- 根 .gitignore 只按模式忽略 `.xsa` / `.bit` / `*.log` / `.metadata/` / `.sdk/` / `.project` / `.cproject` / `Debug/` 等；**`*.mmi`、`export/`、`hw/`、`tempdsa/`、`bsp/` 并未被忽略**，仍以未追踪文件形式出现在 `git status`（当前约 500+ 个）。
-- `.analytics/`、`RemoteSystemsTempFiles/`、`mb_subsystem/.log/` 也未被 gitignore —— 提交前留意不要把它们一起 add。
+- **只提交源码与工具**，不提交任何 Vitis 生成物：
+  - `ccd_controller_app/src/**`（唯一入库的应用源码）
+  - `ccd_controller_app/.clangd`、`ccd_controller_app/tools/*`
+- **禁止提交**（已在根 `.gitignore` 忽略）：`mb_subsystem/`（平台/BSP）、`*_system/`、`test/`、`perph_test/`、`*.prj`、`*.sprj`、`Debug/`、`_ide/`、`*.mmi`、`*_example_1*/`、`.xsa`、`.bit` 等。
+- `git status` 中软件目录若出现大量 `D`（删除）状态，多为历史误入库的生成物正被清理，提交即可正常。

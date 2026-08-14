@@ -27,7 +27,7 @@ nir-proj-reference/      被 gitignore 的先前 NIR 项目 Obsidian 仓库（�
 
 ## FPGA 软件子项目（Vitis）
 
-- `ccd_controller_software/` 是 Vitis 工作区：平台工程 `mb_subsystem/`、应用工程 `perph_test/`（源码在 `perph_test/src/`）、系统工程 `perph_test_system/`。
+- `ccd_controller_software/` 是 Vitis 工作区。**只入库应用源码** `ccd_controller_app/src/`（devices/hal/logic 分层 C 代码）+ `.clangd` + `tools/`；平台工程（`mb_subsystem/`，含 BSP）、系统工程、`*.prj`/`*.sprj`、示例工程等 Vitis 生成物全部 gitignore，由 Linux Vitis 从硬件 `.xsa` 重建。
 - 软件为 MicroBlaze standalone BSP 的 C 代码，使用 Xilinx 驱动库（XGpio、XIntc 等），经 UART stdout 输出调试。
 
 ## 含中文字符的文件名
