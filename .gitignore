@@ -20,7 +20,8 @@ vivado*.debug
 # 自动生成的工程目录
 .Xil/
 # Vivado 工程目录（由 scripts/bd.tcl + constraint/ + ip/ 重建，不入库）
-02-fpga/ccd_controller_hardware/vivado_proj/
+02-fpga/ccd_controller_hardware/vivado_proj*/
+02-fpga/ccd_controller_hardware/constraint/debug.xdc
 *.hw/
 *.ip_user_files/
 *.sim/
