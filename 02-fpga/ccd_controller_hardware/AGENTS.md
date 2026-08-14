@@ -7,57 +7,37 @@
 ```
 02-fpga/ccd_controller_hardware/
 ├── AGENTS.md                                          # 本文件 (子项目约定)
+├── scripts/
+│   └── bd.tcl                                          # ★ 唯一设计源：完整 BD 重建脚本 (Vivado 2020.1 导出)
 ├── constraint/
-│   └── BX72_core_ddr3_pin.ucf                         # 管脚约束
-├── rtl/                                                # 可综合 RTL 源码 (.v) — 仅存非 IP 模块
-│   ├── async_fifo.v                                    # 异步 FIFO
-│   ├── ccd.v                                           # 顶层 CCD 控制器 (BRAM 版)
-│   └── ccd_frame_buf.v                                 # BRAM 帧缓存
-├── ip/                                                 # Vivado IP 工程 (ccd_controller AXI IP)
-│   └── ccd_controller/                                 # CCD 控制器 IP 工程
-│       └── ccd_controller.srcs/src/                    #   IP 源文件 (ccd_controller_v1_0*, ccd_driver, ...)
-├── tb/                                                 # 仿真 testbench (.v)
-│   ├── test_async_fifo.v
-│   ├── test_ccd.v
-│   ├── test_ccd_ddr.v
-│   ├── test_ccd_driver.v
-│   ├── test_ccd_frame_buf.v
-│   ├── test_ccd_frame_tx.v
-│   ├── test_ccd_frame_tx_ddr.v
-│   ├── test_ccd_clk_gen.v
-│   └── ccd_frame_buf_ddr/
-│       ├── test_ccd_frame_buf_ddr.v
-│       ├── test_ccd_frame_buf_ddr_axi_adapter.v
-│       └── test_ccd_frame_buf_ddr_ctrl.v
-└── vivado_proj/                                        # Vivado 工程目录
-    ├── ccd_controller_hardware.xpr                     #   工程文件
-    ├── mb_subsystem_wrapper.xsa                        #   导出硬件平台 (供 Vitis)
-    ├── ccd_controller_hardware.srcs/                   #   源文件
-    │   ├── sources_1/ip/                               #     IP 核
-    │   │   ├── mig_7series_0/
-    │   │   ├── rd_ddr3_fifo/
-    │   │   └── wr_ddr3_fifo/
-    │   ├── sources_1/bd/mb_subsystem/                  #     MicroBlaze 块设计
-    │   └── constrs_1/new/port.xdc                      #     顶层管脚约束
-    ├── ccd_controller_hardware.ip_user_files/          #   IP 用户文件 (仿真 / .veo)
-    ├── ccd_controller_hardware.runs/                   #   综合 & 实现 (含 .bit)
-    ├── ccd_controller_hardware.sim/                    #   仿真配置 (.wcfg)
-    ├── ccd_controller_hardware.cache/                  #   运行缓存
-    └── ccd_controller_hardware.hw/                     #   硬件管理器 (ILA)
+│   ├── BX72_core_ddr3_pin.ucf                         # DDR3 管脚参考
+│   ├── port.xdc                                       # 顶层管脚约束
+│   ├── clock.xdc                                      # 时钟约束 (MIG / clk_wiz 层次引用)
+│   └── debug.xdc                                      # ILA 调试约束
+├── ip/
+│   └── ccd_controller/                                # 自定义 CCD 控制器 AXI IP (IP 仓库形态)
+│       ├── ccd_controller.xpr                         #   IP 工程文件
+│       └── ccd_controller.srcs/
+│           ├── src/                                   #   RTL 源码 (ccd_controller_v1_0*, ccd_driver, ...)
+│           │   └── test_*.v                           #     TB (与 RTL 同目录存放)
+│           ├── constrs_1/new/                         #   IP 内部约束 (ccd_top.xdc, ccd_clock_ooc.xdc)
+│           ├── component.xml                          #   IP 打包文件
+│           └── sources_1/ip/                          #   嵌套 IP (mig_7series_0, rd/wr_ddr3_fifo)
+└── vivado_proj/                                       # ⚠️ gitignore，不入库
+                                                        #    由 bd.tcl + constraint/ + ip/ 重建
 ```
 
-> 不要在本目录新建 `sim_*/`,由 Vivado 自动生成。
-> **IP 模块源文件** (ccd_controller_v1_0、ccd_driver、ccd_ddr、ccd_clk_gen、ccd_frame_tx、ccd_frame_buf_ddr 等) 的唯一源在 `ip/ccd_controller/ccd_controller.srcs/src/`,**不在** `rtl/`。`rtl/` 只放非 IP 模块 (如 `ccd.v`、`async_fifo.v`、`ccd_frame_buf.v`)。
-> 顶层设计模块放在 `rtl/`(子目录归类亦可),TB 放在 `tb/`。
-> RTL 与 TB 名字成对:`ccd_driver.v` ↔ `test_ccd_driver.v`。
+> **vivado_proj/ 不入库**：整个 Vivado 工程（`.xpr`、BD 生成物、`.dcp`、`.xsa`、`.bit` 等）均按需重建，`git status` 不应出现其中内容。
+> **BD 由 `scripts/bd.tcl` 重建**：该脚本自包含 MIG 配置（运行时生成 `mig_a.prj`），不依赖任何外部文件。
+> **RTL 与 TB 名字成对**:`ccd_driver.v` ↔ `test_ccd_driver.v`,均位于 `ip/ccd_controller/ccd_controller.srcs/src/`。
 
 ---
 
 ## 2. 语言与工具链
 
 - **使用 Verilog**,不使用 SystemVerilog
-- 用 **iverilog** 验证语法:
-  `iverilog -o <out>.vvp rtl/*.v ip/ccd_controller/ccd_controller.srcs/src/*.v tb/*.v tb/ccd_frame_buf_ddr/*.v`
+- 用 **iverilog** 验证语法（RTL + TB 均在 `ip/ccd_controller/ccd_controller.srcs/src/`）:
+  `iverilog -o <out>.vvp ip/ccd_controller/ccd_controller.srcs/src/*.v`
 - iverilog 跑通即可,**不需要**保存波形、不需要 `vvp` 跑波形
 - 实际波形验证交给用户在 Vivado Simulation 中查看
 - 注释只解释大致逻辑，但不要写死计数器计到哪个值，方便”仿真-微调“
@@ -107,12 +87,7 @@
 
 ## 4. IP 核例化
 
-已有 IP 核位于以下两处（内容相同，互为镜像）：
-
-| 位置 | 说明 |
-|---|---|
-| `ccd_controller_hardware.srcs/sources_1/ip/<ip_name>/` | Vivado 工程源码目录下的 IP 核 |
-| `ccd_controller_hardware.ip_user_files/ip/<ip_name>/` | IP 用户文件镜像 |
+嵌套 IP 核位于 `ip/ccd_controller/ccd_controller.srcs/sources_1/ip/<ip_name>/`,由 Vivado 在 IP 工程中生成,工程重建时随之重建。
 
 每个 IP 核目录下均有 `.veo`（Verilog Instantiation Example）文件，**这就是该 IP 核的 Verilog 例化模板**。
 
@@ -120,9 +95,9 @@
 
 | IP 核名 | `.veo` 路径 | 用途 |
 |---|---|---|
-| `mig_7series_0` | `ip_user_files/ip/mig_7series_0/mig_7series_0.veo` | DDR3 内存控制器（MIG） |
-| `wr_ddr3_fifo` | `ip_user_files/ip/wr_ddr3_fifo/wr_ddr3_fifo.veo` | 写方向异步 FIFO（16→128bit） |
-| `rd_ddr3_fifo` | `ip_user_files/ip/rd_ddr3_fifo/rd_ddr3_fifo.veo` | 读方向异步 FIFO（128→16bit） |
+| `mig_7series_0` | `ip/ccd_controller/ccd_controller.srcs/sources_1/ip/mig_7series_0/mig_7series_0.veo` | DDR3 内存控制器（MIG） |
+| `wr_ddr3_fifo` | `ip/ccd_controller/ccd_controller.srcs/sources_1/ip/wr_ddr3_fifo/wr_ddr3_fifo.veo` | 写方向异步 FIFO（16→128bit） |
+| `rd_ddr3_fifo` | `ip/ccd_controller/ccd_controller.srcs/sources_1/ip/rd_ddr3_fifo/rd_ddr3_fifo.veo` | 读方向异步 FIFO（128→16bit） |
 
 ### 4.2 例化步骤
 
@@ -130,28 +105,7 @@
 
 2. **将模板复制到 RTL 代码中**，将模板内的 `your_instance_name` 替换为有意义的实例名（遵循 `u_<role>` 命名风格），并将各端口信号连接到实际信号。
 
-3. **例化示例**（已有代码参考）：
-
-   - `rtl/ddr_test/ddr3_ctrl_2port.v` 中例化 `mig_7series_0`：
-     ```verilog
-     mig_7series_0 u_mig_7series_0 (
-       .ddr3_addr            (ddr3_addr           ),
-       .ddr3_ba              (ddr3_ba             ),
-       // ...
-       .ui_clk               (ui_clk              ),
-       .ui_clk_sync_rst      (ui_clk_sync_rst     ),
-       // ...
-     );
-     ```
-
-   - `rtl/ddr_test/fifo_axi4_adapter.v` 中例化 `wr_ddr3_fifo` / `rd_ddr3_fifo`：
-     ```verilog
-     wr_ddr3_fifo wr_ddr3_fifo (
-       .rst           (wrfifo_clr         ),
-       .wr_clk        (wrfifo_clk         ),
-       // ...
-     );
-     ```
+3. **例化示例**（已有代码参考，见 4.4）：`src/ccd_ddr.v` 例化 `mig_7series_0`、`src/ccd_frame_buf_ddr_axi_adapter.v` 例化 `wr_ddr3_fifo` / `rd_ddr3_fifo`。
 
 ### 4.3 注意事项
 
@@ -160,6 +114,11 @@
 - **仿真时需要编译 IP 核的 wrapper 文件**（详见 `.veo` 末尾说明），在 Vivado 中 IP 核会自动加入仿真文件列表。
 - 如果需要新建 IP 核，请在 Vivado 中通过 IP Catalog 生成，不要在 `.veo` 中手写。
 - 当 IP 核参数需要调整时，在 Vivado 中重新配置（Re-Customize IP），重新生成后 `.veo` 会自动更新。
+
+### 4.4 例化示例参考
+
+- `src/ccd_ddr.v` 中例化 `mig_7series_0`（DDR3 控制器）
+- `src/ccd_frame_buf_ddr_axi_adapter.v` 中例化 `wr_ddr3_fifo` / `rd_ddr3_fifo`（异步 FIFO）
 
 ### 3.5 复位与有效电平
 
@@ -202,8 +161,21 @@ wire               state_done;
 
 ## 5. 工作流(本子项目)
 
-1. 改 `rtl/` 或 `tb/` 下的 `.v` 文件
-2. `iverilog -o <out>.vvp rtl/*.v ip/ccd_controller/ccd_controller.srcs/src/*.v tb/*.v tb/ccd_frame_buf_ddr/*.v` 验证语法
+### 5.1 工程重建（Vivado，Linux/Windows 通用）
+
+1. Vivado GUI → 新建工程（part=`xc7a100tfgg484-2`），如 `vivado_proj/ccd_controller_hardware`
+2. `Settings → IP → Repository` 添加 IP 仓库：`ip/ccd_controller/ccd_controller.srcs`
+3. Tcl 控制台: `source scripts/bd.tcl` → 完整重建 `mb_subsystem` 块设计（MIG 配置在脚本内自动生成）
+4. 添加约束：`constraint/` 下 `port.xdc`、`clock.xdc`、`debug.xdc`（如新建工程需手动 Add Sources）
+5. 生成 IP 输出产物、Create HDL Wrapper、综合/实现/生成 bitstream
+6. `Export Hardware`（含 bitstream）→ 得到 `.xsa`，供 Vitis 使用
+
+> `clock.xdc` 引用 BD wrapper 的层次路径（`mb_subsystem_i/mig_7series_0/...`），须在 Create HDL Wrapper **之后**才生效，属正常顺序。
+
+### 5.2 RTL / TB 迭代
+
+1. 修改 `ip/ccd_controller/ccd_controller.srcs/src/` 下的 `.v` 文件
+2. `iverilog -o <out>.vvp ip/ccd_controller/ccd_controller.srcs/src/*.v` 验证语法
 3. `vvp <out>.vvp` 跑一下确认不崩溃(可选)
-4. 用户在 Vivado 中打开 `.xpr`,跑 Simulation 自行检查波形
+4. 用户在 Vivado 中打开工程,跑 Simulation 自行检查波形
 5. 完成后按根 AGENTS.md 约定提交 git(中文 commit message)
