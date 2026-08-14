@@ -21,10 +21,6 @@ vivado*.debug
 .Xil/
 # Vivado 工程目录（由 scripts/bd.tcl + constraint/ + ip/ 重建，不入库）
 02-fpga/ccd_controller_hardware/vivado_proj/
-!02-fpga/ccd_controller_hardware/vivado_proj/ccd_controller_hardware.srcs/constrs_1/*
-!02-fpga/ccd_controller_hardware/vivado_proj/ccd_controller_hardware.srcs/sources_1/bd/mb_subsystem/hdl/mb_subsystem_wrapper.v
-!02-fpga/ccd_controller_hardware/vivado_proj/ccd_controller_hardware.srcs/sources_1/bd/mb_subsystem/ip/mb_subsystem_mig_7series_0_0/mig_a.prj
-*.cache/
 *.hw/
 *.ip_user_files/
 *.sim/
