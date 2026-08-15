@@ -85,13 +85,9 @@ RemoteSystemsTempFiles/
 *_example_1_system/
 
 # Vitis 生成物（平台/BSP/工程文件，由 Linux Vitis 从 .xsa 重建，不入库）
-02-fpga/ccd_controller_software/mb_subsystem/
-02-fpga/ccd_controller_software/ccd_controller_app_system/
-02-fpga/ccd_controller_software/perph_test/
-02-fpga/ccd_controller_software/test/
-02-fpga/ccd_controller_software/test_system/
-02-fpga/ccd_controller_software/**/*.prj
-02-fpga/ccd_controller_software/**/*.sprj
+02-fpga/ccd_controller_software/*
+!02-fpga/ccd_controller_software/ccd_controller_app
+!02-fpga/ccd_controller_software/AGENTS.md
 
 # -----------------------------------------------------------
 # 3. 上位机（Qt + CMake 双栈兼容）
